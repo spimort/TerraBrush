@@ -13,10 +13,10 @@
 </p>
 
 <p align="center">
+  <a href="#disclaimer">Disclaimer</a> •
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
+  <a href="#support">Support</a> •
   <a href="#license">License</a>
 </p>
 
@@ -25,6 +25,14 @@
   ![screenshot](https://github.com/spimort/TerraBrush/blob/main/preview.gif?raw=true)
 
 </div>
+
+## Disclaimer
+
+This project has been made maily for my own project. I'm pretty new to gamedev so if something is not done the way it should, feel free to contact me!
+<br>
+I'm happy to share it with the community but it's possible that some features that you would expect are not there.
+<br>
+I'm gonna be happy to accept PR for new features if it fits.
 
 ## Key Features
 
@@ -87,7 +95,7 @@ It might be required to have a C# script somewhere in your project in order to h
 |HeightMap|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
 |Data Path|In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill the information by itself.|
 |Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be create since they could have a collision shape)|
-|Visual Instance Layers|The godot layer on which the map will be displayed.|
+|Visual Instance Layers|The godot layer on which the terrain will be displayed.|
 |Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
 |Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
@@ -96,14 +104,73 @@ It might be required to have a C# script somewhere in your project in order to h
 |Collision Mask| The terrain collision mask|
 |**Textures**||
 |Texture Sets|Lets you define the textures of the map. **Be aware, all the textures must be in the same format (ex. Mipmaps, compression mode, etc.)**. **Make sure to hit the update map button when you modify this and the terrain has already been created**. You should create a **TextureSetsResource** which holds several **TextureSetResource**. A set will accept an Albedo, Normal and Roughness texture. You can create a resource file with the TextureSetsResource so you can reuse your textures with other terrain.|
+|TextureSetResource[x].Name|The name of the texture. This information is useful for when you want to query the map to know the texture at a specific position.|
+|TextureSetResource[x].AlbedoTexture|The albedo texure of the set.|
+|TextureSetResource[x].NormalTexture|The normal map texure of the set.|
+|TextureSetResource[x].RoughnessTexture|The roughness texure of the set.|
 |Texture Detail|This will determine how often your textures will be repeated on the map. Higher value means more repetitions. The default value is 20.|
 |Splatmaps|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update map button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Texture|Unless you have existing foliage painting, leave this option empty, the tool will create it by itself.|
-|FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this defintion to reuse it in other terrain|
+|FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this defintion to reuse it in other terrain.|
 |FoliageResource[x].Definition.Mesh|The mesh that will be used for the foliage. The mesh should have as little vertices as possible for better performances.|
 |FoliageResource[x].Definition.MeshMaterial|The material that will be used on the mesh.|
+|FoliageResource[x].Definition.MeshScale|The scale of the mesh.|
+|FoliageResource[x].Definition.MaximumRenderDistance|This is the maximum distance the foliage will appear from the camera. A high value will decrease the performances.|
+|FoliageResource[x].Definition.EditorMaximumRenderDistance|This is the maximum distance the foliage will appear from the camera, but only for the editor. A high value will decrease the performances. Useful if you want to see far.|
+|FoliageResource[x].Definition.WindStrength|Creates some movement for the mesh. The default value is 0.1.|
+|FoliageResource[x].Definition.NoiseTexture|This textures makes sure that the foliage placement is not too straight. If not specified, the default noise texture will be used.|
+|FoliageResource[x].Definition.VisualInstanceLayers|The godot layer on which the foliage will be displayed.|
+|**Objects**||
+|Default Object Frequency|This option is to define how often the objects will be placed on the terrain. This is the default for every objets. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
+|Objects|An array of ObjectResource. **Make sure to hit the update map button when you modify this and the terrain has already been created**.|
+|ObjectResource[x].Texture|Unless you have existing object painting, leave this option empty, the tool will create it by itself.|
+|ObjectResource[x].Definition|The definition of the object. Create a **ObjectDefinitionResource** to use it. You can create a resource of this defintion to reuse it in other terrain.|
+|ObjectResource[x].Definition.ObjectFrequency|This option overrides the **Default Object Frequency** property if a value higher then -1 is set. This option is to define how often the objects will be placed on the terrain. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
+|ObjectResource[x].Definition.RandomRange|The range from which the random placement will be added from the original grid position.|
+|ObjectResource[x].Definition.NoiseTexture|This textures makes sure that the object placement is not too straight. If not specified, the default noise texture will be used.|
+|ObjectResource[x].Definition.RandomYRotation|This allows the objects to be rotated randomly on the Y axis.|
+|ObjectResource[x].Definition.ObjectScenes|A list of packed scenes. A random one will be selected while painting.|
+|ObjectResource[x].Hide|Hide the whole layer of objects. This is useful when you want to see something on the terrain and the objects blocks the view.|
+|**Water**||
+|Water Texture|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
+|Water Definition|The definition of the water. Create a **WaterResource** to use it. You can create a resource of this defintion to reuse it in other terrain. **Make sure to hit the update map button when you modify this and the terrain has already been created**.|
+|WaterResource.WaterFactor|This option let you decide how deep the deepest water will be. A value of 1 will set the maximum deepnest to 1m. The default value is 1.|
+|WaterResource.WaterInnerOffset|This is an offset of the water to go in the ground. The goal is to prevent having square looking water edges.|
+|WaterResource.WaterColor|The color of the water.|
+|WaterResource.WaterFresnelColor|The color of the fresnel reflection color.|
+|WaterResource.WaterMetallic|The metallic value of the material.|
+|WaterResource.WaterRoughness|The roughness value of the material.|
+|WaterResource.NormalMap|This is a normal map to create some waves in the water.|
+|WaterResource.NormalMap2|This is another normal map to create some waves in the water. Having two normal maps helps to create better movement. Make sure it is different from the first one.|
+|WaterResource.WaterTimeScale|This is how fast the water will move.|
+|WaterResource.WaterStrength|This is how fast the normal map will move.|
+|WaterResource.WaterWave|The Water Wave image is a noise texture that let you drive how the waves will look like.|
+|WaterResource.WaterNoiseScale|The scale of the the noise texture.|
+|WaterResource.WaterHeightScale|The height of the water waves created by the noise texture.|
+|WaterResource.WaterColorDeep|The color of the deep water.|
+|WaterResource.WaterColorShallow|The color of the Shallow water.|
+|WaterResource.WaterBeersLaw|This option sets the beer law for the water.|
+|WaterResource.WaterDeepOffset|This option sets how to calculate that the water is considered as "Deep".|
+|WaterResource.WaterEdgeScale|This option set the size of the "foam" on the edges of the water.|
+|WaterResource.WaterNear|This option set how to calculate that the water is close or not for the "foam".|
+|WaterResource.WaterFar|This option set how to calculate that the water is close or not for the "foam".|
+|WaterResource.WaterEdgeColor|This is the color of the "foam".|
+|WaterResource.VisualInstanceLayers|The godot layer on which the water will be displayed.|
+|**Snow**||
+|Snow Texture|Unless you have existing snow painting, leave this option empty, the tool will create it by itself.|
+|Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this defintion to reuse it in other terrain. **Make sure to hit the update map button when you modify this and the terrain has already been created**.|
+|SnowResource.SnowFactor|Sets how thick the snow will be.|
+|SnowResource.SnowInnerOffset|This option is to decide the offset that the snow will get into the ground. This is to avoid having square edges of the snow.|
+|SnowResource.SnowColorTexture|This sets the albedo texture that will be use for the snow.|
+|SnowResource.SnowColorNormal|This sets the normal map texture that will be use for the snow.|
+|SnowResource.SnowColorRoughness|This sets the roughness texture that will be use for the snow.|
+|SnowResource.SnowColorDetail|This is to define how ofter the texture will be repeated.|
+|SnowResource.Noise|The noise option allow the terrain to change shape a little bit to avoid having too straight texture.|
+|SnowResource.NoiseFactor|This option defines how much the noise will affect the snow.|
+|SnowResource.Metallic|This is the metallic value of the material.|
+|SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
 
 ## Support
 
