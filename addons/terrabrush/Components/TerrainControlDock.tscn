@@ -1,0 +1,242 @@
+[gd_scene load_steps=17 format=3 uid="uid://clqmuo5dunyap"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
+[ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
+[ext_resource type="Texture2D" uid="uid://bdht6w40ofxw3" path="res://addons/terrabrush/Assets/Icons/map_add.png" id="3_tkn6e"]
+[ext_resource type="Texture2D" uid="uid://bxrd6ysoqp4p4" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
+[ext_resource type="Texture2D" uid="uid://ci03cyirflno2" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
+[ext_resource type="Texture2D" uid="uid://dbb32vbtyf8df" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_byduj"]
+[ext_resource type="Texture2D" uid="uid://ddx07aojxcpp5" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
+[ext_resource type="Texture2D" uid="uid://dv0bmodrfkoq4" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
+[ext_resource type="Texture2D" uid="uid://dqxmj8mb1s8hd" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_d1w4v"]
+[ext_resource type="Texture2D" uid="uid://bsqfgbd8rcc6k" path="res://addons/terrabrush/Assets/Icons/object_remove.png" id="10_wcsh2"]
+[ext_resource type="Texture2D" uid="uid://cuqvl0jkj6qpu" path="res://addons/terrabrush/Assets/Icons/water_add.png" id="11_6ecx6"]
+[ext_resource type="Texture2D" uid="uid://w2mim3h8tuy5" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_nqxjx"]
+[ext_resource type="Texture2D" uid="uid://caxwkj3ffjqjl" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_wuhqm"]
+[ext_resource type="Texture2D" uid="uid://bgwjnk5kgbted" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_j3262"]
+[ext_resource type="Texture2D" uid="uid://vrs8506vox0y" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_h2obh"]
+[ext_resource type="Texture2D" uid="uid://dkk1jfutj402b" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_47ucd"]
+
+[node name="Terrain Editor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_piufe")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TabContainer2" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Tools" type="Control" parent="MarginContainer/VBoxContainer/TabContainer2"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ToolTypesContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TerrainToolAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+ToolImage = ExtResource("3_tkn6e")
+ToolType = 1
+
+[node name="TerrainToolRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("4_r5iun")
+ToolType = 2
+
+[node name="TerrainToolSmooth" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("5_ro3ul")
+ToolType = 3
+
+[node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("6_byduj")
+ToolType = 4
+
+[node name="FoliageAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("7_1nssx")
+ToolType = 5
+
+[node name="FoliageRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("8_glupl")
+ToolType = 6
+
+[node name="ObjectAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("9_d1w4v")
+ToolType = 7
+
+[node name="ObjectRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("10_wcsh2")
+ToolType = 8
+
+[node name="WaterAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("11_6ecx6")
+ToolType = 9
+
+[node name="WaterRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("12_nqxjx")
+ToolType = 10
+
+[node name="WaterFlowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("13_wuhqm")
+ToolType = 11
+
+[node name="WaterFlowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("14_j3262")
+ToolType = 12
+
+[node name="SnowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("15_h2obh")
+ToolType = 13
+
+[node name="SnowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+layout_mode = 2
+ToolImage = ExtResource("16_47ucd")
+ToolType = 14
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Brush size"
+
+[node name="BrushSizeSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 200.0
+value = 1.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Brush strength"
+
+[node name="BrushStrengthSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 0.01
+max_value = 1.0
+step = 0.01
+value = 0.01
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Brush"
+
+[node name="BrushesContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/VBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Textures" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Textures"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TexturesContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/TabContainer/Textures/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Foliage" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Foliage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FoliagesContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/TabContainer/Foliage/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Objects" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Objects"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ObjectsContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/TabContainer/Objects/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2

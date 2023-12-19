@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://c7j4t14nd6tga"]
+
+[ext_resource type="Texture2D" uid="uid://doncxenbqc6bn" path="res://addons/terrabrush/Assets/button.png" id="1_c02eh"]
+[ext_resource type="Texture2D" uid="uid://cppo7meost05e" path="res://addons/terrabrush/Assets/button_pressed.png" id="2_28vf7"]
+[ext_resource type="Texture2D" uid="uid://brbx5kn6ijhnm" path="res://addons/terrabrush/Assets/button_hover.png" id="3_4n6sf"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/ObjectPreview.cs" id="4_o3fsd"]
+
+[node name="ObjectPreview" type="TextureButton"]
+custom_minimum_size = Vector2(48, 48)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1104.0
+offset_bottom = -600.0
+grow_horizontal = 2
+grow_vertical = 2
+toggle_mode = true
+texture_normal = ExtResource("1_c02eh")
+texture_pressed = ExtResource("2_28vf7")
+texture_hover = ExtResource("3_4n6sf")
+texture_focused = ExtResource("3_4n6sf")
+script = ExtResource("4_o3fsd")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ObjectTextureRect" type="TextureRect" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+
+[node name="Label" type="Label" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Birch"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3

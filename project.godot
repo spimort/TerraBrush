@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="TerraBrush"
-config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+config/icon="res://addons/terrabrush/icon.png"
 
 [dotnet]
 
 project/assembly_name="TerraBrush"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/terrabrush/plugin.cfg")

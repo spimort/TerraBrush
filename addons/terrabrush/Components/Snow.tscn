@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://cy14sjxay4ll0"]
+
+[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/snow_shader.gdshader" id="1_0helk"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Snow.cs" id="1_4mfhl"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_i6hfx"]
+custom_aabb = AABB(-1000, -1000, -1000, 2000, 2000, 2000)
+size = Vector2(256, 256)
+subdivide_width = 512
+subdivide_depth = 512
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_let8e"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_0helk")
+shader_parameter/SnowFactor = 1.0
+shader_parameter/SnowInnerOffset = 0.3
+shader_parameter/HeightMapFactor = 1.0
+shader_parameter/SnowColorDetail = 20.0
+shader_parameter/NoiseFactor = 0.0
+shader_parameter/Metallic = 0.0
+
+[node name="Snow" type="Node3D"]
+script = ExtResource("1_4mfhl")
+
+[node name="SnowMesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+mesh = SubResource("PlaneMesh_i6hfx")
+surface_material_override/0 = SubResource("ShaderMaterial_let8e")

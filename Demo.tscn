@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://v4o1p7h4rn3j"]
+
+[ext_resource type="Script" path="res://Demo.cs" id="1_ntfcg"]
+[ext_resource type="Script" path="res://addons/terrabrush/TerraBrush.cs" id="2_pdfhx"]
+[ext_resource type="Texture2D" uid="uid://mt1iq0ehpi76" path="res://Demo/Heightmap.res" id="3_ckogt"]
+
+[node name="Demo" type="Node3D"]
+script = ExtResource("1_ntfcg")
+
+[node name="TerraBrush" type="Node3D" parent="."]
+script = ExtResource("2_pdfhx")
+HeightMap = ExtResource("3_ckogt")
+DataPath = "res://Demo"
+Splatmaps = []
+Foliages = []
+Objects = []
+metadata/_edit_lock_ = true

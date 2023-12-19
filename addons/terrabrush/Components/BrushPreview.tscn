@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://dldlxnbl8t11k"]
+
+[ext_resource type="Texture2D" uid="uid://bupq5m4oxmau4" path="res://addons/terrabrush/Assets/transparency.png" id="1_00c1i"]
+[ext_resource type="Texture2D" uid="uid://cppo7meost05e" path="res://addons/terrabrush/Assets/button_pressed.png" id="2_nibv0"]
+[ext_resource type="Texture2D" uid="uid://brbx5kn6ijhnm" path="res://addons/terrabrush/Assets/button_hover.png" id="3_fc38m"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/BrushPreview.cs" id="4_0f566"]
+
+[node name="BrushPreview" type="TextureButton"]
+custom_minimum_size = Vector2(48, 48)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1104.0
+offset_bottom = -600.0
+grow_horizontal = 2
+grow_vertical = 2
+toggle_mode = true
+texture_normal = ExtResource("1_00c1i")
+texture_pressed = ExtResource("2_nibv0")
+texture_hover = ExtResource("3_fc38m")
+texture_focused = ExtResource("3_fc38m")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_0f566")
+
+[node name="BrushImageTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1

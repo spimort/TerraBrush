@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://5jvvrtgq4llr"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/BrushDecal.cs" id="1_jow3u"]
+[ext_resource type="Texture2D" uid="uid://bxcc8v5gvkwp5" path="res://addons/terrabrush/Assets/brush_preview.png" id="1_k83t0"]
+
+[node name="BrushDecal" type="Node3D"]
+script = ExtResource("1_jow3u")
+
+[node name="Decal" type="Decal" parent="."]
+unique_name_in_owner = true
+texture_albedo = ExtResource("1_k83t0")
+modulate = Color(0.615686, 0.160784, 1, 1)
