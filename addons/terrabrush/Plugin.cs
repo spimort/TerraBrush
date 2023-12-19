@@ -25,6 +25,7 @@ public partial class Plugin : EditorPlugin {
     private Node _editorViewportsContainer = null;
     private Control[] _editorViewports = null;
     private Control _overlaySelector = null;
+    private Button _updateTerrainSettingsButton = null;
 
     private void CreateCustomSetting(string name, Variant defaultValue, Variant.Type type, PropertyHint hint = PropertyHint.None, string hintString = null) {
         if (ProjectSettings.HasSetting(name)) {
@@ -316,6 +317,13 @@ public partial class Plugin : EditorPlugin {
 
             _terrainControlDock = null;
 		}
+
+        if (_updateTerrainSettingsButton != null) {
+            RemoveControlFromContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
+            _updateTerrainSettingsButton.QueueFree();
+
+            _updateTerrainSettingsButton = null;
+        }
     }
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
@@ -348,6 +356,11 @@ public partial class Plugin : EditorPlugin {
         _terrainControlDock.BrushDecal = _brushDecal;
         _terrainControlDock.EditorResourcePreview = EditorInterface.Singleton.GetResourcePreviewer();
         AddControlToDock(DockSlot.RightBl, _terrainControlDock);
+
+        _updateTerrainSettingsButton = new Button();
+        _updateTerrainSettingsButton.Text = "Update terrain";
+        _updateTerrainSettingsButton.Connect("pressed", new Callable(this, nameof(UpdateTerrainSettings)));
+        AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
     }
 
     private void OnExitEditTerrainNode() {
@@ -497,6 +510,10 @@ public partial class Plugin : EditorPlugin {
                 HideOverlaySelector();
             };
         }
+    }
+
+    private void UpdateTerrainSettings() {
+        _currentTerraBrushNode?.OnUpdateTerrainSettings();
     }
 }
 #endif
