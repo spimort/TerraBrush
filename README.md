@@ -5,7 +5,7 @@
 
 <h4 align="center">A minimal Terrain heightmap editor for <a href="[http://electron.atom.io](https://godotengine.org/)" target="_blank">Godot engine</a>.</h4>
 
-<p align="center">  
+<p align="center">
   <a href="https://godotengine.org/">
     <img src="https://img.shields.io/badge/GODOT-%23000000.svg?style=for-the-badge&logo=godot-engine"
          alt="Godot">
@@ -21,9 +21,9 @@
 </p>
 
 <div align="center">
-  
+
   ![screenshot](https://github.com/spimort/TerraBrush/blob/main/preview.gif?raw=true)
-  
+
 </div>
 
 ## Key Features
@@ -79,14 +79,31 @@ It might be required to have a C# script somewhere in your project in order to h
 
 **Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/assets/6035485/627ab85c-e84e-443d-89b1-0bd7ac4ad73e))
 
-**TerraBrush properties**
-* **Terrain Size** - This is the size of the terrain (in meters). By default, it will be of 256. There is no limit for this value but having a really high value will decrease the performance.
-* **HeightMap** - Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.
-* **Data Path** - In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill the information by itself.
-* **Visual Instance Layers** - The godot layer on which the map will be displayed.
-* **Create Terrain** - Create the terrain with the current settings (everything that has been done will be cleared).
-* **Update Terrain** - Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).
-* **Remove Terrain** - Remove the current terrain (everything that has been done will be cleared).
+**Node properties**
+|Property|Description|
+|-------------|-------------|
+|**Terrain Settings**||
+|Terrain Size|This is the size of the terrain (in meters). By default, it will be of 256m. There is no limit for this value but having a really high value will decrease the performance.|
+|HeightMap|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
+|Data Path|In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill the information by itself.|
+|Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be create since they could have a collision shape)|
+|Visual Instance Layers|The godot layer on which the map will be displayed.|
+|Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
+|Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
+|Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
+|**Collisions**||
+|Collision Layers|The terrain collision layers|
+|Collision Mask| The terrain collision mask|
+|**Textures**||
+|Texture Sets|Lets you define the textures of the map. **Be aware, all the textures must be in the same format (ex. Mipmaps, compression mode, etc.)**. **Make sure to hit the update map button when you modify this and the terrain has already been created**. You should create a **TextureSetsResource** which holds several **TextureSetResource**. A set will accept an Albedo, Normal and Roughness texture. You can create a resource file with the TextureSetsResource so you can reuse your textures with other terrain.|
+|Texture Detail|This will determine how often your textures will be repeated on the map. Higher value means more repetitions. The default value is 20.|
+|Splatmaps|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
+|**Foliage**||
+|Foliages|An array of FoliageResource. **Make sure to hit the update map button when you modify this and the terrain has already been created**.|
+|FoliageResource[x].Texture|Unless you have existing foliage painting, leave this option empty, the tool will create it by itself.|
+|FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this defintion to reuse it in other terrain|
+|FoliageResource[x].Definition.Mesh|The mesh that will be used for the foliage. The mesh should have as little vertices as possible for better performances.|
+|FoliageResource[x].Definition.MeshMaterial|The material that will be used on the mesh.|
 
 ## Support
 
