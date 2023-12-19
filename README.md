@@ -99,6 +99,6 @@ You like what you see?
 MIT
 
 ---
-> Youtube [@spimortdev]([https://github.com/amitmerchant1990](https://www.youtube.com/@spimortdev)) &nbsp;&middot;&nbsp;
+> Youtube [@spimortdev](https://www.youtube.com/@spimortdev) &nbsp;&middot;&nbsp;
 > Twitter [@spimortdev](https://twitter.com/spimortdev)
 
