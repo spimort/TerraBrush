@@ -87,6 +87,12 @@ It might be required to have a C# script somewhere in your project in order to h
 
 **Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/assets/6035485/627ab85c-e84e-443d-89b1-0bd7ac4ad73e))
 
+**Update the terrain**
+
+Some properties of the node requires the terrain to refresh (mainly for the shaders and stuff). If something does not refresh, hit that "UpdateTerrain" button!
+<br>
+For example, if you add a new texture, add a foliage, add an object, add a water definition or add snow, you'll have to hit the "UpdateTerrain" button.
+
 **Node properties**
 |Property|Description|
 |-------------|-------------|
