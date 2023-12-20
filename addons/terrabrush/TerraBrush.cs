@@ -659,16 +659,36 @@ public partial class TerraBrush : Node3D {
         var heightmapImage = HeightMap.GetImage();
         var waterImage = WaterTexture?.GetImage();
 
-        foreach (var objectsNode in _objectsContainerNode.GetChildren()) {
+        for (var i = 0; i < _objectsContainerNode.GetChildCount(); i++) {
+            var objectsNode = _objectsContainerNode.GetChild(i);
+            var objectsDefinition = Objects[i].Definition;
+
+            var noiseTexture = objectsDefinition.NoiseTexture != null ? objectsDefinition.NoiseTexture : _defaultNoise;
+            Image noiseImage = null;
+            if (noiseTexture != null) {
+                noiseImage = noiseTexture.GetImage();
+            }
+
             foreach (Node3D objectNode in objectsNode.GetChildren()) {
                 var objectNodeName = objectNode.Name;
                 var positions = objectNodeName.ToString().Split("_");
                 var xPosition = int.Parse(positions[0]);
                 var yPosition = int.Parse(positions[1]);
 
-                var heightPixel = heightmapImage.GetPixel(xPosition, yPosition);
-                var waterHeight = waterImage?.GetPixel(xPosition, yPosition).R ?? 0;
-                objectNode.Position = new Vector3(objectNode.Position.X, (heightPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0)), objectNode.Position.Z);
+                var resultPosition = new Vector3(xPosition, 0, yPosition);
+                if (noiseImage != null) {
+                    var noisePixel = noiseImage.GetPixel(xPosition, yPosition).R;
+                    var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -objectsDefinition.RandomRange, objectsDefinition.RandomRange);
+                    var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -objectsDefinition.RandomRange, objectsDefinition.RandomRange);
+                    resultPosition += new Vector3(randomValueX, 0, randomValueZ);
+                }
+
+                var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
+                if (resultImagePosition.X >= 0 && resultImagePosition.X < TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < TerrainSize) {
+                    var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
+                    var waterHeight = waterImage?.GetPixel(xPosition, yPosition).R ?? 0;
+                    objectNode.Position = new Vector3(objectNode.Position.X, (heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0)), objectNode.Position.Z);
+                }
             }
         }
     }
