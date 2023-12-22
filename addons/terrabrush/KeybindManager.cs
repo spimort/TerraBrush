@@ -70,7 +70,6 @@ public partial class KeybindManager : RefCounted {
 	    }
     }
     
-    
     /// <summary>
     /// Load Keybinds from Godot Editor's EditorSettings File, for association with the InputMap.Actions.
     /// </summary>
