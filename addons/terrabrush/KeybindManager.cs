@@ -6,8 +6,7 @@ using Godot.Collections;
 
 namespace TerraBrush;
 
-public partial class KeybindManager : RefCounted
-{
+public partial class KeybindManager : RefCounted {
 	// EditorSettings Group: terrabrush
 	private const string SettingsGroup = "terrabrush";
 	
