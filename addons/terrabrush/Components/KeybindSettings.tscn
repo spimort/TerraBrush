@@ -21,7 +21,7 @@ offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Tree" type="Tree" parent="VBoxContainer"]
+[node name="KeybindList" type="Tree" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3

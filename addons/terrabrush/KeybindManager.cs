@@ -36,15 +36,12 @@ public partial class KeybindManager : RefCounted {
     public readonly List<StringName> ActionNames;
     public readonly System.Collections.Generic.Dictionary<StringName, InputEventKey> DefaultKeys;
     
-    public KeybindManager()
-    {
-	    ActionNames = new List<StringName>()
-	    {
+    public KeybindManager() {
+	    ActionNames = new List<StringName>() {
 		    StringNames.ToolPie, StringNames.BrushPie, StringNames.ToolContentPie,
 		    StringNames.BrushSizeSelector, StringNames.BrushStrengthSelector, StringNames.EscapeSelector
 	    };
-	    DefaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>()
-	    {
+	    DefaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>() {
 		    { StringNames.ToolPie, ToolPieKey },
 		    { StringNames.BrushPie, BrushPieKey },
 		    { StringNames.ToolContentPie, ToolContentKey},
@@ -55,17 +52,23 @@ public partial class KeybindManager : RefCounted {
     }
 
     public static Array<InputEvent> GetBinding(StringName actionName) => InputMap.Singleton.ActionGetEvents(actionName);
+    
+    public static string DescribeKey(InputEventKey key) {
+	    var desc = new StringBuilder();
+	    if (key.CtrlPressed) desc.Append("Ctrl +");
+	    if (key.AltPressed) desc.Append("Alt +");
+	    desc.Append(key.Keycode.ToString());
+	    return desc.ToString();
+    }
 
     /// <summary>
     /// Register's the Action Names with the Godot Editor InputMap.
     /// </summary>
-    public void RegisterInputMap()
-    {
+    public void RegisterInputMap() {
 	    var im = InputMap.Singleton;
-	    foreach (var action in ActionNames)
-	    {
-                    if (!im.HasAction(action)) {
-                        im.AddAction(action); // Register the Action, as we don't have the Action.
+	    foreach (var action in ActionNames) {
+			if (!im.HasAction(action)) {
+				im.AddAction(action); // Register the Action, as we don't have the Action.
 		    }
 	    }
     }
@@ -73,26 +76,21 @@ public partial class KeybindManager : RefCounted {
     /// <summary>
     /// Load Keybinds from Godot Editor's EditorSettings File, for association with the InputMap.Actions.
     /// </summary>
-	public void LoadEditorSettings()
-	{
+	public void LoadEditorSettings() {
 		var settings = EditorInterface.Singleton.GetEditorSettings();
 		var im = InputMap.Singleton;
 		var shortcuts = settings.GetSetting("shortcuts").AsGodotArray<Godot.Collections.Dictionary>();
-		foreach (var action in ActionNames)
-		{
+		foreach (var action in ActionNames) {
 			var binding = $"{SettingsGroup}/{action}";
 			var keyEvents = shortcuts.FirstOrDefault(x => x["name"].AsString() == binding);
-			if (keyEvents != null)
-			{
+			if (keyEvents != null) {
 				// Register Saved event in EditorSettings.
 				var keys = keyEvents["shortcuts"].AsGodotArray<InputEventKey>();
-				foreach (var key in keys)
-				{
+				foreach (var key in keys) {
 					im.ActionAddEvent(action, key);
 				}
 			}
-			else
-			{
+			else {
 				// Register Default Event
 				im.ActionAddEvent(action, DefaultKeys[action]);
 			}
@@ -102,24 +100,20 @@ public partial class KeybindManager : RefCounted {
     /// <summary>
     /// Saves the Keybinds to Godot Editor's EditorSettings file, for associated InputMap.Actions.
     /// </summary>
-	public void SaveEditorSettings()
-	{
+	public void SaveEditorSettings() {
 		var im = InputMap.Singleton;
 		var settings = EditorInterface.Singleton.GetEditorSettings();
 		var shortcuts = settings.GetSetting("shortcuts").AsGodotArray<Godot.Collections.Dictionary>();
-		foreach (var action in ActionNames)
-		{
+		foreach (var action in ActionNames) {
 			var binding = $"{SettingsGroup}/{action}";
 			var keyEvents = shortcuts.FirstOrDefault(x => x["name"].AsString() == binding);
-			if (keyEvents == null)
-			{
+			if (keyEvents == null) {
 				var keybind = new Godot.Collections.Dictionary<string, Variant>();
 				keybind["name"] = binding;
 				keybind["shortcuts"] = im.ActionGetEvents(action);
 				shortcuts.Add((Godot.Collections.Dictionary)keybind);
 			}
-			else
-			{
+			else {
 				keyEvents["shortcuts"] = im.ActionGetEvents(action);
 			}
 		}
@@ -127,33 +121,21 @@ public partial class KeybindManager : RefCounted {
 		settings.SetSetting("shortcuts", shortcuts);
 	}
 
-	public string DescribeKey(StringName action)
-	{
-		var key = InputMap.Singleton.ActionGetEvents(action);
-		return DescribeKey((InputEventKey)key[0]);
-	}
-
-	public void UpdateKeybind(StringName action, InputEventKey key)
-	{
+	public void UpdateKeybind(StringName action, InputEventKey key) {
 		var im = InputMap.Singleton;
 		im.ActionEraseEvents(action);
 		im.ActionAddEvent(action, key);
 	}
 
-	public void ResetKeybind(StringName action)
-	{
+	public void ResetKeybind(StringName action) {
 		if (!ActionNames.Contains(action)) return;
 		var im = InputMap.Singleton;
 		im.ActionEraseEvents(action);
 		im.ActionAddEvent(action, DefaultKeys[action]);
 	}
-
-	public string DescribeKey(InputEventKey key)
-	{
-		var desc = new StringBuilder();
-		if (key.CtrlPressed) desc.Append("Ctrl +");
-		if (key.AltPressed) desc.Append("Alt +");
-		desc.Append(key.Keycode.ToString());
-		return desc.ToString();
+	
+	public string DescribeKey(StringName action) {
+		var key = InputMap.Singleton.ActionGetEvents(action);
+		return DescribeKey((InputEventKey)key[0]);
 	}
 }

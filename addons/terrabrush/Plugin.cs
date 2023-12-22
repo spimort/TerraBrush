@@ -93,7 +93,7 @@ public partial class Plugin : EditorPlugin {
         _currentTerraBrushNode?.SaveResources();
     }
 
-    public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event){
+    public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
         var preventGuiInput = false;
 
         if (@event is InputEventMouseMotion inputMotion) {

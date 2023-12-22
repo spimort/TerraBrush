@@ -4,9 +4,8 @@ using System.Text;
 namespace TerraBrush;
 
 [Tool]
-public partial class KeybindSettings : Godot.AcceptDialog
-{
-	[NodePath("VBoxContainer/Tree")] private Tree _keybindList;
+public partial class KeybindSettings : AcceptDialog {
+	[NodePath("%KeybindList")] private Tree _keybindList;
 	private TreeItem _root;
 	private KeybindManager _keybindManager;
 
@@ -15,12 +14,10 @@ public partial class KeybindSettings : Godot.AcceptDialog
 	    Erase  = 2
 	}
 
-	private string ProperCase(StringName name)
-	{
+	private string ProperCase(StringName name) {
 		var parts = name.ToString().Split("_");
 		var newString = new StringBuilder();
-		foreach (var part in parts)
-		{
+		foreach (var part in parts) {
 			if (part != "terrabrush") {
 			    newString.Append(char.ToUpperInvariant(part[0]) + part[1..]);
 			    newString.Append(' ');
@@ -31,9 +28,7 @@ public partial class KeybindSettings : Godot.AcceptDialog
 	}
 	
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		GD.Print("In Ready");
+	public override void _Ready() {
 		this.RegisterNodePaths();
 		var iconTheme = EditorInterface.Singleton.GetEditorTheme();
 		_keybindManager = new KeybindManager();
@@ -41,44 +36,41 @@ public partial class KeybindSettings : Godot.AcceptDialog
 		_keybindList.SetColumnTitle(0,"Name");
 		_keybindList.SetColumnTitle(1, "Binding");
 		_keybindList.HideRoot = true;
-		foreach (var action in _keybindManager.ActionNames)
-		{
+		foreach (var action in _keybindManager.ActionNames) {
 			var iter = _keybindList.CreateItem();
 			iter.SetText(0, ProperCase(action));
 			iter.SetText(1, _keybindManager.DescribeKey(action));
 			
-			iter.AddButton(1, iconTheme.GetIcon("Edit", "EditorIcons"), ADD_SHORTCUT);
-			iter.AddButton(1, iconTheme.GetIcon("Close", "EditorIcons"), ERASE_SHORTCUT);
+			iter.AddButton(1, iconTheme.GetIcon("Edit", "EditorIcons"), (int)ShortcutType.Add);
+			iter.AddButton(1, iconTheme.GetIcon("Close", "EditorIcons"), (int)ShortcutType.Erase);
 			iter.SetMetadata(0, action);
 		}
 		_keybindList.ButtonClicked += KeybindListOnButtonClicked;
 	}
 
-	private void KeybindListOnButtonClicked(TreeItem item, long column, long id, long mouseButtonIndex)
-	{
+	private void KeybindListOnButtonClicked(TreeItem item, long column, long id, long mouseButtonIndex) {
 		if (column != 1) return;
-		if ((MouseButton)mousebuttonindex != MouseButton.Left) return;
+		if ((MouseButton)mouseButtonIndex != MouseButton.Left) return;
 		
-		switch (id)
-		{
-			case ADD_SHORTCUT:
+		switch ((ShortcutType)id) {
+			case ShortcutType.Add:
 				var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeyListenDialog.tscn")
 					.Instantiate<KeyListenDialog>();
 				
-				dlg.KeyListenAccepted += (key) =>
-				{
+				dlg.KeyListenAccepted += (key) => {
 					var action = item.GetMetadata(0).AsStringName();
-					item.SetText(1, _keybindManager.DescribeKey(key));
+					item.SetText(1, KeybindManager.DescribeKey(key));
 					_keybindManager.UpdateKeybind(action, key);
 					dlg.QueueFree();
 				};
+				
 				dlg.KeyListenCancelled += () => dlg.QueueFree();
 				
 				GetTree().Root.AddChild(dlg);
 				dlg.PopupCentered();
 				// Handle Erase Shortcut
 				break;
-			case ERASE_SHORTCUT:
+			case ShortcutType.Erase:
 				// Handle Add Shortcut
 				var action = item.GetMetadata(0).AsStringName();
 				_keybindManager.ResetKeybind(action);
