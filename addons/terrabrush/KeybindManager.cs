@@ -54,7 +54,7 @@ public partial class KeybindManager : RefCounted {
 	    };
     }
 
-    public Array<InputEvent> GetBinding(StringName actionName) => InputMap.Singleton.ActionGetEvents(actionName);
+    public static Array<InputEvent> GetBinding(StringName actionName) => InputMap.Singleton.ActionGetEvents(actionName);
 
     /// <summary>
     /// Register's the Action Names with the Godot Editor InputMap.
