@@ -70,6 +70,9 @@ I'm gonna be happy to accept PR for new features if it fits.
 
 ## How To Use
 
+Watch the tutorial video! 
+https://youtu.be/n5WeAqeea1c
+
 > **Note**
 > Make sure you have the **.Net** version of Godot Engine.
 
@@ -80,8 +83,9 @@ I'm gonna be happy to accept PR for new features if it fits.
 $ git clone https://github.com/spimort/TerraBrush
 ```
 
+**Add a C# Solution** - To make sure that your project has C# enabled, go under "Project->Tools->C#->Create C# Solution".
+
 **Compile** - It's really important to compile using this icon ![image](https://github.com/spimort/TerraBrush/assets/6035485/cf47eb92-3660-4038-9ef7-dfedd255dcb1) so Godot can run the plugin.
-It might be required to have a C# script somewhere in your project in order to have this icon available.
 
 **Enable the plugin** - When the game has been compiled once, you should be able to enable the plugin. To do that, go under "Project->ProjectSettings->Plugins" and enable the checkbox next to TerraBrush.
 
@@ -178,9 +182,17 @@ For example, if you add a new texture, add a foliage, add an object, add a water
 |SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
 
+### Interact with the terrain
+
+To interact with the terrain (for example, to make water ripple), you can call the function `AddInteractionPoint` on the TerraBrush node. This function requires a x and y position, corresponding to the x and y coordinates on the map, in meters.
+<br>
+To retrieve information from the map (for example, to get what texture the player is on), you can call the function `GetPositionInformation` on the TerraBrush node.
+
+These two functions can be called from **GDScript** and **C#**.
+
 ## Support
 
-You like what you see?
+You want to support my work?
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N4N1SC96Z)
 
