@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://eqx7sntvcxw4"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Components/KeybindSettings.cs" id="1_rua0l"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/KeybindSettings.cs" id="1_rua0l"]
 
 [node name="KeybindSettings" type="AcceptDialog"]
 title = "TerraBrush Keybindings"
