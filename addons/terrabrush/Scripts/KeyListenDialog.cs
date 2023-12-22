@@ -20,8 +20,6 @@ public partial class KeyListenDialog : Window
 	[NodePath("%CancelButton")] private Button _cancelButton;
 
 	private InputEventKey? _eventKey;
-
-	private KeybindManager _keybindManager;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -35,8 +33,6 @@ public partial class KeyListenDialog : Window
 			EmitSignal(SignalName.KeyListenAccepted, _eventKey);
 		};
 		_cancelButton.Pressed += () => EmitSignal(SignalName.KeyListenCancelled);
-		
-		_keybindManager = new KeybindManager();
 	}
 
 	public override void _Input(InputEvent @event) {
