@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="WaterResource" load_steps=8 format=3 uid="uid://bf3nx6nl2obra"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/WaterResource.cs" id="1_fauwg"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ls6ha"]
+noise_type = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oiqqo"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_ls6ha")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_n0sjn"]
+noise_type = 3
+seed = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wwiqx"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_n0sjn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kw8us"]
+noise_type = 0
+seed = 1
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nbiyt"]
+seamless = true
+noise = SubResource("FastNoiseLite_kw8us")
+
+[resource]
+script = ExtResource("1_fauwg")
+WaterFactor = 1.5
+WaterInnerOffset = 0.2
+WaterColor = Color(0, 0.592157, 0.945098, 1)
+WaterFresnelColor = Color(0.0196078, 0.6, 0.772549, 1)
+WaterMetallic = 1.0
+WaterRoughness = 1.0
+WaterNormalMap = SubResource("NoiseTexture2D_oiqqo")
+WaterNormalMap2 = SubResource("NoiseTexture2D_wwiqx")
+WaterTimeScale = 0.05
+WaterStrength = 15.0
+WaterWave = SubResource("NoiseTexture2D_nbiyt")
+WaterNoiseScale = 10.0
+WaterHeightScale = 0.05
+WaterColorDeep = Color(1, 1, 1, 1)
+WaterColorShallow = Color(1, 1, 1, 1)
+WaterBeersLaw = 2.0
+WaterDepthOffset = -0.75
+WaterEdgeScale = 0.1
+WaterNear = 0.5
+WaterFar = 100.0
+WaterEdgeColor = Color(1, 1, 1, 1)
+VisualInstanceLayers = 1
