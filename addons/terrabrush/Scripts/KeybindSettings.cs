@@ -45,7 +45,7 @@ public partial class KeybindSettings : Godot.AcceptDialog
 		{
 			var iter = _keybindList.CreateItem();
 			iter.SetText(0, ProperCase(action));
-			iter.SetText(1,_keybindManager.DescribeKey(action));
+			iter.SetText(1, _keybindManager.DescribeKey(action));
 			
 			iter.AddButton(1, iconTheme.GetIcon("Edit", "EditorIcons"), ADD_SHORTCUT);
 			iter.AddButton(1, iconTheme.GetIcon("Close", "EditorIcons"), ERASE_SHORTCUT);
