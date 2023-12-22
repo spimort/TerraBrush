@@ -21,9 +21,10 @@ public partial class KeybindSettings : Godot.AcceptDialog
 		var newString = new StringBuilder();
 		foreach (var part in parts)
 		{
-			if (part == "terrabrush") continue;
-			newString.Append(char.ToUpperInvariant(part[0]) + part[1..]);
-			newString.Append(' ');
+			if (part != "terrabrush") {
+			    newString.Append(char.ToUpperInvariant(part[0]) + part[1..]);
+			    newString.Append(' ');
+			}
 		}
 
 		return newString.ToString();
