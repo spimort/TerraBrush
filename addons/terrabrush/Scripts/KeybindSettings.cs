@@ -54,7 +54,7 @@ public partial class KeybindSettings : Godot.AcceptDialog
 		_keybindList.ButtonClicked += KeybindListOnButtonClicked;
 	}
 
-	private void KeybindListOnButtonClicked(TreeItem item, long column, long id, long mousebuttonindex)
+	private void KeybindListOnButtonClicked(TreeItem item, long column, long id, long mouseButtonIndex)
 	{
 		if (column != 1) return;
 		if ((MouseButton)mousebuttonindex != MouseButton.Left) return;
