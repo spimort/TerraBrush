@@ -6,8 +6,7 @@ namespace TerraBrush;
 [Tool]
 public partial class KeybindSettings : Godot.AcceptDialog
 {
-	[NodePath("VBoxContainer/Tree")]
-	private Tree _keybindList;
+	[NodePath("VBoxContainer/Tree")] private Tree _keybindList;
 	private TreeItem _root;
 	private KeybindManager _keybindManager;
 
