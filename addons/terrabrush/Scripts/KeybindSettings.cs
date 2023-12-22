@@ -10,8 +10,10 @@ public partial class KeybindSettings : Godot.AcceptDialog
 	private TreeItem _root;
 	private KeybindManager _keybindManager;
 
-	private const int ADD_SHORTCUT = 1;
-	private const int ERASE_SHORTCUT = 2;
+	private enum ShortcutType {
+	    Add = 1,
+	    Erase  = 2
+	}
 
 	private string ProperCase(StringName name)
 	{
