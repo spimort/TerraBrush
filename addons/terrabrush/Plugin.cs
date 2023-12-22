@@ -44,7 +44,9 @@ public partial class Plugin : EditorPlugin {
         ProjectSettings.SetInitialValue(name, defaultValue);
     }
 
-    public override void _EnterTree() {
+    public override void _EnterTree()
+    {
+        var keybindManager = new KeybindManager();
 		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
@@ -58,7 +60,20 @@ public partial class Plugin : EditorPlugin {
         _customContentPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
-	}
+        
+        keybindManager.RegisterInputMap();
+        keybindManager.LoadEditorSettings();
+        AddToolMenuItem("TerraBrush Key bindings", Callable.From(HandleKeyBindings));
+    }
+
+    private void HandleKeyBindings()
+    {
+        var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeybindSettings.tscn")
+            .Instantiate<KeybindSettings>();
+        dlg.Confirmed += () => dlg.QueueFree();
+        GetTree().Root.AddChild(dlg);
+        dlg.PopupCentered();
+    }
 
     public override void _Edit(GodotObject @object) {
         base._Edit(@object);
@@ -306,6 +321,7 @@ public partial class Plugin : EditorPlugin {
 
 	public override void _ExitTree() {
 		RemoveCustomType("TerraBrush");
+        RemoveToolMenuItem("TerraBrush Key bindings");
 
         OnExitEditTerrainNode();
 	}
