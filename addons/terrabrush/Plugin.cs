@@ -26,7 +26,6 @@ public partial class Plugin : EditorPlugin {
     private Control[] _editorViewports = null;
     private Control _overlaySelector = null;
     private Button _updateTerrainSettingsButton = null;
-    private KeybindManager _keybindManager;
 
     private void CreateCustomSetting(string name, Variant defaultValue, Variant.Type type, PropertyHint hint = PropertyHint.None, string hintString = null) {
         if (ProjectSettings.HasSetting(name)) {
