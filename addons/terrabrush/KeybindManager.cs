@@ -109,7 +109,7 @@ public partial class KeybindManager : RefCounted {
 		var shortcuts = settings.GetSetting("shortcuts").AsGodotArray<Godot.Collections.Dictionary>();
 		foreach (var action in ActionNames)
 		{
-			var binding = $"{SettingsGroup}/{action.ToString()}";
+			var binding = $"{SettingsGroup}/{action}";
 			var keyEvents = shortcuts.FirstOrDefault(x => x["name"].AsString() == binding);
 			if (keyEvents == null)
 			{
