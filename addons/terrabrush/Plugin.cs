@@ -65,8 +65,7 @@ public partial class Plugin : EditorPlugin {
         AddToolMenuItem("TerraBrush Key bindings", Callable.From(HandleKeyBindings));
     }
 
-    private void HandleKeyBindings()
-    {
+    private void HandleKeyBindings() {
         var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeybindSettings.tscn")
             .Instantiate<KeybindSettings>();
         dlg.Confirmed += () => dlg.QueueFree();
