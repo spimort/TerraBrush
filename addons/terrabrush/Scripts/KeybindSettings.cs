@@ -81,7 +81,7 @@ public partial class KeybindSettings : Godot.AcceptDialog
 				// Handle Add Shortcut
 				var action = item.GetMetadata(0).AsStringName();
 				_keybindManager.ResetKeybind(action);
-				item.SetText(1,_keybindManager.DescribeKey(action));
+				item.SetText(1, _keybindManager.DescribeKey(action));
 				break;
 		}
 	}
