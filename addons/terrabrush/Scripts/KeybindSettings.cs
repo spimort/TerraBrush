@@ -58,6 +58,7 @@ public partial class KeybindSettings : Godot.AcceptDialog
 	{
 		if (column != 1) return;
 		if ((MouseButton)mousebuttonindex != MouseButton.Left) return;
+		
 		switch (id)
 		{
 			case ADD_SHORTCUT:
