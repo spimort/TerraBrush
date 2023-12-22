@@ -64,8 +64,9 @@ public partial class KeybindManager : RefCounted {
 	    var im = InputMap.Singleton;
 	    foreach (var action in ActionNames)
 	    {
-		    if (im.HasAction(action)) continue;	// We have the Action
-			im.AddAction(action); // Register the Action, as we don't have the Action.
+                    if (!im.HasAction(action)) {
+                        im.AddAction(action); // Register the Action, as we don't have the Action.
+		    }
 	    }
     }
     
