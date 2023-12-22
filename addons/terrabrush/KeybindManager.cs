@@ -81,11 +81,10 @@ public partial class KeybindManager : RefCounted {
 		foreach (var action in ActionNames)
 		{
 			var binding = $"{SettingsGroup}/{action}";
-			if (shortcuts.Any(x => x["name"].AsString() == binding))
+			var keyEvents = shortcuts.FirstOrDefault(x => x["name"].AsString() == binding);
+			if (keyEvents != null)
 			{
 				// Register Saved event in EditorSettings.
-				var keyEvents = shortcuts.FirstOrDefault(x => x["name"].AsString() == binding);
-				if (keyEvents is null) continue;
 				var keys = keyEvents["shortcuts"].AsGodotArray<InputEventKey>();
 				foreach (var key in keys)
 				{
