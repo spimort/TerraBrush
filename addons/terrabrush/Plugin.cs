@@ -45,8 +45,7 @@ public partial class Plugin : EditorPlugin {
         ProjectSettings.SetInitialValue(name, defaultValue);
     }
 
-    public override void _EnterTree()
-    {
+    public override void _EnterTree() {
         var keybindManager = new KeybindManager();
 		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
