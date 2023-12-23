@@ -1,8 +1,5 @@
 #nullable enable
 using Godot;
-using System;
-using System.Text;
-using TerraBrush;
 
 namespace TerraBrush;
 
