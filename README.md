@@ -66,6 +66,7 @@ I'm gonna be happy to accept PR for new features if it fits.
     - N - Show the PieMenu for the current tool option (ex. While painting the textures, the PieMenu will show textures)
     - G - Show a quick select for the brush size
     - H - Show a quick select for the brush strength
+  - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 
 ## How To Use

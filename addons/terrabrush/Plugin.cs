@@ -45,6 +45,7 @@ public partial class Plugin : EditorPlugin {
     }
 
     public override void _EnterTree() {
+        var keybindManager = new KeybindManager();
 		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
@@ -58,7 +59,19 @@ public partial class Plugin : EditorPlugin {
         _customContentPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
-	}
+        
+        keybindManager.RegisterInputMap();
+        keybindManager.LoadEditorSettings();
+        AddToolMenuItem("TerraBrush Key bindings", Callable.From(HandleKeyBindings));
+    }
+
+    private void HandleKeyBindings() {
+        var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeybindSettings.tscn")
+            .Instantiate<KeybindSettings>();
+        dlg.Confirmed += () => dlg.QueueFree();
+        GetTree().Root.AddChild(dlg);
+        dlg.PopupCentered();
+    }
 
     public override void _Edit(GodotObject @object) {
         base._Edit(@object);
@@ -80,7 +93,7 @@ public partial class Plugin : EditorPlugin {
         _currentTerraBrushNode?.SaveResources();
     }
 
-    public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event){
+    public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
         var preventGuiInput = false;
 
         if (@event is InputEventMouseMotion inputMotion) {
@@ -99,12 +112,14 @@ public partial class Plugin : EditorPlugin {
         if (@event is InputEventKey inputEvent) {
             _terrainControlDock.SetShiftPressed(Input.IsKeyPressed(Key.Shift));
 
-            if (inputEvent.Keycode == Key.V && !inputEvent.Echo && inputEvent.Pressed) {
+            if (!inputEvent.Pressed || inputEvent.Echo) return base._Forward3DGuiInput(viewportCamera, @event);
+
+            if (inputEvent.IsAction(KeybindManager.StringNames.ToolPie)) {
                 ShowToolPieMenu();
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
 
-            if (inputEvent.Keycode == Key.B && !inputEvent.Echo && inputEvent.Pressed) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.BrushPie)) {
                 ShowCustomContentPieMenu("Brushes", customContentPieMenu => {
                     CustomContentLoader.AddBrushesPreviewToParent(customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedBrushIndex(index);
@@ -114,12 +129,12 @@ public partial class Plugin : EditorPlugin {
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
 
-            if (inputEvent.Keycode == Key.N && !inputEvent.Echo && inputEvent.Pressed) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.ToolContentPie)) {
                 ShowCurrentToolCustomContentPieMenu();
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
 
-            if (inputEvent.Keycode == Key.G && !inputEvent.Echo && inputEvent.Pressed) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
                 ShowBrushNumericSelector(1, 200, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
                 });
@@ -127,7 +142,7 @@ public partial class Plugin : EditorPlugin {
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
 
-            if (inputEvent.Keycode == Key.H && !inputEvent.Echo && inputEvent.Pressed) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
                 ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 });
@@ -135,7 +150,7 @@ public partial class Plugin : EditorPlugin {
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
 
-            if (inputEvent.Keycode == Key.Escape && !inputEvent.Echo && inputEvent.Pressed && _overlaySelector != null) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.EscapeSelector) && _overlaySelector != null) {
                 HideOverlaySelector();
                 return (int) EditorPlugin.AfterGuiInput.Stop;
             }
@@ -306,6 +321,7 @@ public partial class Plugin : EditorPlugin {
 
 	public override void _ExitTree() {
 		RemoveCustomType("TerraBrush");
+        RemoveToolMenuItem("TerraBrush Key bindings");
 
         OnExitEditTerrainNode();
 	}
