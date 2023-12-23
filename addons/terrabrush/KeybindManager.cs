@@ -92,8 +92,7 @@ public partial class KeybindManager : RefCounted {
 				foreach (var key in keys) {
 					im.ActionAddEvent(action, key);
 				}
-			}
-			else {
+			} else {
 				// Register Default Event
 				im.ActionAddEvent(action, DefaultKeys[action]);
 			}
