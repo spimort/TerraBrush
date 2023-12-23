@@ -5,7 +5,7 @@ namespace TerraBrush;
 
 [Tool]
 public partial class KeybindSettings : AcceptDialog {
-	[NodePath("%KeybindList")] private Tree _keybindList;
+	[NodePath] private Tree _keybindList;
 	private TreeItem _root;
 	private KeybindManager _keybindManager;
 
