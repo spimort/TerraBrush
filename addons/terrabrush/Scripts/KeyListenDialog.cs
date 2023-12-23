@@ -11,9 +11,9 @@ public partial class KeyListenDialog : Window {
 	[Signal]
 	public delegate void KeyListenCancelledEventHandler();
 	
-	[NodePath("%KeyDisplay")] private Label _keyDisplay;
-	[NodePath("%OkButton")] private Button _okButton;
-	[NodePath("%CancelButton")] private Button _cancelButton;
+	[NodePath] private Label _keyDisplay;
+	[NodePath] private Button _okButton;
+	[NodePath] private Button _cancelButton;
 
 	private InputEventKey? _eventKey;
 	
