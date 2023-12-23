@@ -7,8 +7,7 @@ using TerraBrush;
 namespace TerraBrush;
 
 [Tool]
-public partial class KeyListenDialog : Window
-{
+public partial class KeyListenDialog : Window {
 	[Signal]
 	public delegate void KeyListenAcceptedEventHandler(InputEventKey key);
 
