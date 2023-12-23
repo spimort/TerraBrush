@@ -32,16 +32,19 @@ public partial class KeybindManager : RefCounted {
     }
     #endregion
     
+	private readonly List<StringName> _actionNames;
+	private readonly System.Collections.Generic.Dictionary<StringName, InputEventKey> _defaultKeys;
+
     // Quick access to Action Manes and Default Keys to register with the Godot Editor
-    public readonly List<StringName> ActionNames;
-    public readonly System.Collections.Generic.Dictionary<StringName, InputEventKey> DefaultKeys;
+    public List<StringName> ActionNames => _actionNames;
+    public System.Collections.Generic.Dictionary<StringName, InputEventKey> DefaultKeys => _defaultKeys;
     
     public KeybindManager() {
-	    ActionNames = new List<StringName>() {
+	    _actionNames = new List<StringName>() {
 		    StringNames.ToolPie, StringNames.BrushPie, StringNames.ToolContentPie,
 		    StringNames.BrushSizeSelector, StringNames.BrushStrengthSelector, StringNames.EscapeSelector
 	    };
-	    DefaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>() {
+	    _defaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>() {
 		    { StringNames.ToolPie, ToolPieKey },
 		    { StringNames.BrushPie, BrushPieKey },
 		    { StringNames.ToolContentPie, ToolContentKey},
