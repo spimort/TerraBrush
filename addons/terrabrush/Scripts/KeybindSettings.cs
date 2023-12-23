@@ -37,7 +37,7 @@ public partial class KeybindSettings : AcceptDialog {
 		_keybindList.SetColumnTitle(1, "Binding");
 		_keybindList.HideRoot = true;
 		foreach (var action in _keybindManager.ActionNames) {
-			var iter = _keybindList.CreateItem();
+			var iter = _keybindList.CreateItem(_root);
 			iter.SetText(0, ProperCase(action));
 			iter.SetText(1, _keybindManager.DescribeKey(action));
 			
