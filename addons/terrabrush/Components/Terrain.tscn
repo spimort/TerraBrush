@@ -1,25 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://0chnym463hcs"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Terrain.cs" id="1_vjtl3"]
-[ext_resource type="Shader" uid="uid://wugkii55u1of" path="res://addons/terrabrush/Resources/Shaders/heightmap_shader.tres" id="2_q6ine"]
 [ext_resource type="Texture2D" uid="uid://c1by6d4lgjo8j" path="res://addons/terrabrush/Assets/texel_density.jpg" id="2_x8un5"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_6rhcy"]
-resource_local_to_scene = true
-custom_aabb = AABB(-1000, -1000, -1000, 2000, 2000, 2000)
-size = Vector2(100, 100)
-subdivide_width = 100
-subdivide_depth = 100
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ulim1"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("2_q6ine")
-shader_parameter/HeightmapFactor = 1.0
-shader_parameter/WaterFactor = 1.0
-shader_parameter/TextureDetail = null
-shader_parameter/NumberOfTextures = null
-shader_parameter/UseAntitile = true
+[ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="3_225j0"]
+[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader" id="4_cpp0i"]
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_e16ak"]
 resource_local_to_scene = true
@@ -39,14 +23,17 @@ resource_local_to_scene = true
 custom_aabb = AABB(-1000, -1000, -1000, 2000, 2000, 2000)
 size = Vector2(100, 100)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_65w6a"]
+render_priority = 0
+shader = ExtResource("4_cpp0i")
+shader_parameter/InitialCellWidth = 1.0
+
 [node name="Terrain" type="Node3D"]
 script = ExtResource("1_vjtl3")
 DefaultTexture = ExtResource("2_x8un5")
 
-[node name="TerrainMesh" type="MeshInstance3D" parent="."]
+[node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
-mesh = SubResource("PlaneMesh_6rhcy")
-surface_material_override/0 = SubResource("ShaderMaterial_ulim1")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true
@@ -66,7 +53,7 @@ render_target_update_mode = 4
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.978, 0, 0)
 mesh = SubResource("PlaneMesh_re480")
-surface_material_override/0 = SubResource("ShaderMaterial_ulim1")
+surface_material_override/0 = SubResource("ShaderMaterial_65w6a")
 
 [node name="ResultMeshCamera" type="Camera3D" parent="ResultViewport/ResultMesh"]
 unique_name_in_owner = true

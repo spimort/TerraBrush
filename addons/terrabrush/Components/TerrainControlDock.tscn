@@ -174,7 +174,7 @@ text = "Brush strength"
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 0.01
-max_value = 1.0
+max_value = 2.0
 step = 0.01
 value = 0.01
 

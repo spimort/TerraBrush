@@ -9,7 +9,7 @@ public partial class Terrain : Node3D {
 	private ShaderMaterial _heightMapShader = null;
     private HeightMapShape3D _heightMapCollisionShape = null;
 
-    [NodePath] private MeshInstance3D _terrainMesh;
+    [NodePath] private Clipmap _clipmap;
     [NodePath] private MeshInstance3D _resultMesh;
     [NodePath] private Camera3D _resultMeshCamera;
     [NodePath] private CollisionShape3D _terrainCollision;
@@ -29,21 +29,24 @@ public partial class Terrain : Node3D {
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
     [Export(PropertyHint.Layers3DPhysics)] public int CollisionLayers { get;set; } = 1;
     [Export(PropertyHint.Layers3DPhysics)] public int CollisionMask { get;set; } = 1;
+    [Export] public int LODLevels { get;set; } = 8;
+    [Export] public int LODRowsPerLevel { get;set; } = 21;
+    [Export] public float LODInitialCellWidth { get;set; } = 1;
 
-    public MeshInstance3D TerrainMesh => _terrainMesh;
     public StaticBody3D TerrainCollider => _terrainCollider;
     public SubViewport ResultViewport => _resultViewport;
+    public Clipmap Clipmap => _clipmap;
 
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
-		this._heightMapShader = (ShaderMaterial) this._terrainMesh.GetSurfaceOverrideMaterial(0);
+		this._heightMapShader = (ShaderMaterial) _clipmap.ClipmapMesh.MaterialOverride;
         this._resultMesh.SetSurfaceOverrideMaterial(0, _heightMapShader);
     }
 
     public void BuildTerrain(bool collisionOnly = false) {
-        _terrainMesh.Layers = (uint) VisualInstanceLayers;
+        _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
 
         var heightMapShape3D = new HeightMapShape3D();
         _terrainCollision.Shape = heightMapShape3D;
@@ -56,16 +59,22 @@ public partial class Terrain : Node3D {
 
         if (collisionOnly) {
             UpdateCollisionShape();
-            _terrainMesh.Visible = false;
+            _clipmap.ClipmapMesh.Visible = false;
         } else {
             ((PlaneMesh) _resultMesh.Mesh).Size = new Vector2I(TerrainSize, TerrainSize);
             _resultMeshCamera.Size = TerrainSize;
 
-            var planeMesh = (PlaneMesh) _terrainMesh.Mesh;
+            // var planeMesh = (PlaneMesh) _clipmap.ClipmapMesh.Mesh;
 
-            planeMesh.Size = new Vector2I(TerrainSize, TerrainSize);
-            planeMesh.SubdivideWidth = TerrainSubDivision;
-            planeMesh.SubdivideDepth = TerrainSubDivision;
+            // planeMesh.Size = new Vector2I(TerrainSize, TerrainSize);
+            // planeMesh.SubdivideWidth = TerrainSubDivision;
+            // planeMesh.SubdivideDepth = TerrainSubDivision;
+
+            _clipmap.Levels = LODLevels;
+            _clipmap.RowsPerLevel = LODRowsPerLevel;
+            _clipmap.InitialCellWidth = LODInitialCellWidth;
+
+            _clipmap.CreateMesh();
 
             TerrainUpdated(true);
             TerrainTextureUpdated();
@@ -98,22 +107,22 @@ public partial class Terrain : Node3D {
     }
 
 	private void UpdateCollisionShape() {
-        var heightMapImage = HeightMap.GetImage();
-        var waterImage = WaterTexture?.GetImage();
+        // var heightMapImage = HeightMap.GetImage();
+        // var waterImage = WaterTexture?.GetImage();
 
-        var terrainData = new Godot.Collections.Array<float>();
-        for (var y = 0; y < heightMapImage.GetHeight(); y++) {
-            for (var x = 0; x < heightMapImage.GetWidth(); x++) {
-                var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-                var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+        // var terrainData = new Godot.Collections.Array<float>();
+        // for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+        //     for (var x = 0; x < heightMapImage.GetWidth(); x++) {
+        //         var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
+        //         var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
 
-                pixelHeight -= waterHeight * WaterFactor;
+        //         pixelHeight -= waterHeight * WaterFactor;
 
-                terrainData.Add(pixelHeight);
-            }
-        }
+        //         terrainData.Add(pixelHeight);
+        //     }
+        // }
 
-        _heightMapCollisionShape.MapData = terrainData.ToArray();
+        // _heightMapCollisionShape.MapData = terrainData.ToArray();
 	}
 
 	private void UpdateShaderParams() {

@@ -135,6 +135,16 @@ public partial class TerraBrush : Node3D {
         } set {}
     }
 
+    [ExportGroup("LOD")]
+    [Export]
+    public int LODLevels { get;set; } = 8;
+
+    [Export]
+    public int LODRowsPerLevel { get;set; } = 21;
+
+    [Export]
+    public float LODInitialCellWidth { get;set; } = 1;
+
     [ExportGroup("Collisions")]
     [Export(PropertyHint.Layers3DPhysics)]
     public int CollisionLayers { get;set; } = 1;
@@ -309,6 +319,9 @@ public partial class TerraBrush : Node3D {
         _terrain.TextureDetail = TextureDetail;
         _terrain.WaterTexture = WaterTexture;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
+        _terrain.LODLevels = LODLevels;
+        _terrain.LODRowsPerLevel = LODRowsPerLevel;
+        _terrain.LODInitialCellWidth = LODInitialCellWidth;
 
         CreateSplatmaps();
 
@@ -697,6 +710,8 @@ public partial class TerraBrush : Node3D {
         if (_foliagesNode == null) {
             return;
         }
+
+        _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
         foreach (var foliageNode in _foliagesNode.GetChildren()) {
             ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);
