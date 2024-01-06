@@ -1,9 +1,21 @@
-[gd_scene load_steps=10 format=3 uid="uid://0chnym463hcs"]
+[gd_scene load_steps=13 format=3 uid="uid://0chnym463hcs"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Terrain.cs" id="1_vjtl3"]
 [ext_resource type="Texture2D" uid="uid://c1by6d4lgjo8j" path="res://addons/terrabrush/Assets/texel_density.jpg" id="2_x8un5"]
 [ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="3_225j0"]
+[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader" id="4_1oqlj"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader" id="4_cpp0i"]
+[ext_resource type="Texture2D" uid="uid://blcsa36p4tuwr" path="res://ClipmapTester/Heightmap.res" id="5_qh71y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pvfec"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("4_1oqlj")
+shader_parameter/InitialCellWidth = 1.0
+shader_parameter/WaterFactor = 1.0
+shader_parameter/TextureDetail = null
+shader_parameter/NumberOfTextures = null
+shader_parameter/UseAntitile = true
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_e16ak"]
 resource_local_to_scene = true
@@ -27,6 +39,7 @@ size = Vector2(100, 100)
 render_priority = 0
 shader = ExtResource("4_cpp0i")
 shader_parameter/InitialCellWidth = 1.0
+shader_parameter/HeightmapTexture = ExtResource("5_qh71y")
 
 [node name="Terrain" type="Node3D"]
 script = ExtResource("1_vjtl3")
@@ -34,6 +47,7 @@ DefaultTexture = ExtResource("2_x8un5")
 
 [node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
+Shader = SubResource("ShaderMaterial_pvfec")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true

@@ -6,8 +6,6 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Clipmap : Node3D {
-    private ShaderMaterial _clipmapShader;
-
     [NodePath] private MeshInstance3D _clipmapMesh;
 
     [Export] public Texture2D Heightmap { get;set; }
@@ -15,14 +13,13 @@ public partial class Clipmap : Node3D {
     [Export] public int Levels { get;set; } = 8;
     [Export] public int RowsPerLevel { get;set; } = 21;
     [Export] public float InitialCellWidth { get;set; } = 1;
+    [Export] public ShaderMaterial Shader { get;set; }
 
     public MeshInstance3D ClipmapMesh => _clipmapMesh;
 
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-
-        _clipmapShader = (ShaderMaterial) _clipmapMesh.MaterialOverride;
     }
 
     public override void _Process(double delta) {
@@ -45,7 +42,11 @@ public partial class Clipmap : Node3D {
     }
 
     public void CreateMesh() {
-        _clipmapMesh.Mesh = null;
+        var clipmapShader = Shader;
+        if (clipmapShader == null) {
+            clipmapShader = ResourceLoader.Load<ShaderMaterial>("res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader");
+        }
+        _clipmapMesh.MaterialOverride = clipmapShader;
 
         var vertices = new List<Vector3>();
         var uvs = new List<Vector2>();
@@ -75,7 +76,7 @@ public partial class Clipmap : Node3D {
 
         _clipmapMesh.Mesh = arrayMesh;
 
-        _clipmapShader.SetShaderParameter("HeightmapTexture", Heightmap);
+        clipmapShader.SetShaderParameter("HeightmapTexture", Heightmap);
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {

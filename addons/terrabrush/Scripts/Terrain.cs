@@ -6,7 +6,7 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Terrain : Node3D {
-	private ShaderMaterial _heightMapShader = null;
+	// private ShaderMaterial _heightMapShader = null;
     private HeightMapShape3D _heightMapCollisionShape = null;
 
     [NodePath] private Clipmap _clipmap;
@@ -40,9 +40,6 @@ public partial class Terrain : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-
-		this._heightMapShader = (ShaderMaterial) _clipmap.ClipmapMesh.MaterialOverride;
-        this._resultMesh.SetSurfaceOverrideMaterial(0, _heightMapShader);
     }
 
     public void BuildTerrain(bool collisionOnly = false) {
@@ -64,12 +61,8 @@ public partial class Terrain : Node3D {
             ((PlaneMesh) _resultMesh.Mesh).Size = new Vector2I(TerrainSize, TerrainSize);
             _resultMeshCamera.Size = TerrainSize;
 
-            // var planeMesh = (PlaneMesh) _clipmap.ClipmapMesh.Mesh;
-
-            // planeMesh.Size = new Vector2I(TerrainSize, TerrainSize);
-            // planeMesh.SubdivideWidth = TerrainSubDivision;
-            // planeMesh.SubdivideDepth = TerrainSubDivision;
-
+            _clipmap.Heightmap = HeightMap;
+            _clipmap.HeightmapFactor = HeightMapFactor;
             _clipmap.Levels = LODLevels;
             _clipmap.RowsPerLevel = LODRowsPerLevel;
             _clipmap.InitialCellWidth = LODInitialCellWidth;
@@ -83,8 +76,6 @@ public partial class Terrain : Node3D {
     }
 
     public void TerrainUpdated(bool updateCollision = false) {
-        UpdateShaderParams();
-
         if (updateCollision) {
             UpdateCollisionShape();
         }
@@ -97,60 +88,55 @@ public partial class Terrain : Node3D {
 
     public void TerrainSplatmapsUpdated() {
         if (this.Splatmaps?.Count() > 0) {
-    		this._heightMapShader.SetShaderParameter("Splatmaps", this.TexturesToTextureArray(this.Splatmaps));
+    		Clipmap.Shader.SetShaderParameter("Splatmaps", this.TexturesToTextureArray(this.Splatmaps));
         }
     }
 
     public void TerrainWaterUpdated() {
-    	this._heightMapShader.SetShaderParameter("WaterTexture", WaterTexture);
-    	this._heightMapShader.SetShaderParameter("WaterFactor", WaterFactor);
+    	Clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+    	Clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
     }
 
 	private void UpdateCollisionShape() {
-        // var heightMapImage = HeightMap.GetImage();
-        // var waterImage = WaterTexture?.GetImage();
+        var heightMapImage = HeightMap.GetImage();
+        var waterImage = WaterTexture?.GetImage();
 
-        // var terrainData = new Godot.Collections.Array<float>();
-        // for (var y = 0; y < heightMapImage.GetHeight(); y++) {
-        //     for (var x = 0; x < heightMapImage.GetWidth(); x++) {
-        //         var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-        //         var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+        var terrainData = new Godot.Collections.Array<float>();
+        for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+            for (var x = 0; x < heightMapImage.GetWidth(); x++) {
+                var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
+                var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
 
-        //         pixelHeight -= waterHeight * WaterFactor;
+                pixelHeight -= waterHeight * WaterFactor;
 
-        //         terrainData.Add(pixelHeight);
-        //     }
-        // }
+                terrainData.Add(pixelHeight);
+            }
+        }
 
-        // _heightMapCollisionShape.MapData = terrainData.ToArray();
-	}
-
-	private void UpdateShaderParams() {
-		this._heightMapShader.SetShaderParameter("HeightmapTexture", this.HeightMap);
-		this._heightMapShader.SetShaderParameter("HeightmapFactor", this.HeightMapFactor);
+        _heightMapCollisionShape.MapData = terrainData.ToArray();
 	}
 
 	private void UpdateTextures() {
-		this._heightMapShader.SetShaderParameter("TextureDetail", this.TextureDetail);
+		Clipmap.Shader.SetShaderParameter("TextureDetail", this.TextureDetail);
 
         if (this.TextureSets?.TextureSets?.Count() > 0) {
             var textureArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
-            this._heightMapShader.SetShaderParameter("Textures", textureArray);
-            this._heightMapShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
+            Clipmap.Shader.SetShaderParameter("Textures", textureArray);
+            Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
             var normalArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
-            this._heightMapShader.SetShaderParameter("Normals", normalArray);
+            Clipmap.Shader.SetShaderParameter("Normals", normalArray);
 
             var roughnessArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
-            this._heightMapShader.SetShaderParameter("RoughnessTexutres", roughnessArray);
+            Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
 
-            this._heightMapShader.SetShaderParameter("UseAntitile", true);
+            Clipmap.Shader.SetShaderParameter("UseAntitile", true);
         } else if (DefaultTexture != null) {
             var textureArray = this.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
-            this._heightMapShader.SetShaderParameter("Textures", textureArray);
-            this._heightMapShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
+            Clipmap.Shader.SetShaderParameter("Textures", textureArray);
+            Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
-            this._heightMapShader.SetShaderParameter("UseAntitile", false);
+            Clipmap.Shader.SetShaderParameter("UseAntitile", false);
         }
 	}
 
