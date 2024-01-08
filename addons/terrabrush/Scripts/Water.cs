@@ -100,6 +100,10 @@ public partial class Water : Node3D {
     }
 
     public void UpdateWater() {
+        if (_waterMesh == null) {
+            return;
+        }
+
         var rippleTextureSize = (int) (TerrainSize * RippleRatio);
 
         var planeMesh = (PlaneMesh) _waterMesh.Mesh;

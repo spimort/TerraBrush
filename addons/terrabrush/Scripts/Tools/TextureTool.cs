@@ -9,8 +9,6 @@ public class TextureTool : ToolBase {
             return;
         }
 
-        terraBrush.CreateSplatmaps();
-
         var splatmapIndex = Mathf.FloorToInt(terraBrush.TextureSetIndex.Value / 4);
         var splatmapImages = terraBrush.Splatmaps.Select(texture => texture.GetImage()).ToList();
         var colorChannel = terraBrush.TextureSetIndex.Value % 4;
@@ -48,7 +46,7 @@ public class TextureTool : ToolBase {
             terraBrush.Splatmaps[i].Update(splatmapImages[i]);
         }
 
-        terraBrush.Terrain.TerrainSplatmapsUpdated();
+        terraBrush.Terrain.TerrainSplatmapsUpdated(splatmapImages);
         terraBrush.UpdateFoliagesGroudTexture();
     }
 }

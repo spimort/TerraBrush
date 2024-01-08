@@ -92,6 +92,7 @@ public partial class TerrainControlDock : Control {
 
         var brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
         brushImage.FlipY();
+        brushImage.FlipX();
         TerraBrush?.SetCurrentBrush(brushImage);
         BrushDecal?.SetBrushImage(brushImage);
     }

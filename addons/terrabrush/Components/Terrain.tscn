@@ -7,7 +7,7 @@
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader" id="4_cpp0i"]
 [ext_resource type="Texture2D" uid="uid://blcsa36p4tuwr" path="res://ClipmapTester/Heightmap.res" id="5_qh71y"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pvfec"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ofc5q"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_1oqlj")
@@ -47,11 +47,10 @@ DefaultTexture = ExtResource("2_x8un5")
 
 [node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
-Shader = SubResource("ShaderMaterial_pvfec")
+Shader = SubResource("ShaderMaterial_ofc5q")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true
-visible = false
 
 [node name="TerrainCollision" type="CollisionShape3D" parent="TerrainCollider"]
 unique_name_in_owner = true

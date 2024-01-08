@@ -137,15 +137,18 @@ public partial class TerraBrush : Node3D {
 
     [ExportGroup("LOD")]
     [Export]
-    public int LODLevels { get;set; } = 8;
+    public int LODLevels { get;set; } = 5;
 
     [Export]
-    public int LODRowsPerLevel { get;set; } = 21;
+    public int LODRowsPerLevel { get;set; } = 101;
 
     [Export]
     public float LODInitialCellWidth { get;set; } = 1;
 
     [ExportGroup("Collisions")]
+    [Export]
+    public bool CreateCollisionInThread { get;set; } = true;
+
     [Export(PropertyHint.Layers3DPhysics)]
     public int CollisionLayers { get;set; } = 1;
 
@@ -241,7 +244,7 @@ public partial class TerraBrush : Node3D {
 
         OnRemoveTerrain();
 
-        var image = Image.Create(TerrainSize, TerrainSize, true, Image.Format.Rh);
+        var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rf);
         HeightMap = GetImageTextureResource(image, HeightmapFileName);
 
         await LoadTerrain();
@@ -306,6 +309,9 @@ public partial class TerraBrush : Node3D {
         }
 
         _terrain = (await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Terrain.tscn", CancellationToken.None)).Instantiate<Terrain>();
+
+        CreateSplatmaps();
+
         _terrain.TextureSets = TextureSets;
         _terrain.Splatmaps = Splatmaps;
 
@@ -322,8 +328,7 @@ public partial class TerraBrush : Node3D {
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;
         _terrain.LODInitialCellWidth = LODInitialCellWidth;
-
-        CreateSplatmaps();
+        _terrain.CreateCollisionInThread = CreateCollisionInThread;
 
         AddChild(_terrain);
         _terrain.BuildTerrain(!Engine.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly));

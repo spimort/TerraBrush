@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Godot;
 
 namespace TerraBrush;
@@ -8,6 +12,7 @@ namespace TerraBrush;
 public partial class Terrain : Node3D {
 	// private ShaderMaterial _heightMapShader = null;
     private HeightMapShape3D _heightMapCollisionShape = null;
+    private CancellationTokenSource _collisionCancellationSource = null;
 
     [NodePath] private Clipmap _clipmap;
     [NodePath] private MeshInstance3D _resultMesh;
@@ -32,6 +37,7 @@ public partial class Terrain : Node3D {
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
+    [Export] public bool CreateCollisionInThread { get;set; } = true;
 
     public StaticBody3D TerrainCollider => _terrainCollider;
     public SubViewport ResultViewport => _resultViewport;
@@ -48,8 +54,8 @@ public partial class Terrain : Node3D {
         var heightMapShape3D = new HeightMapShape3D();
         _terrainCollision.Shape = heightMapShape3D;
         _heightMapCollisionShape = heightMapShape3D;
-        heightMapShape3D.MapWidth = TerrainSize;
-        heightMapShape3D.MapDepth = TerrainSize;
+        heightMapShape3D.MapWidth = TerrainSize + 1;
+        heightMapShape3D.MapDepth = TerrainSize + 1;
 
         _terrainCollider.CollisionLayer = (uint) CollisionLayers;
         _terrainCollider.CollisionMask = (uint) CollisionMask;
@@ -92,29 +98,83 @@ public partial class Terrain : Node3D {
         }
     }
 
+    public void TerrainSplatmapsUpdated(IEnumerable<Image> images) {
+        if (images.Count() > 0) {
+    		Clipmap.Shader.SetShaderParameter("Splatmaps", ImagesToTextureArray(images));
+        }
+    }
+
     public void TerrainWaterUpdated() {
     	Clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
     	Clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
     }
 
 	private void UpdateCollisionShape() {
-        var heightMapImage = HeightMap.GetImage();
-        var waterImage = WaterTexture?.GetImage();
-
-        var terrainData = new Godot.Collections.Array<float>();
-        for (var y = 0; y < heightMapImage.GetHeight(); y++) {
-            for (var x = 0; x < heightMapImage.GetWidth(); x++) {
-                var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-                var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
-
-                pixelHeight -= waterHeight * WaterFactor;
-
-                terrainData.Add(pixelHeight);
-            }
+        if (CreateCollisionInThread) {
+            _collisionCancellationSource?.Cancel();
+            _collisionCancellationSource = new CancellationTokenSource();
         }
 
-        _heightMapCollisionShape.MapData = terrainData.ToArray();
+        var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
+
+        var updateAction = () => {
+            var heightMapImage = HeightMap.GetImage();
+            var waterImage = WaterTexture?.GetImage();
+
+            heightMapImage.Resize(TerrainSize + 1, TerrainSize + 1);
+
+            if (waterImage != null) {
+                waterImage.Resize(TerrainSize + 1, TerrainSize + 1);
+            }
+
+            if (token.IsCancellationRequested) {
+                return;
+            }
+
+            var terrainData = new List<float>();
+            for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+                for (var x = 0; x < heightMapImage.GetWidth(); x++) {
+                    if (token.IsCancellationRequested) {
+                        return;
+                    }
+
+                    var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
+                    var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+
+                    pixelHeight -= waterHeight * WaterFactor;
+
+                    terrainData.Add(pixelHeight);
+                }
+            }
+
+            if (token.IsCancellationRequested) {
+                return;
+            }
+
+            CallDeferred(nameof(AssignCollisionData), terrainData.ToArray());
+        };
+
+        if (CreateCollisionInThread) {
+            Task.Factory.StartNew(() => {
+                updateAction();
+            }, token);
+        } else {
+            updateAction();
+        }
 	}
+
+    private void AssignCollisionData(float[] data) {
+        _heightMapCollisionShape.MapData = data;
+        // var heightMapImage = HeightMap.GetImage().GetData();//(float[]) HeightMap.GetImage().Data["data"];
+
+        // GD.Print(heightMapImage.Count(), " , ", data.Length);
+
+        // for (var i = 0; i < data.Count(); i++) {
+        //     // if (data[i] != _heightMapCollisionShape.MapData[i]) {
+        //         GD.Print($"Data {i} : {data[i]} - MapData {_heightMapCollisionShape.MapData[i]} - RAW : {heightMapImage[i * 4]}");
+        //     // }
+        // }
+    }
 
 	private void UpdateTextures() {
 		Clipmap.Shader.SetShaderParameter("TextureDetail", this.TextureDetail);
@@ -167,5 +227,11 @@ public partial class Terrain : Node3D {
 		textureArray._Images = textureImageArray;
 
 		return textureArray;
+	}
+
+	private Texture2DArray ImagesToTextureArray(IEnumerable<Image> images) {
+		return new Texture2DArray() {
+            _Images = new Godot.Collections.Array<Image>(images)
+        };
 	}
 }

@@ -21,7 +21,7 @@ void calculateVertex(mat4 modelMatrix, vec4 zonesMeta, inout vec3 vertex, out ve
 	}
 	
 	// "Hide" vertices that are outside the map
-	float halfHeightmapSize = float(textureSize(HeightmapTexture, 0).x) / 2.0;	
+	float halfHeightmapSize = heightmapSize / 2.0;	
 	if (
 		worldVertex.x > halfHeightmapSize || 
 		worldVertex.x < -halfHeightmapSize || 
