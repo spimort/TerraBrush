@@ -629,6 +629,9 @@ public partial class TerraBrush : Node3D {
             _waterNode.Far = WaterDefinition.WaterFar;
             _waterNode.EdgeColor = WaterDefinition.WaterEdgeColor;
             _waterNode.VisualInstanceLayers = WaterDefinition.VisualInstanceLayers;
+            _waterNode.LODLevels = LODLevels;
+            _waterNode.LODRowsPerLevel = LODRowsPerLevel;
+            _waterNode.LODInitialCellWidth = LODInitialCellWidth;
 
             _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
             _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);
@@ -719,6 +722,7 @@ public partial class TerraBrush : Node3D {
         }
 
         _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
+        _waterNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
         foreach (var foliageNode in _foliagesNode.GetChildren()) {
             ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);

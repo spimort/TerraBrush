@@ -1,40 +1,33 @@
 [gd_scene load_steps=9 format=3 uid="uid://c1hskhrgdx6ug"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Water.cs" id="1_4nwuo"]
+[ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="2_002qp"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_ripple_shader.gdshader" id="3_1e0vm"]
-[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_shader.gdshader" id="3_82jho"]
+[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader" id="3_xfn30"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_ripple_buffer_shader.gdshader" id="4_rbabs"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_e3sgi"]
-resource_local_to_scene = true
-custom_aabb = AABB(-1000, -1000, -1000, 2000, 2000, 2000)
-size = Vector2(200, 200)
-subdivide_width = 200
-subdivide_depth = 200
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iobnk"]
-resource_local_to_scene = true
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdctr"]
 render_priority = 0
-shader = ExtResource("3_82jho")
-shader_parameter/WaterFactor = 1.0
-shader_parameter/HeightMapFactor = 1.0
+shader = ExtResource("3_xfn30")
+shader_parameter/InitialCellWidth = 1.0
+shader_parameter/WaterFactor = null
 shader_parameter/WaterInnerOffset = 0.3
-shader_parameter/WaterColor = Color(0.141176, 0.545098, 0.745098, 1)
-shader_parameter/FresnelColor = Color(0.368627, 0.623529, 0.929412, 1)
-shader_parameter/Metallic = 1.0
-shader_parameter/Roughness = 0.563
-shader_parameter/TimeScale = 0.1
-shader_parameter/Strength = 15.445
+shader_parameter/WaterColor = null
+shader_parameter/FresnelColor = null
+shader_parameter/Metallic = null
+shader_parameter/Roughness = null
+shader_parameter/TimeScale = 0.025
+shader_parameter/Strength = 0.4
 shader_parameter/NoiseScale = 10.0
 shader_parameter/HeightScale = 0.15
-shader_parameter/ColorDeep = Color(0.741176, 0.741176, 0.741176, 1)
-shader_parameter/ColorShallow = Color(0.392157, 0.392157, 0.392157, 1)
+shader_parameter/ColorDeep = null
+shader_parameter/ColorShallow = null
 shader_parameter/BeersLaw = 2.0
 shader_parameter/DepthOffset = -0.75
 shader_parameter/EdgeScale = 0.1
 shader_parameter/Near = 0.5
 shader_parameter/Far = 100.0
-shader_parameter/EdgeColor = Color(1, 1, 1, 1)
+shader_parameter/EdgeColor = null
 shader_parameter/WaterRippleTextureSize = 512.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jqt8f"]
@@ -54,11 +47,9 @@ script = ExtResource("1_4nwuo")
 TimeScale = 0.0
 Strength = 0.0
 
-[node name="WaterMesh" type="MeshInstance3D" parent="."]
+[node name="Clipmap" parent="." instance=ExtResource("2_002qp")]
 unique_name_in_owner = true
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_e3sgi")
-surface_material_override/0 = SubResource("ShaderMaterial_iobnk")
+Shader = SubResource("ShaderMaterial_tdctr")
 
 [node name="RippleViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true

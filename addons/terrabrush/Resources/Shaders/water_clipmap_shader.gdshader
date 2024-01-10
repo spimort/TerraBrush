@@ -1,14 +1,13 @@
 shader_type spatial;
 render_mode cull_back,diffuse_burley,specular_schlick_ggx, blend_mix;
 
+#include "clipmap_shader_include.gdshaderinc"
+
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-// Heightmap uniforms
 uniform sampler2D WaterTexture : hint_default_transparent, repeat_disable;
-uniform sampler2D HeightMapTexture : hint_default_transparent, repeat_disable;
 uniform float WaterFactor;
-uniform float HeightMapFactor;
 uniform float WaterInnerOffset = 0.3;
 
 // Water uniforms
@@ -34,7 +33,8 @@ uniform vec3 EdgeColor: source_color;
 uniform sampler2D WaterRippleTexture;
 uniform float WaterRippleTextureSize = 512;
 
-varying vec3 worldPosition;
+varying vec2 _textureUV;
+varying vec3 _worldVertex;
 
 float fresnel(float amount, vec3 normal, vec3 view) {
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0)), amount);
@@ -43,6 +43,26 @@ float fresnel(float amount, vec3 normal, vec3 view) {
 float edge(float depth) {
 	depth = 2.0 * depth - 1.0;
 	return Near * Far / (Far + depth * (Near - Far));
+}
+
+void vertex() {
+	_textureUV = vec2(0);
+	_worldVertex = vec3(0);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
+	
+	vec4 currentWaterColor = texture(WaterTexture, _textureUV);
+
+	if (currentWaterColor.r > 0.0f) {
+		VERTEX.y -= WaterInnerOffset;
+		
+		float height = texture(Wave, _worldVertex.xz / NoiseScale + TIME * TimeScale).r;
+		VERTEX.y += height * HeightScale;
+
+		COLOR = vec4(currentWaterColor.r, currentWaterColor.g, currentWaterColor.b, 1.0);
+	} else {
+		VERTEX.y -= 1.0;
+		COLOR = vec4(0.0f, 0.0f, 0.0f, 0.0);
+	}
 }
 
 void fragment() {
@@ -66,11 +86,11 @@ void fragment() {
 		float timer2 = fract(time + 0.5);
 		float mixTimer = min(fract(time), 1.0 - fract(time)) * 2.0;
 
-		vec3 waterTexture = texture(WaterTexture, UV).rgb;
+		vec3 waterTexture = texture(WaterTexture, _textureUV).rgb;
 		vec2 flows = waterTexture.gb * 2.0 - 1.0;
 
-		vec3 normalMap1 = texture(NormalMap, worldPosition.xz + flows * timer * Strength).rgb;
-		vec3 normalMap2 = texture(NormalMap2, worldPosition.xz + flows * timer2 * Strength).rgb;
+		vec3 normalMap1 = texture(NormalMap, _worldVertex.xz + flows * timer * Strength).rgb;
+		vec3 normalMap2 = texture(NormalMap2, _worldVertex.xz + flows * timer2 * Strength).rgb;
 		vec3 normalBlend = mix(normalMap2, normalMap1, mixTimer);
 		
 		float fresnel = fresnel(5.0, NORMAL, VIEW);
@@ -85,33 +105,26 @@ void fragment() {
 		
 		// Ripple
 		vec3 duv = vec3(4.0 / WaterRippleTextureSize, 4.0 / WaterRippleTextureSize, 0);
-		float v1 = texture(WaterRippleTexture, UV - duv.xz).r;
-		float v2 = texture(WaterRippleTexture, UV + duv.xz).r;
-		float v3 = texture(WaterRippleTexture, UV - duv.zy).r;
-		float v4 = texture(WaterRippleTexture, UV + duv.zy).r;
+		float v1 = texture(WaterRippleTexture, _textureUV - duv.xz).r;
+		float v2 = texture(WaterRippleTexture, _textureUV + duv.xz).r;
+		float v3 = texture(WaterRippleTexture, _textureUV - duv.zy).r;
+		float v4 = texture(WaterRippleTexture, _textureUV + duv.zy).r;
 		vec3 rippleNormal = normalize(vec3(v1 - v2, v3 - v4, 0.8));	
 		
 		NORMAL = mix(NORMAL, rippleNormal, 0.8);
+		
+		// "Hide" vertices that are outside the map
+		float heightmapSize = float(textureSize(HeightmapTexture, 0).x);
+		float halfHeightmapSize = heightmapSize / 2.0;	
+		if (
+			_worldVertex.x > halfHeightmapSize || 
+			_worldVertex.x < -halfHeightmapSize || 
+			_worldVertex.z > halfHeightmapSize ||
+			_worldVertex.z < -halfHeightmapSize
+		) {
+			ALPHA = 0.0;
+		}			
 	} else {
 		ALPHA = 0.0;
-	}
-}
-
-void vertex() {
-	worldPosition = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	
-	vec4 currentWaterColor = texture(WaterTexture, UV);
-	vec4 currentHeightmapColor = texture(HeightMapTexture, UV);
-
-	if (currentWaterColor.r > 0.0f) {
-		VERTEX.y = (currentHeightmapColor.r * HeightMapFactor) - WaterInnerOffset;
-		
-		float height = texture(Wave, worldPosition.xz / NoiseScale + TIME * TimeScale).r;
-		VERTEX.y += height * HeightScale;
-
-		COLOR = vec4(currentWaterColor.r, currentWaterColor.g, currentWaterColor.b, 1.0);
-	} else {
-		VERTEX.y = (currentHeightmapColor.r * HeightMapFactor) - 1.0;
-		COLOR = vec4(0.0f, 0.0f, 0.0f, 0.0);
 	}
 }

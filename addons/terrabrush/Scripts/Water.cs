@@ -10,13 +10,12 @@ public partial class Water : Node3D {
     private const float RippleRatio = 20;
     private const float RippleResetSpeed = 0.9f;
 
-    private ShaderMaterial _waterShader;
     private ShaderMaterial _rippleShader;
     private ShaderMaterial _rippleBufferShader;
     private ImageTexture _rippleImage;
     private Dictionary<Vector2I, float> _ripplePositions = new Dictionary<Vector2I, float>();
 
-    [NodePath] private MeshInstance3D _waterMesh;
+    [NodePath] private Clipmap _clipmap;
     [NodePath] private SubViewport _rippleViewport;
     [NodePath] private SubViewport _rippleBufferViewport;
     [NodePath] private ColorRect _rippleColorRect;
@@ -49,20 +48,24 @@ public partial class Water : Node3D {
     [Export] public float Far { get;set; }
     [Export(PropertyHint.ColorNoAlpha)] public Color EdgeColor { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    [Export] public int LODLevels { get;set; } = 8;
+    [Export] public int LODRowsPerLevel { get;set; } = 21;
+    [Export] public float LODInitialCellWidth { get;set; } = 1;
+
+    public Clipmap Clipmap => _clipmap;
 
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
-        _waterMesh.Layers = (uint) VisualInstanceLayers;
-        _waterShader = (ShaderMaterial) _waterMesh.GetSurfaceOverrideMaterial(0);
+        _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
         _rippleShader = (ShaderMaterial) _rippleColorRect.Material;
         _rippleBufferShader = (ShaderMaterial) _rippleBufferColorRect.Material;
 
         if (!Engine.IsEditorHint()) {
             _rippleShader.SetShaderParameter("DoubleBufferTexture", _rippleBufferViewport.GetTexture());
             _rippleBufferShader.SetShaderParameter("RippleTexture", _rippleViewport.GetTexture());
-            _waterShader.SetShaderParameter("WaterRippleTexture", _rippleViewport.GetTexture());
+            _clipmap.Shader.SetShaderParameter("WaterRippleTexture", _rippleViewport.GetTexture());
         }
     }
 
@@ -100,42 +103,43 @@ public partial class Water : Node3D {
     }
 
     public void UpdateWater() {
-        if (_waterMesh == null) {
+        if (_clipmap == null) {
             return;
         }
 
         var rippleTextureSize = (int) (TerrainSize * RippleRatio);
 
-        var planeMesh = (PlaneMesh) _waterMesh.Mesh;
-        planeMesh.Size = new Vector2I(TerrainSize, TerrainSize);
-        planeMesh.SubdivideWidth = TerrainSubDivision;
-        planeMesh.SubdivideDepth = TerrainSubDivision;
+        _clipmap.Heightmap = HeightMapTexture;
+        _clipmap.HeightmapFactor = HeightMapFactor;
+        _clipmap.Levels = LODLevels;
+        _clipmap.RowsPerLevel = LODRowsPerLevel;
+        _clipmap.InitialCellWidth = LODInitialCellWidth;
 
-        _waterShader.SetShaderParameter("HeightMapTexture", HeightMapTexture);
-        _waterShader.SetShaderParameter("HeightMapFactor", HeightMapFactor);
-        _waterShader.SetShaderParameter("WaterInnerOffset", WaterInnerOffset);
-        _waterShader.SetShaderParameter("WaterTexture", WaterTexture);
-        _waterShader.SetShaderParameter("WaterFactor", WaterFactor);
-        _waterShader.SetShaderParameter("WaterColor", WaterColor);
-        _waterShader.SetShaderParameter("FresnelColor", FresnelColor);
-        _waterShader.SetShaderParameter("Metallic", Metallic);
-        _waterShader.SetShaderParameter("Roughness", Roughness);
-        _waterShader.SetShaderParameter("NormalMap", NormalMap);
-        _waterShader.SetShaderParameter("NormalMap2", NormalMap2);
-        _waterShader.SetShaderParameter("TimeScale", TimeScale);
-        _waterShader.SetShaderParameter("Strength", Strength);
-        _waterShader.SetShaderParameter("Wave", Wave);
-        _waterShader.SetShaderParameter("NoiseScale", NoiseScale);
-        _waterShader.SetShaderParameter("HeightScale", HeightScale);
-        _waterShader.SetShaderParameter("ColorDeep", ColorDeep);
-        _waterShader.SetShaderParameter("ColorShallow", ColorShallow);
-        _waterShader.SetShaderParameter("BeersLaw", BeersLaw);
-        _waterShader.SetShaderParameter("DepthOffset", DepthOffset);
-        _waterShader.SetShaderParameter("EdgeScale", EdgeScale);
-        _waterShader.SetShaderParameter("Near", Near);
-        _waterShader.SetShaderParameter("Far", Far);
-        _waterShader.SetShaderParameter("EdgeColor", EdgeColor);
-        _waterShader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
+        _clipmap.CreateMesh();
+
+        _clipmap.Shader.SetShaderParameter("WaterInnerOffset", WaterInnerOffset);
+        _clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+        _clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
+        _clipmap.Shader.SetShaderParameter("WaterColor", WaterColor);
+        _clipmap.Shader.SetShaderParameter("FresnelColor", FresnelColor);
+        _clipmap.Shader.SetShaderParameter("Metallic", Metallic);
+        _clipmap.Shader.SetShaderParameter("Roughness", Roughness);
+        _clipmap.Shader.SetShaderParameter("NormalMap", NormalMap);
+        _clipmap.Shader.SetShaderParameter("NormalMap2", NormalMap2);
+        _clipmap.Shader.SetShaderParameter("TimeScale", TimeScale);
+        _clipmap.Shader.SetShaderParameter("Strength", Strength);
+        _clipmap.Shader.SetShaderParameter("Wave", Wave);
+        _clipmap.Shader.SetShaderParameter("NoiseScale", NoiseScale);
+        _clipmap.Shader.SetShaderParameter("HeightScale", HeightScale);
+        _clipmap.Shader.SetShaderParameter("ColorDeep", ColorDeep);
+        _clipmap.Shader.SetShaderParameter("ColorShallow", ColorShallow);
+        _clipmap.Shader.SetShaderParameter("BeersLaw", BeersLaw);
+        _clipmap.Shader.SetShaderParameter("DepthOffset", DepthOffset);
+        _clipmap.Shader.SetShaderParameter("EdgeScale", EdgeScale);
+        _clipmap.Shader.SetShaderParameter("Near", Near);
+        _clipmap.Shader.SetShaderParameter("Far", Far);
+        _clipmap.Shader.SetShaderParameter("EdgeColor", EdgeColor);
+        _clipmap.Shader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
 
         var newRippleImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
 
