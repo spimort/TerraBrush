@@ -234,11 +234,14 @@ public partial class Terrain : Node3D {
 	}
 
     private Image ResizeImageToFit(Image image) {
-        var imageCopy = Image.Create(TerrainSize + 1, TerrainSize + 1, false, image.GetFormat());
-        for (var x = 0; x < TerrainSize + 1; x++) {
-            for (var y = 0; y < TerrainSize + 1; y++) {
-                if (x == TerrainSize || y == TerrainSize) {
-                    imageCopy.SetPixel(x, y, image.GetPixel(x == TerrainSize ? x - 1 : x, y == TerrainSize ? y - 1 : y));
+        var imageWidth = image.GetWidth();
+        var imageHeight = image.GetHeight();
+
+        var imageCopy = Image.Create(imageWidth + 1, imageHeight + 1, false, image.GetFormat());
+        for (var x = 0; x < imageWidth + 1; x++) {
+            for (var y = 0; y < imageHeight + 1; y++) {
+                if (x == imageWidth || y == imageHeight) {
+                    imageCopy.SetPixel(x, y, image.GetPixel(x == imageWidth ? x - 1 : x, y == imageHeight ? y - 1 : y));
                 } else {
                     imageCopy.SetPixel(x, y, image.GetPixel(x, y));
                 }
