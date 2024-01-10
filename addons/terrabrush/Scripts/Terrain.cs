@@ -163,15 +163,6 @@ public partial class Terrain : Node3D {
 
     private void AssignCollisionData(float[] data) {
         _heightMapCollisionShape.MapData = data;
-        // var heightMapImage = HeightMap.GetImage().GetData();//(float[]) HeightMap.GetImage().Data["data"];
-
-        // GD.Print(heightMapImage.Count(), " , ", data.Length);
-
-        // for (var i = 0; i < data.Count(); i++) {
-        //     // if (data[i] != _heightMapCollisionShape.MapData[i]) {
-        //         GD.Print($"Data {i} : {data[i]} - MapData {_heightMapCollisionShape.MapData[i]} - RAW : {heightMapImage[i * 4]}");
-        //     // }
-        // }
     }
 
 	private void UpdateTextures() {

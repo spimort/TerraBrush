@@ -668,6 +668,9 @@ public partial class TerraBrush : Node3D {
         _snowNode.HeightMapFactor = HeightMapFactor;
         _snowNode.SnowTexture = SnowTexture;
         _snowNode.SnowDefinition = SnowDefinition;
+        _snowNode.LODLevels = LODLevels;
+        _snowNode.LODRowsPerLevel = LODRowsPerLevel;
+        _snowNode.LODInitialCellWidth = LODInitialCellWidth;
 
         if (SnowDefinition.Noise != null) {
             await WaitForTextureReady(SnowDefinition.Noise);
@@ -723,6 +726,7 @@ public partial class TerraBrush : Node3D {
 
         _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
         _waterNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
+        _snowNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
         foreach (var foliageNode in _foliagesNode.GetChildren()) {
             ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);
