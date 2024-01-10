@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
 
 #include "clipmap_shader_include.gdshaderinc"
 
@@ -14,6 +14,7 @@ uniform sampler2DArray RoughnessTexutres;
 uniform bool UseAntitile = true;
 
 varying vec2 _textureUV;
+varying vec3 _worldVertex;
 
 vec2 rotate(vec2 v, float cosa, float sina) {
 	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
@@ -55,7 +56,8 @@ vec4 texture_array_antitile(sampler2DArray tex, vec3 uv) {
 
 void vertex() {
 	_textureUV = vec2(0);
-	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV);
+	_worldVertex = vec3(0);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
 	
 	vec4 waterTexture = texture(WaterTexture, _textureUV);
 	VERTEX.y -= waterTexture.r * WaterFactor;
@@ -102,4 +104,18 @@ void fragment() {
 	ALBEDO = resultTexture.xyz;
 	ROUGHNESS = resultRoughness.x;
 	NORMAL_MAP = resultNormal.xyz;	
+	ALPHA = 1.0;
+	ALPHA_SCISSOR_THRESHOLD = 1.0;
+	
+	// "Hide" vertices that are outside the map
+	float heightmapSize = float(textureSize(HeightmapTexture, 0).x);
+	float halfHeightmapSize = heightmapSize / 2.0;	
+	if (
+		_worldVertex.x > halfHeightmapSize || 
+		_worldVertex.x < -halfHeightmapSize || 
+		_worldVertex.z > halfHeightmapSize ||
+		_worldVertex.z < -halfHeightmapSize
+	) {
+		ALPHA = 0.0;
+	}		
 }

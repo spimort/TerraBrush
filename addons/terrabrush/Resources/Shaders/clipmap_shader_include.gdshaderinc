@@ -1,8 +1,8 @@
 uniform sampler2D HeightmapTexture : hint_default_transparent, repeat_disable;
 uniform float InitialCellWidth = 1.0;
 
-void calculateVertex(mat4 modelMatrix, vec4 zonesMeta, inout vec3 vertex, out vec2 textureUV) {
-	vec3 worldVertex = vertex + modelMatrix[3].xyz;
+void calculateVertex(mat4 modelMatrix, vec4 zonesMeta, inout vec3 vertex, out vec2 textureUV, out vec3 worldVertex) {
+	worldVertex = vertex + modelMatrix[3].xyz;
 	float heightmapSize = float(textureSize(HeightmapTexture, 0).x);
 	textureUV = (worldVertex.xz + (heightmapSize / 2.0)) / heightmapSize;
 
@@ -18,16 +18,5 @@ void calculateVertex(mat4 modelMatrix, vec4 zonesMeta, inout vec3 vertex, out ve
 		float nextHeight = texture(HeightmapTexture, textureUV + prevNextUVVector).r;
 		
 		vertex.y = (previousHeight + nextHeight) / 2.0;
-	}
-	
-	// "Hide" vertices that are outside the map
-	float halfHeightmapSize = heightmapSize / 2.0;	
-	if (
-		worldVertex.x > halfHeightmapSize || 
-		worldVertex.x < -halfHeightmapSize || 
-		worldVertex.z > halfHeightmapSize ||
-		worldVertex.z < -halfHeightmapSize
-	) {
-		vertex.y = -10000.0;
 	}	
 }
