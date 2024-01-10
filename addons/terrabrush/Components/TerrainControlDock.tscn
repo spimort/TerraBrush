@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://clqmuo5dunyap"]
+[gd_scene load_steps=18 format=3 uid="uid://clqmuo5dunyap"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bxrd6ysoqp4p4" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
 [ext_resource type="Texture2D" uid="uid://ci03cyirflno2" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
 [ext_resource type="Texture2D" uid="uid://dbb32vbtyf8df" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_byduj"]
+[ext_resource type="Texture2D" uid="uid://6jwu6vojgt7h" path="res://addons/terrabrush/Assets/Icons/map_flattern.png" id="6_pcl6t"]
 [ext_resource type="Texture2D" uid="uid://ddx07aojxcpp5" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
 [ext_resource type="Texture2D" uid="uid://dv0bmodrfkoq4" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
 [ext_resource type="Texture2D" uid="uid://dqxmj8mb1s8hd" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_d1w4v"]
@@ -91,63 +92,69 @@ layout_mode = 2
 ToolImage = ExtResource("5_ro3ul")
 ToolType = 3
 
+[node name="TerrainToolSmooth2" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+unique_name_in_owner = true
+layout_mode = 2
+ToolImage = ExtResource("6_pcl6t")
+ToolType = 4
+
 [node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 ToolImage = ExtResource("6_byduj")
-ToolType = 4
+ToolType = 5
 
 [node name="FoliageAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 ToolImage = ExtResource("7_1nssx")
-ToolType = 5
+ToolType = 6
 
 [node name="FoliageRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 ToolImage = ExtResource("8_glupl")
-ToolType = 6
+ToolType = 7
 
 [node name="ObjectAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("9_d1w4v")
-ToolType = 7
+ToolType = 8
 
 [node name="ObjectRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("10_wcsh2")
-ToolType = 8
+ToolType = 9
 
 [node name="WaterAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("11_6ecx6")
-ToolType = 9
+ToolType = 10
 
 [node name="WaterRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("12_nqxjx")
-ToolType = 10
+ToolType = 11
 
 [node name="WaterFlowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("13_wuhqm")
-ToolType = 11
+ToolType = 12
 
 [node name="WaterFlowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("14_j3262")
-ToolType = 12
+ToolType = 13
 
 [node name="SnowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("15_h2obh")
-ToolType = 13
+ToolType = 14
 
 [node name="SnowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 ToolImage = ExtResource("16_47ucd")
-ToolType = 14
+ToolType = 15
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2

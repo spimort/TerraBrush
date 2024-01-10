@@ -118,13 +118,11 @@ public partial class Terrain : Node3D {
         var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
 
         var updateAction = () => {
-            var heightMapImage = HeightMap.GetImage();
-            var waterImage = WaterTexture?.GetImage();
+            var heightMapImageCopy = ResizeImageToFit(HeightMap.GetImage());//new Image();
 
-            heightMapImage.Resize(TerrainSize + 1, TerrainSize + 1);
-
-            if (waterImage != null) {
-                waterImage.Resize(TerrainSize + 1, TerrainSize + 1);
+            Image waterImageCopy = null;
+            if (WaterTexture != null) {
+                waterImageCopy = ResizeImageToFit(WaterTexture.GetImage());
             }
 
             if (token.IsCancellationRequested) {
@@ -132,14 +130,14 @@ public partial class Terrain : Node3D {
             }
 
             var terrainData = new List<float>();
-            for (var y = 0; y < heightMapImage.GetHeight(); y++) {
-                for (var x = 0; x < heightMapImage.GetWidth(); x++) {
+            for (var y = 0; y < heightMapImageCopy.GetHeight(); y++) {
+                for (var x = 0; x < heightMapImageCopy.GetWidth(); x++) {
                     if (token.IsCancellationRequested) {
                         return;
                     }
 
-                    var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-                    var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+                    var pixelHeight = heightMapImageCopy.GetPixel(x, y).R * this.HeightMapFactor;
+                    var waterHeight = waterImageCopy?.GetPixel(x, y).R ?? 0;
 
                     pixelHeight -= waterHeight * WaterFactor;
 
@@ -234,4 +232,19 @@ public partial class Terrain : Node3D {
             _Images = new Godot.Collections.Array<Image>(images)
         };
 	}
+
+    private Image ResizeImageToFit(Image image) {
+        var imageCopy = Image.Create(TerrainSize + 1, TerrainSize + 1, false, image.GetFormat());
+        for (var x = 0; x < TerrainSize + 1; x++) {
+            for (var y = 0; y < TerrainSize + 1; y++) {
+                if (x == TerrainSize || y == TerrainSize) {
+                    imageCopy.SetPixel(x, y, image.GetPixel(x == TerrainSize ? x - 1 : x, y == TerrainSize ? y - 1 : y));
+                } else {
+                    imageCopy.SetPixel(x, y, image.GetPixel(x, y));
+                }
+            }
+        }
+
+        return imageCopy;
+    }
 }

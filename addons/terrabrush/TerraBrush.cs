@@ -15,28 +15,30 @@ public enum TerrainToolType {
     TerrainRemove = 2,
     [ToolType(typeof(SculptTool))]
     TerrainSmooth = 3,
+    [ToolType(typeof(SculptTool))]
+    TerrainFlattern = 4,
     [ToolType(typeof(TextureTool))]
-    Paint = 4,
+    Paint = 5,
     [ToolType(typeof(FoliageTool))]
-    FoliageAdd = 5,
+    FoliageAdd = 6,
     [ToolType(typeof(FoliageTool))]
-    FoliagRemove = 6,
+    FoliagRemove = 7,
     [ToolType(typeof(ObjectTool))]
-    ObjectAdd = 7,
+    ObjectAdd = 8,
     [ToolType(typeof(ObjectTool))]
-    ObjectRemove = 8,
+    ObjectRemove = 9,
     [ToolType(typeof(WaterTool))]
-    WaterAdd = 9,
+    WaterAdd = 10,
     [ToolType(typeof(WaterTool))]
-    WaterRemove = 10,
+    WaterRemove = 11,
     [ToolType(typeof(WaterFlowTool))]
-    WaterFlowAdd = 11,
+    WaterFlowAdd = 12,
     [ToolType(typeof(WaterFlowTool))]
-    WaterFlowRemove = 12,
+    WaterFlowRemove = 13,
     [ToolType(typeof(SnowTool))]
-    SnowAdd = 13,
+    SnowAdd = 14,
     [ToolType(typeof(SnowTool))]
-    SnowRemove = 14,
+    SnowRemove = 15,
 }
 
 [Tool]

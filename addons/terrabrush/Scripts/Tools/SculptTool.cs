@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using TerraBrush;
 
@@ -9,8 +11,11 @@ public class SculptTool : ToolBase {
 
         if (toolType == TerrainToolType.TerrainSmooth) {
             Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition, heightMapImage);
+        } else if (toolType == TerrainToolType.TerrainFlattern) {
+            Flattern(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition, heightMapImage);
         } else {
             Sculpt(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition, heightMapImage);
+            Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition, heightMapImage);
         }
 
         terraBrush.HeightMap.Update(heightMapImage);
@@ -31,7 +36,7 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Smooth(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition, Image heightMapImage) {
+    private void Flattern(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition, Image heightMapImage) {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
@@ -54,6 +59,35 @@ public class SculptTool : ToolBase {
             );
 
             heightMapImage.SetPixel(xPosition, yPosition, newValue);
+        });
+    }
+
+    private void Smooth(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition, Image heightMapImage) {
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (pixelBrushStrength, xPosition, yPosition) => {
+            var directions = new List<float>();
+            if (xPosition - 1 >= 0) {
+                directions.Add(heightMapImage.GetPixel(xPosition - 1, yPosition).R);
+            }
+
+            if (xPosition + 1 < terraBrush.TerrainSize) {
+                directions.Add(heightMapImage.GetPixel(xPosition + 1, yPosition).R);
+            }
+
+            if (yPosition - 1 >= 0) {
+                directions.Add(heightMapImage.GetPixel(xPosition, yPosition - 1).R);
+            }
+
+            if (yPosition + 1 < terraBrush.TerrainSize) {
+                directions.Add(heightMapImage.GetPixel(xPosition, yPosition + 1).R);
+            }
+
+            var currentPixel = heightMapImage.GetPixel(xPosition, yPosition).R;
+            directions.Add(currentPixel);
+
+            float average = directions.Average();
+            float resultValue = Mathf.Lerp(currentPixel, average, pixelBrushStrength * brushStrength);
+
+            heightMapImage.SetPixel(xPosition, yPosition, new Color(resultValue, 0, 0, 1.0f));
         });
     }
 }
