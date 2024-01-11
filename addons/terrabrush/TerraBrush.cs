@@ -735,6 +735,7 @@ public partial class TerraBrush : Node3D {
 
     public async void UpdateFoliagesGroudTexture() {
         await ToSignal(GetTree(), "process_frame");
+        await ToSignal(GetTree(), "process_frame");
 
         var resultImage = _terrain.ResultViewport.GetTexture().GetImage();
         resultImage.Resize(TerrainSize, TerrainSize);
