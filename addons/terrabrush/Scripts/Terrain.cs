@@ -10,16 +10,15 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Terrain : Node3D {
-	// private ShaderMaterial _heightMapShader = null;
+	private ShaderMaterial _terrainColorShader = null;
     private HeightMapShape3D _heightMapCollisionShape = null;
     private CancellationTokenSource _collisionCancellationSource = null;
 
     [NodePath] private Clipmap _clipmap;
-    [NodePath] private MeshInstance3D _resultMesh;
-    [NodePath] private Camera3D _resultMeshCamera;
     [NodePath] private CollisionShape3D _terrainCollision;
     [NodePath] private StaticBody3D _terrainCollider;
     [NodePath] private SubViewport _resultViewport;
+    [NodePath] private ColorRect _terrainColorRect;
 
     [Export] public int TerrainSize { get;set; }
     [Export] public int TerrainSubDivision { get;set; }
@@ -46,6 +45,8 @@ public partial class Terrain : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
+
+        _terrainColorShader = (ShaderMaterial) _terrainColorRect.Material;
     }
 
     public void BuildTerrain(bool collisionOnly = false) {
@@ -64,9 +65,6 @@ public partial class Terrain : Node3D {
             UpdateCollisionShape();
             _clipmap.ClipmapMesh.Visible = false;
         } else {
-            ((PlaneMesh) _resultMesh.Mesh).Size = new Vector2I(TerrainSize, TerrainSize);
-            _resultMeshCamera.Size = TerrainSize;
-
             _clipmap.Heightmap = HeightMap;
             _clipmap.HeightmapFactor = HeightMapFactor;
             _clipmap.Levels = LODLevels;
@@ -94,13 +92,19 @@ public partial class Terrain : Node3D {
 
     public void TerrainSplatmapsUpdated() {
         if (this.Splatmaps?.Count() > 0) {
-    		Clipmap.Shader.SetShaderParameter("Splatmaps", this.TexturesToTextureArray(this.Splatmaps));
+            var splatmaps = TexturesToTextureArray(Splatmaps);
+    		Clipmap.Shader.SetShaderParameter("Splatmaps", splatmaps);
+            _terrainColorShader.SetShaderParameter("Splatmaps", splatmaps);
+            _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
         }
     }
 
     public void TerrainSplatmapsUpdated(IEnumerable<Image> images) {
         if (images.Count() > 0) {
-    		Clipmap.Shader.SetShaderParameter("Splatmaps", ImagesToTextureArray(images));
+            var splatmaps = ImagesToTextureArray(images);
+    		Clipmap.Shader.SetShaderParameter("Splatmaps", splatmaps);
+            _terrainColorShader.SetShaderParameter("Splatmaps", splatmaps);
+            _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
         }
     }
 
@@ -172,9 +176,12 @@ public partial class Terrain : Node3D {
             var textureArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
+            _terrainColorShader.SetShaderParameter("Textures", textureArray);
+            _terrainColorShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
             var normalArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
             Clipmap.Shader.SetShaderParameter("Normals", normalArray);
+            _terrainColorShader.SetShaderParameter("Normals", normalArray);
 
             var roughnessArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
             Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
@@ -184,9 +191,13 @@ public partial class Terrain : Node3D {
             var textureArray = this.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
+            _terrainColorShader.SetShaderParameter("Textures", textureArray);
+            _terrainColorShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
             Clipmap.Shader.SetShaderParameter("UseAntitile", false);
         }
+
+        _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
 	}
 
 	private Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
