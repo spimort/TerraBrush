@@ -122,7 +122,7 @@ public partial class Terrain : Node3D {
         var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
 
         var updateAction = () => {
-            var heightMapImageCopy = ResizeImageToFit(HeightMap.GetImage());//new Image();
+            var heightMapImageCopy = ResizeImageToFit(HeightMap.GetImage());
 
             Image waterImageCopy = null;
             if (WaterTexture != null) {

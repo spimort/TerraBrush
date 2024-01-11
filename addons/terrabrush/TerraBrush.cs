@@ -528,7 +528,8 @@ public partial class TerraBrush : Node3D {
                 var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
                 Image noiseImage = null;
                 if (noiseTexture != null) {
-                    noiseImage = noiseTexture.GetImage();
+                    noiseImage = new Image();
+                    noiseImage.CopyFrom(noiseTexture.GetImage());
                 }
 
                 var objectNode = new Node3D();

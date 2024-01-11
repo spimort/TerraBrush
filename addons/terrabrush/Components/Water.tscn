@@ -7,6 +7,7 @@
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_ripple_buffer_shader.gdshader" id="4_rbabs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tdctr"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_xfn30")
 shader_parameter/InitialCellWidth = 1.0

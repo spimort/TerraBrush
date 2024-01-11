@@ -5,15 +5,16 @@
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader" id="3_b4mbk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fh436"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_b4mbk")
 shader_parameter/InitialCellWidth = 1.0
 shader_parameter/SnowFactor = 1.0
 shader_parameter/SnowInnerOffset = 0.3
-shader_parameter/HeightMapFactor = null
+shader_parameter/HeightMapFactor = 1.0
 shader_parameter/SnowColorDetail = 20.0
-shader_parameter/NoiseFactor = 0.1
-shader_parameter/Metallic = null
+shader_parameter/NoiseFactor = 0.0
+shader_parameter/Metallic = 0.0
 
 [node name="Snow" type="Node3D"]
 script = ExtResource("1_4mfhl")

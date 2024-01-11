@@ -51,8 +51,9 @@ public partial class Foliage : Node3D {
         this._foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
 
         if (NoiseTexture != null) {
-            var noiseImage = this.NoiseTexture.GetImage();
-            if (noiseImage != null) {
+            if (NoiseTexture != null) {
+                var noiseImage = new Image();
+                noiseImage.CopyFrom(NoiseTexture.GetImage());
                 noiseImage.Resize(this.TerrainSize, this.TerrainSize);
 
                 this._foliageShader.SetShaderParameter("NoiseTexture", ImageTexture.CreateFromImage(noiseImage));
