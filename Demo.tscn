@@ -95,6 +95,7 @@ center_offset = Vector3(0, 0.5, 0)
 transparency = 4
 cull_mode = 2
 vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
 albedo_texture = ExtResource("23_w60nv")
 texture_repeat = false
 
@@ -174,6 +175,7 @@ height = 4.0
 script = ExtResource("2_pdfhx")
 HeightMap = ExtResource("3_ckogt")
 DataPath = "res://Demo"
+LODLevels = 3
 TextureSets = SubResource("Resource_nwvvi")
 Splatmaps = [ExtResource("21_uuhvh"), ExtResource("22_rxty4")]
 Foliages = [SubResource("Resource_msipp")]
