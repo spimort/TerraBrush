@@ -31,7 +31,7 @@ void fragment() {
 		ROUGHNESS = texture(SnowColorRoughness, _textureUV * SnowColorDetail).r;
 		
 		// "Hide" vertices that are outside the map
-		float heightmapSize = float(textureSize(HeightmapTexture, 0).x);
+		float heightmapSize = float(textureSize(HeightmapTexture, 0).x) - 1.0;
 		float halfHeightmapSize = heightmapSize / 2.0;	
 		if (
 			_worldVertex.x > halfHeightmapSize || 

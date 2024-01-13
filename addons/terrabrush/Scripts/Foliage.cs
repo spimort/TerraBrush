@@ -37,6 +37,10 @@ public partial class Foliage : Node3D {
     }
 
     public void UpdateFoliage() {
+        if (_particles == null) {
+            return;
+        }
+
         this._particles.Layers = (uint) VisualInstanceLayers;
         this._particles.DrawPass1 = this.Mesh;
         this._particles.MaterialOverride = this.MeshMaterial;

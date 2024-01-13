@@ -6,7 +6,7 @@
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader" id="4_1oqlj"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/terrain_texture_shader.gdshader" id="5_b3t7n"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0oi47"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mtg7j"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_1oqlj")
@@ -30,7 +30,7 @@ DefaultTexture = ExtResource("2_x8un5")
 
 [node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
-Shader = SubResource("ShaderMaterial_0oi47")
+Shader = SubResource("ShaderMaterial_mtg7j")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true

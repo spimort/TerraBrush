@@ -50,13 +50,17 @@ public partial class Terrain : Node3D {
     }
 
     public void BuildTerrain(bool collisionOnly = false) {
+        if (_clipmap == null) {
+            return;
+        }
+
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
 
         var heightMapShape3D = new HeightMapShape3D();
         _terrainCollision.Shape = heightMapShape3D;
         _heightMapCollisionShape = heightMapShape3D;
-        heightMapShape3D.MapWidth = TerrainSize + 1;
-        heightMapShape3D.MapDepth = TerrainSize + 1;
+        heightMapShape3D.MapWidth = TerrainSize;
+        heightMapShape3D.MapDepth = TerrainSize;
 
         _terrainCollider.CollisionLayer = (uint) CollisionLayers;
         _terrainCollider.CollisionMask = (uint) CollisionMask;
@@ -122,26 +126,22 @@ public partial class Terrain : Node3D {
         var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
 
         var updateAction = () => {
-            var heightMapImageCopy = ResizeImageToFit(HeightMap.GetImage());
-
-            Image waterImageCopy = null;
-            if (WaterTexture != null) {
-                waterImageCopy = ResizeImageToFit(WaterTexture.GetImage());
-            }
+            var heightMapImage = HeightMap.GetImage();
+            var waterImage = WaterTexture?.GetImage();
 
             if (token.IsCancellationRequested) {
                 return;
             }
 
             var terrainData = new List<float>();
-            for (var y = 0; y < heightMapImageCopy.GetHeight(); y++) {
-                for (var x = 0; x < heightMapImageCopy.GetWidth(); x++) {
+            for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+                for (var x = 0; x < heightMapImage.GetWidth(); x++) {
                     if (token.IsCancellationRequested) {
                         return;
                     }
 
-                    var pixelHeight = heightMapImageCopy.GetPixel(x, y).R * this.HeightMapFactor;
-                    var waterHeight = waterImageCopy?.GetPixel(x, y).R ?? 0;
+                    var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
+                    var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
 
                     pixelHeight -= waterHeight * WaterFactor;
 
@@ -181,7 +181,6 @@ public partial class Terrain : Node3D {
 
             var normalArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
             Clipmap.Shader.SetShaderParameter("Normals", normalArray);
-            _terrainColorShader.SetShaderParameter("Normals", normalArray);
 
             var roughnessArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
             Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
@@ -234,22 +233,4 @@ public partial class Terrain : Node3D {
             _Images = new Godot.Collections.Array<Image>(images)
         };
 	}
-
-    private Image ResizeImageToFit(Image image) {
-        var imageWidth = image.GetWidth();
-        var imageHeight = image.GetHeight();
-
-        var imageCopy = Image.Create(imageWidth + 1, imageHeight + 1, false, image.GetFormat());
-        for (var x = 0; x < imageWidth + 1; x++) {
-            for (var y = 0; y < imageHeight + 1; y++) {
-                if (x == imageWidth || y == imageHeight) {
-                    imageCopy.SetPixel(x, y, image.GetPixel(x == imageWidth ? x - 1 : x, y == imageHeight ? y - 1 : y));
-                } else {
-                    imageCopy.SetPixel(x, y, image.GetPixel(x, y));
-                }
-            }
-        }
-
-        return imageCopy;
-    }
 }
