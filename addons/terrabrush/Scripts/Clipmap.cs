@@ -75,6 +75,7 @@ public partial class Clipmap : Node3D {
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 
         _clipmapMesh.Mesh = arrayMesh;
+        arrayMesh.CustomAabb = new Aabb(Vector3.Zero, new Vector3(Heightmap.GetWidth() * 2, Heightmap.GetWidth() * 2, Heightmap.GetHeight() * 2));
 
         clipmapShader.SetShaderParameter("HeightmapTexture", Heightmap);
     }
