@@ -15,28 +15,30 @@ public enum TerrainToolType {
     TerrainRemove = 2,
     [ToolType(typeof(SculptTool))]
     TerrainSmooth = 3,
+    [ToolType(typeof(SculptTool))]
+    TerrainFlattern = 4,
     [ToolType(typeof(TextureTool))]
-    Paint = 4,
+    Paint = 5,
     [ToolType(typeof(FoliageTool))]
-    FoliageAdd = 5,
+    FoliageAdd = 6,
     [ToolType(typeof(FoliageTool))]
-    FoliagRemove = 6,
+    FoliagRemove = 7,
     [ToolType(typeof(ObjectTool))]
-    ObjectAdd = 7,
+    ObjectAdd = 8,
     [ToolType(typeof(ObjectTool))]
-    ObjectRemove = 8,
+    ObjectRemove = 9,
     [ToolType(typeof(WaterTool))]
-    WaterAdd = 9,
+    WaterAdd = 10,
     [ToolType(typeof(WaterTool))]
-    WaterRemove = 10,
+    WaterRemove = 11,
     [ToolType(typeof(WaterFlowTool))]
-    WaterFlowAdd = 11,
+    WaterFlowAdd = 12,
     [ToolType(typeof(WaterFlowTool))]
-    WaterFlowRemove = 12,
+    WaterFlowRemove = 13,
     [ToolType(typeof(SnowTool))]
-    SnowAdd = 13,
+    SnowAdd = 14,
     [ToolType(typeof(SnowTool))]
-    SnowRemove = 14,
+    SnowRemove = 15,
 }
 
 [Tool]
@@ -135,7 +137,20 @@ public partial class TerraBrush : Node3D {
         } set {}
     }
 
+    [ExportGroup("LOD")]
+    [Export]
+    public int LODLevels { get;set; } = 5;
+
+    [Export]
+    public int LODRowsPerLevel { get;set; } = 101;
+
+    [Export]
+    public float LODInitialCellWidth { get;set; } = 1;
+
     [ExportGroup("Collisions")]
+    [Export]
+    public bool CreateCollisionInThread { get;set; } = true;
+
     [Export(PropertyHint.Layers3DPhysics)]
     public int CollisionLayers { get;set; } = 1;
 
@@ -231,7 +246,7 @@ public partial class TerraBrush : Node3D {
 
         OnRemoveTerrain();
 
-        var image = Image.Create(TerrainSize, TerrainSize, true, Image.Format.Rh);
+        var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rf);
         HeightMap = GetImageTextureResource(image, HeightmapFileName);
 
         await LoadTerrain();
@@ -296,6 +311,9 @@ public partial class TerraBrush : Node3D {
         }
 
         _terrain = (await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Terrain.tscn", CancellationToken.None)).Instantiate<Terrain>();
+
+        CreateSplatmaps();
+
         _terrain.TextureSets = TextureSets;
         _terrain.Splatmaps = Splatmaps;
 
@@ -309,8 +327,10 @@ public partial class TerraBrush : Node3D {
         _terrain.TextureDetail = TextureDetail;
         _terrain.WaterTexture = WaterTexture;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
-
-        CreateSplatmaps();
+        _terrain.LODLevels = LODLevels;
+        _terrain.LODRowsPerLevel = LODRowsPerLevel;
+        _terrain.LODInitialCellWidth = LODInitialCellWidth;
+        _terrain.CreateCollisionInThread = CreateCollisionInThread;
 
         AddChild(_terrain);
         _terrain.BuildTerrain(!Engine.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly));
@@ -508,7 +528,8 @@ public partial class TerraBrush : Node3D {
                 var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
                 Image noiseImage = null;
                 if (noiseTexture != null) {
-                    noiseImage = noiseTexture.GetImage();
+                    noiseImage = new Image();
+                    noiseImage.CopyFrom(noiseTexture.GetImage());
                 }
 
                 var objectNode = new Node3D();
@@ -609,6 +630,9 @@ public partial class TerraBrush : Node3D {
             _waterNode.Far = WaterDefinition.WaterFar;
             _waterNode.EdgeColor = WaterDefinition.WaterEdgeColor;
             _waterNode.VisualInstanceLayers = WaterDefinition.VisualInstanceLayers;
+            _waterNode.LODLevels = LODLevels;
+            _waterNode.LODRowsPerLevel = LODRowsPerLevel;
+            _waterNode.LODInitialCellWidth = LODInitialCellWidth;
 
             _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
             _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);
@@ -645,6 +669,9 @@ public partial class TerraBrush : Node3D {
         _snowNode.HeightMapFactor = HeightMapFactor;
         _snowNode.SnowTexture = SnowTexture;
         _snowNode.SnowDefinition = SnowDefinition;
+        _snowNode.LODLevels = LODLevels;
+        _snowNode.LODRowsPerLevel = LODRowsPerLevel;
+        _snowNode.LODInitialCellWidth = LODInitialCellWidth;
 
         if (SnowDefinition.Noise != null) {
             await WaitForTextureReady(SnowDefinition.Noise);
@@ -697,6 +724,10 @@ public partial class TerraBrush : Node3D {
         if (_foliagesNode == null) {
             return;
         }
+
+        _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
+        _waterNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
+        _snowNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
         foreach (var foliageNode in _foliagesNode.GetChildren()) {
             ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);

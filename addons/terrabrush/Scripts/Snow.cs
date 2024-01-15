@@ -9,11 +9,10 @@ public partial class Snow : Node3D {
     private const float CompressSpeed = 10;
     private const float DeCompressSpeed = 0.05f;
 
-    private ShaderMaterial _snowShader;
     private ImageTexture _currentCompressedImage;
     private System.Collections.Generic.Dictionary<Vector2I, float> _compressedPositions = new System.Collections.Generic.Dictionary<Vector2I, float>();
 
-    [NodePath] private MeshInstance3D _snowMesh;
+    [NodePath] private Clipmap _clipmap;
 
     [Export] public int TerrainSize { get;set; }
     [Export] public int TerrainSubDivision { get;set; }
@@ -21,35 +20,42 @@ public partial class Snow : Node3D {
     [Export] public float HeightMapFactor { get;set; }
     [Export] public Texture2D SnowTexture { get;set; }
     [Export] public SnowResource SnowDefinition { get;set; }
+    [Export] public int LODLevels { get;set; } = 8;
+    [Export] public int LODRowsPerLevel { get;set; } = 21;
+    [Export] public float LODInitialCellWidth { get;set; } = 1;
+
+    public Clipmap Clipmap => _clipmap;
 
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-
-        _snowShader = (ShaderMaterial) this._snowMesh.GetSurfaceOverrideMaterial(0);
     }
 
     public void UpdateSnow() {
-        _snowMesh.Layers = (uint) SnowDefinition.VisualInstanceLayers;
+        if (_clipmap == null) {
+            return;
+        }
 
-        var planeMesh = (PlaneMesh) _snowMesh.Mesh;
+        _clipmap.ClipmapMesh.Layers = (uint) SnowDefinition.VisualInstanceLayers;
+        _clipmap.Heightmap = HeightMapTexture;
+        _clipmap.HeightmapFactor = HeightMapFactor;
+        _clipmap.Levels = LODLevels;
+        _clipmap.RowsPerLevel = LODRowsPerLevel;
+        _clipmap.InitialCellWidth = LODInitialCellWidth;
 
-        planeMesh.Size = new Vector2I(TerrainSize, TerrainSize);
-        planeMesh.SubdivideWidth = TerrainSubDivision * 2;
-        planeMesh.SubdivideDepth = TerrainSubDivision * 2;
+        _clipmap.CreateMesh();
 
-        _snowShader.SetShaderParameter("SnowTexture", SnowTexture);
-        _snowShader.SetShaderParameter("HeightMapTexture", HeightMapTexture);
-        _snowShader.SetShaderParameter("SnowFactor", SnowDefinition.SnowFactor);
-        _snowShader.SetShaderParameter("SnowInnerOffset", SnowDefinition.SnowInnerOffset);
-        _snowShader.SetShaderParameter("HeightMapFactor", HeightMapFactor);
-        _snowShader.SetShaderParameter("SnowColorTexture", SnowDefinition.SnowColorTexture);
-        _snowShader.SetShaderParameter("SnowColorNormal", SnowDefinition.SnowColorNormal);
-        _snowShader.SetShaderParameter("SnowColorRoughness", SnowDefinition.SnowColorRoughness);
-        _snowShader.SetShaderParameter("SnowColorDetail", SnowDefinition.SnowColorDetail);
-        _snowShader.SetShaderParameter("Noise", SnowDefinition.Noise);
-        _snowShader.SetShaderParameter("NoiseFactor", SnowDefinition.NoiseFactor);
-        _snowShader.SetShaderParameter("Metallic", SnowDefinition.Metallic);
+        _clipmap.Shader.SetShaderParameter("SnowTexture", SnowTexture);
+        _clipmap.Shader.SetShaderParameter("SnowFactor", SnowDefinition.SnowFactor);
+        _clipmap.Shader.SetShaderParameter("SnowInnerOffset", SnowDefinition.SnowInnerOffset);
+        _clipmap.Shader.SetShaderParameter("HeightMapFactor", HeightMapFactor);
+        _clipmap.Shader.SetShaderParameter("SnowColorTexture", SnowDefinition.SnowColorTexture);
+        _clipmap.Shader.SetShaderParameter("SnowColorNormal", SnowDefinition.SnowColorNormal);
+        _clipmap.Shader.SetShaderParameter("SnowColorRoughness", SnowDefinition.SnowColorRoughness);
+        _clipmap.Shader.SetShaderParameter("SnowColorDetail", SnowDefinition.SnowColorDetail);
+        _clipmap.Shader.SetShaderParameter("Noise", SnowDefinition.Noise);
+        _clipmap.Shader.SetShaderParameter("NoiseFactor", SnowDefinition.NoiseFactor);
+        _clipmap.Shader.SetShaderParameter("Metallic", SnowDefinition.Metallic);
     }
 
     public override void _PhysicsProcess(double delta) {
@@ -87,7 +93,7 @@ public partial class Snow : Node3D {
         if (_currentCompressedImage == null) {
             var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
             _currentCompressedImage = ImageTexture.CreateFromImage(image);
-            _snowShader.SetShaderParameter("CompressedSnowTexture", _currentCompressedImage);
+            _clipmap.Shader.SetShaderParameter("CompressedSnowTexture", _currentCompressedImage);
         }
 
         var xPosition = (int) Math.Round(x);

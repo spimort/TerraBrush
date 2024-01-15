@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bfgf5k0vqj828"]
+[gd_scene load_steps=20 format=3 uid="uid://bfgf5k0vqj828"]
 
 [ext_resource type="PackedScene" uid="uid://rmuvkqdg8w8q" path="res://addons/terrabrush/Components/PieMenu.tscn" id="1_efnm5"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/ToolsPieMenu.cs" id="1_fiy40"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ci03cyirflno2" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_2rmhm"]
 [ext_resource type="Texture2D" uid="uid://dbb32vbtyf8df" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_5mgyo"]
 [ext_resource type="Texture2D" uid="uid://ddx07aojxcpp5" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_fohis"]
+[ext_resource type="Texture2D" uid="uid://6jwu6vojgt7h" path="res://addons/terrabrush/Assets/Icons/map_flattern.png" id="7_xlbte"]
 [ext_resource type="Texture2D" uid="uid://dv0bmodrfkoq4" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_a6e5p"]
 [ext_resource type="Texture2D" uid="uid://dqxmj8mb1s8hd" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_r50re"]
 [ext_resource type="Texture2D" uid="uid://bsqfgbd8rcc6k" path="res://addons/terrabrush/Assets/Icons/object_remove.png" id="10_fcsti"]
@@ -15,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://w2mim3h8tuy5" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_rvs25"]
 [ext_resource type="Texture2D" uid="uid://caxwkj3ffjqjl" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_4ao1v"]
 [ext_resource type="Texture2D" uid="uid://bgwjnk5kgbted" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_4ykkx"]
+[ext_resource type="Texture2D" uid="uid://brbx5kn6ijhnm" path="res://addons/terrabrush/Assets/button_hover.png" id="15_tk471"]
 [ext_resource type="Texture2D" uid="uid://vrs8506vox0y" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_xtl3c"]
 [ext_resource type="Texture2D" uid="uid://dkk1jfutj402b" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_t3slk"]
 
@@ -30,180 +32,191 @@ Label = "Tools"
 
 [node name="ToolPreview" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 176.0
-offset_top = -24.0
-offset_right = 224.0
-offset_bottom = 24.0
+offset_left = -24.0
+offset_top = -234.0
+offset_right = 24.0
+offset_bottom = -186.0
 ToolImage = ExtResource("3_3isqm")
 ToolType = 1
 
 [node name="ToolPreview2" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 166.211
-offset_top = -85.8034
-offset_right = 214.211
-offset_bottom = -37.8034
+offset_left = -85.8986
+offset_top = -224.67
+offset_right = -37.8986
+offset_bottom = -176.67
 ToolImage = ExtResource("4_vmmfa")
 ToolType = 2
 
 [node name="ToolPreview3" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 137.803
-offset_top = -141.557
-offset_right = 185.803
-offset_bottom = -93.5556
+offset_left = -142.297
+offset_top = -197.51
+offset_right = -94.2972
+offset_bottom = -149.509
 ToolImage = ExtResource("5_2rmhm")
 ToolType = 3
+
+[node name="ToolPreview15" parent="PieMenu" instance=ExtResource("2_b6unk")]
+layout_mode = 1
+offset_left = -188.185
+offset_top = -154.933
+offset_right = -140.185
+offset_bottom = -106.931
+ToolImage = ExtResource("7_xlbte")
+ToolType = 4
 
 [node name="Splitter" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 93.5571
-offset_top = -185.803
-offset_right = 141.557
-offset_bottom = -137.803
+offset_left = -219.484
+offset_top = -100.722
+offset_right = -171.484
+offset_bottom = -52.7216
 
 [node name="ToolPreview4" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 37.8034
-offset_top = -214.211
-offset_right = 85.8034
-offset_bottom = -166.211
+offset_left = -233.413
+offset_top = -39.6933
+offset_right = -185.413
+offset_bottom = 8.30671
 ToolImage = ExtResource("6_5mgyo")
-ToolType = 4
+ToolType = 5
 
 [node name="Splitter2" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -24.0
-offset_top = -224.0
-offset_right = 24.0
-offset_bottom = -176.0
+offset_left = -228.735
+offset_top = 22.7294
+offset_right = -180.735
+offset_bottom = 70.7294
 
 [node name="ToolPreview5" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -85.8034
-offset_top = -214.211
-offset_right = -37.8034
-offset_bottom = -166.211
+offset_left = -205.865
+offset_top = 81.0
+offset_right = -157.865
+offset_bottom = 129.0
 ToolImage = ExtResource("7_fohis")
-ToolType = 5
+ToolType = 6
 
 [node name="ToolPreview6" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -141.557
-offset_top = -185.803
-offset_right = -93.5568
-offset_bottom = -137.801
+offset_left = -166.836
+offset_top = 129.941
+offset_right = -118.836
+offset_bottom = 177.943
 ToolImage = ExtResource("8_a6e5p")
-ToolType = 6
+ToolType = 7
 
 [node name="Splitter3" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -185.803
-offset_top = -141.557
-offset_right = -137.803
-offset_bottom = -93.557
+offset_left = -115.116
+offset_top = 165.203
+offset_right = -67.1155
+offset_bottom = 213.204
 
 [node name="ToolPreview7" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -214.211
-offset_top = -85.8034
-offset_right = -166.211
-offset_bottom = -37.8029
+offset_left = -55.2989
+offset_top = 183.654
+offset_right = -7.29885
+offset_bottom = 231.655
 ToolImage = ExtResource("9_r50re")
-ToolType = 7
+ToolType = 8
 
 [node name="ToolPreview8" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -224.0
-offset_top = -23.9999
-offset_right = -176.0
-offset_bottom = 24.0006
+offset_left = 7.29886
+offset_top = 183.654
+offset_right = 55.2989
+offset_bottom = 231.655
 ToolImage = ExtResource("10_fcsti")
-ToolType = 8
+ToolType = 9
 
 [node name="Splitter4" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -214.211
-offset_top = 37.8035
-offset_right = -166.211
-offset_bottom = 85.8035
+offset_left = 67.1155
+offset_top = 165.203
+offset_right = 115.116
+offset_bottom = 213.203
 
 [node name="ToolPreview9" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -185.803
-offset_top = 93.5571
-offset_right = -137.803
-offset_bottom = 141.557
+offset_left = 118.836
+offset_top = 129.941
+offset_right = 166.836
+offset_bottom = 177.941
 ToolImage = ExtResource("11_5fj54")
-ToolType = 9
+ToolType = 10
 
 [node name="ToolPreview10" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -141.557
-offset_top = 137.803
-offset_right = -93.5541
-offset_bottom = 185.803
+offset_left = 157.865
+offset_top = 81.0001
+offset_right = 205.868
+offset_bottom = 129.0
 ToolImage = ExtResource("12_rvs25")
-ToolType = 10
+ToolType = 11
 
 [node name="ToolPreview11" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -85.8032
-offset_top = 166.211
-offset_right = -37.8029
-offset_bottom = 214.212
+offset_left = 180.735
+offset_top = 22.7296
+offset_right = 228.735
+offset_bottom = 70.7306
+texture_normal = ExtResource("15_tk471")
 ToolImage = ExtResource("13_4ao1v")
-ToolType = 11
+ToolType = 12
 
 [node name="ToolPreview12" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = -23.9998
-offset_top = 176.0
-offset_right = 24.0002
-offset_bottom = 224.001
+offset_left = 185.413
+offset_top = -39.6931
+offset_right = 233.413
+offset_bottom = 8.30791
+texture_normal = ExtResource("15_tk471")
 ToolImage = ExtResource("14_4ykkx")
-ToolType = 12
+ToolType = 13
 
 [node name="Splitter5" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 37.8036
-offset_top = 166.211
-offset_right = 85.8036
-offset_bottom = 214.211
+offset_left = 171.484
+offset_top = -100.721
+offset_right = 219.484
+offset_bottom = -52.7214
 
 [node name="ToolPreview13" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 93.5573
-offset_top = 137.803
-offset_right = 141.558
-offset_bottom = 185.803
+offset_left = 140.185
+offset_top = -154.933
+offset_right = 188.186
+offset_bottom = -106.933
 ToolImage = ExtResource("15_xtl3c")
-ToolType = 13
+ToolType = 14
 
 [node name="ToolPreview14" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
-offset_left = 137.804
-offset_top = 93.5568
-offset_right = 185.804
-offset_bottom = 141.557
+offset_left = 94.2975
+offset_top = -197.51
+offset_right = 142.298
+offset_bottom = -149.51
 ToolImage = ExtResource("16_t3slk")
-ToolType = 14
+ToolType = 15
 
 [node name="Splitter6" type="Control" parent="PieMenu"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 166.211
-offset_top = 37.8031
-offset_right = 214.211
-offset_bottom = 85.8031
+offset_left = 37.899
+offset_top = -224.67
+offset_right = 85.899
+offset_bottom = -176.67

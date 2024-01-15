@@ -37,6 +37,10 @@ public partial class Foliage : Node3D {
     }
 
     public void UpdateFoliage() {
+        if (_particles == null) {
+            return;
+        }
+
         this._particles.Layers = (uint) VisualInstanceLayers;
         this._particles.DrawPass1 = this.Mesh;
         this._particles.MaterialOverride = this.MeshMaterial;
@@ -51,12 +55,11 @@ public partial class Foliage : Node3D {
         this._foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
 
         if (NoiseTexture != null) {
-            var noiseImage = this.NoiseTexture.GetImage();
-            if (noiseImage != null) {
-                noiseImage.Resize(this.TerrainSize, this.TerrainSize);
+            var noiseImage = new Image();
+            noiseImage.CopyFrom(NoiseTexture.GetImage());
+            noiseImage.Resize(this.TerrainSize, this.TerrainSize);
 
-                this._foliageShader.SetShaderParameter("NoiseTexture", ImageTexture.CreateFromImage(noiseImage));
-            }
+            this._foliageShader.SetShaderParameter("NoiseTexture", ImageTexture.CreateFromImage(noiseImage));
         }
 
         if (Engine.IsEditorHint()) {

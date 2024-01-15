@@ -19,6 +19,7 @@ public partial class BrushDecal : Node3D {
         var imageCopy = new Image();
         imageCopy.CopyFrom(image);
         imageCopy.FlipY();
+        imageCopy.FlipX();
 
         for (var x = 0; x < imageCopy.GetWidth(); x++) {
             for (var y = 0; y < imageCopy.GetHeight(); y++) {

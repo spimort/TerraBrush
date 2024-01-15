@@ -59,7 +59,7 @@ public partial class Plugin : EditorPlugin {
         _customContentPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
-        
+
         keybindManager.RegisterInputMap();
         keybindManager.LoadEditorSettings();
         AddToolMenuItem("TerraBrush Key bindings", Callable.From(HandleKeyBindings));
@@ -143,7 +143,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
-                ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
+                ShowBrushNumericSelector(1, 200, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 });
 

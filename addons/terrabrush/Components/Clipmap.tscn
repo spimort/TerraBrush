@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://2taw1ee4hhf2"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Clipmap.cs" id="1_lt4y1"]
+[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader" id="2_xinug"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_65w6a"]
+render_priority = 0
+shader = ExtResource("2_xinug")
+shader_parameter/InitialCellWidth = 1.0
+
+[node name="Clipmap" type="Node3D"]
+script = ExtResource("1_lt4y1")
+Levels = 4
+RowsPerLevel = 1
+
+[node name="ClipmapMesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("ShaderMaterial_65w6a")
