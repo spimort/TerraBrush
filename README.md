@@ -40,6 +40,7 @@ I'm gonna be happy to accept PR for new features if it fits.
   - Increase the terrain
   - Decrease the terrain
   - Smooth the terrain
+  - Flattern the terrain
 * **Paint textures** - Add colors to your terrain with the textures painting tool
   - Normal map and roughness texture are supported
 * **Foliage** - Add foliage to your terrain (ex. Grass)
@@ -68,10 +69,11 @@ I'm gonna be happy to accept PR for new features if it fits.
     - H - Show a quick select for the brush strength
   - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
+* **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
 
 ## How To Use
 
-Watch the tutorial video! 
+Watch the tutorial video!
 https://youtu.be/n5WeAqeea1c
 
 > **Note**
@@ -110,7 +112,12 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
 |Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
+|**LOD**||
+|LOD Levels|The number of levels the clipmap will be made of. The default value is 5.|
+|LOD Rows Per Level|The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 101.|
+|LOD Initial Cell Width|The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|
 |**Collisions**||
+|Create Collision In Thread|Create the collision shape in a thread. This helps a lot when editing the terrain. This also means that the collision could appear late compared to the terrain. The default value is true.|
 |Collision Layers|The terrain collision layers|
 |Collision Mask| The terrain collision mask|
 |**Textures**||
