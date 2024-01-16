@@ -56,7 +56,7 @@ void vertex() {
 	vec4 currentCompressed = texture(CompressedSnowTexture, _textureUV);
 
 	if (currentSnowColor.r > 0.0f) {
-		float compressedSnowValue = Remap(currentCompressed.r, 0.0, 1.0, 1.0, 0.0);
+		float compressedSnowValue = Remap(currentCompressed.r, 0.0, 1.0, 1.0, -1.0);
 
 		VERTEX.y += ((currentSnowColor.r * SnowFactor) * compressedSnowValue) + (currentNoiseColor.r * NoiseFactor) - SnowInnerOffset;
 
