@@ -37,7 +37,7 @@ public partial class Snow : Node3D {
         }
 
         _clipmap.ClipmapMesh.Layers = (uint) SnowDefinition.VisualInstanceLayers;
-        _clipmap.Heightmap = HeightMapTexture;
+        // _clipmap.Heightmap = HeightMapTexture;
         _clipmap.HeightmapFactor = HeightMapFactor;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;

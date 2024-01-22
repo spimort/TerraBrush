@@ -11,23 +11,23 @@ namespace TerraBrush;
 [Tool]
 public partial class Terrain : Node3D {
 	private ShaderMaterial _terrainColorShader = null;
-    private HeightMapShape3D _heightMapCollisionShape = null;
     private CancellationTokenSource _collisionCancellationSource = null;
+    // private Texture2DArray _splatmapsTexture = null;
 
     [NodePath] private Clipmap _clipmap;
-    [NodePath] private CollisionShape3D _terrainCollision;
     [NodePath] private StaticBody3D _terrainCollider;
     [NodePath] private SubViewport _resultViewport;
     [NodePath] private ColorRect _terrainColorRect;
 
-    [Export] public int TerrainSize { get;set; }
+    [Export] public int ZonesSize { get;set; }
     [Export] public int TerrainSubDivision { get;set; }
-    [Export] public Texture2D HeightMap { get;set; }
+    // [Export] public Texture2D HeightMap { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
-	[Export] public Texture2D[] Splatmaps { get;set; } = new Texture2D[]{};
+	// [Export] public Texture2D[] Splatmaps { get;set; } = new Texture2D[]{};
 	[Export] public int TextureDetail { get;set; } = 1;
-    [Export] public ImageTexture WaterTexture { get;set; }
+    // [Export] public ImageTexture WaterTexture { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -42,6 +42,13 @@ public partial class Terrain : Node3D {
     public SubViewport ResultViewport => _resultViewport;
     public Clipmap Clipmap => _clipmap;
 
+
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnDoIt)}")]
+    public bool DoIt {
+        get {
+            return false;
+        } set {}
+    }
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
@@ -56,12 +63,6 @@ public partial class Terrain : Node3D {
 
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
 
-        var heightMapShape3D = new HeightMapShape3D();
-        _terrainCollision.Shape = heightMapShape3D;
-        _heightMapCollisionShape = heightMapShape3D;
-        heightMapShape3D.MapWidth = TerrainSize;
-        heightMapShape3D.MapDepth = TerrainSize;
-
         _terrainCollider.CollisionLayer = (uint) CollisionLayers;
         _terrainCollider.CollisionMask = (uint) CollisionMask;
 
@@ -69,7 +70,8 @@ public partial class Terrain : Node3D {
             UpdateCollisionShape();
             _clipmap.ClipmapMesh.Visible = false;
         } else {
-            _clipmap.Heightmap = HeightMap;
+            _clipmap.ZonesSize = ZonesSize;
+            _clipmap.TerrainZones = TerrainZones;
             _clipmap.HeightmapFactor = HeightMapFactor;
             _clipmap.Levels = LODLevels;
             _clipmap.RowsPerLevel = LODRowsPerLevel;
@@ -95,25 +97,32 @@ public partial class Terrain : Node3D {
     }
 
     public void TerrainSplatmapsUpdated() {
-        if (this.Splatmaps?.Count() > 0) {
-            var splatmaps = TexturesToTextureArray(Splatmaps);
-    		Clipmap.Shader.SetShaderParameter("Splatmaps", splatmaps);
-            _terrainColorShader.SetShaderParameter("Splatmaps", splatmaps);
-            _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-        }
+        TerrainZones.UpdateSplatmapsTextures();
+        // if (this.Splatmaps?.Count() > 0) {
+        //     if (_splatmapsTexture == null) {
+        //         _splatmapsTexture = new Texture2DArray();
+        //         Clipmap.Shader.SetShaderParameter("Splatmaps", _splatmapsTexture);
+        //         _terrainColorShader.SetShaderParameter("Splatmaps", _splatmapsTexture);
+        //     }
+        //     _splatmapsTexture.CreateFromImages(new Godot.Collections.Array<Image>(Splatmaps.Select(texture => texture.GetImage())));
+        //     _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
+        // }
     }
 
-    public void TerrainSplatmapsUpdated(IEnumerable<Image> images) {
-        if (images.Count() > 0) {
-            var splatmaps = ImagesToTextureArray(images);
-    		Clipmap.Shader.SetShaderParameter("Splatmaps", splatmaps);
-            _terrainColorShader.SetShaderParameter("Splatmaps", splatmaps);
-            _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-        }
-    }
+    // public void TerrainSplatmapsUpdated(IEnumerable<Image> images) {
+    //     if (images.Count() > 0) {
+    //         if (_splatmapsTexture == null) {
+    //             _splatmapsTexture = new Texture2DArray();
+    //             Clipmap.Shader.SetShaderParameter("Splatmaps", _splatmapsTexture);
+    //             _terrainColorShader.SetShaderParameter("Splatmaps", _splatmapsTexture);
+    //         }
+    //         _splatmapsTexture.CreateFromImages(new Godot.Collections.Array<Image>(images));
+    //         _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
+    //     }
+    // }
 
     public void TerrainWaterUpdated() {
-    	Clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+    	// Clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
     	Clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
     }
 
@@ -125,35 +134,59 @@ public partial class Terrain : Node3D {
 
         var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
 
+        foreach (var collisionShape in _terrainCollider.GetChildren()) {
+            collisionShape.QueueFree();
+        }
+
+        var shapes = new List<HeightMapShape3D>();
+        foreach (var zone in TerrainZones.Zones) {
+            var collisionShape = new CollisionShape3D();
+            _terrainCollider.AddChild(collisionShape);
+
+            collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
+            collisionShape.Owner = this;
+
+            var heightMapShape3D = new HeightMapShape3D();
+            collisionShape.Shape = heightMapShape3D;
+            heightMapShape3D.MapWidth = ZonesSize;
+            heightMapShape3D.MapDepth = ZonesSize;
+
+            shapes.Add(heightMapShape3D);
+        }
+
         var updateAction = () => {
-            var heightMapImage = HeightMap.GetImage();
-            var waterImage = WaterTexture?.GetImage();
+            for (var i = 0; i < TerrainZones.Zones.Count(); i++) {
+                var zone = TerrainZones.Zones[i];
 
-            if (token.IsCancellationRequested) {
-                return;
-            }
+                var heightMapImage = zone.HeightMapTexture.GetImage();
+                var waterImage = zone.WaterTexture?.GetImage();
 
-            var terrainData = new List<float>();
-            for (var y = 0; y < heightMapImage.GetHeight(); y++) {
-                for (var x = 0; x < heightMapImage.GetWidth(); x++) {
-                    if (token.IsCancellationRequested) {
-                        return;
-                    }
-
-                    var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-                    var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
-
-                    pixelHeight -= waterHeight * WaterFactor;
-
-                    terrainData.Add(pixelHeight);
+                if (token.IsCancellationRequested) {
+                    return;
                 }
-            }
 
-            if (token.IsCancellationRequested) {
-                return;
-            }
+                var terrainData = new List<float>();
+                for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+                    for (var x = 0; x < heightMapImage.GetWidth(); x++) {
+                        if (token.IsCancellationRequested) {
+                            return;
+                        }
 
-            CallDeferred(nameof(AssignCollisionData), terrainData.ToArray());
+                        var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
+                        var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+
+                        pixelHeight -= waterHeight * WaterFactor;
+
+                        terrainData.Add(pixelHeight);
+                    }
+                }
+
+                if (token.IsCancellationRequested) {
+                    return;
+                }
+
+                CallDeferred(nameof(AssignCollisionData), shapes[i], terrainData.ToArray());
+            }
         };
 
         if (CreateCollisionInThread) {
@@ -165,8 +198,8 @@ public partial class Terrain : Node3D {
         }
 	}
 
-    private void AssignCollisionData(float[] data) {
-        _heightMapCollisionShape.MapData = data;
+    private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
+        shape.MapData = data;
     }
 
 	private void UpdateTextures() {
@@ -228,9 +261,7 @@ public partial class Terrain : Node3D {
 		return textureArray;
 	}
 
-	private Texture2DArray ImagesToTextureArray(IEnumerable<Image> images) {
-		return new Texture2DArray() {
-            _Images = new Godot.Collections.Array<Image>(images)
-        };
-	}
+    public void OnDoIt() {
+        this.UpdateCollisionShape();
+    }
 }

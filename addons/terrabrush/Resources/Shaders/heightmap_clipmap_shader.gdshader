@@ -74,7 +74,7 @@ void fragment() {
 		vec3 textureUV = vec3(detailUV.x, detailUV.y, float(i));
 		vec3 splatmapUV = vec3(_textureUV.x, _textureUV.y, floor(float(i/4)));
 	
-		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV) ;
+		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
 		vec4 currentNormal = UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV);
 		vec4 currentRoughness = UseAntitile ? texture_array_antitile(RoughnessTexutres, textureUV) : texture(RoughnessTexutres, textureUV);
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
@@ -107,15 +107,56 @@ void fragment() {
 	ALPHA = 1.0;
 	ALPHA_SCISSOR_THRESHOLD = 1.0;
 	
-	// "Hide" vertices that are outside the map
-	float heightmapSize = float(textureSize(HeightmapTexture, 0).x) - 1.0;
-	float halfHeightmapSize = heightmapSize / 2.0;	
-	if (
-		_worldVertex.x > halfHeightmapSize || 
-		_worldVertex.x < -halfHeightmapSize || 
-		_worldVertex.z > halfHeightmapSize ||
-		_worldVertex.z < -halfHeightmapSize
-	) {
-		ALPHA = 0.0;
-	}		
+	//ivec2 zonesMapSize = textureSize(ZonesMap, 0);	
+	//if (_zonesMap.x >= 0 && _zonesMap.x < zonesMapSize.x && _zonesMap.y >= 0 && _zonesMap.y < zonesMapSize.y && _zoneInfoPosition.r >= 0.0) {
+		//ALBEDO = vec3(1.0, 0, 0);
+	//}	
+	
+	//if (_zonesStep.x == 0 && _zonesStep.y == 0) {
+		//ALBEDO = vec3(1.0, 0, 0);		
+	//}
+
+	ivec2 zonesMapSize = textureSize(ZonesMap, 0); // 1 
+		
+	ivec2 zonesStep = ivec2(int(floor(_textureUV.x)), int(floor(_textureUV.y)));
+	int xZonesMap = zonesStep.x + int(zonesMapSize.x) / 2;
+	int yZonesMap = zonesStep.y + int(zonesMapSize.y) / 2;
+	
+	vec4 zoneInfoPosition = vec4(-1);	
+	if (xZonesMap >= 0 && xZonesMap < zonesMapSize.x && yZonesMap >= 0 && yZonesMap < zonesMapSize.y) {
+		zoneInfoPosition = texelFetch(ZonesMap, ivec2(xZonesMap, yZonesMap), 0);
+	}	
+	
+	if (zoneInfoPosition.x >= 0.0) {
+		ALBEDO = vec3(1.0, 0, 0);
+	} else {
+		//ALPHA = 0.0;
+	}	
+	
+	//if (_worldVertex.z >= -2.5) {
+		//ALBEDO = vec3(1.0, 0, 0);	
+	//}		
+	
+	//if (_worldVertex.z >= -2.5) {
+		//ALBEDO = vec3(1.0, 0, 0);		
+	//}
+	
+ 	//if (_worldVertex.z <= -2.5) {
+		//ALPHA = 0.0;
+	//}
+	//if (_zonesMap.x < 0 || _zonesMap.x >= zonesMapSize.x || _zonesMap.y < 0 || _zonesMap.y >= zonesMapSize.y || _zoneInfoPosition.r < 0.0) {
+		//ALPHA = 0.0;
+	//}
+	
+	//// "Hide" vertices that are outside the map
+	//float heightmapSize = float(ZonesSize) - 1.0;
+	//float halfHeightmapSize = heightmapSize / 2.0;	
+	//if (
+		//_worldVertex.x > halfHeightmapSize || 
+		//_worldVertex.x < -halfHeightmapSize || 
+		//_worldVertex.z > halfHeightmapSize ||
+		//_worldVertex.z < -halfHeightmapSize
+	//) {
+		//ALPHA = 0.0;
+	//}		
 }

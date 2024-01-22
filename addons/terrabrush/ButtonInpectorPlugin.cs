@@ -7,6 +7,7 @@ public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
     public const string ButtonInspectorHintString = "ButtonHint";
 
     public override bool _CanHandle(GodotObject @object) {
+        return true;
         return @object is TerraBrush;
     }
 

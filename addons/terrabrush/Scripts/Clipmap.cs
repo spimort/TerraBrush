@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -8,7 +9,9 @@ namespace TerraBrush;
 public partial class Clipmap : Node3D {
     [NodePath] private MeshInstance3D _clipmapMesh;
 
-    [Export] public Texture2D Heightmap { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
+    // [Export] public Texture2D Heightmap { get;set; }
     [Export] public float HeightmapFactor { get;set; }
     [Export] public int Levels { get;set; } = 8;
     [Export] public int RowsPerLevel { get;set; } = 21;
@@ -76,11 +79,25 @@ public partial class Clipmap : Node3D {
 
         _clipmapMesh.Mesh = arrayMesh;
 
-        var aabbSize = Heightmap.GetWidth() * 2;
-        var aabbPoint = -(aabbSize / 2);
-        arrayMesh.CustomAabb = new Aabb(new Vector3(aabbPoint, aabbPoint, aabbPoint), new Vector3(aabbSize, aabbSize, aabbSize));
+        // var aabbSize = Heightmap.GetWidth() * 2;
+        // var aabbPoint = -(aabbSize / 2);
+        // arrayMesh.CustomAabb = new Aabb(new Vector3(aabbPoint, aabbPoint, aabbPoint), new Vector3(aabbSize, aabbSize, aabbSize));
 
-        clipmapShader.SetShaderParameter("HeightmapTexture", Heightmap);
+        clipmapShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
+        clipmapShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
+        clipmapShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
+
+        var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
+		var maxX = zonePositions.Max(x => Math.Abs(x.X));
+		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+
+		var zonesMap = Image.Create((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
+		zonesMap.Fill(new Color(-1, 0, 0, 0));
+		for (var i = 0; i < zonePositions.Count(); i++) {
+			var position = zonePositions[i];
+			zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
+		}
+		clipmapShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(zonesMap));
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {

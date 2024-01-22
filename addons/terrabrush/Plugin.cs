@@ -174,33 +174,33 @@ public partial class Plugin : EditorPlugin {
                         // Trigger a dirty state
                         _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
 
-                        _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
+                        // _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
 
-                        if (_currentTerraBrushNode.WaterTexture != null) {
-                            _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                        }
+                        // if (_currentTerraBrushNode.WaterTexture != null) {
+                        //     _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
+                        // }
 
-                        if (_currentTerraBrushNode.SnowTexture != null) {
-                            _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                        }
+                        // if (_currentTerraBrushNode.SnowTexture != null) {
+                        //     _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
+                        // }
 
-                        if (_currentTerraBrushNode.Splatmaps != null) {
-                            foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                            }
-                        }
+                        // if (_currentTerraBrushNode.Splatmaps != null) {
+                        //     foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
+                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
+                        //     }
+                        // }
 
-                        if (_currentTerraBrushNode.Foliages != null) {
-                            foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                            }
-                        }
+                        // if (_currentTerraBrushNode.Foliages != null) {
+                        //     foreach (var foliage in _currentTerraBrushNode.Foliages) {
+                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
+                        //     }
+                        // }
 
-                        if (_currentTerraBrushNode.Objects != null) {
-                            foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                            }
-                        }
+                        // if (_currentTerraBrushNode.Objects != null) {
+                        //     foreach (var objectItem in _currentTerraBrushNode.Objects) {
+                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
+                        //     }
+                        // }
 
                         _isMousePressed = true;
                         preventGuiInput = true;
@@ -212,33 +212,33 @@ public partial class Plugin : EditorPlugin {
                     // Trigger a dirty state
                     _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
 
-                    _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
+                    // _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
 
-                    if (_currentTerraBrushNode.WaterTexture != null) {
-                        _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                    }
+                    // if (_currentTerraBrushNode.WaterTexture != null) {
+                    //     _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
+                    // }
 
-                    if (_currentTerraBrushNode.SnowTexture != null) {
-                        _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                    }
+                    // if (_currentTerraBrushNode.SnowTexture != null) {
+                    //     _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
+                    // }
 
-                    if (_currentTerraBrushNode.Splatmaps != null) {
-                        foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                        }
-                    }
+                    // if (_currentTerraBrushNode.Splatmaps != null) {
+                    //     foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
+                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
+                    //     }
+                    // }
 
-                    if (_currentTerraBrushNode.Foliages != null) {
-                        foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                        }
-                    }
+                    // if (_currentTerraBrushNode.Foliages != null) {
+                    //     foreach (var foliage in _currentTerraBrushNode.Foliages) {
+                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
+                    //     }
+                    // }
 
-                    if (_currentTerraBrushNode.Objects != null) {
-                        foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                        }
-                    }
+                    // if (_currentTerraBrushNode.Objects != null) {
+                    //     foreach (var objectItem in _currentTerraBrushNode.Objects) {
+                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
+                    //     }
+                    // }
 
                     _undoRedo.AddUndoMethod(this, nameof(OnUndoRedo));
                     _undoRedo.AddDoMethod(this, nameof(OnUndoRedo));
@@ -297,6 +297,8 @@ public partial class Plugin : EditorPlugin {
     }
 
     private Vector3 GetRayCastWithTerrain(Camera3D editorCamera, Vector2 mousePosition) {
+        var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
+
         if (editorCamera.GetViewport() is SubViewport viewport && viewport.GetParent() is SubViewportContainer viewportContainer) {
             var screenPosition = mousePosition * viewport.Size / viewportContainer.Size;
 
@@ -304,8 +306,6 @@ public partial class Plugin : EditorPlugin {
             var dir = editorCamera.ProjectRayNormal(screenPosition);
 
             var distance = editorCamera.Far * 1.2f;
-            var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
-
             var query = new PhysicsRayQueryParameters3D();
             query.From = from;
             query.To = from + dir * distance;

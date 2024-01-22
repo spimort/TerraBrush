@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://0chnym463hcs"]
+[gd_scene load_steps=8 format=3 uid="uid://0chnym463hcs"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Terrain.cs" id="1_vjtl3"]
 [ext_resource type="Texture2D" uid="uid://c1by6d4lgjo8j" path="res://addons/terrabrush/Assets/texel_density.jpg" id="2_x8un5"]
@@ -6,18 +6,16 @@
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader" id="4_1oqlj"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/terrain_texture_shader.gdshader" id="5_b3t7n"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mtg7j"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_70nbq"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_1oqlj")
+shader_parameter/ZonesSize = null
 shader_parameter/InitialCellWidth = 1.0
 shader_parameter/WaterFactor = 1.0
 shader_parameter/TextureDetail = null
 shader_parameter/NumberOfTextures = null
 shader_parameter/UseAntitile = true
-
-[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_e16ak"]
-resource_local_to_scene = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4u1qc"]
 resource_local_to_scene = true
@@ -30,15 +28,10 @@ DefaultTexture = ExtResource("2_x8un5")
 
 [node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
-Shader = SubResource("ShaderMaterial_mtg7j")
+Shader = SubResource("ShaderMaterial_70nbq")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true
-visible = false
-
-[node name="TerrainCollision" type="CollisionShape3D" parent="TerrainCollider"]
-unique_name_in_owner = true
-shape = SubResource("HeightMapShape3D_e16ak")
 
 [node name="ResultViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true
