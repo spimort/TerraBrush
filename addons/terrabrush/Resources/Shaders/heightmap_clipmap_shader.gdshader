@@ -116,19 +116,22 @@ void fragment() {
 		//ALBEDO = vec3(1.0, 0, 0);		
 	//}
 
-	ivec2 zonesMapSize = textureSize(ZonesMap, 0); // 1 
-		
-	ivec2 zonesStep = ivec2(int(floor(_textureUV.x)), int(floor(_textureUV.y)));
+	float fixedZonesSize = ZonesSize - 1.0; 	
+	vec2 zoneArea = (_worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
+	
+	ivec2 zonesMapSize = textureSize(ZonesMap, 0);
+
+	ivec2 zonesStep = ivec2(int(floor(zoneArea.x)), int(floor(zoneArea.y)));
 	int xZonesMap = zonesStep.x + int(zonesMapSize.x) / 2;
 	int yZonesMap = zonesStep.y + int(zonesMapSize.y) / 2;
 	
 	vec4 zoneInfoPosition = vec4(-1);	
 	if (xZonesMap >= 0 && xZonesMap < zonesMapSize.x && yZonesMap >= 0 && yZonesMap < zonesMapSize.y) {
 		zoneInfoPosition = texelFetch(ZonesMap, ivec2(xZonesMap, yZonesMap), 0);
-	}	
+	}
 	
-	if (zoneInfoPosition.x >= 0.0) {
-		ALBEDO = vec3(1.0, 0, 0);
+	if (zoneInfoPosition.x < 0.0) {
+		ALPHA = 0.0;
 	} else {
 		//ALPHA = 0.0;
 	}	

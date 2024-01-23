@@ -20,7 +20,7 @@ public class SculptTool : ToolBase {
             Flattern(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else {
             Sculpt(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
-            // Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
+            Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
         }
 
         terraBrush.TerrainZones.UpdateHeightmaps();

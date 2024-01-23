@@ -6,14 +6,15 @@ uniform float NumberOfZones;
 uniform float InitialCellWidth = 1.0;
 
 void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec2 textureUV, out vec3 worldVertex) {
-	float fixedZonesSize = ZonesSize - 1.0; 
 	worldVertex = vertex + modelMatrix[3].xyz;
+	textureUV = (worldVertex.xz + (ZonesSize / 2.0)) / ZonesSize;
 	
-	textureUV = (worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
+	float fixedZonesSize = ZonesSize - 1.0; 	
+	vec2 zoneArea = (worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
 	ivec2 zonesMapSize = textureSize(ZonesMap, 0);
 
-	ivec2 zonesStep = ivec2(int(floor(textureUV.x)), int(floor(textureUV.y)));
+	ivec2 zonesStep = ivec2(int(floor(zoneArea.x)), int(floor(zoneArea.y)));
 	int xZonesMap = zonesStep.x + int(zonesMapSize.x) / 2;
 	int yZonesMap = zonesStep.y + int(zonesMapSize.y) / 2;
 	
@@ -21,14 +22,26 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 	if (xZonesMap >= 0 && xZonesMap < zonesMapSize.x && yZonesMap >= 0 && yZonesMap < zonesMapSize.y) {
 		zoneInfoPosition = texelFetch(ZonesMap, ivec2(xZonesMap, yZonesMap), 0);
 	}
-	
+		
 	if (zoneInfoPosition.r >= 0.0) {
-		ivec3 pixelCoords = ivec3(
-			int(floor(worldVertex.x) + (fixedZonesSize / 2.0) - (float(zonesStep.x) * fixedZonesSize)), 
-			int(floor(worldVertex.z) + (fixedZonesSize / 2.0) - (float(zonesStep.y) * fixedZonesSize)), 
-			int(floor(zoneInfoPosition.r))
+		//ivec3 pixelCoords = ivec3(
+			//int(floor(worldVertex.x) + (fixedZonesSize / 2.0) - (float(zonesStep.x) * fixedZonesSize)), 
+			//int(floor(worldVertex.z) + (fixedZonesSize / 2.0) - (float(zonesStep.y) * fixedZonesSize)), 
+			//int(floor(zoneInfoPosition.r))
+		//);
+		//ivec3 pixelCoords = ivec3(			
+			//int((textureUV.x - float(zonesStep.x)) * fixedZonesSize), 
+			//int((textureUV.y - float(zonesStep.y)) * fixedZonesSize), 
+			//int(floor(zoneInfoPosition.r))
+		//);
+		//vertex.y = texelFetch(HeightmapTextures, pixelCoords, 0).r;				
+		
+		vec3 zoneUV = vec3(
+			zoneArea.x - (float(zonesStep.x)), 
+			zoneArea.y - (float(zonesStep.y)), 
+			floor(zoneInfoPosition.r)
 		);
-		vertex.y = texelFetch(HeightmapTextures, pixelCoords, 0).r;				
+		vertex.y = texture(HeightmapTextures, zoneUV).r;
 		
 		// Calculate the average height for mid zone vertices
 		//if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
