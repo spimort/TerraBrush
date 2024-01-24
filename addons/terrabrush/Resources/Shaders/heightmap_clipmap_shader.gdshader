@@ -116,7 +116,7 @@ void fragment() {
 		//ALBEDO = vec3(1.0, 0, 0);		
 	//}
 
-	float fixedZonesSize = ZonesSize - 1.0; 	
+	float fixedZonesSize = ZonesSize; 	
 	vec2 zoneArea = (_worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
 	ivec2 zonesMapSize = textureSize(ZonesMap, 0);
@@ -131,8 +131,9 @@ void fragment() {
 	}
 	
 	if (zoneInfoPosition.x < 0.0) {
-		ALPHA = 0.0;
+		//ALPHA = 0.0;
 	} else {
+		ALBEDO = vec3(1.0, float(zonesStep.x) / 2.0, 0.0);
 		//ALPHA = 0.0;
 	}	
 	

@@ -6,7 +6,7 @@ using Godot;
 namespace TerraBrush;
 
 public abstract class ToolBase {
-    protected delegate void OnBrushPixel(Image image, float pixelBrushStrength, int xPosition, int yPosition, Dictionary<ZoneResource, Image> imagesCache);
+    protected delegate void OnBrushPixel(Image image, float pixelBrushStrength, Vector2I relativeImagePosition, Vector2I absoluteImagePosition, Dictionary<ZoneResource, Image> imagesCache);
 
     public abstract void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
 
@@ -23,7 +23,13 @@ public abstract class ToolBase {
                     var brushPixelValue = brushImage.GetPixel(x, y);
                     var colorValue = brushPixelValue.A;
 
-                    onBrushPixel(imageZoneInfo.Image, colorValue, imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, imagesCache);
+                    onBrushPixel(
+                        imageZoneInfo.Image,
+                        colorValue,
+                        new Vector2I(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y),
+                        new Vector2I(xPosition, yPosition),
+                        imagesCache
+                    );
                 }
             }
         }

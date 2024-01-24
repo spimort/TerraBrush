@@ -9,7 +9,7 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 	worldVertex = vertex + modelMatrix[3].xyz;
 	textureUV = (worldVertex.xz + (ZonesSize / 2.0)) / ZonesSize;
 	
-	float fixedZonesSize = ZonesSize - 1.0; 	
+	float fixedZonesSize = ZonesSize; 	
 	vec2 zoneArea = (worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
 	ivec2 zonesMapSize = textureSize(ZonesMap, 0);

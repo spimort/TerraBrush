@@ -37,7 +37,11 @@ public partial class Clipmap : Node3D {
     }
 
     private void UpdateClipmapMeshPosition(Vector3 position) {
-        _clipmapMesh.GlobalPosition = new Vector3((int) Math.Floor(position.X), 0, (int) Math.Floor(position.Z));
+        var offset = 0.0f;
+        if (ZonesSize % 2 == 0) {
+            offset = InitialCellWidth / 2.0f;
+        }
+        _clipmapMesh.GlobalPosition = new Vector3(((int) Math.Floor(position.X)) + offset, 0, ((int) Math.Floor(position.Z)) + offset);
     }
 
     public void ClearMesh() {
