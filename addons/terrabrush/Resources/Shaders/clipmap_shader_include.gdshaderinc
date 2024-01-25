@@ -9,7 +9,7 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 	worldVertex = vertex + modelMatrix[3].xyz;
 	textureUV = (worldVertex.xz + (ZonesSize / 2.0)) / ZonesSize;
 	
-	float fixedZonesSize = ZonesSize; 	
+	float fixedZonesSize = ZonesSize - 1.0; 	
 	vec2 zoneArea = (worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
 	ivec2 zonesMapSize = textureSize(ZonesMap, 0);
@@ -36,11 +36,19 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 		//);
 		//vertex.y = texelFetch(HeightmapTextures, pixelCoords, 0).r;				
 		
+		//vec3 zoneUV = vec3(
+			//zoneArea.x - (float(zonesStep.x)), 
+			//zoneArea.y - (float(zonesStep.y)), 
+			//floor(zoneInfoPosition.r)
+		//);
+		float sizeUnit = (1.0 / ZonesSize);
+		float halfUnit = sizeUnit / 2.0;
+		float fixedSizePercent = 1.0 - sizeUnit;
 		vec3 zoneUV = vec3(
-			zoneArea.x - (float(zonesStep.x)), 
-			zoneArea.y - (float(zonesStep.y)), 
+			(((zoneArea.x - (float(zonesStep.x))) * fixedSizePercent) + halfUnit), 
+			(((zoneArea.y - (float(zonesStep.y))) * fixedSizePercent) + halfUnit),
 			floor(zoneInfoPosition.r)
-		);
+		);		
 		vertex.y = texture(HeightmapTextures, zoneUV).r;
 		
 		// Calculate the average height for mid zone vertices

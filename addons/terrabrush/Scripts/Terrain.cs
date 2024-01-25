@@ -42,13 +42,6 @@ public partial class Terrain : Node3D {
     public SubViewport ResultViewport => _resultViewport;
     public Clipmap Clipmap => _clipmap;
 
-
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnDoIt)}")]
-    public bool DoIt {
-        get {
-            return false;
-        } set {}
-    }
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
@@ -155,8 +148,12 @@ public partial class Terrain : Node3D {
         }
 
         var updateAction = () => {
+            var imagesCache = new Dictionary<ZoneResource, CollisionZoneImages>();
+
             for (var i = 0; i < TerrainZones.Zones.Count(); i++) {
                 var zone = TerrainZones.Zones[i];
+                var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
+                var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
 
                 var heightMapImage = zone.HeightMapTexture.GetImage();
                 var waterImage = zone.WaterTexture?.GetImage();
@@ -172,11 +169,18 @@ public partial class Terrain : Node3D {
                             return;
                         }
 
-                        var pixelHeight = heightMapImage.GetPixel(x, y).R * this.HeightMapFactor;
-                        var waterHeight = waterImage?.GetPixel(x, y).R ?? 0;
+                        var currentZone = zone;
+                        var lookupX = x;
+                        var loopupY = y;
+                        if (x == 0 && leftNeighbourZone != null) {
+                            currentZone = leftNeighbourZone;
+                            lookupX = heightMapImage.GetWidth() - 1;
+                        } else if (y == 0 && topNeighbourZone != null) {
+                            currentZone = topNeighbourZone;
+                            loopupY = heightMapImage.GetHeight() - 1;
+                        }
 
-                        pixelHeight -= waterHeight * WaterFactor;
-
+                        var pixelHeight = GetHeightForZone(currentZone, lookupX, loopupY, imagesCache);
                         terrainData.Add(pixelHeight);
                     }
                 }
@@ -261,7 +265,27 @@ public partial class Terrain : Node3D {
 		return textureArray;
 	}
 
-    public void OnDoIt() {
-        this.UpdateCollisionShape();
+    private float GetHeightForZone(ZoneResource zone, int x, int y, Dictionary<ZoneResource, CollisionZoneImages> imagesCache) {
+        CollisionZoneImages zoneImages = null;
+        if (imagesCache.ContainsKey(zone)) {
+            zoneImages = imagesCache[zone];
+        } else {
+            zoneImages = new CollisionZoneImages() {
+                HeightmapImage = zone.HeightMapTexture.GetImage(),
+                WaterImage = zone.WaterTexture?.GetImage()
+            };
+            imagesCache.Add(zone, zoneImages);
+        }
+
+        var pixelHeight = zoneImages.HeightmapImage.GetPixel(x, y).R * HeightMapFactor;
+        var waterHeight = zoneImages.WaterImage?.GetPixel(x, y).R ?? 0;
+        pixelHeight -= waterHeight * WaterFactor;
+
+        return pixelHeight;
+    }
+
+    private class CollisionZoneImages {
+        public Image HeightmapImage { get;set; }
+        public Image WaterImage { get;set; }
     }
 }

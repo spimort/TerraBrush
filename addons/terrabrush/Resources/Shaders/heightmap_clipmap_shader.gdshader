@@ -116,7 +116,7 @@ void fragment() {
 		//ALBEDO = vec3(1.0, 0, 0);		
 	//}
 
-	float fixedZonesSize = ZonesSize; 	
+	float fixedZonesSize = ZonesSize - 1.0; 	
 	vec2 zoneArea = (_worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
 	ivec2 zonesMapSize = textureSize(ZonesMap, 0);
@@ -131,11 +131,32 @@ void fragment() {
 	}
 	
 	if (zoneInfoPosition.x < 0.0) {
-		//ALPHA = 0.0;
+		ALPHA = 0.0;
 	} else {
-		ALBEDO = vec3(1.0, float(zonesStep.x) / 2.0, 0.0);
+		//vec3 zoneUV = vec3(
+			//(((zoneArea.x - (float(zonesStep.x))) * 0.5) + 0.25), 
+			//(((zoneArea.y - (float(zonesStep.y))) * 0.5) + 0.25),
+			//floor(zoneInfoPosition.r)
+		//);	
+		float sizeUnit = (1.0 / ZonesSize);
+		float halfUnit = sizeUnit / 2.0;
+		float fixedSizePercent = 1.0 - sizeUnit;
+		vec3 zoneUV = vec3(
+			(((zoneArea.x - (float(zonesStep.x))) * fixedSizePercent) + halfUnit), 
+			(((zoneArea.y - (float(zonesStep.y))) * fixedSizePercent) + halfUnit),
+			floor(zoneInfoPosition.r)
+		);			
+		
+		//vec3 zoneUV = vec3(
+			//zoneArea.x - (float(zonesStep.x)), 
+			//zoneArea.y - (float(zonesStep.y)),
+			//floor(zoneInfoPosition.r)
+		//);				
+		
+		//ALBEDO = vec3(1.0, float(zonesStep.x) / 2.0, 0.0);
+		ALBEDO = vec3(zoneUV.x, zoneUV.y, 0.0);
 		//ALPHA = 0.0;
-	}	
+	}
 	
 	//if (_worldVertex.z >= -2.5) {
 		//ALBEDO = vec3(1.0, 0, 0);	
