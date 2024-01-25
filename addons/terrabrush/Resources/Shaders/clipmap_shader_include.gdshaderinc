@@ -48,11 +48,12 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
 			int level = int(levelsMeta.a * 100.0);
 			float levelMultiplicator = pow(2.0, float(level));
-			vec2 prevNextUVVector = ((vec2(levelsMeta.g, levelsMeta.b) / ZonesSize) * levelMultiplicator) * InitialCellWidth;
-			vec3 zonePrevNextUVVector = vec3(prevNextUVVector.x, prevNextUVVector.y, zoneUV.z);
-			
-			float previousHeight = texture(HeightmapTextures, zoneUV - zonePrevNextUVVector).r;
-			float nextHeight = texture(HeightmapTextures, zoneUV + zonePrevNextUVVector).r;
+			vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
+			vec3 previousZoneUV = calculateZoneUV(worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+			vec3 nextZoneUV = calculateZoneUV(worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+
+			float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
+			float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
 			
 			vertex.y = (previousHeight + nextHeight) / 2.0;
 		}		
