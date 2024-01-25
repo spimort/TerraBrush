@@ -137,7 +137,7 @@ public partial class Terrain : Node3D {
             _terrainCollider.AddChild(collisionShape);
 
             collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
-            collisionShape.Owner = this;
+            // collisionShape.Owner = this;
 
             var heightMapShape3D = new HeightMapShape3D();
             collisionShape.Shape = heightMapShape3D;
