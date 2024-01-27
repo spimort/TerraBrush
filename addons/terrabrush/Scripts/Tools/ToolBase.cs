@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -6,29 +5,39 @@ using Godot;
 namespace TerraBrush;
 
 public abstract class ToolBase {
-    protected delegate void OnBrushPixel(Image image, float pixelBrushStrength, Vector2I relativeImagePosition, Vector2I absoluteImagePosition, Dictionary<ZoneResource, Image> imagesCache);
+    private Dictionary<ZoneResource, Image> _imagesCache;
+    private Dictionary<int, ZoneResource> _zonesPositionCache;
+
+    protected delegate void OnBrushPixel(Image image, float pixelBrushStrength, ImageZoneInfo imageZoneInfo, Vector2I absoluteImagePosition);
+
+    public void BeginPaint() {
+        _imagesCache = new Dictionary<ZoneResource, Image>();
+        _zonesPositionCache = new Dictionary<int, ZoneResource>();
+    }
 
     public abstract void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
 
-    protected void ForEachBrushPixel(TerraBrush terraBrush, Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
-        var imagesCache = new Dictionary<ZoneResource, Image>();
+    public void EndPaint() {
+        _imagesCache = null;
+        _zonesPositionCache = null;
+    }
 
+    protected void ForEachBrushPixel(TerraBrush terraBrush, Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
                 var xPosition = (int) imagePosition.X - (x - brushSize / 2);
                 var yPosition = (int) imagePosition.Y - (y - brushSize / 2);
 
-                var imageZoneInfo = GetImageZoneInfoForPosition(terraBrush, xPosition, yPosition, imagesCache);
+                var imageZoneInfo = GetImageZoneInfoForPosition(terraBrush, xPosition, yPosition);
                 if (imageZoneInfo != null) {
                     var brushPixelValue = brushImage.GetPixel(x, y);
-                    var colorValue = brushPixelValue.A;
+                    var brushPixelStrength = brushPixelValue.A;
 
                     onBrushPixel(
                         imageZoneInfo.Image,
-                        colorValue,
-                        new Vector2I(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y),
-                        new Vector2I(xPosition, yPosition),
-                        imagesCache
+                        brushPixelStrength,
+                        imageZoneInfo,
+                        new Vector2I(xPosition, yPosition)
                     );
                 }
             }
@@ -47,14 +56,28 @@ public abstract class ToolBase {
         };
     }
 
-    protected ImageZoneInfo GetImageZoneInfoForPosition(TerraBrush terraBrush, int x, int y, Dictionary<ZoneResource, Image> imagesCache) {
+    protected ImageZoneInfo GetImageZoneInfoForPosition(TerraBrush terraBrush, int x, int y) {
         var zoneInfo = GetPixelToZoneInfo(x, y, terraBrush.TerrainSize);
-        var zone = terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
+        var zoneKey = (zoneInfo.ZonePosition.X << 8) + zoneInfo.ZonePosition.Y;
+
+        ZoneResource zone = null;
+        _zonesPositionCache.TryGetValue(zoneKey, out zone);
+
+        if (zone == null) {
+            zone = terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
+
+            if (zone != null) {
+                _zonesPositionCache.Add(zoneKey, zone);
+            }
+        }
+
         if (zone != null) {
-            var image = imagesCache.ContainsKey(zone) ? imagesCache[zone] : null;
+            Image image = null;
+            _imagesCache.TryGetValue(zone, out image);
+
             if (image == null) {
                 image = zone.HeightMapTexture.GetImage();
-                imagesCache.Add(zone, image);
+                _imagesCache.Add(zone, image);
             }
 
             return new ImageZoneInfo() {

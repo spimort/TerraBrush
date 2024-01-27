@@ -204,6 +204,7 @@ public partial class Plugin : EditorPlugin {
 
                         _isMousePressed = true;
                         preventGuiInput = true;
+                        _currentTerraBrushNode.BeingEditTerrain();
                     }
                 } else if (_isMousePressed) {
                     _currentTerraBrushNode.Terrain.TerrainUpdated(true);
@@ -246,6 +247,8 @@ public partial class Plugin : EditorPlugin {
                     _preventInitialDo = true;
                     _undoRedo.CommitAction();
                     _preventInitialDo = false;
+
+                    _currentTerraBrushNode.EndEditTerrain();
                 }
             }
         }

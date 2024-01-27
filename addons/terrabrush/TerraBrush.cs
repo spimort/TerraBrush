@@ -405,11 +405,19 @@ public partial class TerraBrush : Node3D {
         }
     }
 
+    public void BeingEditTerrain() {
+        _currentTool?.BeginPaint();
+    }
+
     public void EditTerrain(Vector3 meshPosition) {
         var meshToImagePosition = meshPosition + new Vector3(TerrainSize / 2, 0, TerrainSize / 2);
         var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
 
         _currentTool?.Paint(this, _terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
+    }
+
+    public void EndEditTerrain() {
+        _currentTool?.EndPaint();
     }
 
     public void CreateSplatmaps(ZoneResource zone) {
