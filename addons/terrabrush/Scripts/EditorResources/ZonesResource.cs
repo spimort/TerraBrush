@@ -64,10 +64,18 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateWaterTextures() {
+        if (Zones.Any(zone => zone.WaterTexture == null)) {
+            return;
+        }
+
         _waterTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.WaterTexture.GetImage())));
     }
 
     public void UpdateSnowTextures() {
+        if (Zones.Any(zone => zone.SnowTexture == null)) {
+            return;
+        }
+
         _snowTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.SnowTexture.GetImage())));
     }
 

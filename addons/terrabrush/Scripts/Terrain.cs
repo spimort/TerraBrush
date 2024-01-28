@@ -84,13 +84,15 @@ public partial class Terrain : Node3D {
         }
     }
 
-    public void TerrainTextureUpdated() {
+    private void TerrainTextureUpdated() {
         UpdateTextures();
         TerrainSplatmapsUpdated();
     }
 
     public void TerrainSplatmapsUpdated() {
-        TerrainZones.UpdateSplatmapsTextures();
+        Clipmap.Shader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
+        _terrainColorShader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
+
         // if (this.Splatmaps?.Count() > 0) {
         //     if (_splatmapsTexture == null) {
         //         _splatmapsTexture = new Texture2DArray();

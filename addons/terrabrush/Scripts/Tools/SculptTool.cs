@@ -7,12 +7,11 @@ using TerraBrush;
 namespace TerraBrush;
 
 public class SculptTool : ToolBase {
+    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+        return zone.HeightMapTexture;
+    }
+
     public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        // GD.Print("Image Position ", imagePosition, " XZone ", zoneXPosition, " YZone", zoneYPosition, " Brush X ", zoneBrushXPosition, " Brush y ", zoneBrushYPosition);
-
-
-        // var heightMapImage = terraBrush.HeightMap.GetImage();
-
         if (toolType == TerrainToolType.TerrainSmooth) {
             Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else if (toolType == TerrainToolType.TerrainFlattern) {
@@ -23,13 +22,11 @@ public class SculptTool : ToolBase {
         }
 
         terraBrush.TerrainZones.UpdateHeightmaps();
-        // terraBrush.HeightMap.Update(heightMapImage);
-        // terraBrush.UpdateObjectsHeight();
     }
 
     private void Sculpt(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (image, pixelBrushStrength, imageZoneInfo, absoluteImagePosition) => {
-            var currentPixel = image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = Colors.Red * (pixelBrushStrength * brushStrength);
             if (toolType == TerrainToolType.TerrainAdd) {
                 newValue = currentPixel + newValue;
@@ -37,7 +34,7 @@ public class SculptTool : ToolBase {
                 newValue = currentPixel - newValue;
             }
 
-            image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
     }
 
@@ -45,8 +42,8 @@ public class SculptTool : ToolBase {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (image, pixelBrushStrength, imageZoneInfo, absoluteImagePosition) => {
-            var currentPixel = image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             smoothValue += currentPixel;
             numberOfSamples += 1;
@@ -54,8 +51,8 @@ public class SculptTool : ToolBase {
 
         smoothValue = smoothValue / numberOfSamples;
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (image, pixelBrushStrength, imageZoneInfo, absoluteImagePosition) => {
-            var currentPixel = image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, smoothValue.R, pixelBrushStrength * brushStrength),
                 Mathf.Lerp(currentPixel.G, smoothValue.G, pixelBrushStrength * brushStrength),
@@ -63,12 +60,12 @@ public class SculptTool : ToolBase {
                 Mathf.Lerp(currentPixel.A, smoothValue.A, pixelBrushStrength * brushStrength)
             );
 
-            image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
     }
 
     private void Smooth(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (image, pixelBrushStrength, imageZoneInfo, absoluteImagePosition) => {
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var directions = new List<float>();
 
             var neighbourImageZoneInfo = GetImageZoneInfoForPosition(terraBrush, absoluteImagePosition.X - 1, absoluteImagePosition.Y);
@@ -91,13 +88,13 @@ public class SculptTool : ToolBase {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            var currentPixel = image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y).R;
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y).R;
             directions.Add(currentPixel);
 
             float average = directions.Average();
             float resultValue = Mathf.Lerp(currentPixel, average, pixelBrushStrength * brushStrength);
 
-            image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, new Color(resultValue, 0, 0, 1.0f));
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, new Color(resultValue, 0, 0, 1.0f));
         });
     }
 }

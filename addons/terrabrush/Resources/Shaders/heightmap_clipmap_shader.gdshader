@@ -64,15 +64,17 @@ void vertex() {
 }
 
 void fragment() {
-	vec4 resultTexture = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 resultNormal = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 resultRoughness = vec4(0.0, 0.0, 0.0, 0.0);	
+	vec4 resultTexture = vec4(0.0);
+	vec4 resultNormal = vec4(0.0);
+	vec4 resultRoughness = vec4(0.0);	
+	
+	vec3 zoneUV = calculateZoneUV(_worldVertex);		
 	
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
-		vec2 detailUV = _textureUV * float(TextureDetail);
-		vec3 textureUV = vec3(detailUV.x, detailUV.y, float(i));
-		vec3 splatmapUV = vec3(_textureUV.x, _textureUV.y, floor(float(i/4)));
+		vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
+		vec3 textureUV = vec3(detailUV.x * float(TextureDetail), detailUV.y * float(TextureDetail), float(i));
+		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
 	
 		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
 		vec4 currentNormal = UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV);
@@ -107,47 +109,7 @@ void fragment() {
 	ALPHA = 1.0;
 	ALPHA_SCISSOR_THRESHOLD = 1.0;
 	
-	//ivec2 zonesMapSize = textureSize(ZonesMap, 0);	
-	//if (_zonesMap.x >= 0 && _zonesMap.x < zonesMapSize.x && _zonesMap.y >= 0 && _zonesMap.y < zonesMapSize.y && _zoneInfoPosition.r >= 0.0) {
-		//ALBEDO = vec3(1.0, 0, 0);
-	//}	
-	
-	//if (_zonesStep.x == 0 && _zonesStep.y == 0) {
-		//ALBEDO = vec3(1.0, 0, 0);		
-	//}
-
-	vec3 zoneUV = calculateZoneUV(_worldVertex);
-	
 	if (zoneUV.z < 0.0) {
 		ALPHA = 0.0;
-	} else {
-		ALBEDO = vec3(zoneUV.x, zoneUV.y, 0.0);
 	}
-	
-	//if (_worldVertex.z >= -2.5) {
-		//ALBEDO = vec3(1.0, 0, 0);	
-	//}		
-	
-	//if (_worldVertex.z >= -2.5) {
-		//ALBEDO = vec3(1.0, 0, 0);		
-	//}
-	
- 	//if (_worldVertex.z <= -2.5) {
-		//ALPHA = 0.0;
-	//}
-	//if (_zonesMap.x < 0 || _zonesMap.x >= zonesMapSize.x || _zonesMap.y < 0 || _zonesMap.y >= zonesMapSize.y || _zoneInfoPosition.r < 0.0) {
-		//ALPHA = 0.0;
-	//}
-	
-	//// "Hide" vertices that are outside the map
-	//float heightmapSize = float(ZonesSize) - 1.0;
-	//float halfHeightmapSize = heightmapSize / 2.0;	
-	//if (
-		//_worldVertex.x > halfHeightmapSize || 
-		//_worldVertex.x < -halfHeightmapSize || 
-		//_worldVertex.z > halfHeightmapSize ||
-		//_worldVertex.z < -halfHeightmapSize
-	//) {
-		//ALPHA = 0.0;
-	//}		
 }

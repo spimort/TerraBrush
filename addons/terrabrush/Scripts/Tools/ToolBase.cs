@@ -8,18 +8,22 @@ public abstract class ToolBase {
     private Dictionary<ZoneResource, Image> _imagesCache;
     private Dictionary<int, ZoneResource> _zonesPositionCache;
 
-    protected delegate void OnBrushPixel(Image image, float pixelBrushStrength, ImageZoneInfo imageZoneInfo, Vector2I absoluteImagePosition);
+    protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength, Vector2I absoluteImagePosition);
 
-    public void BeginPaint() {
+    public virtual void BeginPaint() {
         _imagesCache = new Dictionary<ZoneResource, Image>();
         _zonesPositionCache = new Dictionary<int, ZoneResource>();
     }
 
     public abstract void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
 
-    public void EndPaint() {
+    public virtual void EndPaint() {
         _imagesCache = null;
         _zonesPositionCache = null;
+    }
+
+    protected virtual ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+        return null;
     }
 
     protected void ForEachBrushPixel(TerraBrush terraBrush, Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
@@ -34,9 +38,8 @@ public abstract class ToolBase {
                     var brushPixelStrength = brushPixelValue.A;
 
                     onBrushPixel(
-                        imageZoneInfo.Image,
-                        brushPixelStrength,
                         imageZoneInfo,
+                        brushPixelStrength,
                         new Vector2I(xPosition, yPosition)
                     );
                 }
@@ -76,13 +79,18 @@ public abstract class ToolBase {
             _imagesCache.TryGetValue(zone, out image);
 
             if (image == null) {
-                image = zone.HeightMapTexture.GetImage();
-                _imagesCache.Add(zone, image);
+                var imageResource = GetToolCurrentImageTexture(terraBrush, zone);
+
+                if (imageResource != null) {
+                    image = imageResource.GetImage();
+                    _imagesCache.Add(zone, image);
+                }
             }
 
             return new ImageZoneInfo() {
                 Image = image,
-                ZoneInfo = zoneInfo
+                ZoneInfo = zoneInfo,
+                Zone = zone
             };
         }
 
@@ -97,5 +105,6 @@ public abstract class ToolBase {
     public class ImageZoneInfo {
         public Image Image { get;set; }
         public ZoneInfo ZoneInfo { get;set; }
+        public ZoneResource Zone { get;set; }
     }
 }

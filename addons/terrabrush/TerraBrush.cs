@@ -43,12 +43,12 @@ public enum TerrainToolType {
 
 [Tool]
 public partial class TerraBrush : Node3D {
-    private const string HeightmapFileName = "Heightmap.res";
-    private const string SplatmapFileName = "Splatmap{0}.res";
-    private const string FoliageFileName = "Foliage{0}.res";
-    private const string ObjectFileName = "Object{0}.res";
-    private const string WaterFileName = "Water.res";
-    private const string SnowFileName = "Snow.res";
+    private const string HeightmapFileName = "Heightmap_{0}.res";
+    private const string SplatmapFileName = "Splatmap_{0}_{1}.res";
+    private const string FoliageFileName = "Foliage_{0}_{1}.res";
+    private const string ObjectFileName = "Object_{0}_{1}.res";
+    private const string WaterFileName = "Water_{0}.res";
+    private const string SnowFileName = "Snow_{0}.res";
 
     public const int HeightMapFactor = 1;
 
@@ -250,13 +250,10 @@ public partial class TerraBrush : Node3D {
 
         OnRemoveTerrain();
 
-        var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rf);
-        var defaultHeightMap = GetImageTextureResource(image, HeightmapFileName);
-
         TerrainZones = new ZonesResource() {
             Zones = new ZoneResource[] {
                 new ZoneResource() {
-                    HeightMapTexture = defaultHeightMap
+                    HeightMapTexture = CreateHeightmapImage(0)
                 }
             }
         };
@@ -317,6 +314,16 @@ public partial class TerraBrush : Node3D {
             return;
         }
 
+        for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
+            var zone = TerrainZones.Zones[i];
+
+            if (zone.HeightMapTexture == null) {
+                zone.HeightMapTexture = CreateHeightmapImage(i);
+            }
+
+            CreateSplatmaps(i, zone);
+        }
+
         TerrainZones.UpdateHeightmaps();
 
         await WaitForTextureReady(_defaultNoise);
@@ -327,10 +334,6 @@ public partial class TerraBrush : Node3D {
         }
 
         _terrain = (await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Terrain.tscn", CancellationToken.None)).Instantiate<Terrain>();
-
-        foreach (var zone in TerrainZones?.Zones) {
-            CreateSplatmaps(zone);
-        }
 
         _terrain.TextureSets = TextureSets;
         // _terrain.Splatmaps = Splatmaps;
@@ -420,13 +423,18 @@ public partial class TerraBrush : Node3D {
         _currentTool?.EndPaint();
     }
 
-    public void CreateSplatmaps(ZoneResource zone) {
+    private ImageTexture CreateHeightmapImage(int zoneIndex) {
+        var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rf);
+        return GetImageTextureResource(image, string.Format(HeightmapFileName, zoneIndex));
+    }
+
+    public void CreateSplatmaps(int zoneIndex, ZoneResource zone) {
         var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
 
-        if (zone.SplatmapsTexture?.Length < numberOfSplatmaps) {
-            var newList = new List<ImageTexture>(zone.SplatmapsTexture);
+        if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Length < numberOfSplatmaps) {
+            var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
 
-            for (var i = 0; i < numberOfSplatmaps - zone.SplatmapsTexture?.Length; i++) {
+            for (var i = 0; i < numberOfSplatmaps - (zone.SplatmapsTexture?.Length ?? 0); i++) {
                 var splatmapImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
 
                 if (newList.Count == 0) {
@@ -434,12 +442,13 @@ public partial class TerraBrush : Node3D {
                 } else {
                     splatmapImage.Fill(new Color(0, 0, 0, 0));
                 }
-                newList.Add(GetImageTextureResource(splatmapImage, string.Format(SplatmapFileName, i)));
+                newList.Add(GetImageTextureResource(splatmapImage, string.Format(SplatmapFileName, zoneIndex, i)));
             }
 
             zone.SplatmapsTexture = newList.ToArray();
-            // _terrain.Splatmaps = Splatmaps;
         }
+
+        TerrainZones.UpdateSplatmapsTextures();
     }
 
     public void SetCurrentBrush(Image brushImage) {
@@ -529,6 +538,8 @@ public partial class TerraBrush : Node3D {
 
                 // newFoliage.FoliageTexture = foliage.Texture;
 
+                TerrainZones.UpdateFoliagesTextures();
+
                 newFoliage.UpdateFoliage();
             }
         }
@@ -611,6 +622,8 @@ public partial class TerraBrush : Node3D {
         //         }
         //     }
         // }
+
+        TerrainZones.UpdateObjectsTextures();
     }
 
     private async Task CreateWater() {
@@ -624,6 +637,8 @@ public partial class TerraBrush : Node3D {
 
         //     WaterTexture = GetImageTextureResource(waterImage, WaterFileName);
         // }
+
+        TerrainZones.UpdateWaterTextures();
 
         // _waterNodeContainer = GetNodeOrNull<Node3D>("Water");
         // if (_waterNodeContainer == null) {
@@ -686,6 +701,8 @@ public partial class TerraBrush : Node3D {
 
         //     SnowTexture = GetImageTextureResource(snowImage, SnowFileName);
         // }
+
+        TerrainZones.UpdateSnowTextures();
 
         // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Snow.tscn", CancellationToken.None);
         // _snowNode = prefab.Instantiate<Snow>();
