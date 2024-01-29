@@ -10,14 +10,11 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Terrain : Node3D {
-	private ShaderMaterial _terrainColorShader = null;
     private CancellationTokenSource _collisionCancellationSource = null;
     // private Texture2DArray _splatmapsTexture = null;
 
     [NodePath] private Clipmap _clipmap;
     [NodePath] private StaticBody3D _terrainCollider;
-    [NodePath] private SubViewport _resultViewport;
-    [NodePath] private ColorRect _terrainColorRect;
 
     [Export] public int ZonesSize { get;set; }
     // [Export] public Texture2D HeightMap { get;set; }
@@ -38,14 +35,11 @@ public partial class Terrain : Node3D {
     [Export] public bool CreateCollisionInThread { get;set; } = true;
 
     public StaticBody3D TerrainCollider => _terrainCollider;
-    public SubViewport ResultViewport => _resultViewport;
     public Clipmap Clipmap => _clipmap;
 
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-
-        _terrainColorShader = (ShaderMaterial) _terrainColorRect.Material;
     }
 
     public void BuildTerrain(bool collisionOnly = false) {
@@ -90,7 +84,6 @@ public partial class Terrain : Node3D {
 
     public void TerrainSplatmapsUpdated() {
         Clipmap.Shader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
-        _terrainColorShader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
 
         // if (this.Splatmaps?.Count() > 0) {
         //     if (_splatmapsTexture == null) {
@@ -214,8 +207,6 @@ public partial class Terrain : Node3D {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
-            _terrainColorShader.SetShaderParameter("Textures", textureArray);
-            _terrainColorShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
             var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
             Clipmap.Shader.SetShaderParameter("Normals", normalArray);
@@ -228,13 +219,9 @@ public partial class Terrain : Node3D {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
-            _terrainColorShader.SetShaderParameter("Textures", textureArray);
-            _terrainColorShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
             Clipmap.Shader.SetShaderParameter("UseAntitile", false);
         }
-
-        _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
 	}
 
     private float GetHeightForZone(ZoneResource zone, int x, int y, Dictionary<ZoneResource, CollisionZoneImages> imagesCache) {

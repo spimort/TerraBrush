@@ -1,26 +1,21 @@
-[gd_scene load_steps=8 format=3 uid="uid://0chnym463hcs"]
+[gd_scene load_steps=6 format=3 uid="uid://0chnym463hcs"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Terrain.cs" id="1_vjtl3"]
 [ext_resource type="Texture2D" uid="uid://c1by6d4lgjo8j" path="res://addons/terrabrush/Assets/texel_density.jpg" id="2_x8un5"]
 [ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="3_225j0"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader" id="4_1oqlj"]
-[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/terrain_texture_shader.gdshader" id="5_b3t7n"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_70nbq"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfg1p"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_1oqlj")
-shader_parameter/ZonesSize = null
 shader_parameter/InitialCellWidth = 1.0
+shader_parameter/ZonesSize = null
+shader_parameter/NumberOfZones = null
 shader_parameter/WaterFactor = 1.0
 shader_parameter/TextureDetail = null
 shader_parameter/NumberOfTextures = null
 shader_parameter/UseAntitile = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4u1qc"]
-resource_local_to_scene = true
-shader = ExtResource("5_b3t7n")
-shader_parameter/NumberOfTextures = null
 
 [node name="Terrain" type="Node3D"]
 script = ExtResource("1_vjtl3")
@@ -28,22 +23,7 @@ DefaultTexture = ExtResource("2_x8un5")
 
 [node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
 unique_name_in_owner = true
-Shader = SubResource("ShaderMaterial_70nbq")
+Shader = SubResource("ShaderMaterial_xfg1p")
 
 [node name="TerrainCollider" type="StaticBody3D" parent="."]
 unique_name_in_owner = true
-
-[node name="ResultViewport" type="SubViewport" parent="."]
-unique_name_in_owner = true
-render_target_update_mode = 0
-
-[node name="TerrainColorRect" type="ColorRect" parent="ResultViewport"]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_4u1qc")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3

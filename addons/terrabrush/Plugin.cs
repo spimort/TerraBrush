@@ -293,7 +293,6 @@ public partial class Plugin : EditorPlugin {
 
         _currentTerraBrushNode.Terrain.TerrainUpdated(true);
         _currentTerraBrushNode.Terrain.TerrainSplatmapsUpdated();
-        _currentTerraBrushNode.UpdateFoliagesGroudTexture();
 
         _currentTerraBrushNode.ClearObjects();
         await _currentTerraBrushNode.CreateObjects();
