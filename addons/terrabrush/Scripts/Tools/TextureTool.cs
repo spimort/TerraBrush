@@ -66,12 +66,5 @@ public class TextureTool : ToolBase {
         });
 
         terraBrush.TerrainZones.UpdateSplatmapsTextures();
-
-        // for (int i = 0; i < splatmapImages.Count(); i++) {
-        //     terraBrush.Splatmaps[i].Update(splatmapImages[i]);
-        // }
-
-        // terraBrush.Terrain.TerrainSplatmapsUpdated(splatmapImages);
-        // terraBrush.UpdateFoliagesGroudTexture();
     }
 }

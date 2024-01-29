@@ -90,18 +90,7 @@ public partial class Clipmap : Node3D {
         clipmapShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
         clipmapShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
         clipmapShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
-
-        var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
-		var maxX = zonePositions.Max(x => Math.Abs(x.X));
-		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
-
-		var zonesMap = Image.Create((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
-		zonesMap.Fill(new Color(-1, 0, 0, 0));
-		for (var i = 0; i < zonePositions.Count(); i++) {
-			var position = zonePositions[i];
-			zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
-		}
-		clipmapShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(zonesMap));
+		clipmapShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(TerrainZones.GetZonesMap()));
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {

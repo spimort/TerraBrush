@@ -342,7 +342,6 @@ public partial class TerraBrush : Node3D {
         _terrain.CollisionLayers = CollisionLayers;
         _terrain.CollisionMask = CollisionMask;
         _terrain.ZonesSize = TerrainSize;
-        _terrain.TerrainSubDivision = TerrainSize;
         // _terrain.HeightMap = HeightMap;
         _terrain.TerrainZones = TerrainZones;
         _terrain.HeightMapFactor = HeightMapFactor;
@@ -509,6 +508,22 @@ public partial class TerraBrush : Node3D {
             return;
         }
 
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
+            var zone = TerrainZones.Zones[zoneIndex];
+            var newList = Foliages.Select((foliage, foliageIndex) => {
+                if (zone.FoliagesTexture?.Length > foliageIndex) {
+                    return zone.FoliagesTexture[foliageIndex];
+                } else {
+                    var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+                    return GetImageTextureResource(image, string.Format(FoliageFileName, zoneIndex, foliageIndex));
+                }
+            });
+
+            zone.FoliagesTexture = newList.ToArray();
+        }
+
+        TerrainZones.UpdateFoliagesTextures();
+
         for (var i = 0; i < Foliages.Count(); i++) {
             var foliage = Foliages[i];
 
@@ -516,9 +531,10 @@ public partial class TerraBrush : Node3D {
                 var newFoliage = prefab.Instantiate<Foliage>();
                 _foliagesNode.AddChild(newFoliage);
 
-                newFoliage.TerrainSize = TerrainSize;
-                // newFoliage.HeightMapTexture = HeightMap;
-                newFoliage.HeightMapFactor = HeightMapFactor;
+                newFoliage.ZonesSize = TerrainSize;
+                newFoliage.TerrainZones = TerrainZones;
+                newFoliage.TextureSets = TextureSets;
+                newFoliage.TextureDetail = TextureDetail;
                 newFoliage.VisualInstanceLayers = foliage.Definition.VisualInstanceLayers;
                 newFoliage.Mesh = foliage.Definition.Mesh;
                 newFoliage.MeshScale = foliage.Definition.MeshScale;
@@ -528,17 +544,7 @@ public partial class TerraBrush : Node3D {
                 newFoliage.MeshMaterial = foliage.Definition.MeshMaterial;
                 // newFoliage.WaterTexture = WaterTexture;
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
-
-                // newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Texture) : _defaultNoise;
-
-                // if (foliage.Texture == null) {
-                //     var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-                //     foliage.Texture = GetImageTextureResource(image, string.Format(FoliageFileName, i));
-                // }
-
-                // newFoliage.FoliageTexture = foliage.Texture;
-
-                TerrainZones.UpdateFoliagesTextures();
+                newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Definition.NoiseTexture) : _defaultNoise;
 
                 newFoliage.UpdateFoliage();
             }
@@ -812,7 +818,7 @@ public partial class TerraBrush : Node3D {
 
     public void SaveResources() {
         if (!string.IsNullOrWhiteSpace(DataPath)) {
-            TerrainZones.SaveResources();
+            TerrainZones?.SaveResources();
         }
     }
 

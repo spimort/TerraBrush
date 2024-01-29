@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -121,5 +122,20 @@ public partial class ZonesResource : Resource {
         if (!string.IsNullOrWhiteSpace(image.ResourcePath) && FileAccess.FileExists(image.ResourcePath)) {
             ResourceSaver.Save(image, image.ResourcePath);
         }
+    }
+
+    public Image GetZonesMap() {
+        var zonePositions = Zones.Select(zone => zone.ZonePosition).ToArray();
+		var maxX = zonePositions.Max(x => Math.Abs(x.X));
+		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+
+		var zonesMap = Image.Create((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
+		zonesMap.Fill(new Color(-1, 0, 0, 0));
+		for (var i = 0; i < zonePositions.Count(); i++) {
+			var position = zonePositions[i];
+			zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
+		}
+
+        return zonesMap;
     }
 }

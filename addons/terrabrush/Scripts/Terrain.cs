@@ -20,7 +20,6 @@ public partial class Terrain : Node3D {
     [NodePath] private ColorRect _terrainColorRect;
 
     [Export] public int ZonesSize { get;set; }
-    [Export] public int TerrainSubDivision { get;set; }
     // [Export] public Texture2D HeightMap { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
@@ -212,21 +211,21 @@ public partial class Terrain : Node3D {
 		Clipmap.Shader.SetShaderParameter("TextureDetail", this.TextureDetail);
 
         if (this.TextureSets?.TextureSets?.Count() > 0) {
-            var textureArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
+            var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
             _terrainColorShader.SetShaderParameter("Textures", textureArray);
             _terrainColorShader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
-            var normalArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
+            var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
             Clipmap.Shader.SetShaderParameter("Normals", normalArray);
 
-            var roughnessArray = this.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
+            var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
             Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
 
             Clipmap.Shader.SetShaderParameter("UseAntitile", true);
         } else if (DefaultTexture != null) {
-            var textureArray = this.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
+            var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
             _terrainColorShader.SetShaderParameter("Textures", textureArray);
@@ -236,35 +235,6 @@ public partial class Terrain : Node3D {
         }
 
         _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-	}
-
-	private Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
-		var textureArray = new Texture2DArray();
-		var textureImageArray = new Godot.Collections.Array<Image>();
-
-		int width = 0;
-		int height = 0;
-
-		if (textures != null) {
-			textures.ToList().ForEach(texture => {
-				if (texture != null) {
-					var textureImage = texture.GetImage();
-
-					if (width == 0) {
-						width = textureImage.GetWidth();
-						height = textureImage.GetHeight();
-					} else if (textureImage.GetWidth() != width || textureImage.GetHeight() != height) {
-						textureImage.Resize(width, height);
-					}
-
-					textureImageArray.Add(textureImage);
-				}
-			});
-		}
-
-		textureArray._Images = textureImageArray;
-
-		return textureArray;
 	}
 
     private float GetHeightForZone(ZoneResource zone, int x, int y, Dictionary<ZoneResource, CollisionZoneImages> imagesCache) {

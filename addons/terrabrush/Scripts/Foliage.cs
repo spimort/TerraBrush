@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -8,10 +9,10 @@ public partial class Foliage : Node3D {
 
     [NodePath] private GpuParticles3D _particles;
 
-    [Export] public int TerrainSize { get;set; }
-    [Export] public ImageTexture HeightMapTexture { get;set; }
-    [Export] public float HeightMapFactor { get;set; }
-    [Export] public ImageTexture FoliageTexture { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
+    [Export] public TextureSetsResource TextureSets { get;set;}
+	[Export] public int TextureDetail { get;set; } = 1;
     [Export] public Mesh Mesh { get;set; }
     [Export] public Vector3 MeshScale { get;set; }
     [Export] public int MaximumRenderDistance { get;set; }
@@ -19,7 +20,6 @@ public partial class Foliage : Node3D {
     [Export] public float WindStrength { get;set; }
     [Export] public BaseMaterial3D MeshMaterial { get;set; }
     [Export] public Texture2D NoiseTexture { get;set; }
-    [Export] public ImageTexture WaterTexture { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; }
 
@@ -32,7 +32,7 @@ public partial class Foliage : Node3D {
 
     public override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
-            this._foliageShader.SetShaderParameter("PlayerPosition", this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero);
+            this._foliageShader.SetShaderParameter("GlobalPosition", this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero);
         }
     }
 
@@ -45,19 +45,29 @@ public partial class Foliage : Node3D {
         this._particles.DrawPass1 = this.Mesh;
         this._particles.MaterialOverride = this.MeshMaterial;
 
-        this._foliageShader.SetShaderParameter("HeightMapSize", this.TerrainSize);
-        this._foliageShader.SetShaderParameter("HeightMapTexture", HeightMapTexture);
-        this._foliageShader.SetShaderParameter("HeightMapFactor", this.HeightMapFactor);
-        this._foliageShader.SetShaderParameter("FoliageTexture", FoliageTexture);
-        this._foliageShader.SetShaderParameter("MeshScale", this.MeshScale);
-        this._foliageShader.SetShaderParameter("WindStrength", this.WindStrength);
-        this._foliageShader.SetShaderParameter("WaterTexture", this.WaterTexture);
-        this._foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
+        _foliageShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
+        _foliageShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
+        _foliageShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
+		_foliageShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(TerrainZones.GetZonesMap()));
+
+        if (TextureSets?.TextureSets != null) {
+            _foliageShader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
+            _foliageShader.SetShaderParameter("Textures", Utils.TexturesToTextureArray(TextureSets.TextureSets.Select(x => x.AlbedoTexture)));
+            _foliageShader.SetShaderParameter("NumberOfTextures", TextureSets?.TextureSets?.Count() ?? 0);
+    		_foliageShader.SetShaderParameter("TextureDetail", this.TextureDetail);
+        }
+
+        _foliageShader.SetShaderParameter("FoliageTextures", TerrainZones.FoliagesTextures);
+        _foliageShader.SetShaderParameter("MeshScale", this.MeshScale);
+        _foliageShader.SetShaderParameter("WindStrength", this.WindStrength);
+
+        // _foliageShader.SetShaderParameter("WaterTexture", this.WaterTexture);
+        _foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
 
         if (NoiseTexture != null) {
             var noiseImage = new Image();
             noiseImage.CopyFrom(NoiseTexture.GetImage());
-            noiseImage.Resize(this.TerrainSize, this.TerrainSize);
+            noiseImage.Resize(this.ZonesSize, this.ZonesSize);
 
             this._foliageShader.SetShaderParameter("NoiseTexture", ImageTexture.CreateFromImage(noiseImage));
         }
@@ -74,10 +84,10 @@ public partial class Foliage : Node3D {
     }
 
     public void UpdateEditorCameraPosition(Camera3D viewportCamera) {
-        this._foliageShader?.SetShaderParameter("PlayerPosition", viewportCamera.GlobalPosition);
+        this._foliageShader?.SetShaderParameter("GlobalPosition", viewportCamera.GlobalPosition);
     }
 
     public void UpdateGroudTexture(Texture2D texture) {
-        this._foliageShader.SetShaderParameter("GroudTexture", texture);
+        // this._foliageShader.SetShaderParameter("GroudTexture", texture);
     }
 }
