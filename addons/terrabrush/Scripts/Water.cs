@@ -109,8 +109,6 @@ public partial class Water : Node3D {
         var rippleTextureSize = (int) (TerrainSize * RippleRatio);
 
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
-        // _clipmap.Heightmap = HeightMapTexture;
-        _clipmap.HeightmapFactor = HeightMapFactor;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;

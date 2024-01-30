@@ -11,8 +11,6 @@ public partial class Clipmap : Node3D {
 
     [Export] public int ZonesSize { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
-    // [Export] public Texture2D Heightmap { get;set; }
-    [Export] public float HeightmapFactor { get;set; }
     [Export] public int Levels { get;set; } = 8;
     [Export] public int RowsPerLevel { get;set; } = 21;
     [Export] public float InitialCellWidth { get;set; } = 1;

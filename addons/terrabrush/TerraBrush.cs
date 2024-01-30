@@ -178,14 +178,14 @@ public partial class TerraBrush : Node3D {
     [Export]
     public ObjectResource[] Objects { get;set; }
 
-    // [ExportGroup("Water")]
+    [ExportGroup("Water")]
     // [Export]
     // public ImageTexture WaterTexture { get;set; }
 
     [Export]
     public WaterResource WaterDefinition { get;set; }
 
-    // [ExportGroup("Snow")]
+    [ExportGroup("Snow")]
     // [Export]
     // public ImageTexture SnowTexture { get;set; }
 
@@ -688,43 +688,45 @@ public partial class TerraBrush : Node3D {
     }
 
     private async Task CreateSnow() {
-        // if (SnowDefinition == null) {
-        //     return;
-        // }
+        if (SnowDefinition == null) {
+            return;
+        }
 
-        // _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
-        // if (_snowNodeContainer == null) {
-        //     _snowNodeContainer = new Node3D();
-        //     AddChild(_snowNodeContainer);
-        // }
-        // if (SnowTexture == null) {
-        //     var snowImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+        for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
+            var zone = TerrainZones.Zones[i];
 
-        //     SnowTexture = GetImageTextureResource(snowImage, SnowFileName);
-        // }
+            if (zone.SnowTexture == null) {
+                var snowImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+
+                zone.SnowTexture = GetImageTextureResource(snowImage, string.Format(SnowFileName, i));
+            }
+        }
+
+        _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
+        if (_snowNodeContainer == null) {
+            _snowNodeContainer = new Node3D();
+            AddChild(_snowNodeContainer);
+        }
 
         TerrainZones.UpdateSnowTextures();
 
-        // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Snow.tscn", CancellationToken.None);
-        // _snowNode = prefab.Instantiate<Snow>();
+        var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Snow.tscn", CancellationToken.None);
+        _snowNode = prefab.Instantiate<Snow>();
 
-        // _snowNode.TerrainSize = TerrainSize;
-        // _snowNode.TerrainSubDivision = TerrainSize;
-        // _snowNode.HeightMapTexture = HeightMap;
-        // _snowNode.HeightMapFactor = HeightMapFactor;
-        // _snowNode.SnowTexture = SnowTexture;
-        // _snowNode.SnowDefinition = SnowDefinition;
-        // _snowNode.LODLevels = LODLevels;
-        // _snowNode.LODRowsPerLevel = LODRowsPerLevel;
-        // _snowNode.LODInitialCellWidth = LODInitialCellWidth;
+        _snowNode.TerrainZones = TerrainZones;
+        _snowNode.ZonesSize = TerrainSize;
+        _snowNode.SnowDefinition = SnowDefinition;
+        _snowNode.LODLevels = LODLevels;
+        _snowNode.LODRowsPerLevel = LODRowsPerLevel;
+        _snowNode.LODInitialCellWidth = LODInitialCellWidth;
 
-        // if (SnowDefinition.Noise != null) {
-        //     await WaitForTextureReady(SnowDefinition.Noise);
-        // }
+        if (SnowDefinition.Noise != null) {
+            await WaitForTextureReady(SnowDefinition.Noise);
+        }
 
-        // _snowNodeContainer.AddChild(_snowNode);
+        _snowNodeContainer.AddChild(_snowNode);
 
-        // _snowNode.UpdateSnow();
+        _snowNode.UpdateSnow();
     }
 
     public void UpdateObjectsHeight() {

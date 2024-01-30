@@ -14,11 +14,8 @@ public partial class Snow : Node3D {
 
     [NodePath] private Clipmap _clipmap;
 
-    [Export] public int TerrainSize { get;set; }
-    [Export] public int TerrainSubDivision { get;set; }
-    [Export] public Texture2D HeightMapTexture { get;set; }
-    [Export] public float HeightMapFactor { get;set; }
-    [Export] public Texture2D SnowTexture { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public SnowResource SnowDefinition { get;set; }
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
@@ -37,18 +34,17 @@ public partial class Snow : Node3D {
         }
 
         _clipmap.ClipmapMesh.Layers = (uint) SnowDefinition.VisualInstanceLayers;
-        // _clipmap.Heightmap = HeightMapTexture;
-        _clipmap.HeightmapFactor = HeightMapFactor;
+        _clipmap.ZonesSize = ZonesSize;
+        _clipmap.TerrainZones = TerrainZones;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;
 
         _clipmap.CreateMesh();
 
-        _clipmap.Shader.SetShaderParameter("SnowTexture", SnowTexture);
+        _clipmap.Shader.SetShaderParameter("SnowTextures", TerrainZones.SnowTextures);
         _clipmap.Shader.SetShaderParameter("SnowFactor", SnowDefinition.SnowFactor);
         _clipmap.Shader.SetShaderParameter("SnowInnerOffset", SnowDefinition.SnowInnerOffset);
-        _clipmap.Shader.SetShaderParameter("HeightMapFactor", HeightMapFactor);
         _clipmap.Shader.SetShaderParameter("SnowColorTexture", SnowDefinition.SnowColorTexture);
         _clipmap.Shader.SetShaderParameter("SnowColorNormal", SnowDefinition.SnowColorNormal);
         _clipmap.Shader.SetShaderParameter("SnowColorRoughness", SnowDefinition.SnowColorRoughness);
@@ -90,17 +86,17 @@ public partial class Snow : Node3D {
     }
 
     public void AddCompressedSnow(float x, float y) {
-        if (_currentCompressedImage == null) {
-            var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-            _currentCompressedImage = ImageTexture.CreateFromImage(image);
-            _clipmap.Shader.SetShaderParameter("CompressedSnowTexture", _currentCompressedImage);
-        }
+        // if (_currentCompressedImage == null) {
+        //     var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+        //     _currentCompressedImage = ImageTexture.CreateFromImage(image);
+        //     _clipmap.Shader.SetShaderParameter("CompressedSnowTexture", _currentCompressedImage);
+        // }
 
-        var xPosition = (int) Math.Round(x);
-        var yPosition = (int) Math.Round(y);
+        // var xPosition = (int) Math.Round(x);
+        // var yPosition = (int) Math.Round(y);
 
-        var pixelPosition = new Vector2I(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
-        _compressedPositions[pixelPosition] = 1;
+        // var pixelPosition = new Vector2I(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
+        // _compressedPositions[pixelPosition] = 1;
     }
 }
 

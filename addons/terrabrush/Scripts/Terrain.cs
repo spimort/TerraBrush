@@ -58,7 +58,6 @@ public partial class Terrain : Node3D {
         } else {
             _clipmap.ZonesSize = ZonesSize;
             _clipmap.TerrainZones = TerrainZones;
-            _clipmap.HeightmapFactor = HeightMapFactor;
             _clipmap.Levels = LODLevels;
             _clipmap.RowsPerLevel = LODRowsPerLevel;
             _clipmap.InitialCellWidth = LODInitialCellWidth;
