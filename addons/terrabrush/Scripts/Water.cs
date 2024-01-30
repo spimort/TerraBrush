@@ -21,10 +21,8 @@ public partial class Water : Node3D {
     [NodePath] private ColorRect _rippleColorRect;
     [NodePath] private ColorRect _rippleBufferColorRect;
 
-    [Export] public int TerrainSize { get;set; }
-    [Export] public int TerrainSubDivision { get;set; }
-    [Export] public Texture2D WaterTexture { get;set; }
-    [Export] public Texture2D HeightMapTexture { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public float WaterInnerOffset { get;set; }
@@ -106,9 +104,11 @@ public partial class Water : Node3D {
             return;
         }
 
-        var rippleTextureSize = (int) (TerrainSize * RippleRatio);
+        // var rippleTextureSize = (int) (TerrainSize * RippleRatio);
 
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
+        _clipmap.ZonesSize = ZonesSize;
+        _clipmap.TerrainZones = TerrainZones;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;
@@ -116,7 +116,7 @@ public partial class Water : Node3D {
         _clipmap.CreateMesh();
 
         _clipmap.Shader.SetShaderParameter("WaterInnerOffset", WaterInnerOffset);
-        _clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+        _clipmap.Shader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
         _clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
         _clipmap.Shader.SetShaderParameter("WaterColor", WaterColor);
         _clipmap.Shader.SetShaderParameter("FresnelColor", FresnelColor);
@@ -137,33 +137,33 @@ public partial class Water : Node3D {
         _clipmap.Shader.SetShaderParameter("Near", Near);
         _clipmap.Shader.SetShaderParameter("Far", Far);
         _clipmap.Shader.SetShaderParameter("EdgeColor", EdgeColor);
-        _clipmap.Shader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
+        // _clipmap.Shader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
 
-        var newRippleImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+        // var newRippleImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
 
-        newRippleImage.Fill(Colors.Black);
-        _rippleImage = ImageTexture.CreateFromImage(newRippleImage);
+        // newRippleImage.Fill(Colors.Black);
+        // _rippleImage = ImageTexture.CreateFromImage(newRippleImage);
 
-        _rippleShader.SetShaderParameter("CollisionTexture", _rippleImage);
-        _rippleShader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
+        // _rippleShader.SetShaderParameter("CollisionTexture", _rippleImage);
+        // _rippleShader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
 
-        _rippleViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
-        _rippleBufferViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
+        // _rippleViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
+        // _rippleBufferViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
     }
 
     public void AddRippleEffect(float x, float y) {
-        var xPosition = (int) Math.Round(x);
-        var yPosition = (int) Math.Round(y);
+        // var xPosition = (int) Math.Round(x);
+        // var yPosition = (int) Math.Round(y);
 
-        var pixelPosition = new Vector2I(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
+        // var pixelPosition = new Vector2I(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
 
-        var image = _rippleImage.GetImage();
-        image.SetPixel(pixelPosition.X, pixelPosition.Y, Colors.Red);
+        // var image = _rippleImage.GetImage();
+        // image.SetPixel(pixelPosition.X, pixelPosition.Y, Colors.Red);
 
-        _rippleImage.Update(image);
-        if (!_ripplePositions.ContainsKey(pixelPosition)) {
-            _ripplePositions[pixelPosition] = 1;
-        }
+        // _rippleImage.Update(image);
+        // if (!_ripplePositions.ContainsKey(pixelPosition)) {
+        //     _ripplePositions[pixelPosition] = 1;
+        // }
     }
 }
 

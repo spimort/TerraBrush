@@ -12,7 +12,7 @@ uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int TextureDetail;
 uniform int NumberOfTextures;
 
-//uniform sampler2D WaterTexture : hint_default_transparent, repeat_disable;
+uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor;
 
 uniform int MaximumDistance;
@@ -109,8 +109,7 @@ void start() {
 				vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);								
 				float height = heightMapPosition.x;
 				
-				//vec4 waterPosition = texelFetch(WaterTexture, ivec2(int(xPosition + noiseValue), int(yPosition + noiseValue)), 0);
-				vec4 waterPosition = vec4(0.0);
+				vec4 waterPosition = texture(WaterTextures, zoneUV);
 				float waterHeight = waterPosition.x * WaterFactor;
 				
 				height -= waterHeight;
@@ -141,8 +140,7 @@ void start() {
 			} else {
 				ACTIVE = false;
 			}
-			
-			//vec4 groundTextureValue = texelFetch(GroudTexture, ivec2(int(xPosition + noiseValue), int(yPosition + noiseValue)), 0);
+						
 			COLOR = calculateGroundColor(zoneUV);
 		}
 	}

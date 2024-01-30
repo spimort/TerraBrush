@@ -61,7 +61,7 @@ public partial class Foliage : Node3D {
         _foliageShader.SetShaderParameter("MeshScale", this.MeshScale);
         _foliageShader.SetShaderParameter("WindStrength", this.WindStrength);
 
-        // _foliageShader.SetShaderParameter("WaterTexture", this.WaterTexture);
+        _foliageShader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
         _foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
 
         if (NoiseTexture != null) {

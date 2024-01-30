@@ -108,7 +108,7 @@ public partial class Terrain : Node3D {
     // }
 
     public void TerrainWaterUpdated() {
-    	// Clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+    	Clipmap.Shader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
     	Clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
     }
 

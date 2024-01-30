@@ -628,63 +628,65 @@ public partial class TerraBrush : Node3D {
     }
 
     private async Task CreateWater() {
-        // if (WaterDefinition == null) {
-        //     return;
-        // }
+        if (WaterDefinition == null) {
+            return;
+        }
 
-        // if (WaterTexture == null) {
-        //     var waterImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-        //     waterImage.Fill(new Color(0, 0.5f, 0.5f, 1));
+        for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
+            var zone = TerrainZones.Zones[i];
 
-        //     WaterTexture = GetImageTextureResource(waterImage, WaterFileName);
-        // }
+            if (zone.WaterTexture == null) {
+                var waterImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
+                waterImage.Fill(new Color(0, 0.5f, 0.5f, 1));
+
+                zone.WaterTexture = GetImageTextureResource(waterImage, string.Format(WaterFileName, i));
+            }
+        }
 
         TerrainZones.UpdateWaterTextures();
 
-        // _waterNodeContainer = GetNodeOrNull<Node3D>("Water");
-        // if (_waterNodeContainer == null) {
-        //     _waterNodeContainer = new Node3D();
-        //     AddChild(_waterNodeContainer);
+        _waterNodeContainer = GetNodeOrNull<Node3D>("Water");
+        if (_waterNodeContainer == null) {
+            _waterNodeContainer = new Node3D();
+            AddChild(_waterNodeContainer);
 
-        //     var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Water.tscn", CancellationToken.None);
-        //     _waterNode = prefab.Instantiate<Water>();
+            var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Water.tscn", CancellationToken.None);
+            _waterNode = prefab.Instantiate<Water>();
 
-        //     _waterNode.TerrainSize = TerrainSize;
-        //     _waterNode.TerrainSubDivision = TerrainSize;
-        //     _waterNode.WaterTexture = WaterTexture;
-        //     _waterNode.HeightMapTexture = HeightMap;
-        //     _waterNode.WaterFactor = WaterDefinition.WaterFactor;
-        //     _waterNode.WaterInnerOffset = WaterDefinition.WaterInnerOffset;
-        //     _waterNode.HeightMapFactor = HeightMapFactor;
-        //     _waterNode.WaterColor = WaterDefinition.WaterColor;
-        //     _waterNode.FresnelColor = WaterDefinition.WaterFresnelColor;
-        //     _waterNode.Metallic = WaterDefinition.WaterMetallic;
-        //     _waterNode.Roughness = WaterDefinition.WaterRoughness;
-        //     _waterNode.TimeScale = WaterDefinition.WaterTimeScale;
-        //     _waterNode.Strength = WaterDefinition.WaterStrength;
-        //     _waterNode.NoiseScale = WaterDefinition.WaterNoiseScale;
-        //     _waterNode.HeightScale = WaterDefinition.WaterHeightScale;
-        //     _waterNode.ColorDeep = WaterDefinition.WaterColorDeep;
-        //     _waterNode.ColorShallow = WaterDefinition.WaterColorShallow;
-        //     _waterNode.BeersLaw = WaterDefinition.WaterBeersLaw;
-        //     _waterNode.DepthOffset = WaterDefinition.WaterDepthOffset;
-        //     _waterNode.EdgeScale = WaterDefinition.WaterEdgeScale;
-        //     _waterNode.Near = WaterDefinition.WaterNear;
-        //     _waterNode.Far = WaterDefinition.WaterFar;
-        //     _waterNode.EdgeColor = WaterDefinition.WaterEdgeColor;
-        //     _waterNode.VisualInstanceLayers = WaterDefinition.VisualInstanceLayers;
-        //     _waterNode.LODLevels = LODLevels;
-        //     _waterNode.LODRowsPerLevel = LODRowsPerLevel;
-        //     _waterNode.LODInitialCellWidth = LODInitialCellWidth;
+            _waterNode.TerrainZones = TerrainZones;
+            _waterNode.ZonesSize = TerrainSize;
+            _waterNode.WaterFactor = WaterDefinition.WaterFactor;
+            _waterNode.WaterInnerOffset = WaterDefinition.WaterInnerOffset;
+            _waterNode.HeightMapFactor = HeightMapFactor;
+            _waterNode.WaterColor = WaterDefinition.WaterColor;
+            _waterNode.FresnelColor = WaterDefinition.WaterFresnelColor;
+            _waterNode.Metallic = WaterDefinition.WaterMetallic;
+            _waterNode.Roughness = WaterDefinition.WaterRoughness;
+            _waterNode.TimeScale = WaterDefinition.WaterTimeScale;
+            _waterNode.Strength = WaterDefinition.WaterStrength;
+            _waterNode.NoiseScale = WaterDefinition.WaterNoiseScale;
+            _waterNode.HeightScale = WaterDefinition.WaterHeightScale;
+            _waterNode.ColorDeep = WaterDefinition.WaterColorDeep;
+            _waterNode.ColorShallow = WaterDefinition.WaterColorShallow;
+            _waterNode.BeersLaw = WaterDefinition.WaterBeersLaw;
+            _waterNode.DepthOffset = WaterDefinition.WaterDepthOffset;
+            _waterNode.EdgeScale = WaterDefinition.WaterEdgeScale;
+            _waterNode.Near = WaterDefinition.WaterNear;
+            _waterNode.Far = WaterDefinition.WaterFar;
+            _waterNode.EdgeColor = WaterDefinition.WaterEdgeColor;
+            _waterNode.VisualInstanceLayers = WaterDefinition.VisualInstanceLayers;
+            _waterNode.LODLevels = LODLevels;
+            _waterNode.LODRowsPerLevel = LODRowsPerLevel;
+            _waterNode.LODInitialCellWidth = LODInitialCellWidth;
 
-        //     _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
-        //     _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);
-        //     _waterNode.NormalMap2 = await WaitForTextureReady(WaterDefinition.WaterNormalMap2);
+            _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
+            _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);
+            _waterNode.NormalMap2 = await WaitForTextureReady(WaterDefinition.WaterNormalMap2);
 
-        //     _waterNodeContainer.AddChild(_waterNode);
+            _waterNodeContainer.AddChild(_waterNode);
 
-        //     _waterNode.UpdateWater();
-        // }
+            _waterNode.UpdateWater();
+        }
     }
 
     private async Task CreateSnow() {

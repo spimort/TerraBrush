@@ -3,7 +3,7 @@ render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_sc
 
 #include "clipmap_shader_include.gdshaderinc"
 
-uniform sampler2D WaterTexture : repeat_disable;
+uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color;
 uniform sampler2DArray Splatmaps : repeat_disable;
@@ -59,7 +59,9 @@ void vertex() {
 	_worldVertex = vec3(0);
 	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
 	
-	vec4 waterTexture = texture(WaterTexture, _textureUV);
+	vec3 zoneUV = calculateZoneUV(_worldVertex);
+	
+	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	VERTEX.y -= waterTexture.r * WaterFactor;
 }
 

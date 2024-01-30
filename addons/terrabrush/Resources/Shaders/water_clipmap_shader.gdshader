@@ -6,7 +6,7 @@ render_mode cull_back,diffuse_burley,specular_schlick_ggx, blend_mix;
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform sampler2D WaterTexture : hint_default_transparent, repeat_disable;
+uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor;
 uniform float WaterInnerOffset = 0.3;
 
@@ -50,7 +50,8 @@ void vertex() {
 	_worldVertex = vec3(0);
 	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
 	
-	vec4 currentWaterColor = texture(WaterTexture, _textureUV);
+	vec3 zoneUV = calculateZoneUV(_worldVertex);		
+	vec4 currentWaterColor = texture(WaterTextures, zoneUV);
 
 	if (currentWaterColor.r > 0.0f) {
 		VERTEX.y -= WaterInnerOffset;
@@ -86,7 +87,8 @@ void fragment() {
 		float timer2 = fract(time + 0.5);
 		float mixTimer = min(fract(time), 1.0 - fract(time)) * 2.0;
 
-		vec3 waterTexture = texture(WaterTexture, _textureUV).rgb;
+		vec3 zoneUV = calculateZoneUV(_worldVertex);		
+		vec3 waterTexture = texture(WaterTextures, zoneUV).rgb;
 		vec2 flows = waterTexture.gb * 2.0 - 1.0;
 
 		vec3 normalMap1 = texture(NormalMap, _worldVertex.xz + flows * timer * Strength).rgb;
@@ -113,15 +115,7 @@ void fragment() {
 		
 		NORMAL = mix(NORMAL, rippleNormal, 0.8);
 		
-		// "Hide" vertices that are outside the map
-		float heightmapSize = float(textureSize(HeightmapTexture, 0).x) - 1.0;
-		float halfHeightmapSize = heightmapSize / 2.0;	
-		if (
-			_worldVertex.x > halfHeightmapSize || 
-			_worldVertex.x < -halfHeightmapSize || 
-			_worldVertex.z > halfHeightmapSize ||
-			_worldVertex.z < -halfHeightmapSize
-		) {
+		if (zoneUV.z < 0.0) {
 			ALPHA = 0.0;
 		}			
 	} else {
