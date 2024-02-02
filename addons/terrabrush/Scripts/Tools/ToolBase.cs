@@ -63,8 +63,7 @@ public abstract class ToolBase {
         var zoneInfo = GetPixelToZoneInfo(x, y, terraBrush.TerrainSize);
         var zoneKey = (zoneInfo.ZonePosition.X << 8) + zoneInfo.ZonePosition.Y;
 
-        ZoneResource zone = null;
-        _zonesPositionCache.TryGetValue(zoneKey, out zone);
+        _zonesPositionCache.TryGetValue(zoneKey, out ZoneResource zone);
 
         if (zone == null) {
             zone = terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
@@ -74,9 +73,16 @@ public abstract class ToolBase {
             }
         }
 
+        if (zone == null) {
+            zone = terraBrush.TerrainZones.AddNewZone(terraBrush, zoneInfo.ZonePosition);
+
+            if (zone != null) {
+                _zonesPositionCache.Add(zoneKey, zone);
+            }
+        }
+
         if (zone != null) {
-            Image image = null;
-            _imagesCache.TryGetValue(zone, out image);
+            _imagesCache.TryGetValue(zone, out Image image);
 
             if (image == null) {
                 var imageResource = GetToolCurrentImageTexture(terraBrush, zone);

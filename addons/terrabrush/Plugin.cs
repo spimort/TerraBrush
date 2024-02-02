@@ -52,6 +52,7 @@ public partial class Plugin : EditorPlugin {
 		AddCustomType("TerraBrush", "Node3D", script, icon);
         CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
+        CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
 		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
@@ -135,7 +136,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
-                ShowBrushNumericSelector(1, 200, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
+                ShowBrushNumericSelector(1, 100, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
                 });
 
@@ -143,7 +144,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
-                ShowBrushNumericSelector(1, 200, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
+                ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 });
 

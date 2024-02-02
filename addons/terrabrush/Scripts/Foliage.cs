@@ -48,7 +48,7 @@ public partial class Foliage : Node3D {
         _foliageShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
         _foliageShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
         _foliageShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
-		_foliageShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(TerrainZones.GetZonesMap()));
+		_foliageShader.SetShaderParameter("ZonesMap", TerrainZones.ZonesMap);
 
         if (TextureSets?.TextureSets != null) {
             _foliageShader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);

@@ -7,6 +7,14 @@ using TerraBrush;
 namespace TerraBrush;
 
 public class SculptTool : ToolBase {
+    private int _sculptingMultiplier = 1;
+
+    public override void BeginPaint() {
+        base.BeginPaint();
+
+        _sculptingMultiplier = (int) ProjectSettings.GetSetting(SettingContants.SculptingMultiplier);
+    }
+
     protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
         return zone.HeightMapTexture;
     }
@@ -27,7 +35,7 @@ public class SculptTool : ToolBase {
     private void Sculpt(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
-            var newValue = Colors.Red * (pixelBrushStrength * brushStrength);
+            var newValue = Colors.Red * (pixelBrushStrength * brushStrength) * _sculptingMultiplier;
             if (toolType == TerrainToolType.TerrainAdd) {
                 newValue = currentPixel + newValue;
             } else if (toolType == TerrainToolType.TerrainRemove) {

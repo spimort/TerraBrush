@@ -43,13 +43,6 @@ public enum TerrainToolType {
 
 [Tool]
 public partial class TerraBrush : Node3D {
-    private const string HeightmapFileName = "Heightmap_{0}.res";
-    private const string SplatmapFileName = "Splatmap_{0}_{1}.res";
-    private const string FoliageFileName = "Foliage_{0}_{1}.res";
-    private const string ObjectFileName = "Object_{0}_{1}.res";
-    private const string WaterFileName = "Water_{0}.res";
-    private const string SnowFileName = "Snow_{0}.res";
-
     public const int HeightMapFactor = 1;
 
     private ToolBase _currentTool;
@@ -253,7 +246,7 @@ public partial class TerraBrush : Node3D {
         TerrainZones = new ZonesResource() {
             Zones = new ZoneResource[] {
                 new ZoneResource() {
-                    HeightMapTexture = CreateHeightmapImage(0)
+                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(TerrainSize, 0, DataPath)
                 }
             }
         };
@@ -318,12 +311,13 @@ public partial class TerraBrush : Node3D {
             var zone = TerrainZones.Zones[i];
 
             if (zone.HeightMapTexture == null) {
-                zone.HeightMapTexture = CreateHeightmapImage(i);
+                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(TerrainSize, i, DataPath);
             }
 
             CreateSplatmaps(i, zone);
         }
 
+        TerrainZones.UpdateZonesMap();
         TerrainZones.UpdateHeightmaps();
 
         await WaitForTextureReady(_defaultNoise);
@@ -417,11 +411,6 @@ public partial class TerraBrush : Node3D {
         _currentTool?.EndPaint();
     }
 
-    private ImageTexture CreateHeightmapImage(int zoneIndex) {
-        var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rf);
-        return GetImageTextureResource(image, string.Format(HeightmapFileName, zoneIndex));
-    }
-
     public void CreateSplatmaps(int zoneIndex, ZoneResource zone) {
         var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
 
@@ -429,14 +418,7 @@ public partial class TerraBrush : Node3D {
             var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
 
             for (var i = 0; i < numberOfSplatmaps - (zone.SplatmapsTexture?.Length ?? 0); i++) {
-                var splatmapImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-
-                if (newList.Count == 0) {
-                    splatmapImage.Fill(new Color(1, 0, 0, 0));
-                } else {
-                    splatmapImage.Fill(new Color(0, 0, 0, 0));
-                }
-                newList.Add(GetImageTextureResource(splatmapImage, string.Format(SplatmapFileName, zoneIndex, i)));
+                newList.Add(ZoneUtils.CreateSplatmapImage(TerrainSize, zoneIndex, i, DataPath));
             }
 
             zone.SplatmapsTexture = newList.ToArray();
@@ -509,8 +491,7 @@ public partial class TerraBrush : Node3D {
                 if (zone.FoliagesTexture?.Length > foliageIndex) {
                     return zone.FoliagesTexture[foliageIndex];
                 } else {
-                    var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-                    return GetImageTextureResource(image, string.Format(FoliageFileName, zoneIndex, foliageIndex));
+                    return ZoneUtils.CreateFoliageImage(TerrainSize, zoneIndex, foliageIndex, DataPath);
                 }
             });
 
@@ -537,7 +518,6 @@ public partial class TerraBrush : Node3D {
                 newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
                 newFoliage.WindStrength = foliage.Definition.WindStrength;
                 newFoliage.MeshMaterial = foliage.Definition.MeshMaterial;
-                // newFoliage.WaterTexture = WaterTexture;
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
                 newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Definition.NoiseTexture) : _defaultNoise;
 
@@ -547,82 +527,100 @@ public partial class TerraBrush : Node3D {
     }
 
     public async Task CreateObjects() {
-        // _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
-        // if (_objectsContainerNode == null) {
-        //     _objectsContainerNode = new Node3D();
-        //     AddChild(_objectsContainerNode);
-        // }
+        await Task.Factory.StartNew(async () => {
+            await CreateObjectsAsync();
+        });
+    }
 
-        // if (Objects == null) {
-        //     return;
-        // }
+    private async Task CreateObjectsAsync() {
+        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
+        if (_objectsContainerNode == null) {
+            _objectsContainerNode = new Node3D();
+            CallDeferred("add_child", _objectsContainerNode);
+        }
 
-        // var heightMapImage = HeightMap.GetImage();
-        // var waterImage = WaterTexture?.GetImage();
+        if (Objects == null) {
+            return;
+        }
 
-        // for (var i = 0; i < Objects.Count(); i++) {
-        //     var objectItem = Objects[i];
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
+            var zone = TerrainZones.Zones[zoneIndex];
 
-        //     if (objectItem.Definition != null) {
-        //         var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
-        //         Image noiseImage = null;
-        //         if (noiseTexture != null) {
-        //             noiseImage = new Image();
-        //             noiseImage.CopyFrom(noiseTexture.GetImage());
-        //         }
+            var heightmapImage = zone.HeightMapTexture.GetImage();
+            var waterImage = zone.WaterTexture?.GetImage();
 
-        //         var objectNode = new Node3D();
-        //         objectNode.Name = i.ToString();
-        //         objectNode.Visible = !objectItem.Hide;
+            var newList = new List<ImageTexture>();
+            for (var objectIndex = 0; objectIndex < Objects.Count(); objectIndex++) {
+                ImageTexture imageTexture = null;
+                if (zone.ObjectsTexture?.Length > objectIndex) {
+                    imageTexture = zone.ObjectsTexture[objectIndex];
+                } else {
+                    imageTexture = ZoneUtils.CreateObjectImage(TerrainSize, zoneIndex, objectIndex, DataPath);
+                }
 
-        //         _objectsContainerNode.AddChild(objectNode);
+                newList.Add(imageTexture);
 
-        //         // Load all the objects from the image
-        //         if (objectItem.Texture == null) {
-        //             var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-        //             objectItem.Texture = GetImageTextureResource(image, string.Format(ObjectFileName, i));
-        //         } else {
-        //             var objectsImage = objectItem.Texture.GetImage();
+                var objectItem = Objects[objectIndex];
 
-        //             for (var x = 0; x < objectsImage.GetWidth(); x++) {
-        //                 for (var y = 0; y < objectsImage.GetHeight(); y++) {
-        //                     var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, objectItem.Definition.ObjectScenes.Count() - 1);
+                if (objectItem.Definition != null) {
+                    var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
+                    Image noiseImage = null;
+                    if (noiseTexture != null) {
+                        noiseImage = new Image();
+                        noiseImage.CopyFrom(noiseTexture.GetImage());
+                    }
 
-        //                     var objectPixel = objectsImage.GetPixel(x, y);
+                    var objectNode = new Node3D();
+                    objectNode.Name = $"{zoneIndex}_{objectIndex}";
+                    objectNode.Visible = !objectItem.Hide;
+                    objectNode.Position = new Vector3(zone.ZonePosition.X * TerrainSize, 0, zone.ZonePosition.Y * TerrainSize);
 
-        //                     if (objectPixel.A > 0.0f) {
-        //                         var resultPosition = new Vector3(x, 0, y);
-        //                         if (noiseImage != null) {
-        //                             var noisePixel = noiseImage.GetPixel(x, y).R;
-        //                             var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
-        //                             var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
-        //                             resultPosition += new Vector3(randomValueX, 0, randomValueZ);
-        //                         }
+                    _objectsContainerNode.CallDeferred("add_child", objectNode);
 
-        //                         var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-        //                         if (resultImagePosition.X >= 0 && resultImagePosition.X < TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < TerrainSize) {
-        //                             var heightmapPixel = heightMapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-        //                             var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-        //                             resultPosition -= new Vector3(TerrainSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), TerrainSize / 2);
+                    // Load all the objects from the image
+                    var objectsImage = imageTexture.GetImage();
 
-        //                             var nodeName = $"{x}_{y}";
+                    for (var x = 0; x < objectsImage.GetWidth(); x++) {
+                        for (var y = 0; y < objectsImage.GetHeight(); y++) {
+                            var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, objectItem.Definition.ObjectScenes.Count() - 1);
 
-        //                             var newNode = objectItem.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
-        //                             newNode.Name = nodeName;
-        //                             newNode.Position = resultPosition;
+                            var objectPixel = objectsImage.GetPixel(x, y);
 
-        //                             if (objectItem.Definition.RandomYRotation) {
-        //                                 newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), newNode.RotationDegrees.Z);
-        //                             }
+                            if (objectPixel.A > 0.0f) {
+                                var resultPosition = new Vector3(x, 0, y);
+                                if (noiseImage != null) {
+                                    var noisePixel = noiseImage.GetPixel(x, y).R;
+                                    var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
+                                    var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
+                                    resultPosition += new Vector3(randomValueX, 0, randomValueZ);
+                                }
 
-        //                             objectNode.AddChild(newNode);
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                                var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
+                                if (resultImagePosition.X >= 0 && resultImagePosition.X < TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < TerrainSize) {
+                                    var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
+                                    var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
+                                    resultPosition -= new Vector3(TerrainSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), TerrainSize / 2);
+
+                                    var nodeName = $"{x}_{y}";
+
+                                    var newNode = objectItem.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
+                                    newNode.Name = nodeName;
+                                    newNode.Position = resultPosition;
+
+                                    if (objectItem.Definition.RandomYRotation) {
+                                        newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), newNode.RotationDegrees.Z);
+                                    }
+
+                                    objectNode.CallDeferred("add_child", newNode);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            zone.ObjectsTexture = newList.ToArray();
+        }
 
         TerrainZones.UpdateObjectsTextures();
     }
@@ -635,12 +633,7 @@ public partial class TerraBrush : Node3D {
         for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
             var zone = TerrainZones.Zones[i];
 
-            if (zone.WaterTexture == null) {
-                var waterImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-                waterImage.Fill(new Color(0, 0.5f, 0.5f, 1));
-
-                zone.WaterTexture = GetImageTextureResource(waterImage, string.Format(WaterFileName, i));
-            }
+            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(TerrainSize, i, DataPath);
         }
 
         TerrainZones.UpdateWaterTextures();
@@ -694,14 +687,10 @@ public partial class TerraBrush : Node3D {
             return;
         }
 
-        for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
+        for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
             var zone = TerrainZones.Zones[i];
 
-            if (zone.SnowTexture == null) {
-                var snowImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-
-                zone.SnowTexture = GetImageTextureResource(snowImage, string.Format(SnowFileName, i));
-            }
+            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(TerrainSize, i, DataPath);
         }
 
         _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
@@ -781,25 +770,6 @@ public partial class TerraBrush : Node3D {
         foreach (var foliageNode in _foliagesNode.GetChildren()) {
             ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);
         }
-    }
-
-    private ImageTexture GetImageTextureResource(Image image, string filePath) {
-        ImageTexture imageTexture;
-        if (string.IsNullOrWhiteSpace(DataPath)) {
-            imageTexture = ImageTexture.CreateFromImage(image);
-        } else {
-            var resourcePath = Utils.PathCombineForwardSlash(DataPath, filePath);
-            if (Godot.FileAccess.FileExists(resourcePath)) {
-                imageTexture = ResourceLoader.Load<ImageTexture>(resourcePath);
-                imageTexture.SetImage(image);
-            } else {
-                imageTexture = ImageTexture.CreateFromImage(image);
-                ResourceSaver.Save(imageTexture, resourcePath);
-                imageTexture = ResourceLoader.Load<ImageTexture>(resourcePath);
-            }
-        }
-
-        return imageTexture;
     }
 
     public void SaveResources() {

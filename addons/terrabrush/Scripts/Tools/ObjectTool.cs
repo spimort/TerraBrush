@@ -1,86 +1,140 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 namespace TerraBrush;
 
 public class ObjectTool : ToolBase {
+    private Dictionary<string, Node3D> _objectsNodeCache = null;
+    private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
+    private Dictionary<ZoneResource, Image> _waterImagesCache = null;
+
+    public override void BeginPaint() {
+        base.BeginPaint();
+
+        _objectsNodeCache = new Dictionary<string, Node3D>();
+        _heightmapImagesCache = new Dictionary<ZoneResource, Image>();
+        _waterImagesCache = new Dictionary<ZoneResource, Image>();
+    }
+
+    public override void EndPaint() {
+        base.EndPaint();
+
+        _objectsNodeCache = null;
+        _heightmapImagesCache = null;
+        _waterImagesCache = null;
+    }
+
+    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+        return zone.ObjectsTexture[terraBrush.ObjectIndex.Value];
+    }
+
     public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        // if (terraBrush.ObjectIndex == null) {
-        //     return;
-        // }
+        if (terraBrush.ObjectIndex == null) {
+            return;
+        }
 
-        // var currentObject = terraBrush.Objects[terraBrush.ObjectIndex.Value];
-        // if (currentObject?.Definition?.ObjectScenes == null) {
-        //     return;
-        // }
+        var currentObject = terraBrush.Objects[terraBrush.ObjectIndex.Value];
+        if (currentObject?.Definition?.ObjectScenes == null) {
+            return;
+        }
 
-        // var currentObjectImage = currentObject.Texture.GetImage();
-        // var heightMapImage = terraBrush.HeightMap.GetImage();
-        // var waterImage = terraBrush.WaterTexture?.GetImage();
+        var noiseTexture = currentObject.Definition?.NoiseTexture ?? terraBrush.DefaultNoise;
+        Image noiseImage = null;
+        if (noiseTexture != null) {
+            noiseImage = noiseTexture.GetImage();
+        }
 
-        // var currentObjectsNode = terraBrush.ObjectsContainerNode.GetNode<Node3D>(terraBrush.ObjectIndex.ToString());
+        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var zoneIndex = Array.IndexOf(terraBrush.TerrainZones.Zones, imageZoneInfo.Zone);
+            var objectsNodeName = $"{zoneIndex}_{terraBrush.ObjectIndex.Value}";
 
-        // var noiseTexture = currentObject.Definition?.NoiseTexture ?? terraBrush.DefaultNoise;
-        // Image noiseImage = null;
-        // if (noiseTexture != null) {
-        //     noiseImage = noiseTexture.GetImage();
-        // }
+            _objectsNodeCache.TryGetValue(objectsNodeName, out Node3D currentObjectsNode);
+            if (currentObjectsNode == null) {
+                currentObjectsNode = terraBrush.ObjectsContainerNode.GetNode<Node3D>(objectsNodeName);
+                if (currentObjectsNode == null) {
+                    currentObjectsNode = new Node3D();
+                    currentObjectsNode.Name = objectsNodeName;
+                    currentObjectsNode.Visible = !currentObject.Hide;
+                    currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * terraBrush.TerrainSize, 0, imageZoneInfo.Zone.ZonePosition.Y * terraBrush.TerrainSize);
+                    terraBrush.ObjectsContainerNode.AddChild(currentObjectsNode);
+                }
 
-        // ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (pixelBrushStrength, xPosition, yPosition) => {
-        //     var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
+                _objectsNodeCache.Add(objectsNodeName, currentObjectsNode);
+            }
 
-        //     var currentPixel = currentObjectImage.GetPixel(xPosition, yPosition);
-        //     var newColor = currentPixel;
+            _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);
+            if (heightmapImage == null) {
+                heightmapImage = imageZoneInfo.Zone.HeightMapTexture.GetImage();
+                _heightmapImagesCache.Add(imageZoneInfo.Zone, heightmapImage);
+            }
 
-        //     if (pixelBrushStrength > 0f) {
-        //         var nodeName = $"{xPosition}_{yPosition}";
+            Image waterImage = null;
+            if (terraBrush.WaterDefinition != null) {
+                _waterImagesCache.TryGetValue(imageZoneInfo.Zone, out waterImage);
+                if (waterImage == null) {
+                    waterImage = imageZoneInfo.Zone.WaterTexture.GetImage();
+                    _waterImagesCache.Add(imageZoneInfo.Zone, waterImage);
+                }
+            }
 
-        //         if (toolType == TerrainToolType.ObjectAdd) {
-        //             var objectFrequency = currentObject.Definition.ObjectFrequency < 1 ? terraBrush.DefaultObjectFrequency : currentObject.Definition.ObjectFrequency;
+            var xPosition = imageZoneInfo.ZoneInfo.ImagePosition.X;
+            var yPosition = imageZoneInfo.ZoneInfo.ImagePosition.Y;
 
-        //             if (xPosition % objectFrequency == 0 && yPosition % objectFrequency == 0) {
-        //                 var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
-        //                 if (existingNode == null) {
-        //                     var resultPosition = new Vector3(xPosition, 0, yPosition);
-        //                     if (noiseImage != null) {
-        //                         var noisePixel = noiseImage.GetPixel(xPosition, yPosition).R;
-        //                         var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
-        //                         var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
-        //                         resultPosition += new Vector3(randomValueX, 0, randomValueZ);
-        //                     }
+            var currentPixel = imageZoneInfo.Image.GetPixel(xPosition, yPosition);
+            var newColor = currentPixel;
 
-        //                     var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-        //                     if (resultImagePosition.X >= 0 && resultImagePosition.X < terraBrush.TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < terraBrush.TerrainSize) {
-        //                         var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
-        //                         newNode.Name = nodeName;
-        //                         currentObjectsNode.AddChild(newNode);
+            if (pixelBrushStrength > 0f) {
+                var nodeName = $"{xPosition}_{yPosition}";
 
-        //                         var heightmapPixel = heightMapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-        //                         var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-        //                         resultPosition -= new Vector3(terraBrush.TerrainSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (terraBrush.WaterDefinition?.WaterFactor ?? 0))), terraBrush.TerrainSize / 2);
+                if (toolType == TerrainToolType.ObjectAdd) {
+                    var objectFrequency = currentObject.Definition.ObjectFrequency < 1 ? terraBrush.DefaultObjectFrequency : currentObject.Definition.ObjectFrequency;
 
-        //                         newNode.Position = resultPosition;
+                    if (xPosition % objectFrequency == 0 && yPosition % objectFrequency == 0) {
+                        var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
+                        if (existingNode == null) {
+                            var resultPosition = new Vector3(xPosition, 0, yPosition);
+                            if (noiseImage != null) {
+                                var noisePixel = noiseImage.GetPixel(xPosition, yPosition).R;
+                                var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
+                                var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
+                                resultPosition += new Vector3(randomValueX, 0, randomValueZ);
+                            }
 
-        //                         if (currentObject.Definition.RandomYRotation) {
-        //                             newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((xPosition * 1000) + yPosition, 0f, 360f), newNode.RotationDegrees.Z);
-        //                         }
-        //                     }
-        //                 }
+                            var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
+                            if (resultImagePosition.X >= 0 && resultImagePosition.X < terraBrush.TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < terraBrush.TerrainSize) {
+                                var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
 
-        //                 newColor = Colors.Red;
-        //             }
-        //         } else {
-        //             var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
-        //             if (existingNode != null) {
-        //                 existingNode.QueueFree();
-        //             }
+                                var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
+                                newNode.Name = nodeName;
+                                currentObjectsNode.AddChild(newNode);
 
-        //             newColor = Colors.Transparent;
-        //         }
+                                var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
+                                var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
+                                resultPosition -= new Vector3(terraBrush.TerrainSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (terraBrush.WaterDefinition?.WaterFactor ?? 0))), terraBrush.TerrainSize / 2);
 
-        //         currentObjectImage.SetPixel(xPosition, yPosition, newColor);
-        //     }
-        // });
+                                newNode.Position = resultPosition;
+
+                                if (currentObject.Definition.RandomYRotation) {
+                                    newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((xPosition * 1000) + yPosition, 0f, 360f), newNode.RotationDegrees.Z);
+                                }
+                            }
+                        }
+
+                        newColor = Colors.Red;
+                    }
+                } else {
+                    var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
+                    if (existingNode != null) {
+                        existingNode.QueueFree();
+                    }
+
+                    newColor = Colors.Transparent;
+                }
+
+                imageZoneInfo.Image.SetPixel(xPosition, yPosition, newColor);
+            }
+        });
     }
 }

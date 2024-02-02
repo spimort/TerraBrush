@@ -46,8 +46,7 @@ public class TextureTool : ToolBase {
                 }
 
                 var currentSplatmapTexture = imageZoneInfo.Zone.SplatmapsTexture[i];
-                Image currentSplatmapImage = null;
-                _splatmapImagesCache.TryGetValue(currentSplatmapTexture, out currentSplatmapImage);
+                _splatmapImagesCache.TryGetValue(currentSplatmapTexture, out Image currentSplatmapImage);
 
                 if (currentSplatmapImage == null) {
                     currentSplatmapImage = currentSplatmapTexture.GetImage();

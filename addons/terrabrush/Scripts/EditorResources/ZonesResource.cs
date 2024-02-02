@@ -8,12 +8,13 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class ZonesResource : Resource {
-    private Texture2DArray _heightmapTextures = new Texture2DArray();
-    private Texture2DArray _splatmapsTextures = new Texture2DArray();
-    private Texture2DArray _foliagesTextures = new Texture2DArray();
-    private Texture2DArray _objectsTextures = new Texture2DArray();
-    private Texture2DArray _waterTextures = new Texture2DArray();
-    private Texture2DArray _snowTextures = new Texture2DArray();
+    private Texture2DArray _heightmapTextures = new();
+    private Texture2DArray _splatmapsTextures = new();
+    private Texture2DArray _foliagesTextures = new();
+    private Texture2DArray _objectsTextures = new();
+    private Texture2DArray _waterTextures = new();
+    private Texture2DArray _snowTextures = new();
+    private ImageTexture _zonesMap = new();
 
     public Texture2DArray HeightmapTextures => _heightmapTextures;
     public Texture2DArray SplatmapsTextures => _splatmapsTextures;
@@ -21,6 +22,7 @@ public partial class ZonesResource : Resource {
     public Texture2DArray ObjectsTextures => _objectsTextures;
     public Texture2DArray WaterTextures => _waterTextures;
     public Texture2DArray SnowTextures => _snowTextures;
+    public ImageTexture ZonesMap => _zonesMap;
 
     [Export] public ZoneResource[] Zones { get;set; }
 
@@ -124,7 +126,7 @@ public partial class ZonesResource : Resource {
         }
     }
 
-    public Image GetZonesMap() {
+    public void UpdateZonesMap() {
         var zonePositions = Zones.Select(zone => zone.ZonePosition).ToArray();
 		var maxX = zonePositions.Max(x => Math.Abs(x.X));
 		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
@@ -136,6 +138,29 @@ public partial class ZonesResource : Resource {
 			zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
 		}
 
-        return zonesMap;
+        _zonesMap.SetImage(zonesMap);
+    }
+
+    public ZoneResource AddNewZone(TerraBrush terraBrush, Vector2I zonePosition) {
+        var zone = new ZoneResource() {
+            ZonePosition = zonePosition
+        };
+
+        zone.InitializeImagesForTerrain(terraBrush, Zones.Length);
+
+        var newList = new List<ZoneResource>(Zones) {
+            zone
+        };
+        Zones = newList.ToArray();
+
+        UpdateHeightmaps();
+        UpdateSplatmapsTextures();
+        UpdateFoliagesTextures();
+        UpdateObjectsTextures();
+        UpdateWaterTextures();
+        UpdateSnowTextures();
+        UpdateZonesMap();
+
+        return zone;
     }
 }

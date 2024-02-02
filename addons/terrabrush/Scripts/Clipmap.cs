@@ -88,7 +88,7 @@ public partial class Clipmap : Node3D {
         clipmapShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
         clipmapShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
         clipmapShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
-		clipmapShader.SetShaderParameter("ZonesMap", ImageTexture.CreateFromImage(TerrainZones.GetZonesMap()));
+		clipmapShader.SetShaderParameter("ZonesMap", TerrainZones.ZonesMap);
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {
