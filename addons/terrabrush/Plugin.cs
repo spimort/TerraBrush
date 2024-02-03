@@ -99,6 +99,10 @@ public partial class Plugin : EditorPlugin {
 
         if (@event is InputEventMouseMotion inputMotion) {
             var meshPosition = GetRayCastWithTerrain(viewportCamera, inputMotion.Position);
+            // Sometimes, the raycast does not hit for some reasons, so we keep the last position of the mouse
+            if (_isMousePressed && meshPosition == Vector3.Inf && _mouseHitPosition != Vector3.Inf) {
+                meshPosition = _mouseHitPosition;
+            }
 
             if (meshPosition == Vector3.Inf) {
                 _brushDecal.Visible = false;
