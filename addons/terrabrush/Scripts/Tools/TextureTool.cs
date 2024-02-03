@@ -8,14 +8,14 @@ namespace TerraBrush;
 public class TextureTool : ToolBase {
     private Dictionary<ImageTexture, Image> _splatmapImagesCache = null;
 
-    public override void BeginPaint () {
-        base.BeginPaint();
+    public override void BeginPaint (TerraBrush terraBrush) {
+        base.BeginPaint(terraBrush);
 
         _splatmapImagesCache = new Dictionary<ImageTexture, Image>();
     }
 
-    public override void EndPaint () {
-        base.EndPaint();
+    public override void EndPaint (TerraBrush terraBrush) {
+        base.EndPaint(terraBrush);
 
         _splatmapImagesCache = null;
     }

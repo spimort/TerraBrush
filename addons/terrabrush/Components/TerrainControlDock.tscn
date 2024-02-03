@@ -167,6 +167,7 @@ text = "Brush size"
 unique_name_in_owner = true
 layout_mode = 2
 min_value = 1.0
+max_value = 200.0
 value = 1.0
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]

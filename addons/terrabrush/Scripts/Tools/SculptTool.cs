@@ -8,11 +8,21 @@ namespace TerraBrush;
 
 public class SculptTool : ToolBase {
     private int _sculptingMultiplier = 1;
+    private HashSet<ZoneResource> _sculptedZones;
 
-    public override void BeginPaint() {
-        base.BeginPaint();
+    public override void BeginPaint(TerraBrush terraBrush) {
+        base.BeginPaint(terraBrush);
 
         _sculptingMultiplier = (int) ProjectSettings.GetSetting(SettingContants.SculptingMultiplier);
+        _sculptedZones = new HashSet<ZoneResource>();
+    }
+
+    public override void EndPaint(TerraBrush terraBrush) {
+        base.EndPaint(terraBrush);
+
+        terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
+
+        _sculptedZones = null;
     }
 
     protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
@@ -43,6 +53,7 @@ public class SculptTool : ToolBase {
             }
 
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            _sculptedZones.Add(imageZoneInfo.Zone);
         });
     }
 
@@ -69,6 +80,7 @@ public class SculptTool : ToolBase {
             );
 
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            _sculptedZones.Add(imageZoneInfo.Zone);
         });
     }
 
@@ -103,6 +115,7 @@ public class SculptTool : ToolBase {
             float resultValue = Mathf.Lerp(currentPixel, average, pixelBrushStrength * brushStrength);
 
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, new Color(resultValue, 0, 0, 1.0f));
+            _sculptedZones.Add(imageZoneInfo.Zone);
         });
     }
 }

@@ -10,16 +10,16 @@ public class ObjectTool : ToolBase {
     private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
     private Dictionary<ZoneResource, Image> _waterImagesCache = null;
 
-    public override void BeginPaint() {
-        base.BeginPaint();
+    public override void BeginPaint(TerraBrush terraBrush) {
+        base.BeginPaint(terraBrush);
 
         _objectsNodeCache = new Dictionary<string, Node3D>();
         _heightmapImagesCache = new Dictionary<ZoneResource, Image>();
         _waterImagesCache = new Dictionary<ZoneResource, Image>();
     }
 
-    public override void EndPaint() {
-        base.EndPaint();
+    public override void EndPaint(TerraBrush terraBrush) {
+        base.EndPaint(terraBrush);
 
         _objectsNodeCache = null;
         _heightmapImagesCache = null;

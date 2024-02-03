@@ -121,7 +121,7 @@ public partial class Plugin : EditorPlugin {
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolPie)) {
                 ShowToolPieMenu();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushPie)) {
@@ -131,20 +131,20 @@ public partial class Plugin : EditorPlugin {
                         HideOverlaySelector();
                     });
                 });
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolContentPie)) {
                 ShowCurrentToolCustomContentPieMenu();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
-                ShowBrushNumericSelector(1, 100, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
+                ShowBrushNumericSelector(1, 200, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
                 });
 
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
@@ -152,12 +152,12 @@ public partial class Plugin : EditorPlugin {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 });
 
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.EscapeSelector) && _overlaySelector != null) {
                 HideOverlaySelector();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
         }
 

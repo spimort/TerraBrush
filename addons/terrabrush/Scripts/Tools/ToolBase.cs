@@ -10,14 +10,14 @@ public abstract class ToolBase {
 
     protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength, Vector2I absoluteImagePosition);
 
-    public virtual void BeginPaint() {
+    public virtual void BeginPaint(TerraBrush terraBrush) {
         _imagesCache = new Dictionary<ZoneResource, Image>();
         _zonesPositionCache = new Dictionary<int, ZoneResource>();
     }
 
     public abstract void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
 
-    public virtual void EndPaint() {
+    public virtual void EndPaint(TerraBrush terraBrush) {
         _imagesCache = null;
         _zonesPositionCache = null;
     }

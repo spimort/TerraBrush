@@ -1,8 +1,25 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace TerraBrush;
 
 public class WaterTool : ToolBase {
+    private HashSet<ZoneResource> _sculptedZones;
+
+    public override void BeginPaint(TerraBrush terraBrush) {
+        base.BeginPaint(terraBrush);
+        _sculptedZones = new HashSet<ZoneResource>();
+    }
+
+    public override void EndPaint(TerraBrush terraBrush) {
+        base.EndPaint(terraBrush);
+
+        terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
+
+        _sculptedZones = null;
+    }
+
     protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
         return zone.WaterTexture;
     }
@@ -23,9 +40,9 @@ public class WaterTool : ToolBase {
                 Mathf.Lerp(currentPixel.A, newColor.A, pixelBrushStrength * brushStrength)
             );
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            _sculptedZones.Add(imageZoneInfo.Zone);
         });
 
         terraBrush.TerrainZones.UpdateWaterTextures();
-        terraBrush.UpdateObjectsHeight();
     }
 }
