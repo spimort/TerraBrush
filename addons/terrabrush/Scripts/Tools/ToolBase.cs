@@ -73,7 +73,7 @@ public abstract class ToolBase {
             }
         }
 
-        if (zone == null) {
+        if (zone == null && terraBrush.AutoAddZones) {
             zone = terraBrush.TerrainZones.AddNewZone(terraBrush, zoneInfo.ZonePosition);
 
             if (zone != null) {
@@ -83,14 +83,15 @@ public abstract class ToolBase {
 
         if (zone != null) {
             _imagesCache.TryGetValue(zone, out Image image);
+            var imageResource = GetToolCurrentImageTexture(terraBrush, zone);
 
-            if (image == null) {
-                var imageResource = GetToolCurrentImageTexture(terraBrush, zone);
-
-                if (imageResource != null) {
+            if (imageResource != null) {
+                if (image == null) {
                     image = imageResource.GetImage();
                     _imagesCache.Add(zone, image);
                 }
+
+                terraBrush.TerrainZones.AddDirtyImageTexture(imageResource);
             }
 
             return new ImageZoneInfo() {

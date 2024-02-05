@@ -61,6 +61,9 @@ public class TextureTool : ToolBase {
                     Mathf.Lerp(currentPixel.A, splatmapColor.A, pixelBrushStrength * brushStrength)
                 );
                 currentSplatmapImage.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+
+                // Since we play with several textures here, the toolbase cannot add the texture to the dirty collection
+                terraBrush.TerrainZones.AddDirtyImageTexture(currentSplatmapTexture);
             }
         });
 

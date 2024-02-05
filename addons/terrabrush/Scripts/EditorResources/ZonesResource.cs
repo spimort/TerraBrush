@@ -8,6 +8,8 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class ZonesResource : Resource {
+    private HashSet<ImageTexture> _dirtyImageTextures = new();
+
     private Texture2DArray _heightmapTextures = new();
     private Texture2DArray _splatmapsTextures = new();
     private Texture2DArray _foliagesTextures = new();
@@ -83,41 +85,11 @@ public partial class ZonesResource : Resource {
     }
 
     public void SaveResources() {
-        if (Zones == null) {
-            return;
+        foreach (var dirtyImageResource in _dirtyImageTextures) {
+            SaveImageResource(dirtyImageResource);
         }
 
-        foreach (var zone in Zones) {
-            if (zone.HeightMapTexture != null) {
-                SaveImageResource(zone.HeightMapTexture);
-            }
-
-            if (zone.WaterTexture != null) {
-                SaveImageResource(zone.WaterTexture);
-            }
-
-            if (zone.SnowTexture != null) {
-                SaveImageResource(zone.SnowTexture);
-            }
-
-            if (zone.SplatmapsTexture != null) {
-                foreach (var splatMap in zone.SplatmapsTexture) {
-                    SaveImageResource(splatMap);
-                }
-            }
-
-            if (zone.FoliagesTexture != null) {
-                foreach (var foliageTexture in zone.FoliagesTexture) {
-                    SaveImageResource(foliageTexture);
-                }
-            }
-
-            if (zone.ObjectsTexture != null) {
-                foreach (var objectItemTexture in zone.ObjectsTexture) {
-                    SaveImageResource(objectItemTexture);
-                }
-            }
-        }
+        _dirtyImageTextures.Clear();
     }
 
     private void SaveImageResource(ImageTexture image) {
@@ -162,5 +134,9 @@ public partial class ZonesResource : Resource {
         UpdateZonesMap();
 
         return zone;
+    }
+
+    public void AddDirtyImageTexture(ImageTexture imageTexture) {
+        _dirtyImageTextures.Add(imageTexture);
     }
 }

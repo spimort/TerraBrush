@@ -26,6 +26,7 @@ public partial class Plugin : EditorPlugin {
     private Control[] _editorViewports = null;
     private Control _overlaySelector = null;
     private Button _updateTerrainSettingsButton = null;
+    private CheckBox _autoAddZonesCheckbox = null;
 
     private void CreateCustomSetting(string name, Variant defaultValue, Variant.Type type, PropertyHint hint = PropertyHint.None, string hintString = null) {
         if (ProjectSettings.HasSetting(name)) {
@@ -157,6 +158,12 @@ public partial class Plugin : EditorPlugin {
 
             if (inputEvent.IsAction(KeybindManager.StringNames.EscapeSelector) && _overlaySelector != null) {
                 HideOverlaySelector();
+                return (int) AfterGuiInput.Stop;
+            }
+
+            if (inputEvent.IsAction(KeybindManager.StringNames.ToggleAutoAddZones)) {
+                _autoAddZonesCheckbox.ButtonPressed = !_autoAddZonesCheckbox.ButtonPressed;
+                UpdateAutoAddZonesSetting();
                 return (int) AfterGuiInput.Stop;
             }
         }
@@ -347,6 +354,13 @@ public partial class Plugin : EditorPlugin {
 
             _updateTerrainSettingsButton = null;
         }
+
+        if (_autoAddZonesCheckbox != null) {
+            RemoveControlFromContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
+            _autoAddZonesCheckbox.QueueFree();
+
+            _autoAddZonesCheckbox = null;
+        }
     }
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
@@ -380,10 +394,17 @@ public partial class Plugin : EditorPlugin {
         _terrainControlDock.EditorResourcePreview = EditorInterface.Singleton.GetResourcePreviewer();
         AddControlToDock(DockSlot.RightBl, _terrainControlDock);
 
-        _updateTerrainSettingsButton = new Button();
-        _updateTerrainSettingsButton.Text = "Update terrain";
+        _updateTerrainSettingsButton = new Button() {
+            Text = "Update terrain"
+        };
         _updateTerrainSettingsButton.Connect("pressed", new Callable(this, nameof(UpdateTerrainSettings)));
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
+
+        _autoAddZonesCheckbox = new CheckBox() {
+            Text = "Auto add zones"
+        };
+        _autoAddZonesCheckbox.Connect("pressed", new Callable(this, nameof(UpdateAutoAddZonesSetting)));
+        AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
     }
 
     private void OnExitEditTerrainNode() {
@@ -537,6 +558,10 @@ public partial class Plugin : EditorPlugin {
 
     private void UpdateTerrainSettings() {
         _currentTerraBrushNode?.OnUpdateTerrainSettings();
+    }
+
+    private void UpdateAutoAddZonesSetting() {
+        _currentTerraBrushNode.AutoAddZones = _autoAddZonesCheckbox.ButtonPressed;
     }
 }
 #endif
