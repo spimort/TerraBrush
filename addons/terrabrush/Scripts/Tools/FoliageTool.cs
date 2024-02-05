@@ -3,16 +3,18 @@ using Godot;
 namespace TerraBrush;
 
 public class FoliageTool : ToolBase {
-    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
-        return zone.FoliagesTexture[terraBrush.FoliageIndex.Value];
+    public FoliageTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
+        return zone.FoliagesTexture[_terraBrush.FoliageIndex.Value];
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.FoliageIndex == null) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.FoliageIndex == null) {
             return;
         }
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newColor = toolType == TerrainToolType.FoliageAdd ? Colors.Red : new Color(0, 0, 0, 0);
 
@@ -25,6 +27,6 @@ public class FoliageTool : ToolBase {
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
 
-        terraBrush.TerrainZones.UpdateFoliagesTextures();
+        _terraBrush.TerrainZones.UpdateFoliagesTextures();
     }
 }

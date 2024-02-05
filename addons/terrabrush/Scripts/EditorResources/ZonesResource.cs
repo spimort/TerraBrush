@@ -125,6 +125,16 @@ public partial class ZonesResource : Resource {
         };
         Zones = newList.ToArray();
 
+        UpdateImageTextures();
+
+        return zone;
+    }
+
+    public void AddDirtyImageTexture(ImageTexture imageTexture) {
+        _dirtyImageTextures.Add(imageTexture);
+    }
+
+    public void UpdateImageTextures() {
         UpdateHeightmaps();
         UpdateSplatmapsTextures();
         UpdateFoliagesTextures();
@@ -132,11 +142,5 @@ public partial class ZonesResource : Resource {
         UpdateWaterTextures();
         UpdateSnowTextures();
         UpdateZonesMap();
-
-        return zone;
-    }
-
-    public void AddDirtyImageTexture(ImageTexture imageTexture) {
-        _dirtyImageTextures.Add(imageTexture);
     }
 }

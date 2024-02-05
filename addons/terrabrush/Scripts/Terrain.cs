@@ -64,16 +64,14 @@ public partial class Terrain : Node3D {
 
             _clipmap.CreateMesh();
 
-            TerrainUpdated(true);
+            TerrainUpdated();
             TerrainTextureUpdated();
             TerrainWaterUpdated();
         }
     }
 
-    public void TerrainUpdated(bool updateCollision = false) {
-        if (updateCollision) {
-            UpdateCollisionShape();
-        }
+    public void TerrainUpdated() {
+        UpdateCollisionShape();
     }
 
     private void TerrainTextureUpdated() {

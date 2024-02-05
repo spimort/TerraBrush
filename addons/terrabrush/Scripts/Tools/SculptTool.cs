@@ -10,40 +10,42 @@ public class SculptTool : ToolBase {
     private int _sculptingMultiplier = 1;
     private HashSet<ZoneResource> _sculptedZones;
 
-    public override void BeginPaint(TerraBrush terraBrush) {
-        base.BeginPaint(terraBrush);
+    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    public override void BeginPaint() {
+        base.BeginPaint();
 
         _sculptingMultiplier = (int) ProjectSettings.GetSetting(SettingContants.SculptingMultiplier);
         _sculptedZones = new HashSet<ZoneResource>();
     }
 
-    public override void EndPaint(TerraBrush terraBrush) {
-        base.EndPaint(terraBrush);
+    public override void EndPaint() {
+        base.EndPaint();
 
-        terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
+        _terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
 
         _sculptedZones = null;
     }
 
-    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.HeightMapTexture;
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         if (toolType == TerrainToolType.TerrainSmooth) {
-            Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
+            Smooth(toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else if (toolType == TerrainToolType.TerrainFlattern) {
-            Flattern(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
+            Flattern(toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else {
-            Sculpt(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
-            Smooth(terraBrush, toolType, brushImage, brushSize, brushStrength, imagePosition);
+            Sculpt(toolType, brushImage, brushSize, brushStrength, imagePosition);
+            Smooth(toolType, brushImage, brushSize, brushStrength, imagePosition);
         }
 
-        terraBrush.TerrainZones.UpdateHeightmaps();
+        _terraBrush.TerrainZones.UpdateHeightmaps();
     }
 
-    private void Sculpt(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+    private void Sculpt(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = Colors.Red * (pixelBrushStrength * brushStrength) * _sculptingMultiplier;
             if (toolType == TerrainToolType.TerrainAdd) {
@@ -57,11 +59,11 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Flattern(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+    private void Flattern(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             smoothValue += currentPixel;
@@ -70,7 +72,7 @@ public class SculptTool : ToolBase {
 
         smoothValue = smoothValue / numberOfSamples;
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, smoothValue.R, pixelBrushStrength * brushStrength),
@@ -84,26 +86,26 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Smooth(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+    private void Smooth(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var directions = new List<float>();
 
-            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(terraBrush, absoluteImagePosition.X - 1, absoluteImagePosition.Y);
+            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X - 1, absoluteImagePosition.Y);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(terraBrush, absoluteImagePosition.X + 1, absoluteImagePosition.Y);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X + 1, absoluteImagePosition.Y);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(terraBrush, absoluteImagePosition.X, absoluteImagePosition.Y - 1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X, absoluteImagePosition.Y - 1);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(terraBrush, absoluteImagePosition.X, absoluteImagePosition.Y + 1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X, absoluteImagePosition.Y + 1);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }

@@ -7,32 +7,42 @@ namespace TerraBrush;
 public abstract class ToolBase {
     private Dictionary<ZoneResource, Image> _imagesCache;
     private Dictionary<int, ZoneResource> _zonesPositionCache;
+    protected TerraBrush _terraBrush;
+    private List<ImageTexture> _modifiedUndoTextures;
 
     protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength, Vector2I absoluteImagePosition);
 
-    public virtual void BeginPaint(TerraBrush terraBrush) {
-        _imagesCache = new Dictionary<ZoneResource, Image>();
-        _zonesPositionCache = new Dictionary<int, ZoneResource>();
+    public ToolBase(TerraBrush terraBrush) {
+        _terraBrush = terraBrush;
     }
 
-    public abstract void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
+    public virtual void BeginPaint() {
+        _imagesCache = new();
+        _zonesPositionCache = new();
+        _modifiedUndoTextures = new();
+    }
 
-    public virtual void EndPaint(TerraBrush terraBrush) {
+    public abstract void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
+
+    public virtual void EndPaint() {
         _imagesCache = null;
         _zonesPositionCache = null;
+
+        AddImagesToRedo();
+        _modifiedUndoTextures = null;
     }
 
-    protected virtual ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+    protected virtual ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return null;
     }
 
-    protected void ForEachBrushPixel(TerraBrush terraBrush, Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
+    protected void ForEachBrushPixel(Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
                 var xPosition = (int) imagePosition.X - (x - brushSize / 2);
                 var yPosition = (int) imagePosition.Y - (y - brushSize / 2);
 
-                var imageZoneInfo = GetImageZoneInfoForPosition(terraBrush, xPosition, yPosition);
+                var imageZoneInfo = GetImageZoneInfoForPosition(xPosition, yPosition);
                 if (imageZoneInfo != null) {
                     var brushPixelValue = brushImage.GetPixel(x, y);
                     var brushPixelStrength = brushPixelValue.A;
@@ -59,22 +69,22 @@ public abstract class ToolBase {
         };
     }
 
-    protected ImageZoneInfo GetImageZoneInfoForPosition(TerraBrush terraBrush, int x, int y) {
-        var zoneInfo = GetPixelToZoneInfo(x, y, terraBrush.TerrainSize);
+    protected ImageZoneInfo GetImageZoneInfoForPosition(int x, int y) {
+        var zoneInfo = GetPixelToZoneInfo(x, y, _terraBrush.TerrainSize);
         var zoneKey = (zoneInfo.ZonePosition.X << 8) + zoneInfo.ZonePosition.Y;
 
         _zonesPositionCache.TryGetValue(zoneKey, out ZoneResource zone);
 
         if (zone == null) {
-            zone = terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
+            zone = _terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
 
             if (zone != null) {
                 _zonesPositionCache.Add(zoneKey, zone);
             }
         }
 
-        if (zone == null && terraBrush.AutoAddZones) {
-            zone = terraBrush.TerrainZones.AddNewZone(terraBrush, zoneInfo.ZonePosition);
+        if (zone == null && _terraBrush.AutoAddZones) {
+            zone = _terraBrush.TerrainZones.AddNewZone(_terraBrush, zoneInfo.ZonePosition);
 
             if (zone != null) {
                 _zonesPositionCache.Add(zoneKey, zone);
@@ -83,15 +93,16 @@ public abstract class ToolBase {
 
         if (zone != null) {
             _imagesCache.TryGetValue(zone, out Image image);
-            var imageResource = GetToolCurrentImageTexture(terraBrush, zone);
+            var imageTexture = GetToolCurrentImageTexture(zone);
 
-            if (imageResource != null) {
+            if (imageTexture != null) {
                 if (image == null) {
-                    image = imageResource.GetImage();
+                    image = imageTexture.GetImage();
                     _imagesCache.Add(zone, image);
                 }
 
-                terraBrush.TerrainZones.AddDirtyImageTexture(imageResource);
+                _terraBrush.TerrainZones.AddDirtyImageTexture(imageTexture);
+                AddTextureToUndo(imageTexture);
             }
 
             return new ImageZoneInfo() {
@@ -102,6 +113,27 @@ public abstract class ToolBase {
         }
 
         return null;
+    }
+
+    protected void AddTextureToUndo(ImageTexture texture) {
+        if (!_modifiedUndoTextures.Contains(texture)) {
+            _modifiedUndoTextures.Add(texture);
+
+            _terraBrush.UndoRedo.AddUndoMethod(texture, "update", GetUndoRedoImageFromTexture(texture));
+        }
+    }
+
+    private void AddImagesToRedo() {
+        foreach (var imageTexture in _modifiedUndoTextures) {
+            _terraBrush.UndoRedo.AddDoMethod(imageTexture, "update", GetUndoRedoImageFromTexture(imageTexture));
+        }
+    }
+
+    private Image GetUndoRedoImageFromTexture(ImageTexture imageTexture) {
+        var image = new Image();
+        image.SetData(imageTexture.GetWidth(), imageTexture.GetHeight(), imageTexture.GetImage().HasMipmaps(), imageTexture.GetFormat(), imageTexture.GetImage().GetData());
+
+        return image;
     }
 
     public class ZoneInfo {

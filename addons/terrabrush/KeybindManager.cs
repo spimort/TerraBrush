@@ -17,7 +17,7 @@ public partial class KeybindManager : RefCounted {
     private readonly InputEventKey BrushSizeKey = new InputEventKey() { Keycode = Key.G };
     private readonly InputEventKey BrushStrengthKey = new InputEventKey() { Keycode = Key.H };
     private readonly InputEventKey EscapeKey = new InputEventKey() { Keycode = Key.Escape };
-    private readonly InputEventKey ToggleAutoAddZonesKey = new InputEventKey() { Keycode = Key.Z };
+    private readonly InputEventKey ToggleAutoAddZonesKey = new InputEventKey() { Keycode = Key.K };
     #endregion
 
     #region Public String Names

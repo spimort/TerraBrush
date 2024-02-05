@@ -6,16 +6,18 @@ public class WaterFlowTool : ToolBase {
     private Vector2 _previousWaterMousePosition = Vector2.Zero;
     private Vector2 _previousWaterMouseDirection = Vector2.Zero;
 
-    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+    public WaterFlowTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.WaterTexture;
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.WaterDefinition == null) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.WaterDefinition == null) {
             return;
         }
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             if (currentPixel.R > 0.0) {
@@ -42,7 +44,7 @@ public class WaterFlowTool : ToolBase {
             }
         });
 
-        terraBrush.TerrainZones.UpdateWaterTextures();
+        _terraBrush.TerrainZones.UpdateWaterTextures();
         _previousWaterMousePosition = imagePosition;
     }
 }

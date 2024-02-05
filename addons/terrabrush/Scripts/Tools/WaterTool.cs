@@ -7,29 +7,31 @@ namespace TerraBrush;
 public class WaterTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
 
-    public override void BeginPaint(TerraBrush terraBrush) {
-        base.BeginPaint(terraBrush);
+    public WaterTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    public override void BeginPaint() {
+        base.BeginPaint();
         _sculptedZones = new HashSet<ZoneResource>();
     }
 
-    public override void EndPaint(TerraBrush terraBrush) {
-        base.EndPaint(terraBrush);
+    public override void EndPaint() {
+        base.EndPaint();
 
-        terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
+        _terraBrush.UpdateObjectsHeight(_sculptedZones.ToList());
 
         _sculptedZones = null;
     }
 
-    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.WaterTexture;
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.WaterDefinition == null) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.WaterDefinition == null) {
             return;
         }
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             var newColor = toolType == TerrainToolType.WaterAdd ? new Color(1, currentPixel.G, currentPixel.B, 1) : new Color(0, 0.5f, 0.5f, 1);
@@ -43,6 +45,6 @@ public class WaterTool : ToolBase {
             _sculptedZones.Add(imageZoneInfo.Zone);
         });
 
-        terraBrush.TerrainZones.UpdateWaterTextures();
+        _terraBrush.TerrainZones.UpdateWaterTextures();
     }
 }

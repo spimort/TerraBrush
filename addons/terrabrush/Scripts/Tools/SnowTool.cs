@@ -3,16 +3,18 @@ using Godot;
 namespace TerraBrush;
 
 public class SnowTool : ToolBase {
-    protected override ImageTexture GetToolCurrentImageTexture(TerraBrush terraBrush, ZoneResource zone) {
+    public SnowTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.SnowTexture;
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.SnowDefinition == null) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.SnowDefinition == null) {
             return;
         }
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newColor = toolType == TerrainToolType.SnowAdd ? Colors.Red : new Color(0, 0, 0, 0);
 
@@ -25,6 +27,6 @@ public class SnowTool : ToolBase {
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
 
-        terraBrush.TerrainZones.UpdateSnowTextures();
+        _terraBrush.TerrainZones.UpdateSnowTextures();
     }
 }

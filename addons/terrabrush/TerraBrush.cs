@@ -85,6 +85,7 @@ public partial class TerraBrush : Node3D {
 
     public Action TerrainSettingsUpdated { get;set; }
     public bool AutoAddZones { get;set; }
+    public EditorUndoRedoManager UndoRedo { get;set; }
 
     [ExportGroup("TerrainSettings")]
     [Export]
@@ -364,18 +365,18 @@ public partial class TerraBrush : Node3D {
     }
 
     public void BeingEditTerrain() {
-        _currentTool?.BeginPaint(this);
+        _currentTool?.BeginPaint();
     }
 
     public void EditTerrain(Vector3 meshPosition) {
         var meshToImagePosition = meshPosition + new Vector3(TerrainSize / 2, 0, TerrainSize / 2);
         var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
 
-        _currentTool?.Paint(this, _terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
+        _currentTool?.Paint(_terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
     }
 
     public void EndEditTerrain() {
-        _currentTool?.EndPaint(this);
+        _currentTool?.EndPaint();
     }
 
     public void CreateSplatmaps(int zoneIndex, ZoneResource zone) {
@@ -419,7 +420,7 @@ public partial class TerraBrush : Node3D {
         if (terrainToolTypeAttribute == null) {
             _currentTool = null;
         } else if (_currentTool == null || _currentTool.GetType() != terrainToolTypeAttribute.PaintToolType) {
-            _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType);
+            _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType, this);
         }
     }
 

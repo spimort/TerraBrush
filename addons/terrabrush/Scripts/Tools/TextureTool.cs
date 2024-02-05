@@ -8,28 +8,30 @@ namespace TerraBrush;
 public class TextureTool : ToolBase {
     private Dictionary<ImageTexture, Image> _splatmapImagesCache = null;
 
-    public override void BeginPaint (TerraBrush terraBrush) {
-        base.BeginPaint(terraBrush);
+    public TextureTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    public override void BeginPaint () {
+        base.BeginPaint();
 
         _splatmapImagesCache = new Dictionary<ImageTexture, Image>();
     }
 
-    public override void EndPaint (TerraBrush terraBrush) {
-        base.EndPaint(terraBrush);
+    public override void EndPaint () {
+        base.EndPaint();
 
         _splatmapImagesCache = null;
     }
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.TextureSetIndex == null) {
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.TextureSetIndex == null) {
             return;
         }
 
-        var splatmapIndex = Mathf.FloorToInt(terraBrush.TextureSetIndex.Value / 4);
-        var colorChannel = terraBrush.TextureSetIndex.Value % 4;
-        var numberOfSplatmaps = Mathf.CeilToInt(terraBrush.TextureSets.TextureSets.Count() / 4.0);
+        var splatmapIndex = Mathf.FloorToInt(_terraBrush.TextureSetIndex.Value / 4);
+        var colorChannel = _terraBrush.TextureSetIndex.Value % 4;
+        var numberOfSplatmaps = Mathf.CeilToInt(_terraBrush.TextureSets.TextureSets.Count() / 4.0);
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
             for (int i = 0; i < numberOfSplatmaps; i++) {
                 Color splatmapColor = Colors.Transparent;
 
@@ -46,6 +48,10 @@ public class TextureTool : ToolBase {
                 }
 
                 var currentSplatmapTexture = imageZoneInfo.Zone.SplatmapsTexture[i];
+                // Since we play with several textures here, the toolbase cannot add the texture to the dirty collection
+                _terraBrush.TerrainZones.AddDirtyImageTexture(currentSplatmapTexture);
+                AddTextureToUndo(currentSplatmapTexture);
+
                 _splatmapImagesCache.TryGetValue(currentSplatmapTexture, out Image currentSplatmapImage);
 
                 if (currentSplatmapImage == null) {
@@ -61,12 +67,9 @@ public class TextureTool : ToolBase {
                     Mathf.Lerp(currentPixel.A, splatmapColor.A, pixelBrushStrength * brushStrength)
                 );
                 currentSplatmapImage.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
-
-                // Since we play with several textures here, the toolbase cannot add the texture to the dirty collection
-                terraBrush.TerrainZones.AddDirtyImageTexture(currentSplatmapTexture);
             }
         });
 
-        terraBrush.TerrainZones.UpdateSplatmapsTextures();
+        _terraBrush.TerrainZones.UpdateSplatmapsTextures();
     }
 }

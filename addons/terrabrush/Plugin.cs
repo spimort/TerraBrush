@@ -186,72 +186,19 @@ public partial class Plugin : EditorPlugin {
                         // Trigger a dirty state
                         _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
 
-                        // _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
-
-                        // if (_currentTerraBrushNode.WaterTexture != null) {
-                        //     _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                        // }
-
-                        // if (_currentTerraBrushNode.SnowTexture != null) {
-                        //     _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                        // }
-
-                        // if (_currentTerraBrushNode.Splatmaps != null) {
-                        //     foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                        //     }
-                        // }
-
-                        // if (_currentTerraBrushNode.Foliages != null) {
-                        //     foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                        //     }
-                        // }
-
-                        // if (_currentTerraBrushNode.Objects != null) {
-                        //     foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                        //         _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                        //     }
-                        // }
-
                         _isMousePressed = true;
                         preventGuiInput = true;
                         _currentTerraBrushNode.BeingEditTerrain();
                     }
                 } else if (_isMousePressed) {
-                    _currentTerraBrushNode.Terrain.TerrainUpdated(true);
+                    _currentTerraBrushNode.Terrain.TerrainUpdated();
                     _isMousePressed = false;
+
 
                     // Trigger a dirty state
                     _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
 
-                    // _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
-
-                    // if (_currentTerraBrushNode.WaterTexture != null) {
-                    //     _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                    // }
-
-                    // if (_currentTerraBrushNode.SnowTexture != null) {
-                    //     _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                    // }
-
-                    // if (_currentTerraBrushNode.Splatmaps != null) {
-                    //     foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                    //     }
-                    // }
-
-                    // if (_currentTerraBrushNode.Foliages != null) {
-                    //     foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                    //     }
-                    // }
-
-                    // if (_currentTerraBrushNode.Objects != null) {
-                    //     foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                    //         _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                    //     }
-                    // }
+                    _currentTerraBrushNode.EndEditTerrain();
 
                     _undoRedo.AddUndoMethod(this, nameof(OnUndoRedo));
                     _undoRedo.AddDoMethod(this, nameof(OnUndoRedo));
@@ -259,8 +206,6 @@ public partial class Plugin : EditorPlugin {
                     _preventInitialDo = true;
                     _undoRedo.CommitAction();
                     _preventInitialDo = false;
-
-                    _currentTerraBrushNode.EndEditTerrain();
                 }
             }
         }
@@ -303,8 +248,8 @@ public partial class Plugin : EditorPlugin {
             return;
         }
 
-        _currentTerraBrushNode.Terrain.TerrainUpdated(true);
-        _currentTerraBrushNode.Terrain.TerrainSplatmapsUpdated();
+        _currentTerraBrushNode.Terrain.TerrainUpdated();
+        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures();
 
         _currentTerraBrushNode.ClearObjects();
         await _currentTerraBrushNode.CreateObjects();
@@ -381,6 +326,7 @@ public partial class Plugin : EditorPlugin {
             AddDock();
         };
         _undoRedo = GetUndoRedo();
+        _currentTerraBrushNode.UndoRedo = _undoRedo;
 
         AddDock();
 
