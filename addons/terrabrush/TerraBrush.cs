@@ -576,7 +576,7 @@ public partial class TerraBrush : Node3D {
                                     newNode.Position = resultPosition;
 
                                     if (objectItem.Definition.RandomYRotation) {
-                                        newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), newNode.RotationDegrees.Z);
+                                        newNode.RotationDegrees = new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0);
                                     }
 
                                     objectNode.CallDeferred("add_child", newNode);
