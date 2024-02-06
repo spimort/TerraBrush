@@ -57,29 +57,15 @@ public abstract class ToolBase {
         }
     }
 
-    protected ZoneInfo GetPixelToZoneInfo(int x, int y, int terrainSize) {
-        var zoneXPosition = Mathf.FloorToInt(x / (float) terrainSize);
-        var zoneYPosition = Mathf.FloorToInt(y / (float) terrainSize);
-        var zoneBrushXPosition = (terrainSize * zoneXPosition * -1) + x;
-        var zoneBrushYPosition = (terrainSize * zoneYPosition * -1) + y;
-
-        return new ZoneInfo() {
-            ZonePosition = new Vector2I(zoneXPosition, zoneYPosition),
-            ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
-        };
-    }
-
     protected ImageZoneInfo GetImageZoneInfoForPosition(int x, int y) {
-        var zoneInfo = GetPixelToZoneInfo(x, y, _terraBrush.TerrainSize);
-        var zoneKey = (zoneInfo.ZonePosition.X << 8) + zoneInfo.ZonePosition.Y;
-
-        _zonesPositionCache.TryGetValue(zoneKey, out ZoneResource zone);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, _terraBrush.TerrainSize);
+        _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {
-            zone = _terraBrush.TerrainZones?.Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
+            zone = _terraBrush.TerrainZones?.GetZoneForZoneInfo(zoneInfo);
 
             if (zone != null) {
-                _zonesPositionCache.Add(zoneKey, zone);
+                _zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
             }
         }
 
@@ -87,7 +73,7 @@ public abstract class ToolBase {
             zone = _terraBrush.TerrainZones.AddNewZone(_terraBrush, zoneInfo.ZonePosition);
 
             if (zone != null) {
-                _zonesPositionCache.Add(zoneKey, zone);
+                _zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
             }
         }
 
@@ -134,11 +120,6 @@ public abstract class ToolBase {
         image.SetData(imageTexture.GetWidth(), imageTexture.GetHeight(), imageTexture.GetImage().HasMipmaps(), imageTexture.GetFormat(), imageTexture.GetImage().GetData());
 
         return image;
-    }
-
-    public class ZoneInfo {
-        public Vector2I ZonePosition { get;set; }
-        public Vector2I ImagePosition { get;set; }
     }
 
     public class ImageZoneInfo {

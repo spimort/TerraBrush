@@ -67,4 +67,27 @@ public static class ZoneUtils {
 
         return imageTexture;
     }
+
+    public static ZoneInfo GetPixelToZoneInfo(int x, int y, int terrainSize) {
+        var zoneXPosition = Mathf.FloorToInt(x / (float) terrainSize);
+        var zoneYPosition = Mathf.FloorToInt(y / (float) terrainSize);
+        var zoneBrushXPosition = (terrainSize * zoneXPosition * -1) + x;
+        var zoneBrushYPosition = (terrainSize * zoneYPosition * -1) + y;
+
+        var zonePosition = new Vector2I(zoneXPosition, zoneYPosition);
+        // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
+        var zoneKey = (zonePosition.X << 8) + zonePosition.Y;
+
+        return new ZoneInfo() {
+            ZoneKey = zoneKey,
+            ZonePosition = zonePosition,
+            ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+        };
+    }
+}
+
+public class ZoneInfo {
+    public int ZoneKey { get;set; }
+    public Vector2I ZonePosition { get;set; }
+    public Vector2I ImagePosition { get;set; }
 }

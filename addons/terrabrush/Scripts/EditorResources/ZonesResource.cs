@@ -143,4 +143,8 @@ public partial class ZonesResource : Resource {
         UpdateSnowTextures();
         UpdateZonesMap();
     }
+
+    public ZoneResource GetZoneForZoneInfo(ZoneInfo zoneInfo) {
+        return Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
+    }
 }

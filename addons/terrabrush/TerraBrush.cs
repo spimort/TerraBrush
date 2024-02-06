@@ -65,9 +65,7 @@ public partial class TerraBrush : Node3D {
     private Snow _snowNode  = null;
     private Vector2 _previousWaterMousePosition = Vector2.Zero;
     private Vector2 _previousWaterMouseDirection = Vector2.Zero;
-    // private Image[] _splatmapImagesCache = null;
-    // private Image _waterImageCache = null;
-    // private Image _snowImageCache = null;
+    private Dictionary<ImageTexture, Image> _imageTexturesCache = new();
     private Texture2D _defaultNoise;
     private string _dataPath;
 
@@ -758,35 +756,59 @@ public partial class TerraBrush : Node3D {
     }
 
     public TerrainPositionInformation? GetPositionInformation(float x, float y) {
+        x = x + (TerrainSize / 2);
+        y = y + (TerrainSize / 2);
+
+		var xPosition = (int) Math.Round(x);
+		var yPosition = (int) Math.Round(y);
+
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, TerrainSize);
+        var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
+
+        if (zone != null) {
+            float? waterFactor = null;
+            float? snowFactor = null;
+
+            if (zone.WaterTexture != null) {
+                waterFactor = GetImageFromImageTexture(zone.WaterTexture).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+            }
+
+            if (zone.SnowTexture != null) {
+                snowFactor = GetImageFromImageTexture(zone.SnowTexture).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+            }
+
+            return new TerrainPositionInformation() {
+                Textures = zone.SplatmapsTexture?.Length > 0 ? TextureSets?.TextureSets?.Select((textureSet, index) => {
+                    var splatmapIndex = Mathf.FloorToInt(index / 4);
+                    var splatmapImage = zone.SplatmapsTexture[splatmapIndex];
+                    var pixel = GetImageFromImageTexture(splatmapImage).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+                    var colorIndex = index % 4;
+
+                    return new TerrainPositionTextureInformation() {
+                        Index = index,
+                        Name = textureSet.Name,
+                        Factor = pixel[colorIndex]
+                    };
+                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] {},
+                WaterFactor = waterFactor ?? 0,
+                WaterDeepness = waterFactor * WaterDefinition?.WaterFactor ?? 0,
+                SnowFactor = snowFactor ?? 0,
+                SnowHeight = snowFactor * SnowDefinition?.SnowFactor ?? 0
+            };
+        }
+
         return null;
-		// var xPosition = (int) Math.Round(x);
-		// var yPosition = (int) Math.Round(y);
+    }
 
-        // if (x < -(TerrainSize / 2) || x > TerrainSize / 2 || y < -(TerrainSize / 2) || y > TerrainSize / 2) {
-        //     return null;
-        // }
+    private Image GetImageFromImageTexture(ImageTexture texture) {
+        _imageTexturesCache.TryGetValue(texture, out var image);
 
-        // var waterFactor = _waterImageCache?.GetPixel(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2)).R;
-        // var snowFactor = _snowImageCache?.GetPixel(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2)).R;
+        if (image == null) {
+            image = texture.GetImage();
+            _imageTexturesCache.Add(texture, image);
+        }
 
-        // return new TerrainPositionInformation() {
-        //     Textures = _splatmapImagesCache?.Length > 0 ? TextureSets?.TextureSets?.Select((textureSet, index) => {
-        //         var splatmapIndex = Mathf.FloorToInt(index / 4);
-        //         var splatmapImage = _splatmapImagesCache[splatmapIndex];
-        //         var pixel = splatmapImage.GetPixel(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
-        //         var colorIndex = index % 4;
-
-        //         return new TerrainPositionTextureInformation() {
-        //             Index = index,
-        //             Name = textureSet.Name,
-        //             Factor = pixel[colorIndex]
-        //         };
-        //     }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] {},
-        //     WaterFactor = waterFactor ?? 0,
-        //     WaterDeepness = waterFactor * WaterDefinition?.WaterFactor ?? 0,
-        //     SnowFactor = snowFactor ?? 0,
-        //     SnowHeight = snowFactor * SnowDefinition?.SnowFactor ?? 0
-        // };
+        return image;
     }
 
     private Task<Texture2D> WaitForTextureReady(Texture2D texture) {
