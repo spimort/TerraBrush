@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -6,10 +7,10 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Snow : Node3D {
-    private const float CompressSpeed = 10;
-    private const float DeCompressSpeed = 0.05f;
+    private const float DeCompressSpeed = 0.5f;
 
-    private System.Collections.Generic.Dictionary<Vector2I, float> _compressedPositions = new System.Collections.Generic.Dictionary<Vector2I, float>();
+    private Dictionary<ImageTexture, Dictionary<Vector2I, float>> _compressedPositions = new();
+    private Dictionary<ImageTexture, Image> _imagesCache = new();
 
     [NodePath] private Clipmap _clipmap;
 
@@ -56,53 +57,85 @@ public partial class Snow : Node3D {
     public override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
 
-        // if (_compressedPositions.Count > 0) {
-        //     var compressedSnowImage = _currentCompressedImage.GetImage();
+        if (_compressedPositions.Count > 0) {
+            for (var imageIndex = _compressedPositions.Count - 1; imageIndex >= 0; imageIndex--) {
+                var imageTexture = _compressedPositions.Keys.ElementAt(imageIndex);
+                var points = _compressedPositions[imageTexture];
 
-        //     for (var i = _compressedPositions.Count - 1; i >= 0; i--) {
-        //         var position = _compressedPositions.Keys.ElementAt(i);
-        //         var pixel = compressedSnowImage.GetPixel(position.X, position.Y);
-        //         if (pixel.G <= 0) {
-        //             pixel.R += (float) delta * CompressSpeed;
+                var compressedSnowImage = GetImageForTexture(imageTexture);
 
-        //             if (pixel.R >= 1.0) {
-        //                 pixel.G = 1.0f;
-        //             }
-        //         } else {
-        //             pixel.R -= (float) delta * DeCompressSpeed;
+                for (var i = points.Count - 1; i >= 0; i--) {
+                    var position = points.Keys.ElementAt(i);
+                    var pixel = compressedSnowImage.GetPixel(position.X, position.Y);
+                    var compressionValue = points[position];
 
-        //             if (pixel.R <= 0.0) {
-        //                 _compressedPositions.Remove(position);
-        //                 pixel = new Color(0, 0, 0, 0);
-        //             }
-        //         }
+                    if (compressionValue < 1) {
+                        compressionValue += (float) delta * DeCompressSpeed;
 
-        //         compressedSnowImage.SetPixel(position.X, position.Y, pixel);
-        //     }
+                        if (compressionValue >= 1.0) {
+                            compressionValue = 1.0f;
+                            points.Remove(position);
+                        } else {
+                            points[position] = compressionValue;
+                        }
 
-        //     _currentCompressedImage.Update(compressedSnowImage);
-        // }
+                        compressedSnowImage.SetPixel(position.X, position.Y, new Color(pixel.R, pixel.G, pixel.B, compressionValue));
+                    }
+                }
+
+                imageTexture.Update(compressedSnowImage);
+
+                if (points.Count == 0) {
+                    _compressedPositions.Remove(imageTexture);
+                }
+            }
+
+            TerrainZones.UpdateSnowTextures();
+        }
     }
 
     public void AddCompressedSnow(float x, float y) {
-        // if (_currentCompressedImage == null) {
-        //     var image = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-        //     _currentCompressedImage = ImageTexture.CreateFromImage(image);
-        //     _clipmap.Shader.SetShaderParameter("CompressedSnowTexture", _currentCompressedImage);
-        // }
+        x = x + (ZonesSize / 2);
+        y = y + (ZonesSize / 2);
 
-        // var xPosition = (int) Math.Round(x);
-        // var yPosition = (int) Math.Round(y);
+        var xPosition = (int) Math.Round(x);
+        var yPosition = (int) Math.Round(y);
 
-        // var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, ZonesSize);
-        // var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, ZonesSize);
+        var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
-        // if (zone != null) {
-        //     var image = zone.SnowTexture.GetImage();
-        //     var pixelPosition = new Vector2I(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
-        //     var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
-        //     image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 1));
-        // }
+        if (zone != null) {
+            var image = GetImageForTexture(zone.SnowTexture);
+            var pixelPosition = new Vector2I(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+            var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
+
+            if (currentPixel.R > 0) {
+                image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 0));
+
+                zone.SnowTexture.Update(image);
+                TerrainZones.UpdateSnowTextures();
+
+                _compressedPositions.TryGetValue(zone.SnowTexture, out var listOfPoints);
+                if (listOfPoints == null) {
+                    listOfPoints = new Dictionary<Vector2I, float>();
+                    _compressedPositions.Add(zone.SnowTexture, listOfPoints);
+                }
+
+                if (!listOfPoints.ContainsKey(pixelPosition)) {
+                    listOfPoints.Add(pixelPosition, 0);
+                }
+            }
+        }
+    }
+
+    private Image GetImageForTexture(ImageTexture imageTexture) {
+        _imagesCache.TryGetValue(imageTexture, out var image);
+        if (image == null) {
+            image = imageTexture.GetImage();
+            _imagesCache.Add(imageTexture, image);
+        }
+
+        return image;
     }
 }
 

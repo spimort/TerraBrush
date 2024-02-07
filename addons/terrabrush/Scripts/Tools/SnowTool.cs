@@ -22,7 +22,7 @@ public class SnowTool : ToolBase {
                 Mathf.Lerp(currentPixel.R, newColor.R, pixelBrushStrength * brushStrength),
                 Mathf.Lerp(currentPixel.G, newColor.G, pixelBrushStrength * brushStrength),
                 Mathf.Lerp(currentPixel.B, newColor.B, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.A, newColor.A, pixelBrushStrength * brushStrength)
+                1
             );
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });

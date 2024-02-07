@@ -12,8 +12,7 @@ uniform sampler2D SnowColorRoughness: source_color, filter_linear_mipmap, repeat
 uniform float SnowColorDetail = 20;
 uniform sampler2D Noise: hint_default_transparent, repeat_disable;
 uniform float NoiseFactor = 0.1;
-uniform float Metallic: hint_range(0.0, 1.0, 0.001); 
-uniform sampler2D CompressedSnowTexture: hint_default_black;
+uniform float Metallic: hint_range(0.0, 1.0, 0.001);
 
 varying vec2 _textureUV;
 varying vec3 _worldVertex;
@@ -30,10 +29,9 @@ void vertex() {
 	vec3 zoneUV = calculateZoneUV(_worldVertex);			
 	vec4 currentSnowColor = texture(SnowTextures, zoneUV);
 	vec4 currentNoiseColor = texture(Noise, zoneUV.xy);
-	vec4 currentCompressed = texture(CompressedSnowTexture, zoneUV.xy);
 
 	if (currentSnowColor.r > 0.0f) {
-		float compressedSnowValue = Remap(currentCompressed.r, 0.0, 1.0, 1.0, -1.0);
+		float compressedSnowValue = Remap(currentSnowColor.a, 0.0, 1.0, -1.0, 1.0);
 
 		VERTEX.y += ((currentSnowColor.r * SnowFactor) * compressedSnowValue) + (currentNoiseColor.r * NoiseFactor) - SnowInnerOffset;
 

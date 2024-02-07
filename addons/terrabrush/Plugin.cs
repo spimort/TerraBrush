@@ -347,7 +347,8 @@ public partial class Plugin : EditorPlugin {
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
 
         _autoAddZonesCheckbox = new CheckBox() {
-            Text = "Auto add zones"
+            Text = "Auto add zones",
+            ButtonPressed = _currentTerraBrushNode.AutoAddZones
         };
         _autoAddZonesCheckbox.Connect("pressed", new Callable(this, nameof(UpdateAutoAddZonesSetting)));
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
