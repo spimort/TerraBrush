@@ -85,9 +85,15 @@ public partial class Clipmap : Node3D {
 
         _clipmapMesh.Mesh = arrayMesh;
 
-        // var aabbSize = Heightmap.GetWidth() * 2;
-        // var aabbPoint = -(aabbSize / 2);
-        // arrayMesh.CustomAabb = new Aabb(new Vector3(aabbPoint, aabbPoint, aabbPoint), new Vector3(aabbSize, aabbSize, aabbSize));
+        var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
+        var maxX = zonePositions.Max(x => Math.Abs(x.X));
+        var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+
+        var aabbXSize = Math.Max(maxX * ZonesSize * 2, ZonesSize);
+        var aabbYSize = Math.Max(maxY * ZonesSize * 2, ZonesSize);
+        var aabbXPoint = -(aabbXSize / 2);
+        var aabbYPoint = -(aabbYSize / 2);
+        arrayMesh.CustomAabb = new Aabb(new Vector3(aabbXPoint, Math.Max(aabbXPoint, aabbYPoint), aabbYPoint), new Vector3(aabbXSize, Math.Max(aabbXSize, aabbYSize), aabbYSize));
 
         clipmapShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
         clipmapShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
