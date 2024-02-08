@@ -30,10 +30,7 @@ uniform float EdgeScale = 0.1;
 uniform float Near = 0.5;
 uniform float Far = 100.0;
 uniform vec3 EdgeColor: source_color;
-uniform sampler2D WaterRippleTexture;
-uniform float WaterRippleTextureSize = 512;
 
-varying vec2 _textureUV;
 varying vec3 _worldVertex;
 
 float fresnel(float amount, vec3 normal, vec3 view) {
@@ -46,9 +43,8 @@ float edge(float depth) {
 }
 
 void vertex() {
-	_textureUV = vec2(0);
 	_worldVertex = vec3(0);
-	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
 	
 	vec3 zoneUV = calculateZoneUV(_worldVertex);		
 	vec4 currentWaterColor = texture(WaterTextures, zoneUV);
@@ -58,6 +54,9 @@ void vertex() {
 		
 		float height = texture(Wave, _worldVertex.xz / NoiseScale + TIME * TimeScale).r;
 		VERTEX.y += height * HeightScale;
+		
+		float rippleValue = currentWaterColor.a;
+		VERTEX.y += rippleValue * 0.1;
 
 		COLOR = vec4(currentWaterColor.r, currentWaterColor.g, currentWaterColor.b, 1.0);
 	} else {
@@ -88,7 +87,7 @@ void fragment() {
 		float mixTimer = min(fract(time), 1.0 - fract(time)) * 2.0;
 
 		vec3 zoneUV = calculateZoneUV(_worldVertex);		
-		vec3 waterTexture = texture(WaterTextures, zoneUV).rgb;
+		vec4 waterTexture = texture(WaterTextures, zoneUV);
 		vec2 flows = waterTexture.gb * 2.0 - 1.0;
 
 		vec3 normalMap1 = texture(NormalMap, _worldVertex.xz + flows * timer * Strength).rgb;
@@ -105,15 +104,9 @@ void fragment() {
 		ROUGHNESS = Roughness;
 		NORMAL_MAP = normalBlend;	
 		
-		// Ripple
-		vec3 duv = vec3(4.0 / WaterRippleTextureSize, 4.0 / WaterRippleTextureSize, 0);
-		float v1 = texture(WaterRippleTexture, _textureUV - duv.xz).r;
-		float v2 = texture(WaterRippleTexture, _textureUV + duv.xz).r;
-		float v3 = texture(WaterRippleTexture, _textureUV - duv.zy).r;
-		float v4 = texture(WaterRippleTexture, _textureUV + duv.zy).r;
-		vec3 rippleNormal = normalize(vec3(v1 - v2, v3 - v4, 0.8));	
-		
-		NORMAL = mix(NORMAL, rippleNormal, 0.8);
+		if (waterTexture.a < 0.5) {
+			NORMAL = NORMAL + (waterTexture.a * 10.0);
+		}
 		
 		if (zoneUV.z < 0.0) {
 			ALPHA = 0.0;

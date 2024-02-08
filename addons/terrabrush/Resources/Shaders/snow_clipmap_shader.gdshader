@@ -14,24 +14,22 @@ uniform sampler2D Noise: hint_default_transparent, repeat_disable;
 uniform float NoiseFactor = 0.1;
 uniform float Metallic: hint_range(0.0, 1.0, 0.001);
 
-varying vec2 _textureUV;
 varying vec3 _worldVertex;
 
-float Remap (float value, float from1, float to1, float from2, float to2) {
+float remap(float value, float from1, float to1, float from2, float to2) {
     return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
 }
 
 void vertex() {
-	_textureUV = vec2(0);
 	_worldVertex = vec3(0);
-	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
 	
 	vec3 zoneUV = calculateZoneUV(_worldVertex);			
 	vec4 currentSnowColor = texture(SnowTextures, zoneUV);
 	vec4 currentNoiseColor = texture(Noise, zoneUV.xy);
 
 	if (currentSnowColor.r > 0.0f) {
-		float compressedSnowValue = Remap(currentSnowColor.a, 0.0, 1.0, -1.0, 1.0);
+		float compressedSnowValue = remap(currentSnowColor.a, 0.0, 1.0, -1.0, 1.0);
 
 		VERTEX.y += ((currentSnowColor.r * SnowFactor) * compressedSnowValue) + (currentNoiseColor.r * NoiseFactor) - SnowInnerOffset;
 

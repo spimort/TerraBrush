@@ -3,9 +3,8 @@ uniform float InitialCellWidth = 1.0;
 
 #include "zones_shader_include.gdshaderinc"
 
-void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec2 textureUV, out vec3 worldVertex) {
+void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
 	worldVertex = vertex + modelMatrix[3].xyz;
-	textureUV = (worldVertex.xz + (ZonesSize / 2.0)) / ZonesSize;
 	
 	vec3 zoneUV = calculateZoneUV(worldVertex);		
 	if (zoneUV.z >= 0.0) {		

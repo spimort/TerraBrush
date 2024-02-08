@@ -13,7 +13,6 @@ uniform sampler2DArray Normals;
 uniform sampler2DArray RoughnessTexutres;
 uniform bool UseAntitile = true;
 
-varying vec2 _textureUV;
 varying vec3 _worldVertex;
 
 vec2 rotate(vec2 v, float cosa, float sina) {
@@ -55,9 +54,8 @@ vec4 texture_array_antitile(sampler2DArray tex, vec3 uv) {
 }
 
 void vertex() {
-	_textureUV = vec2(0);
 	_worldVertex = vec3(0);
-	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
 	
 	vec3 zoneUV = calculateZoneUV(_worldVertex);
 	
