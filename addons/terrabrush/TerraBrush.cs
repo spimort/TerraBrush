@@ -704,6 +704,10 @@ public partial class TerraBrush : Node3D {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
+        if (Objects == null || Objects.Length == 0) {
+            return;
+        }
+
         foreach (var zone in zones) {
             var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
             var heightmapImage = zone.HeightMapTexture.GetImage();
