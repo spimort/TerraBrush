@@ -752,16 +752,14 @@ public partial class TerraBrush : Node3D {
     }
 
     public void UpdateCameraPosition(Camera3D viewportCamera) {
-        if (_foliagesNode == null) {
-            return;
-        }
-
         _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
         _waterNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
         _snowNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
-        foreach (var foliageNode in _foliagesNode.GetChildren()) {
-            ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);
+        if (_foliagesNode != null) {
+            foreach (var foliageNode in _foliagesNode.GetChildren()) {
+                ((Foliage) foliageNode).UpdateEditorCameraPosition(viewportCamera);
+            }
         }
     }
 
