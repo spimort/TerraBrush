@@ -435,6 +435,10 @@ public partial class TerraBrush : Node3D {
     }
 
     private async Task CreateFoliages() {
+        if (Foliages == null || Foliages.Length == 0) {
+            return;
+        }
+
         var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Foliage.tscn", CancellationToken.None);
 
         _foliagesNode = GetNodeOrNull<Node3D>("Foliages");
@@ -445,10 +449,6 @@ public partial class TerraBrush : Node3D {
 
         foreach (var existingFoliage in _foliagesNode.GetChildren()) {
             existingFoliage.QueueFree();
-        }
-
-        if (Foliages == null) {
-            return;
         }
 
         for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
@@ -493,20 +493,21 @@ public partial class TerraBrush : Node3D {
     }
 
     public async Task CreateObjects() {
+        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
+
         await Task.Factory.StartNew(async () => {
             await CreateObjectsAsync();
         });
     }
 
     private async Task CreateObjectsAsync() {
-        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
+        if (Objects == null || Objects.Length == 0) {
+            return;
+        }
+
         if (_objectsContainerNode == null) {
             _objectsContainerNode = new Node3D();
             CallDeferred("add_child", _objectsContainerNode);
-        }
-
-        if (Objects == null) {
-            return;
         }
 
         for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
