@@ -87,10 +87,7 @@ public partial class TerraBrush : Node3D {
 
     [ExportGroup("TerrainSettings")]
     [Export]
-    public int TerrainSize { get;set; } = 256;
-
-    // [Export]
-    // public ImageTexture HeightMap { get;set; }
+    public int ZonesSize { get;set; } = 256;
 
     [Export]
     public bool CollisionOnly { get;set; }
@@ -157,9 +154,6 @@ public partial class TerraBrush : Node3D {
     [Export]
     public int TextureDetail { get;set; } = 20;
 
-    // [Export]
-    // public ImageTexture[] Splatmaps { get;set; }
-
     [ExportGroup("Foliage")]
     [Export]
     public FoliageResource[] Foliages { get;set; }
@@ -172,15 +166,11 @@ public partial class TerraBrush : Node3D {
     public ObjectResource[] Objects { get;set; }
 
     [ExportGroup("Water")]
-    // [Export]
-    // public ImageTexture WaterTexture { get;set; }
 
     [Export]
     public WaterResource WaterDefinition { get;set; }
 
     [ExportGroup("Snow")]
-    // [Export]
-    // public ImageTexture SnowTexture { get;set; }
 
     [Export]
     public SnowResource SnowDefinition { get;set; }
@@ -188,6 +178,25 @@ public partial class TerraBrush : Node3D {
     [ExportGroup("Zones")]
     [Export]
     public ZonesResource TerrainZones { get;set; }
+
+    #region " Deprecated exports, will be removed in the future "
+    [ExportGroup("Deprecated (DO NOT USE)")]
+    [Export]
+    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
+    public ImageTexture HeightMap { get;set; }
+
+    [Export]
+    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
+    public ImageTexture[] Splatmaps { get;set; }
+
+    [Export]
+    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
+    public ImageTexture WaterTexture { get;set; }
+
+    [Export]
+    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
+    public ImageTexture SnowTexture { get;set; }
+    #endregion
 
     public async override void _Ready() {
         base._Ready();
@@ -232,7 +241,7 @@ public partial class TerraBrush : Node3D {
         TerrainZones = new ZonesResource() {
             Zones = new ZoneResource[] {
                 new ZoneResource() {
-                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(TerrainSize, 0, DataPath)
+                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, 0, DataPath)
                 }
             }
         };
@@ -281,7 +290,7 @@ public partial class TerraBrush : Node3D {
             var zone = TerrainZones.Zones[i];
 
             if (zone.HeightMapTexture == null) {
-                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(TerrainSize, i, DataPath);
+                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, i, DataPath);
             }
 
             CreateSplatmaps(i, zone);
@@ -303,7 +312,7 @@ public partial class TerraBrush : Node3D {
         _terrain.VisualInstanceLayers = VisualInstanceLayers;
         _terrain.CollisionLayers = CollisionLayers;
         _terrain.CollisionMask = CollisionMask;
-        _terrain.ZonesSize = TerrainSize;
+        _terrain.ZonesSize = ZonesSize;
         _terrain.TerrainZones = TerrainZones;
         _terrain.HeightMapFactor = HeightMapFactor;
         _terrain.TextureDetail = TextureDetail;
@@ -367,7 +376,7 @@ public partial class TerraBrush : Node3D {
     }
 
     public void EditTerrain(Vector3 meshPosition) {
-        var meshToImagePosition = meshPosition + new Vector3(TerrainSize / 2, 0, TerrainSize / 2);
+        var meshToImagePosition = meshPosition + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
         var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
 
         _currentTool?.Paint(_terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
@@ -384,7 +393,7 @@ public partial class TerraBrush : Node3D {
             var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
 
             for (var i = 0; i < numberOfSplatmaps - (zone.SplatmapsTexture?.Length ?? 0); i++) {
-                newList.Add(ZoneUtils.CreateSplatmapImage(TerrainSize, zoneIndex, i, DataPath));
+                newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zoneIndex, i, DataPath));
             }
 
             zone.SplatmapsTexture = newList.ToArray();
@@ -457,7 +466,7 @@ public partial class TerraBrush : Node3D {
                 if (zone.FoliagesTexture?.Length > foliageIndex) {
                     return zone.FoliagesTexture[foliageIndex];
                 } else {
-                    return ZoneUtils.CreateFoliageImage(TerrainSize, zoneIndex, foliageIndex, DataPath);
+                    return ZoneUtils.CreateFoliageImage(ZonesSize, zoneIndex, foliageIndex, DataPath);
                 }
             });
 
@@ -473,7 +482,7 @@ public partial class TerraBrush : Node3D {
                 var newFoliage = prefab.Instantiate<Foliage>();
                 _foliagesNode.AddChild(newFoliage);
 
-                newFoliage.ZonesSize = TerrainSize;
+                newFoliage.ZonesSize = ZonesSize;
                 newFoliage.TerrainZones = TerrainZones;
                 newFoliage.TextureSets = TextureSets;
                 newFoliage.TextureDetail = TextureDetail;
@@ -522,7 +531,7 @@ public partial class TerraBrush : Node3D {
                 if (zone.ObjectsTexture?.Length > objectIndex) {
                     imageTexture = zone.ObjectsTexture[objectIndex];
                 } else {
-                    imageTexture = ZoneUtils.CreateObjectImage(TerrainSize, zoneIndex, objectIndex, DataPath);
+                    imageTexture = ZoneUtils.CreateObjectImage(ZonesSize, zoneIndex, objectIndex, DataPath);
                 }
 
                 newList.Add(imageTexture);
@@ -540,7 +549,7 @@ public partial class TerraBrush : Node3D {
                     var objectNode = new Node3D();
                     objectNode.Name = $"{zoneIndex}_{objectIndex}";
                     objectNode.Visible = !objectItem.Hide;
-                    objectNode.Position = new Vector3(zone.ZonePosition.X * TerrainSize, 0, zone.ZonePosition.Y * TerrainSize);
+                    objectNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
 
                     _objectsContainerNode.CallDeferred("add_child", objectNode);
 
@@ -563,10 +572,10 @@ public partial class TerraBrush : Node3D {
                                 }
 
                                 var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                                if (resultImagePosition.X >= 0 && resultImagePosition.X < TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < TerrainSize) {
+                                if (resultImagePosition.X >= 0 && resultImagePosition.X < ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < ZonesSize) {
                                     var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
                                     var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-                                    resultPosition -= new Vector3(TerrainSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), TerrainSize / 2);
+                                    resultPosition -= new Vector3(ZonesSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), ZonesSize / 2);
 
                                     var nodeName = $"{x}_{y}";
 
@@ -600,7 +609,7 @@ public partial class TerraBrush : Node3D {
         for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(TerrainSize, i, DataPath);
+            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(ZonesSize, i, DataPath);
         }
 
         TerrainZones.UpdateWaterTextures();
@@ -614,7 +623,7 @@ public partial class TerraBrush : Node3D {
             _waterNode = prefab.Instantiate<Water>();
 
             _waterNode.TerrainZones = TerrainZones;
-            _waterNode.ZonesSize = TerrainSize;
+            _waterNode.ZonesSize = ZonesSize;
             _waterNode.WaterFactor = WaterDefinition.WaterFactor;
             _waterNode.WaterInnerOffset = WaterDefinition.WaterInnerOffset;
             _waterNode.HeightMapFactor = HeightMapFactor;
@@ -657,7 +666,7 @@ public partial class TerraBrush : Node3D {
         for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(TerrainSize, i, DataPath);
+            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, i, DataPath);
         }
 
         _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
@@ -672,7 +681,7 @@ public partial class TerraBrush : Node3D {
         _snowNode = prefab.Instantiate<Snow>();
 
         _snowNode.TerrainZones = TerrainZones;
-        _snowNode.ZonesSize = TerrainSize;
+        _snowNode.ZonesSize = ZonesSize;
         _snowNode.SnowDefinition = SnowDefinition;
         _snowNode.LODLevels = LODLevels;
         _snowNode.LODRowsPerLevel = LODRowsPerLevel;
@@ -720,7 +729,7 @@ public partial class TerraBrush : Node3D {
                         }
 
                         var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                        if (resultImagePosition.X >= 0 && resultImagePosition.X < TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < TerrainSize) {
+                        if (resultImagePosition.X >= 0 && resultImagePosition.X < ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < ZonesSize) {
                             var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
                             var waterHeight = waterImage?.GetPixel(xPosition, yPosition).R ?? 0;
                             objectNode.Position = new Vector3(objectNode.Position.X, (heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0)), objectNode.Position.Z);
@@ -757,13 +766,13 @@ public partial class TerraBrush : Node3D {
     }
 
     public TerrainPositionInformation? GetPositionInformation(float x, float y) {
-        x = x + (TerrainSize / 2);
-        y = y + (TerrainSize / 2);
+        x = x + (ZonesSize / 2);
+        y = y + (ZonesSize / 2);
 
 		var xPosition = (int) Math.Round(x);
 		var yPosition = (int) Math.Round(y);
 
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, TerrainSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, ZonesSize);
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {
@@ -826,5 +835,10 @@ public partial class TerraBrush : Node3D {
         }
 
         return asyncEvent.Task;
+    }
+
+    public override Godot.Collections.Array<Godot.Collections.Dictionary> _GetPropertyList()
+    {
+        return base._GetPropertyList();
     }
 }

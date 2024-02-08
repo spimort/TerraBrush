@@ -184,7 +184,7 @@ public partial class Plugin : EditorPlugin {
                         _undoRedo.CreateAction("Modify terrain");
 
                         // Trigger a dirty state
-                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
+                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
                         _isMousePressed = true;
                         preventGuiInput = true;
@@ -196,7 +196,7 @@ public partial class Plugin : EditorPlugin {
 
 
                     // Trigger a dirty state
-                    _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
+                    _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
                     _currentTerraBrushNode.EndEditTerrain();
 

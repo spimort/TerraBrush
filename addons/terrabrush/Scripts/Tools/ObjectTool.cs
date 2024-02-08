@@ -59,7 +59,7 @@ public class ObjectTool : ToolBase {
                     currentObjectsNode = new Node3D();
                     currentObjectsNode.Name = objectsNodeName;
                     currentObjectsNode.Visible = !currentObject.Hide;
-                    currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * _terraBrush.TerrainSize, 0, imageZoneInfo.Zone.ZonePosition.Y * _terraBrush.TerrainSize);
+                    currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * _terraBrush.ZonesSize, 0, imageZoneInfo.Zone.ZonePosition.Y * _terraBrush.ZonesSize);
                     _terraBrush.ObjectsContainerNode.AddChild(currentObjectsNode);
                 }
 
@@ -105,7 +105,7 @@ public class ObjectTool : ToolBase {
                             }
 
                             var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                            if (resultImagePosition.X >= 0 && resultImagePosition.X < _terraBrush.TerrainSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < _terraBrush.TerrainSize) {
+                            if (resultImagePosition.X >= 0 && resultImagePosition.X < _terraBrush.ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < _terraBrush.ZonesSize) {
                                 var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
 
                                 var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
@@ -114,7 +114,7 @@ public class ObjectTool : ToolBase {
 
                                 var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
                                 var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-                                resultPosition -= new Vector3(_terraBrush.TerrainSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (_terraBrush.WaterDefinition?.WaterFactor ?? 0))), _terraBrush.TerrainSize / 2);
+                                resultPosition -= new Vector3(_terraBrush.ZonesSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (_terraBrush.WaterDefinition?.WaterFactor ?? 0))), _terraBrush.ZonesSize / 2);
 
                                 newNode.Position = resultPosition;
 

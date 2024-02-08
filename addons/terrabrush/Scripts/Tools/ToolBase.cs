@@ -58,7 +58,7 @@ public abstract class ToolBase {
     }
 
     protected ImageZoneInfo GetImageZoneInfoForPosition(int x, int y) {
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, _terraBrush.TerrainSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, _terraBrush.ZonesSize);
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {
