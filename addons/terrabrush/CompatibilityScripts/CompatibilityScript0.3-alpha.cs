@@ -27,6 +27,12 @@ public static class CompatibilityScript_0_3_Alpha {
             terraBrush.Splatmaps = null;
             terraBrush.WaterTexture = null;
             terraBrush.SnowTexture = null;
+            terraBrush.Foliages?.ToList().ForEach(x => {
+                x.Texture = null;
+            });
+            terraBrush.Objects?.ToList().ForEach(x => {
+                x.Texture = null;
+            });
 
             GD.Print("Done converting.");
         }
