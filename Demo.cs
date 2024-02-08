@@ -76,7 +76,6 @@ public partial class Demo : CharacterBody3D {
 		}
 
 		if (IsOnFloor()) {
-			// GD.Print("dsafsdf ", GetLastSlideCollision() == null);
 			Terrain.AddInteractionPoint(playerX, playerZ);
 		}
 
