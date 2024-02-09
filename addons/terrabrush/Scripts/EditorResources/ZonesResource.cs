@@ -29,43 +29,53 @@ public partial class ZonesResource : Resource {
     [Export] public ZoneResource[] Zones { get;set; }
 
     public void UpdateHeightmaps() {
-        _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.HeightMapTexture.GetImage())));
+        var images = Zones.Select(zone => zone.HeightMapTexture.GetImage());
+
+        if (images.Any()) {
+            _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
     }
 
     public void UpdateSplatmapsTextures() {
-        _splatmapsTextures.CreateFromImages(new Godot.Collections.Array<Image>(
-            Zones.Aggregate(new List<Image>(), (source, zone) => {
-                if (zone.SplatmapsTexture != null) {
-                    source.AddRange(zone.SplatmapsTexture.Select(texture => texture.GetImage()));
-                }
+        var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
+            if (zone.SplatmapsTexture != null) {
+                source.AddRange(zone.SplatmapsTexture.Select(texture => texture.GetImage()));
+            }
 
-                return source;
-            })
-        ));
+            return source;
+        });
+
+        if (images.Count > 0) {
+            _splatmapsTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
     }
 
     public void UpdateFoliagesTextures() {
-        _foliagesTextures.CreateFromImages(new Godot.Collections.Array<Image>(
-            Zones.Aggregate(new List<Image>(), (source, zone) => {
-                if (zone.FoliagesTexture != null) {
-                    source.AddRange(zone.FoliagesTexture.Select(texture => texture.GetImage()));
-                }
+        var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
+            if (zone.FoliagesTexture != null) {
+                source.AddRange(zone.FoliagesTexture.Select(texture => texture.GetImage()));
+            }
 
-                return source;
-            })
-        ));
+            return source;
+        });
+
+        if (images.Count > 0) {
+            _foliagesTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
     }
 
     public void UpdateObjectsTextures() {
-        _objectsTextures.CreateFromImages(new Godot.Collections.Array<Image>(
-            Zones.Aggregate(new List<Image>(), (source, zone) => {
-                if (zone.ObjectsTexture != null) {
-                    source.AddRange(zone.ObjectsTexture.Select(texture => texture.GetImage()));
-                }
+        var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
+            if (zone.ObjectsTexture != null) {
+                source.AddRange(zone.ObjectsTexture.Select(texture => texture.GetImage()));
+            }
 
-                return source;
-            })
-        ));
+            return source;
+        });
+
+        if (images.Count > 0) {
+            _objectsTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
     }
 
     public void UpdateWaterTextures() {

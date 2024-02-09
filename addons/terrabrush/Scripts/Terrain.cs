@@ -79,31 +79,9 @@ public partial class Terrain : Node3D {
         TerrainSplatmapsUpdated();
     }
 
-    public void TerrainSplatmapsUpdated() {
+    private void TerrainSplatmapsUpdated() {
         Clipmap.Shader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
-
-        // if (this.Splatmaps?.Count() > 0) {
-        //     if (_splatmapsTexture == null) {
-        //         _splatmapsTexture = new Texture2DArray();
-        //         Clipmap.Shader.SetShaderParameter("Splatmaps", _splatmapsTexture);
-        //         _terrainColorShader.SetShaderParameter("Splatmaps", _splatmapsTexture);
-        //     }
-        //     _splatmapsTexture.CreateFromImages(new Godot.Collections.Array<Image>(Splatmaps.Select(texture => texture.GetImage())));
-        //     _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-        // }
     }
-
-    // public void TerrainSplatmapsUpdated(IEnumerable<Image> images) {
-    //     if (images.Count() > 0) {
-    //         if (_splatmapsTexture == null) {
-    //             _splatmapsTexture = new Texture2DArray();
-    //             Clipmap.Shader.SetShaderParameter("Splatmaps", _splatmapsTexture);
-    //             _terrainColorShader.SetShaderParameter("Splatmaps", _splatmapsTexture);
-    //         }
-    //         _splatmapsTexture.CreateFromImages(new Godot.Collections.Array<Image>(images));
-    //         _resultViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-    //     }
-    // }
 
     public void TerrainWaterUpdated() {
     	Clipmap.Shader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
@@ -128,7 +106,6 @@ public partial class Terrain : Node3D {
             _terrainCollider.AddChild(collisionShape);
 
             collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
-            // collisionShape.Owner = this;
 
             var heightMapShape3D = new HeightMapShape3D();
             collisionShape.Shape = heightMapShape3D;

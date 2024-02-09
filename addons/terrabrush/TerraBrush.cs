@@ -752,7 +752,7 @@ public partial class TerraBrush : Node3D {
     }
 
     public void UpdateCameraPosition(Camera3D viewportCamera) {
-        _terrain.Clipmap.UpdateEditorCameraPosition(viewportCamera);
+        _terrain?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
         _waterNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
         _snowNode?.Clipmap.UpdateEditorCameraPosition(viewportCamera);
 
