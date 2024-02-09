@@ -128,9 +128,6 @@ public partial class Water : Node3D {
     }
 
     public void AddRippleEffect(float x, float y) {
-        x += (float) (ZonesSize / 2.0);
-        y += (float) (ZonesSize / 2.0);
-
         var xPosition = (int) Math.Round(x);
         var yPosition = (int) Math.Round(y);
 

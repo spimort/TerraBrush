@@ -770,13 +770,26 @@ public partial class TerraBrush : Node3D {
     }
 
     public void AddInteractionPoint(float x, float y) {
+        x += ZonesSize / 2;
+        y += ZonesSize / 2;
+
+        if (ZonesSize % 2 == 0) {
+            x -= LODInitialCellWidth / 2.0f;
+            y -= LODInitialCellWidth / 2.0f;
+        }
+
         _snowNode?.AddCompressedSnow(x, y);
         _waterNode?.AddRippleEffect(x, y);
     }
 
     public TerrainPositionInformation? GetPositionInformation(float x, float y) {
-        x = x + (ZonesSize / 2);
-        y = y + (ZonesSize / 2);
+        x += ZonesSize / 2;
+        y += ZonesSize / 2;
+
+        if (ZonesSize % 2 == 0) {
+            x -= LODInitialCellWidth / 2.0f;
+            y -= LODInitialCellWidth / 2.0f;
+        }
 
 		var xPosition = (int) Math.Round(x);
 		var yPosition = (int) Math.Round(y);

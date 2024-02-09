@@ -95,9 +95,6 @@ public partial class Snow : Node3D {
     }
 
     public void AddCompressedSnow(float x, float y) {
-        x = x + (ZonesSize / 2);
-        y = y + (ZonesSize / 2);
-
         var xPosition = (int) Math.Round(x);
         var yPosition = (int) Math.Round(y);
 
