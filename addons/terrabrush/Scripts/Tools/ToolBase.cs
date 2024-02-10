@@ -73,6 +73,7 @@ public abstract class ToolBase {
             zone = _terraBrush.TerrainZones.AddNewZone(_terraBrush, zoneInfo.ZonePosition);
 
             if (zone != null) {
+                _terraBrush.Terrain.AddZoneCollision(zone);
                 _zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
             }
         }

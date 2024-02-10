@@ -102,15 +102,7 @@ public partial class Terrain : Node3D {
 
         var shapes = new List<HeightMapShape3D>();
         foreach (var zone in TerrainZones.Zones) {
-            var collisionShape = new CollisionShape3D();
-            _terrainCollider.AddChild(collisionShape);
-
-            collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
-
-            var heightMapShape3D = new HeightMapShape3D();
-            collisionShape.Shape = heightMapShape3D;
-            heightMapShape3D.MapWidth = ZonesSize;
-            heightMapShape3D.MapDepth = ZonesSize;
+            var heightMapShape3D = AddZoneCollision(zone);
 
             shapes.Add(heightMapShape3D);
         }
@@ -172,6 +164,20 @@ public partial class Terrain : Node3D {
 
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
         shape.MapData = data;
+    }
+
+    public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
+        var collisionShape = new CollisionShape3D();
+        _terrainCollider.AddChild(collisionShape);
+
+        collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
+
+        var heightMapShape3D = new HeightMapShape3D();
+        collisionShape.Shape = heightMapShape3D;
+        heightMapShape3D.MapWidth = ZonesSize;
+        heightMapShape3D.MapDepth = ZonesSize;
+
+        return heightMapShape3D;
     }
 
 	private void UpdateTextures() {
