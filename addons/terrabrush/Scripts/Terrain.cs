@@ -11,19 +11,15 @@ namespace TerraBrush;
 [Tool]
 public partial class Terrain : Node3D {
     private CancellationTokenSource _collisionCancellationSource = null;
-    // private Texture2DArray _splatmapsTexture = null;
 
     [NodePath] private Clipmap _clipmap;
     [NodePath] private StaticBody3D _terrainCollider;
 
     [Export] public int ZonesSize { get;set; }
-    // [Export] public Texture2D HeightMap { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
-	// [Export] public Texture2D[] Splatmaps { get;set; } = new Texture2D[]{};
 	[Export] public int TextureDetail { get;set; } = 1;
-    // [Export] public ImageTexture WaterTexture { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -110,7 +106,7 @@ public partial class Terrain : Node3D {
         var updateAction = () => {
             var imagesCache = new Dictionary<ZoneResource, CollisionZoneImages>();
 
-            for (var i = 0; i < TerrainZones.Zones.Count(); i++) {
+            for (var i = 0; i < TerrainZones.Zones.Length; i++) {
                 var zone = TerrainZones.Zones[i];
                 var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
                 var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);

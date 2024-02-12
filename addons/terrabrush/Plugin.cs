@@ -100,11 +100,6 @@ public partial class Plugin : EditorPlugin {
 
         if (@event is InputEventMouseMotion inputMotion) {
             var meshPosition = GetRayCastWithTerrain(viewportCamera, inputMotion.Position);
-            // Sometimes, the raycast does not hit for some reasons, so we keep the last position of the mouse
-            if (_isMousePressed && meshPosition == Vector3.Inf && _mouseHitPosition != Vector3.Inf) {
-                meshPosition = _mouseHitPosition;
-            }
-
             if (meshPosition == Vector3.Inf) {
                 _brushDecal.Visible = false;
             } else {
@@ -259,20 +254,50 @@ public partial class Plugin : EditorPlugin {
         var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
 
         if (editorCamera.GetViewport() is SubViewport viewport && viewport.GetParent() is SubViewportContainer viewportContainer) {
-            var screenPosition = mousePosition * viewport.Size / viewportContainer.Size;
+            var screenPosition = editorCamera.GetViewport().GetMousePosition();
 
             var from = editorCamera.ProjectRayOrigin(screenPosition);
             var dir = editorCamera.ProjectRayNormal(screenPosition);
 
-            var distance = editorCamera.Far * 1.2f;
-            var query = new PhysicsRayQueryParameters3D();
-            query.From = from;
-            query.To = from + dir * distance;
+            var distance = 2000;
+            var query = new PhysicsRayQueryParameters3D() {
+                From = from,
+                To = from + dir * distance
+            };
             var result = spaceState.IntersectRay(query);
 
             if (result?.Count > 0 && result["collider"].Obj == _currentTerraBrushNode.Terrain?.TerrainCollider) {
                 return (Vector3)result["position"] + new Vector3(0, 0.1f, 0);
+            } else {
+                return GetMouseClickToZoneHeight(from, dir);
             }
+        }
+
+        return Vector3.Inf;
+    }
+
+    private Vector3 GetMouseClickToZoneHeight(Vector3 from, Vector3 direction) {
+        var heightmapsCache = new Dictionary<ImageTexture, Image>();
+
+        for (var i = 0; i < 20000; i++) {
+            var position = from + (direction * i * 0.1f);
+
+            var zoneInfo = ZoneUtils.GetPixelToZoneInfo((int) Math.Round(position.X + (_currentTerraBrushNode.ZonesSize / 2)), (int) Math.Round(position.Z + (_currentTerraBrushNode.ZonesSize / 2)), _currentTerraBrushNode.ZonesSize);
+            var zone = _currentTerraBrushNode.TerrainZones.GetZoneForZoneInfo(zoneInfo);
+            if (zone != null && zone.HeightMapTexture != null) {
+                heightmapsCache.TryGetValue(zone.HeightMapTexture, out var heightMapImage);
+                if (heightMapImage == null) {
+                    heightMapImage = zone.HeightMapTexture.GetImage();
+                    heightmapsCache.Add(zone.HeightMapTexture, heightMapImage);
+                }
+
+                var zoneHeight = heightMapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+
+                if (zoneHeight >= position.Y) {
+                    return new Vector3(position.X, zoneHeight, position.Z);
+                }
+            }
+
         }
 
         return Vector3.Inf;
