@@ -137,6 +137,10 @@ public partial class ZonesResource : Resource {
 
         UpdateImageTextures();
 
+        terraBrush.Terrain?.Clipmap?.UpdateAABB();
+        terraBrush.Water?.Clipmap?.UpdateAABB();
+        terraBrush.Snow?.Clipmap?.UpdateAABB();
+
         return zone;
     }
 

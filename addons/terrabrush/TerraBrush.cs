@@ -71,6 +71,7 @@ public partial class TerraBrush : Node3D {
 
     public Terrain Terrain => _terrain;
     public Water Water => _waterNode;
+    public Snow Snow => _snowNode;
     public int BrushSize => _brushSize;
     public float BrushStrength => _brushStrength;
     public Image BrushImage => _brushImage;
