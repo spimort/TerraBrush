@@ -71,7 +71,7 @@ I'm gonna be happy to accept PR for new features if it fits.
   - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
-* **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain
+* **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 
 ## How To Use
 
