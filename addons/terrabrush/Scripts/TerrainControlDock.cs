@@ -61,7 +61,7 @@ public partial class TerrainControlDock : Control {
             SetSelectedBrushIndex(index);
         });
 
-        UpdateSelectedBrush();
+        UpdateSelectedBrush(true);
     }
 
     public void SetBrushSize(int value) {
@@ -78,10 +78,10 @@ public partial class TerrainControlDock : Control {
     public void SetSelectedBrushIndex(int index) {
         _selectedBrushIndex = index;
 
-        UpdateSelectedBrush();
+        UpdateSelectedBrush(false);
     }
 
-    private void UpdateSelectedBrush() {
+    private void UpdateSelectedBrush(bool initialize) {
         var brushesPreview = _brushesContainer.GetChildren();
 
         for (var i = 0; i < brushesPreview.Count; i++) {
@@ -90,9 +90,12 @@ public partial class TerrainControlDock : Control {
             ((BrushPreview) brushPreview).ButtonPressed = i == _selectedBrushIndex;
         }
 
-        var brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
-        brushImage.FlipY();
-        brushImage.FlipX();
+        Image brushImage = initialize ? TerraBrush?.BrushImage : null;
+        if (brushImage == null) {
+            brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
+            brushImage.FlipY();
+            brushImage.FlipX();
+        }
         TerraBrush?.SetCurrentBrush(brushImage);
         BrushDecal?.SetBrushImage(brushImage);
     }
