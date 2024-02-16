@@ -1,5 +1,4 @@
 #if TOOLS
-#nullable enable
 using Godot;
 
 namespace TerraBrush;
@@ -16,7 +15,7 @@ public partial class KeyListenDialog : Window {
 	[NodePath] private Button _okButton;
 	[NodePath] private Button _cancelButton;
 
-	private InputEventKey? _eventKey;
+	private InputEventKey _eventKey;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
