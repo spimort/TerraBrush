@@ -128,6 +128,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |TextureSetResource[x].NormalTexture|The normal map texture of the set.|
 |TextureSetResource[x].RoughnessTexture|The roughness texture of the set.|
 |Texture Detail|This will determine how often your textures will be repeated on the terrain. A higher value means more repetitions. The default value is 20.|
+|Use Anti Tile|This will determine if the textures will use an Anti Tile algorithm.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
