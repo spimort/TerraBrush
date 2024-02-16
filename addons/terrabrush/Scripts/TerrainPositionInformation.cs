@@ -3,7 +3,7 @@ using Godot;
 namespace TerraBrush;
 
 public partial class TerrainPositionInformation : GodotObject {
-    [Export] public TerrainPositionTextureInformation[]? Textures { get;set; }
+    [Export] public TerrainPositionTextureInformation[] Textures { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public float WaterDeepness { get;set; }
     [Export] public float SnowFactor { get;set; }

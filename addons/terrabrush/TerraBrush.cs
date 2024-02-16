@@ -651,7 +651,7 @@ public partial class TerraBrush : TerraBrushTool {
         _waterNode?.AddRippleEffect(x, y);
     }
 
-    public TerrainPositionInformation? GetPositionInformation(float x, float y) {
+    public TerrainPositionInformation GetPositionInformation(float x, float y) {
         x += ZonesSize / 2;
         y += ZonesSize / 2;
 
