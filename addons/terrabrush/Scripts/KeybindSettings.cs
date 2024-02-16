@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 using System.Text;
 
@@ -26,7 +27,7 @@ public partial class KeybindSettings : AcceptDialog {
 
 		return newString.ToString();
 	}
-	
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		this.RegisterNodePaths();
@@ -40,7 +41,7 @@ public partial class KeybindSettings : AcceptDialog {
 			var iter = _keybindList.CreateItem(_root);
 			iter.SetText(0, ProperCase(action));
 			iter.SetText(1, _keybindManager.DescribeKey(action));
-			
+
 			iter.AddButton(1, iconTheme.GetIcon("Edit", "EditorIcons"), (int)ShortcutType.Add);
 			iter.AddButton(1, iconTheme.GetIcon("Close", "EditorIcons"), (int)ShortcutType.Erase);
 			iter.SetMetadata(0, action);
@@ -51,21 +52,21 @@ public partial class KeybindSettings : AcceptDialog {
 	private void KeybindListOnButtonClicked(TreeItem item, long column, long id, long mouseButtonIndex) {
 		if (column != 1) return;
 		if ((MouseButton)mouseButtonIndex != MouseButton.Left) return;
-		
+
 		switch ((ShortcutType)id) {
 			case ShortcutType.Add:
 				var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeyListenDialog.tscn")
 					.Instantiate<KeyListenDialog>();
-				
+
 				dlg.KeyListenAccepted += (key) => {
 					var action = item.GetMetadata(0).AsStringName();
 					item.SetText(1, KeybindManager.DescribeKey(key));
 					_keybindManager.UpdateKeybind(action, key);
 					dlg.QueueFree();
 				};
-				
+
 				dlg.KeyListenCancelled += () => dlg.QueueFree();
-				
+
 				GetTree().Root.AddChild(dlg);
 				dlg.PopupCentered();
 				// Handle Erase Shortcut
@@ -79,3 +80,4 @@ public partial class KeybindSettings : AcceptDialog {
 		}
 	}
 }
+#endif

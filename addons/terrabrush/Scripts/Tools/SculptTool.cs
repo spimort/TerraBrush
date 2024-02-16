@@ -1,8 +1,7 @@
-using System;
+#if TOOLS
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using TerraBrush;
 
 namespace TerraBrush;
 
@@ -121,3 +120,4 @@ public class SculptTool : ToolBase {
         });
     }
 }
+#endif

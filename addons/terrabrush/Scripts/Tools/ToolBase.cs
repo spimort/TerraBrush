@@ -1,3 +1,4 @@
+#if TOOLS
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -129,3 +130,4 @@ public abstract class ToolBase {
         public ZoneResource Zone { get;set; }
     }
 }
+#endif

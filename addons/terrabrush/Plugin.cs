@@ -99,7 +99,7 @@ public partial class Plugin : EditorPlugin {
         var preventGuiInput = false;
 
         if (@event is InputEventMouseMotion inputMotion) {
-            var meshPosition = GetRayCastWithTerrain(viewportCamera, inputMotion.Position);
+            var meshPosition = GetRayCastWithTerrain(viewportCamera);
             if (meshPosition == Vector3.Inf) {
                 _brushDecal.Visible = false;
             } else {
@@ -250,7 +250,7 @@ public partial class Plugin : EditorPlugin {
         await _currentTerraBrushNode.CreateObjects();
     }
 
-    private Vector3 GetRayCastWithTerrain(Camera3D editorCamera, Vector2 mousePosition) {
+    private Vector3 GetRayCastWithTerrain(Camera3D editorCamera) {
         var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
 
         if (editorCamera.GetViewport() is SubViewport viewport && viewport.GetParent() is SubViewportContainer viewportContainer) {

@@ -1,3 +1,4 @@
+#if TOOLS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,3 +74,4 @@ public class TextureTool : ToolBase {
         _terraBrush.TerrainZones.UpdateSplatmapsTextures();
     }
 }
+#endif

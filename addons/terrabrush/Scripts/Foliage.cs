@@ -86,8 +86,4 @@ public partial class Foliage : Node3D {
     public void UpdateEditorCameraPosition(Camera3D viewportCamera) {
         this._foliageShader?.SetShaderParameter("GlobalPosition", viewportCamera.GlobalPosition);
     }
-
-    public void UpdateGroudTexture(Texture2D texture) {
-        // this._foliageShader.SetShaderParameter("GroudTexture", texture);
-    }
 }

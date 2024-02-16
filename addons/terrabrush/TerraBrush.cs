@@ -7,64 +7,19 @@ using Godot;
 
 namespace TerraBrush;
 
-public enum TerrainToolType {
-    None = 0,
-    [ToolType(typeof(SculptTool))]
-    TerrainAdd = 1,
-    [ToolType(typeof(SculptTool))]
-    TerrainRemove = 2,
-    [ToolType(typeof(SculptTool))]
-    TerrainSmooth = 3,
-    [ToolType(typeof(SculptTool))]
-    TerrainFlattern = 4,
-    [ToolType(typeof(TextureTool))]
-    Paint = 5,
-    [ToolType(typeof(FoliageTool))]
-    FoliageAdd = 6,
-    [ToolType(typeof(FoliageTool))]
-    FoliagRemove = 7,
-    [ToolType(typeof(ObjectTool))]
-    ObjectAdd = 8,
-    [ToolType(typeof(ObjectTool))]
-    ObjectRemove = 9,
-    [ToolType(typeof(WaterTool))]
-    WaterAdd = 10,
-    [ToolType(typeof(WaterTool))]
-    WaterRemove = 11,
-    [ToolType(typeof(WaterFlowTool))]
-    WaterFlowAdd = 12,
-    [ToolType(typeof(WaterFlowTool))]
-    WaterFlowRemove = 13,
-    [ToolType(typeof(SnowTool))]
-    SnowAdd = 14,
-    [ToolType(typeof(SnowTool))]
-    SnowRemove = 15,
-}
-
 [Tool]
-public partial class TerraBrush : Node3D {
+public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
 
-    private ToolBase _currentTool;
     private Terrain _terrain;
-    private int _brushSize = 100;
-    private Image _originalBrushImage;
-    private Image _brushImage;
-    private float _brushStrength = 0.1f;
-    private TerrainToolType _terrainTool = TerrainToolType.TerrainAdd;
-    private int? _textureSetIndex = null;
     private TextureSetResource[] _texturesSet;
     private ImageTexture[] _splatmaps = new ImageTexture[]{};
     private Node3D _foliagesNode = null;
-    private int? _foliageIndex = null;
-    private int? _objectIndex = null;
     private Node3D _objectsContainerNode = null;
     private Node3D _waterNodeContainer = null;
     private Water _waterNode  = null;
     private Node3D _snowNodeContainer = null;
     private Snow _snowNode  = null;
-    private Vector2 _previousWaterMousePosition = Vector2.Zero;
-    private Vector2 _previousWaterMouseDirection = Vector2.Zero;
     private Dictionary<ImageTexture, Image> _imageTexturesCache = new();
     private Texture2D _defaultNoise;
     private string _dataPath;
@@ -72,23 +27,15 @@ public partial class TerraBrush : Node3D {
     public Terrain Terrain => _terrain;
     public Water Water => _waterNode;
     public Snow Snow => _snowNode;
-    public int BrushSize => _brushSize;
-    public float BrushStrength => _brushStrength;
-    public Image BrushImage => _brushImage;
-    public TerrainToolType TerrainTool => _terrainTool;
-    public int? TextureSetIndex => _textureSetIndex;
-    public int? FoliageIndex => _foliageIndex;
-    public int? ObjectIndex => _objectIndex;
     public Node3D ObjectsContainerNode => _objectsContainerNode;
     public Texture2D DefaultNoise => _defaultNoise;
 
     public Action TerrainSettingsUpdated { get;set; }
     public bool AutoAddZones { get;set; }
-    public EditorUndoRedoManager UndoRedo { get;set; }
 
     [ExportGroup("TerrainSettings")]
     [Export]
-    public int ZonesSize { get;set; } = 256;
+    public override int ZonesSize { get;set; } = 256;
 
     [Export]
     public bool CollisionOnly { get;set; }
@@ -106,27 +53,6 @@ public partial class TerraBrush : Node3D {
 
     [Export(PropertyHint.Layers3DRender)]
     public int VisualInstanceLayers { get;set; } = 1;
-
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnCreateTerrain)}")]
-    public bool CreateTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUpdateTerrainSettings)}")]
-    public bool UpdateTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnRemoveTerrain)}")]
-    public bool RemoveTerrain {
-        get {
-            return false;
-        } set {}
-    }
 
     [ExportGroup("LOD")]
     [Export]
@@ -221,8 +147,6 @@ public partial class TerraBrush : Node3D {
         if (TerrainZones != null) {
             await LoadTerrain();
         }
-
-        SetTerrainTool(_terrainTool);
     }
 
     public override string[] _GetConfigurationWarnings() {
@@ -235,7 +159,7 @@ public partial class TerraBrush : Node3D {
         return warnings.ToArray();
     }
 
-    public async void OnCreateTerrain() {
+    public override async void OnCreateTerrain() {
         if (string.IsNullOrWhiteSpace(DataPath)) {
             return;
         }
@@ -259,7 +183,7 @@ public partial class TerraBrush : Node3D {
         TerrainSettingsUpdated?.Invoke();
     }
 
-    public void OnRemoveTerrain() {
+    public override void OnRemoveTerrain() {
         if (_terrain != null) {
             _terrain.QueueFree();
             _terrain = null;
@@ -341,7 +265,7 @@ public partial class TerraBrush : Node3D {
         }
     }
 
-    public async void OnUpdateTerrainSettings() {
+    public override async void OnUpdateTerrainSettings() {
         if (_terrain != null) {
             _terrain.QueueFree();
             _terrain = null;
@@ -379,21 +303,6 @@ public partial class TerraBrush : Node3D {
         }
     }
 
-    public void BeingEditTerrain() {
-        _currentTool?.BeginPaint();
-    }
-
-    public void EditTerrain(Vector3 meshPosition) {
-        var meshToImagePosition = meshPosition + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
-        var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
-
-        _currentTool?.Paint(_terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
-    }
-
-    public void EndEditTerrain() {
-        _currentTool?.EndPaint();
-    }
-
     public void CreateSplatmaps(int zoneIndex, ZoneResource zone) {
         var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
 
@@ -408,47 +317,6 @@ public partial class TerraBrush : Node3D {
         }
 
         TerrainZones.UpdateSplatmapsTextures();
-    }
-
-    public void SetCurrentBrush(Image brushImage) {
-        _originalBrushImage = brushImage;
-
-        SetBrushSize(_brushSize);
-    }
-
-    public void SetBrushSize(int value) {
-        _brushImage = new Image();
-        _brushImage.CopyFrom(_originalBrushImage);
-        _brushImage.Resize(value, value);
-
-        _brushSize = value;
-    }
-
-    public void SetBrushStrength(float value) {
-        _brushStrength = value;
-    }
-
-    public void SetTerrainTool(TerrainToolType terrainToolType) {
-        _terrainTool = terrainToolType;
-
-        var terrainToolTypeAttribute = AttributeUtils.GetAttribute<ToolTypeAttribute>(terrainToolType);
-        if (terrainToolTypeAttribute == null) {
-            _currentTool = null;
-        } else if (_currentTool == null || _currentTool.GetType() != terrainToolTypeAttribute.PaintToolType) {
-            _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType, this);
-        }
-    }
-
-    public void SetTextureSet(int? textureSetIndex) {
-        _textureSetIndex = textureSetIndex;
-    }
-
-    public void SetFoliage(int? foliageIndex) {
-        _foliageIndex = foliageIndex;
-    }
-
-    public void SetObject(int? objectIndex) {
-        _objectIndex = objectIndex;
     }
 
     private async Task CreateFoliages() {
