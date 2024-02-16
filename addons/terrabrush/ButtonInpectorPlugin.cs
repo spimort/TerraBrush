@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -23,3 +24,4 @@ public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
         return base._ParseProperty(@object, type, name, hintType, hintString, usageFlags, wide);
     }
 }
+#endif

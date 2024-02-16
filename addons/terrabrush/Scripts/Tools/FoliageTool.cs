@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -30,3 +31,4 @@ public class FoliageTool : ToolBase {
         _terraBrush.TerrainZones.UpdateFoliagesTextures();
     }
 }
+#endif

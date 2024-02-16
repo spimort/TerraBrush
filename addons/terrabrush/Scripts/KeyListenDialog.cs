@@ -1,3 +1,4 @@
+#if TOOLS
 #nullable enable
 using Godot;
 
@@ -10,13 +11,13 @@ public partial class KeyListenDialog : Window {
 
 	[Signal]
 	public delegate void KeyListenCancelledEventHandler();
-	
+
 	[NodePath] private Label _keyDisplay;
 	[NodePath] private Button _okButton;
 	[NodePath] private Button _cancelButton;
 
 	private InputEventKey? _eventKey;
-	
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		this.RegisterNodePaths();
@@ -25,7 +26,7 @@ public partial class KeyListenDialog : Window {
 				_okButton.Disabled = true;
 				return;
 			}
-			
+
 			EmitSignal(SignalName.KeyListenAccepted, _eventKey);
 		};
 		_cancelButton.Pressed += () => EmitSignal(SignalName.KeyListenCancelled);
@@ -39,3 +40,4 @@ public partial class KeyListenDialog : Window {
 		}
 	}
 }
+#endif

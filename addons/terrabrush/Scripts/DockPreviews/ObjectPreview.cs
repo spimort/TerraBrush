@@ -1,3 +1,4 @@
+#if TOOLS
 using System;
 using Godot;
 
@@ -50,3 +51,4 @@ public partial class ObjectPreview : TextureButton, IDockPreview {
         TextureNormal = _textureNormal;
     }
 }
+#endif
