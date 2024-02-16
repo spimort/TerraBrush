@@ -11,6 +11,7 @@ namespace TerraBrush;
 public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
 
+    private int _zonesSize = 256;
     private Terrain _terrain;
     private TextureSetResource[] _texturesSet;
     private ImageTexture[] _splatmaps = new ImageTexture[]{};
@@ -35,7 +36,17 @@ public partial class TerraBrush : TerraBrushTool {
 
     [ExportGroup("TerrainSettings")]
     [Export]
-    public override int ZonesSize { get;set; } = 256;
+    public override int ZonesSize {
+        get {
+            return _zonesSize;
+        } set {
+            if (_terrain == null) {
+                _zonesSize = value;
+            } else if (value != _zonesSize) {
+                OS.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
+            }
+        }
+    }
 
     [Export]
     public bool CollisionOnly { get;set; }
