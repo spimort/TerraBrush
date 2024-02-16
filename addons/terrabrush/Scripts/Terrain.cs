@@ -20,6 +20,7 @@ public partial class Terrain : Node3D {
     [Export] public float HeightMapFactor { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
 	[Export] public int TextureDetail { get;set; } = 1;
+    [Export] public bool UseAntiTile { get;set; } = true;
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -190,7 +191,7 @@ public partial class Terrain : Node3D {
             var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
             Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
 
-            Clipmap.Shader.SetShaderParameter("UseAntitile", true);
+            Clipmap.Shader.SetShaderParameter("UseAntitile", UseAntiTile);
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);

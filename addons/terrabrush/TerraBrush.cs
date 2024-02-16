@@ -92,6 +92,9 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public int TextureDetail { get;set; } = 20;
 
+    [Export]
+    public bool UseAntiTile { get;set; } = true;
+
     [ExportGroup("Foliage")]
     [Export]
     public FoliageResource[] Foliages { get;set; }
@@ -259,6 +262,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.TerrainZones = TerrainZones;
         _terrain.HeightMapFactor = HeightMapFactor;
         _terrain.TextureDetail = TextureDetail;
+        _terrain.UseAntiTile = UseAntiTile;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;
