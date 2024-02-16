@@ -9,7 +9,7 @@ namespace TerraBrush;
 public partial class KeybindManager : RefCounted {
 	// EditorSettings Group: terrabrush
 	private const string SettingsGroup = "terrabrush";
-	
+
 	#region InputMap Actions and associated Default Key Events
 	private readonly InputEventKey ToolPieKey = new InputEventKey() { Keycode = Key.V };
     private readonly InputEventKey BrushPieKey = new InputEventKey() { Keycode = Key.B };
@@ -17,8 +17,9 @@ public partial class KeybindManager : RefCounted {
     private readonly InputEventKey BrushSizeKey = new InputEventKey() { Keycode = Key.G };
     private readonly InputEventKey BrushStrengthKey = new InputEventKey() { Keycode = Key.H };
     private readonly InputEventKey EscapeKey = new InputEventKey() { Keycode = Key.Escape };
+    private readonly InputEventKey ToggleAutoAddZonesKey = new InputEventKey() { Keycode = Key.K };
     #endregion
-    
+
     #region Public String Names
 
     public static class StringNames
@@ -29,20 +30,26 @@ public partial class KeybindManager : RefCounted {
 	    public static readonly StringName BrushSizeSelector = new StringName("terrabrush_brush_size_selector");
 	    public static readonly StringName BrushStrengthSelector = new StringName("terrabrush_brush_strength_selector");
 	    public static readonly StringName EscapeSelector = new StringName("terrabrush_brush_escape_selector");
+	    public static readonly StringName ToggleAutoAddZones = new StringName("terrabrush_toggle_auto_add_zones");
     }
     #endregion
-    
+
 	private readonly List<StringName> _actionNames;
 	private readonly System.Collections.Generic.Dictionary<StringName, InputEventKey> _defaultKeys;
 
     // Quick access to Action Manes and Default Keys to register with the Godot Editor
     public List<StringName> ActionNames => _actionNames;
     public System.Collections.Generic.Dictionary<StringName, InputEventKey> DefaultKeys => _defaultKeys;
-    
+
     public KeybindManager() {
 	    _actionNames = new List<StringName>() {
-		    StringNames.ToolPie, StringNames.BrushPie, StringNames.ToolContentPie,
-		    StringNames.BrushSizeSelector, StringNames.BrushStrengthSelector, StringNames.EscapeSelector
+		    StringNames.ToolPie,
+			StringNames.BrushPie,
+			StringNames.ToolContentPie,
+		    StringNames.BrushSizeSelector,
+			StringNames.BrushStrengthSelector,
+			StringNames.EscapeSelector,
+			StringNames.ToggleAutoAddZones,
 	    };
 	    _defaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>() {
 		    { StringNames.ToolPie, ToolPieKey },
@@ -50,12 +57,13 @@ public partial class KeybindManager : RefCounted {
 		    { StringNames.ToolContentPie, ToolContentKey},
 		    { StringNames.BrushSizeSelector, BrushSizeKey },
 		    { StringNames.BrushStrengthSelector, BrushStrengthKey },
-		    { StringNames.EscapeSelector, EscapeKey }
+		    { StringNames.EscapeSelector, EscapeKey },
+		    { StringNames.ToggleAutoAddZones, ToggleAutoAddZonesKey }
 	    };
     }
 
     public static Array<InputEvent> GetBinding(StringName actionName) => InputMap.Singleton.ActionGetEvents(actionName);
-    
+
     public static string DescribeKey(InputEventKey key) {
 	    var desc = new StringBuilder();
 	    if (key.CtrlPressed) desc.Append("Ctrl +");
@@ -75,7 +83,7 @@ public partial class KeybindManager : RefCounted {
 		    }
 	    }
     }
-    
+
     /// <summary>
     /// Load Keybinds from Godot Editor's EditorSettings File, for association with the InputMap.Actions.
     /// </summary>
@@ -135,7 +143,7 @@ public partial class KeybindManager : RefCounted {
 		im.ActionEraseEvents(action);
 		im.ActionAddEvent(action, DefaultKeys[action]);
 	}
-	
+
 	public string DescribeKey(StringName action) {
 		var key = InputMap.Singleton.ActionGetEvents(action);
 		return DescribeKey((InputEventKey)key[0]);

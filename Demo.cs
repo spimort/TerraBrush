@@ -65,8 +65,11 @@ public partial class Demo : CharacterBody3D {
 
 			if (collision?.GetCollider() == Terrain?.Terrain?.TerrainCollider) {
 				var result = Terrain.GetPositionInformation(playerX, playerZ);
-				debugText = $"{debugText} | Current collision : Water {result.WaterFactor}, Deep : {result.WaterDeepness} | Snow {result.SnowFactor}, Height : {result.SnowHeight} | Main Texture {(result.Textures?.Length > 0 ? result.Textures?[0].Factor : "")} - {(result.Textures?.Length > 0 ? result.Textures?[0].Name : "" )}";
-
+				if (result != null) {
+					debugText = $"{debugText} | Current collision : Water {result.WaterFactor}, Deep : {result.WaterDeepness} | Snow {result.SnowFactor}, Height : {result.SnowHeight} | Main Texture {(result.Textures?.Length > 0 ? result.Textures?[0].Factor : "")} - {(result.Textures?.Length > 0 ? result.Textures?[0].Name : "" )}";
+				} else {
+					debugText = $"{debugText} : No zone";
+				}
 			} else {
 				debugText = $"{debugText} : Not colliding with terrain";
 			}

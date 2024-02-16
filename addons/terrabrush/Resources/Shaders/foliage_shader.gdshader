@@ -1,17 +1,25 @@
 shader_type particles;
 
-uniform int HeightMapSize;
-uniform sampler2D FoliageTexture : hint_default_transparent, repeat_disable;
-uniform sampler2D HeightMapTexture : hint_default_transparent, repeat_disable;
+uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
+
+uniform vec3 GlobalPosition;
+uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
 uniform sampler2D NoiseTexture : hint_default_transparent, repeat_disable;
-uniform sampler2D GroudTexture : hint_default_transparent, repeat_disable;
-uniform sampler2D WaterTexture : hint_default_transparent, repeat_disable;
-uniform float HeightMapFactor;
+
+// Textures to calculate ground color
+uniform sampler2DArray Textures : source_color;
+uniform sampler2DArray Splatmaps : repeat_disable;
+uniform int TextureDetail;
+uniform int NumberOfTextures;
+
+uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor;
-uniform vec3 PlayerPosition = vec3(0.0);
+
 uniform int MaximumDistance;
 uniform vec3 MeshScale = vec3(1.0);
 uniform float WindStrength = 0.1;
+
+#include "zones_shader_include.gdshaderinc"
 
 // 3D Noise with friendly permission by Inigo Quilez
 vec3 hash_noise_range(vec3 p) {
@@ -27,37 +35,81 @@ mat4 __build_rotation_mat4(vec3 axis, float angle) {
 	return mat4(vec4(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s, 0), vec4(oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s, 0), vec4(oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c, 0), vec4(0, 0, 0, 1));
 }
 
+vec4 calculateGroundColor(vec3 zoneUV) {
+	vec4 resultTexture = vec4(0.0);
+	
+	int currentChannel = 0;
+	for (int i = 0; i < NumberOfTextures; i++) {
+		vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
+		vec3 textureUV = vec3(detailUV.x * float(TextureDetail), detailUV.y * float(TextureDetail), float(i));
+		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
+	
+		vec4 currentTexture = texture(Textures, textureUV);
+		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
+	
+		float channelValue = 0.0;
+		if (currentChannel == 0) {
+			channelValue = currentSplatmap.x;
+		} else if (currentChannel == 1) {
+			channelValue = currentSplatmap.y;
+		} else if (currentChannel == 2) {
+			channelValue = currentSplatmap.z;
+		} else if (currentChannel == 3) {
+			channelValue = currentSplatmap.w;
+		}
+	
+		resultTexture += currentTexture * channelValue;
+	
+		if (currentChannel == 3) {
+			currentChannel = 0;
+		} else {
+			currentChannel++;
+		}
+	}
+	
+	return resultTexture;	
+}
+
 void start() {
-	float xPosition = roundEven(floor(float(int(INDEX) / MaximumDistance)) + (float(HeightMapSize / 2) - (float(MaximumDistance / 2))) + PlayerPosition.x);
-	float yPosition = roundEven(float(int(INDEX) % MaximumDistance) + (float(HeightMapSize / 2) - (float(MaximumDistance / 2))) + PlayerPosition.z);
+	float xPosition = roundEven(floor(float(int(INDEX) / MaximumDistance)) - (float(MaximumDistance / 2)));
+	float yPosition = roundEven(float(int(INDEX) % MaximumDistance) - (float(MaximumDistance / 2)));
 	
-	vec3 particlePosition = vec3(float(xPosition), 0, float(yPosition)) - vec3(float(HeightMapSize / 2), 0, float(HeightMapSize / 2));	
+	xPosition += roundEven(GlobalPosition.x);
+	yPosition += roundEven(GlobalPosition.z);
 	
-	vec4 noiseTextureValue = texelFetch(NoiseTexture, ivec2(int(xPosition), int(yPosition)), 0);
+	// Fetch the zoneUV with the "Grid" position of the foliage.
+	vec3 worldVertex = vec3(xPosition, 0, yPosition);
+	vec3 zoneUV = calculateZoneUV(worldVertex);	
+	
+	// Calculate the noise/random value with the zoneUV;
+	vec4 noiseTextureValue = texture(NoiseTexture, zoneUV.xy);
 	float noiseRandom = hash_noise_range(noiseTextureValue.rgb).x;
 	float noiseValue = mix(-1, 1, noiseRandom);
-	particlePosition += vec3(noiseValue, 0, noiseValue);
-		
-	vec3 playerDistance = particlePosition - vec3(PlayerPosition.x, 0, PlayerPosition.z);
 	
-	if (length(abs(playerDistance)) > float(MaximumDistance)) {
+	xPosition += noiseValue;			
+	yPosition += noiseValue;	
+	
+	// Update the zoneUV so it fits the new position of the foliage, with the random value
+	worldVertex = vec3(xPosition, 0, yPosition);
+	zoneUV = calculateZoneUV(worldVertex);				
+
+	if (zoneUV.z < 0.0) {
 	 	ACTIVE = false;
 	} else {
 		if (RESTART_POSITION) {
-			float halfMap = float(HeightMapSize) / 2.0f;
-			
-			// Foliage Texture (foliage presence calculation)
-			vec4 foliagePosition = texelFetch(FoliageTexture, ivec2(int(xPosition), int(yPosition)), 0);
-			bool foliagePresence = foliagePosition.x > 0.0 && (particlePosition.x > -halfMap && particlePosition.x < halfMap) && (particlePosition.z > -halfMap && particlePosition.z < halfMap);
+			vec4 foliagePosition = texture(FoliageTextures, zoneUV);						
+			bool foliagePresence = foliagePosition.x > 0.0;
 			
 			if (foliagePresence) {
 				ACTIVE = true;
 				
-				// HeightMap Texture (height calculation)
-				vec4 heightMapPosition = texelFetch(HeightMapTexture, ivec2(int(xPosition + noiseValue), int(yPosition + noiseValue)), 0);
-				float height = heightMapPosition.x * HeightMapFactor;
+				vec3 particlePosition = vec3(xPosition, 0, yPosition);				
 				
-				vec4 waterPosition = texelFetch(WaterTexture, ivec2(int(xPosition + noiseValue), int(yPosition + noiseValue)), 0);
+				// HeightMap Texture (height calculation)
+				vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);								
+				float height = heightMapPosition.x;
+				
+				vec4 waterPosition = texture(WaterTextures, zoneUV);
 				float waterHeight = waterPosition.x * WaterFactor;
 				
 				height -= waterHeight;
@@ -88,9 +140,8 @@ void start() {
 			} else {
 				ACTIVE = false;
 			}
-			
-			vec4 groundTextureValue = texelFetch(GroudTexture, ivec2(int(xPosition + noiseValue), int(yPosition + noiseValue)), 0);
-			COLOR = groundTextureValue;
+						
+			COLOR = calculateGroundColor(zoneUV);
 		}
 	}
 }

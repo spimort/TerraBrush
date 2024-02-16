@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -8,8 +9,8 @@ namespace TerraBrush;
 public partial class Clipmap : Node3D {
     [NodePath] private MeshInstance3D _clipmapMesh;
 
-    [Export] public Texture2D Heightmap { get;set; }
-    [Export] public float HeightmapFactor { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public int Levels { get;set; } = 8;
     [Export] public int RowsPerLevel { get;set; } = 21;
     [Export] public float InitialCellWidth { get;set; } = 1;
@@ -34,7 +35,15 @@ public partial class Clipmap : Node3D {
     }
 
     private void UpdateClipmapMeshPosition(Vector3 position) {
-        _clipmapMesh.GlobalPosition = new Vector3((int) Math.Floor(position.X), 0, (int) Math.Floor(position.Z));
+        var offset = 0.0f;
+        if (ZonesSize % 2 == 0) {
+            offset = InitialCellWidth / 2.0f;
+        }
+
+        var newPosition = new Vector3(((int) Math.Floor(position.X)) + offset, 0, ((int) Math.Floor(position.Z)) + offset);
+        if (newPosition.DistanceTo(_clipmapMesh.GlobalPosition) > 25) {
+            _clipmapMesh.GlobalPosition = newPosition;
+        }
     }
 
     public void ClearMesh() {
@@ -75,12 +84,12 @@ public partial class Clipmap : Node3D {
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 
         _clipmapMesh.Mesh = arrayMesh;
+        UpdateAABB();
 
-        var aabbSize = Heightmap.GetWidth() * 2;
-        var aabbPoint = -(aabbSize / 2);
-        arrayMesh.CustomAabb = new Aabb(new Vector3(aabbPoint, aabbPoint, aabbPoint), new Vector3(aabbSize, aabbSize, aabbSize));
-
-        clipmapShader.SetShaderParameter("HeightmapTexture", Heightmap);
+        clipmapShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
+        clipmapShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
+        clipmapShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
+		clipmapShader.SetShaderParameter("ZonesMap", TerrainZones.ZonesMap);
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {
@@ -168,5 +177,17 @@ public partial class Clipmap : Node3D {
             new Vector2(1, 0),
             new Vector2(0, 0)
         });
+    }
+
+    public void UpdateAABB() {
+        var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
+        var maxX = zonePositions.Max(x => Math.Abs(x.X));
+        var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+
+        var aabbXSize = Math.Max(maxX * ZonesSize * 2, ZonesSize * 2);
+        var aabbYSize = Math.Max(maxY * ZonesSize * 2, ZonesSize * 2);
+        var aabbXPoint = -(aabbXSize / 2);
+        var aabbYPoint = -(aabbYSize / 2);
+        ((ArrayMesh) _clipmapMesh.Mesh).CustomAabb = new Aabb(new Vector3(aabbXPoint, Math.Max(aabbXPoint, aabbYPoint), aabbYPoint), new Vector3(aabbXSize, Math.Max(aabbXSize, aabbYSize), aabbYSize));
     }
 }

@@ -3,20 +3,19 @@ using Godot;
 namespace TerraBrush;
 
 public class FoliageTool : ToolBase {
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.FoliageIndex == null) {
+    public FoliageTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
+        return zone.FoliagesTexture[_terraBrush.FoliageIndex.Value];
+    }
+
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.FoliageIndex == null) {
             return;
         }
 
-        var currentFoliage = terraBrush.Foliages[terraBrush.FoliageIndex.Value];
-        if (currentFoliage.Definition == null) {
-            return;
-        }
-
-        var foliageImage = currentFoliage.Texture.GetImage();
-
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (pixelBrushStrength, xPosition, yPosition) => {
-            var currentPixel = foliageImage.GetPixel(xPosition, yPosition);
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newColor = toolType == TerrainToolType.FoliageAdd ? Colors.Red : new Color(0, 0, 0, 0);
 
             var newValue = new Color(
@@ -25,9 +24,9 @@ public class FoliageTool : ToolBase {
                 Mathf.Lerp(currentPixel.B, newColor.B, pixelBrushStrength * brushStrength),
                 Mathf.Lerp(currentPixel.A, newColor.A, pixelBrushStrength * brushStrength)
             );
-            foliageImage.SetPixel(xPosition, yPosition, newValue);
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
 
-        currentFoliage.Texture.Update(foliageImage);
+        _terraBrush.TerrainZones.UpdateFoliagesTextures();
     }
 }

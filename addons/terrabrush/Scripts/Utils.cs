@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
+
 namespace TerraBrush;
 
 public static class Utils {
@@ -28,4 +32,33 @@ public static class Utils {
 
         return directory;
     }
+
+	public static Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
+		var textureArray = new Texture2DArray();
+		var textureImageArray = new Godot.Collections.Array<Image>();
+
+		int width = 0;
+		int height = 0;
+
+		if (textures != null) {
+			textures.ToList().ForEach(texture => {
+				if (texture != null) {
+					var textureImage = texture.GetImage();
+
+					if (width == 0) {
+						width = textureImage.GetWidth();
+						height = textureImage.GetHeight();
+					} else if (textureImage.GetWidth() != width || textureImage.GetHeight() != height) {
+						textureImage.Resize(width, height);
+					}
+
+					textureImageArray.Add(textureImage);
+				}
+			});
+		}
+
+		textureArray._Images = textureImageArray;
+
+		return textureArray;
+	}
 }

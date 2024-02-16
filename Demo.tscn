@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://v4o1p7h4rn3j"]
+[gd_scene load_steps=72 format=3 uid="uid://v4o1p7h4rn3j"]
 
 [ext_resource type="Script" path="res://Demo.cs" id="1_ntfcg"]
 [ext_resource type="Script" path="res://addons/terrabrush/TerraBrush.cs" id="2_pdfhx"]
@@ -48,6 +48,8 @@
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ObjectDefinitionResource.cs" id="42_hjjk2"]
 [ext_resource type="Texture2D" uid="uid://d0qwv6p6dgdg" path="res://Demo/Object0.res" id="43_4bivk"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ObjectResource.cs" id="43_y5duh"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ZoneResource.cs" id="48_gk6oc"]
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ZonesResource.cs" id="49_fduo2"]
 
 [sub_resource type="Resource" id="Resource_wm6o8"]
 script = ExtResource("7_yvfmb")
@@ -92,10 +94,11 @@ TextureSets = [SubResource("Resource_wm6o8"), SubResource("Resource_al3h6"), Sub
 center_offset = Vector3(0, 0.5, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4jc0q"]
-transparency = 4
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
 cull_mode = 2
 vertex_color_use_as_albedo = true
-vertex_color_is_srgb = true
 albedo_texture = ExtResource("23_w60nv")
 texture_repeat = false
 
@@ -111,7 +114,6 @@ VisualInstanceLayers = 1
 
 [sub_resource type="Resource" id="Resource_msipp"]
 script = ExtResource("25_q5pkn")
-Texture = ExtResource("25_001cp")
 Definition = SubResource("Resource_uou6r")
 
 [sub_resource type="Resource" id="Resource_edv2t"]
@@ -123,7 +125,6 @@ ObjectScenes = [ExtResource("27_d43l4"), ExtResource("28_hryln"), ExtResource("2
 
 [sub_resource type="Resource" id="Resource_0o1vb"]
 script = ExtResource("43_y5duh")
-Texture = ExtResource("43_4bivk")
 Definition = SubResource("Resource_edv2t")
 Hide = false
 
@@ -145,6 +146,20 @@ Noise = SubResource("NoiseTexture2D_nbj8i")
 NoiseFactor = 0.0
 Metallic = 0.0
 VisualInstanceLayers = 1
+
+[sub_resource type="Resource" id="Resource_cwvp6"]
+script = ExtResource("48_gk6oc")
+ZonePosition = Vector2i(0, 0)
+HeightMapTexture = ExtResource("3_ckogt")
+SplatmapsTexture = [ExtResource("21_uuhvh"), ExtResource("22_rxty4")]
+FoliagesTexture = [ExtResource("25_001cp")]
+ObjectsTexture = [ExtResource("43_4bivk")]
+WaterTexture = ExtResource("23_e5br0")
+SnowTexture = ExtResource("25_4k6f3")
+
+[sub_resource type="Resource" id="Resource_dp21i"]
+script = ExtResource("49_fduo2")
+Zones = [SubResource("Resource_cwvp6")]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a3dfb"]
 sky_top_color = Color(0.266667, 0.74902, 1, 1)
@@ -173,17 +188,15 @@ height = 4.0
 
 [node name="TerraBrush" type="Node3D" parent="."]
 script = ExtResource("2_pdfhx")
-HeightMap = ExtResource("3_ckogt")
 DataPath = "res://Demo"
 LODLevels = 3
 TextureSets = SubResource("Resource_nwvvi")
-Splatmaps = [ExtResource("21_uuhvh"), ExtResource("22_rxty4")]
 Foliages = [SubResource("Resource_msipp")]
 Objects = [SubResource("Resource_0o1vb")]
-WaterTexture = ExtResource("23_e5br0")
 WaterDefinition = ExtResource("23_rpaxe")
-SnowTexture = ExtResource("25_4k6f3")
 SnowDefinition = SubResource("Resource_ibahd")
+TerrainZones = SubResource("Resource_dp21i")
+TerrainSize = 0
 metadata/_edit_lock_ = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

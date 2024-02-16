@@ -1,16 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://c1hskhrgdx6ug"]
+[gd_scene load_steps=5 format=3 uid="uid://c1hskhrgdx6ug"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/Water.cs" id="1_4nwuo"]
 [ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="2_002qp"]
-[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_ripple_shader.gdshader" id="3_1e0vm"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader" id="3_xfn30"]
-[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_ripple_buffer_shader.gdshader" id="4_rbabs"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdctr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t0wqr"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_xfn30")
 shader_parameter/InitialCellWidth = 1.0
+shader_parameter/ZonesSize = null
+shader_parameter/NumberOfZones = null
 shader_parameter/WaterFactor = null
 shader_parameter/WaterInnerOffset = 0.3
 shader_parameter/WaterColor = null
@@ -29,19 +29,6 @@ shader_parameter/EdgeScale = 0.1
 shader_parameter/Near = 0.5
 shader_parameter/Far = 100.0
 shader_parameter/EdgeColor = null
-shader_parameter/WaterRippleTextureSize = 512.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jqt8f"]
-resource_local_to_scene = true
-shader = ExtResource("3_1e0vm")
-shader_parameter/Phase = 0.18
-shader_parameter/Attenuation = 0.995
-shader_parameter/DeltaUV = 2.3
-shader_parameter/WaterRippleTextureSize = 512.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_y70xl"]
-resource_local_to_scene = true
-shader = ExtResource("4_rbabs")
 
 [node name="Water" type="Node3D"]
 script = ExtResource("1_4nwuo")
@@ -50,36 +37,4 @@ Strength = 0.0
 
 [node name="Clipmap" parent="." instance=ExtResource("2_002qp")]
 unique_name_in_owner = true
-Shader = SubResource("ShaderMaterial_tdctr")
-
-[node name="RippleViewport" type="SubViewport" parent="."]
-unique_name_in_owner = true
-size = Vector2i(3072, 3072)
-render_target_clear_mode = 2
-render_target_update_mode = 1
-
-[node name="RippleColorRect" type="ColorRect" parent="RippleViewport"]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_jqt8f")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="RippleBufferViewport" type="SubViewport" parent="."]
-unique_name_in_owner = true
-size = Vector2i(3072, 3072)
-render_target_clear_mode = 2
-render_target_update_mode = 1
-
-[node name="RippleBufferColorRect" type="ColorRect" parent="RippleBufferViewport"]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_y70xl")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
+Shader = SubResource("ShaderMaterial_t0wqr")

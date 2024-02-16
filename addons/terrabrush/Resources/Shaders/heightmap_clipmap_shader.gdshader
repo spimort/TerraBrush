@@ -3,7 +3,7 @@ render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_sc
 
 #include "clipmap_shader_include.gdshaderinc"
 
-uniform sampler2D WaterTexture : repeat_disable;
+uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color;
 uniform sampler2DArray Splatmaps : repeat_disable;
@@ -13,7 +13,6 @@ uniform sampler2DArray Normals;
 uniform sampler2DArray RoughnessTexutres;
 uniform bool UseAntitile = true;
 
-varying vec2 _textureUV;
 varying vec3 _worldVertex;
 
 vec2 rotate(vec2 v, float cosa, float sina) {
@@ -55,26 +54,29 @@ vec4 texture_array_antitile(sampler2DArray tex, vec3 uv) {
 }
 
 void vertex() {
-	_textureUV = vec2(0);
 	_worldVertex = vec3(0);
-	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _textureUV, _worldVertex);
+	calculateVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
 	
-	vec4 waterTexture = texture(WaterTexture, _textureUV);
+	vec3 zoneUV = calculateZoneUV(_worldVertex);
+	
+	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	VERTEX.y -= waterTexture.r * WaterFactor;
 }
 
 void fragment() {
-	vec4 resultTexture = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 resultNormal = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 resultRoughness = vec4(0.0, 0.0, 0.0, 0.0);	
+	vec4 resultTexture = vec4(0.0);
+	vec4 resultNormal = vec4(0.0);
+	vec4 resultRoughness = vec4(0.0);	
+	
+	vec3 zoneUV = calculateZoneUV(_worldVertex);		
 	
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
-		vec2 detailUV = _textureUV * float(TextureDetail);
-		vec3 textureUV = vec3(detailUV.x, detailUV.y, float(i));
-		vec3 splatmapUV = vec3(_textureUV.x, _textureUV.y, floor(float(i/4)));
+		vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
+		vec3 textureUV = vec3(detailUV.x * float(TextureDetail), detailUV.y * float(TextureDetail), float(i));
+		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
 	
-		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV) ;
+		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
 		vec4 currentNormal = UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV);
 		vec4 currentRoughness = UseAntitile ? texture_array_antitile(RoughnessTexutres, textureUV) : texture(RoughnessTexutres, textureUV);
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
@@ -107,15 +109,7 @@ void fragment() {
 	ALPHA = 1.0;
 	ALPHA_SCISSOR_THRESHOLD = 1.0;
 	
-	// "Hide" vertices that are outside the map
-	float heightmapSize = float(textureSize(HeightmapTexture, 0).x) - 1.0;
-	float halfHeightmapSize = heightmapSize / 2.0;	
-	if (
-		_worldVertex.x > halfHeightmapSize || 
-		_worldVertex.x < -halfHeightmapSize || 
-		_worldVertex.z > halfHeightmapSize ||
-		_worldVertex.z < -halfHeightmapSize
-	) {
+	if (zoneUV.z < 0.0) {
 		ALPHA = 0.0;
-	}		
+	}
 }

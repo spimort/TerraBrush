@@ -1,20 +1,38 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 namespace TerraBrush;
 
 public class TextureTool : ToolBase {
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.TextureSetIndex == null) {
+    private Dictionary<ImageTexture, Image> _splatmapImagesCache = null;
+
+    public TextureTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    public override void BeginPaint () {
+        base.BeginPaint();
+
+        _splatmapImagesCache = new Dictionary<ImageTexture, Image>();
+    }
+
+    public override void EndPaint () {
+        base.EndPaint();
+
+        _splatmapImagesCache = null;
+    }
+
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.TextureSetIndex == null) {
             return;
         }
 
-        var splatmapIndex = Mathf.FloorToInt(terraBrush.TextureSetIndex.Value / 4);
-        var splatmapImages = terraBrush.Splatmaps.Select(texture => texture.GetImage()).ToList();
-        var colorChannel = terraBrush.TextureSetIndex.Value % 4;
+        var splatmapIndex = Mathf.FloorToInt(_terraBrush.TextureSetIndex.Value / 4);
+        var colorChannel = _terraBrush.TextureSetIndex.Value % 4;
+        var numberOfSplatmaps = Mathf.CeilToInt(_terraBrush.TextureSets.TextureSets.Count() / 4.0);
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (pixelBrushStrength, xPosition, yPosition) => {
-            for (int i = 0; i < splatmapImages.Count(); i++) {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            for (int i = 0; i < numberOfSplatmaps; i++) {
                 Color splatmapColor = Colors.Transparent;
 
                 if (i != splatmapIndex) {
@@ -29,24 +47,29 @@ public class TextureTool : ToolBase {
                     splatmapColor = new Color(0, 0, 0, 1);
                 }
 
-                var currentSplatmapImage = splatmapImages[i];
+                var currentSplatmapTexture = imageZoneInfo.Zone.SplatmapsTexture[i];
+                // Since we play with several textures here, the toolbase cannot add the texture to the dirty collection
+                _terraBrush.TerrainZones.AddDirtyImageTexture(currentSplatmapTexture);
+                AddTextureToUndo(currentSplatmapTexture);
 
-                var currentPixel = currentSplatmapImage.GetPixel(xPosition, yPosition);
+                _splatmapImagesCache.TryGetValue(currentSplatmapTexture, out Image currentSplatmapImage);
+
+                if (currentSplatmapImage == null) {
+                    currentSplatmapImage = currentSplatmapTexture.GetImage();
+                    _splatmapImagesCache.Add(currentSplatmapTexture, currentSplatmapImage);
+                }
+
+                var currentPixel = currentSplatmapImage.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
                 var newValue = new Color(
                     Mathf.Lerp(currentPixel.R, splatmapColor.R, pixelBrushStrength * brushStrength),
                     Mathf.Lerp(currentPixel.G, splatmapColor.G, pixelBrushStrength * brushStrength),
                     Mathf.Lerp(currentPixel.B, splatmapColor.B, pixelBrushStrength * brushStrength),
                     Mathf.Lerp(currentPixel.A, splatmapColor.A, pixelBrushStrength * brushStrength)
                 );
-                currentSplatmapImage.SetPixel(xPosition, yPosition, newValue);
+                currentSplatmapImage.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
             }
         });
 
-        for (int i = 0; i < splatmapImages.Count(); i++) {
-            terraBrush.Splatmaps[i].Update(splatmapImages[i]);
-        }
-
-        terraBrush.Terrain.TerrainSplatmapsUpdated(splatmapImages);
-        terraBrush.UpdateFoliagesGroudTexture();
+        _terraBrush.TerrainZones.UpdateSplatmapsTextures();
     }
 }

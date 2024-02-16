@@ -7,24 +7,15 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Water : Node3D {
-    private const float RippleRatio = 20;
     private const float RippleResetSpeed = 0.9f;
 
-    private ShaderMaterial _rippleShader;
-    private ShaderMaterial _rippleBufferShader;
-    private ImageTexture _rippleImage;
-    private Dictionary<Vector2I, float> _ripplePositions = new Dictionary<Vector2I, float>();
+    private Dictionary<ImageTexture, Dictionary<Vector2I, float>> _ripplePositions = new();
+    private Dictionary<ImageTexture, Image> _imagesCache = new();
 
     [NodePath] private Clipmap _clipmap;
-    [NodePath] private SubViewport _rippleViewport;
-    [NodePath] private SubViewport _rippleBufferViewport;
-    [NodePath] private ColorRect _rippleColorRect;
-    [NodePath] private ColorRect _rippleBufferColorRect;
 
-    [Export] public int TerrainSize { get;set; }
-    [Export] public int TerrainSubDivision { get;set; }
-    [Export] public Texture2D WaterTexture { get;set; }
-    [Export] public Texture2D HeightMapTexture { get;set; }
+    [Export] public int ZonesSize { get;set; }
+    [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public float WaterInnerOffset { get;set; }
@@ -57,47 +48,44 @@ public partial class Water : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-
-        _rippleShader = (ShaderMaterial) _rippleColorRect.Material;
-        _rippleBufferShader = (ShaderMaterial) _rippleBufferColorRect.Material;
-
-        if (!Engine.IsEditorHint()) {
-            _rippleShader.SetShaderParameter("DoubleBufferTexture", _rippleBufferViewport.GetTexture());
-            _rippleBufferShader.SetShaderParameter("RippleTexture", _rippleViewport.GetTexture());
-            _clipmap.Shader.SetShaderParameter("WaterRippleTexture", _rippleViewport.GetTexture());
-        }
     }
 
     public override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
-
         if (_ripplePositions.Count > 0) {
-            var rippleImage = _rippleImage.GetImage();
+            for (var imageIndex = _ripplePositions.Count - 1; imageIndex >= 0; imageIndex--) {
+                var imageTexture = _ripplePositions.Keys.ElementAt(imageIndex);
+                var points = _ripplePositions[imageTexture];
 
-            for (var i = _ripplePositions.Count - 1; i >= 0; i--) {
-                var position = _ripplePositions.Keys.ElementAt(i);
-                var value = _ripplePositions.Values.ElementAt(i);
+                var rippleWaterImage = GetImageForTexture(imageTexture);
 
-                value -= (float) delta * RippleResetSpeed;
-                _ripplePositions[position] = value;
+                for (var i = points.Count - 1; i >= 0; i--) {
+                    var position = points.Keys.ElementAt(i);
+                    var pixel = rippleWaterImage.GetPixel(position.X, position.Y);
+                    var rippleValue = points[position];
 
-                if (value <= 0.0) {
-                    _ripplePositions.Remove(position);
-                    rippleImage.SetPixel(position.X, position.Y, Colors.Black);
+                    if (rippleValue < 1) {
+                        rippleValue += (float) delta * RippleResetSpeed;
+
+                        if (rippleValue >= 1.0) {
+                            rippleValue = 1.0f;
+                            points.Remove(position);
+                        } else {
+                            points[position] = rippleValue;
+                        }
+
+                        rippleWaterImage.SetPixel(position.X, position.Y, new Color(pixel.R, pixel.G, pixel.B, rippleValue));
+                    }
+                }
+
+                imageTexture.Update(rippleWaterImage);
+
+                if (points.Count == 0) {
+                    _ripplePositions.Remove(imageTexture);
                 }
             }
 
-            _rippleImage.Update(rippleImage);
-        }
-
-        if (!Engine.IsEditorHint()) {
-            if (_rippleViewport != null) {
-                _rippleViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-            }
-
-            if (_rippleBufferViewport != null) {
-                _rippleBufferViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-            }
+            TerrainZones.UpdateWaterTextures();
         }
     }
 
@@ -106,11 +94,9 @@ public partial class Water : Node3D {
             return;
         }
 
-        var rippleTextureSize = (int) (TerrainSize * RippleRatio);
-
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
-        _clipmap.Heightmap = HeightMapTexture;
-        _clipmap.HeightmapFactor = HeightMapFactor;
+        _clipmap.ZonesSize = ZonesSize;
+        _clipmap.TerrainZones = TerrainZones;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;
@@ -118,7 +104,7 @@ public partial class Water : Node3D {
         _clipmap.CreateMesh();
 
         _clipmap.Shader.SetShaderParameter("WaterInnerOffset", WaterInnerOffset);
-        _clipmap.Shader.SetShaderParameter("WaterTexture", WaterTexture);
+        _clipmap.Shader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
         _clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
         _clipmap.Shader.SetShaderParameter("WaterColor", WaterColor);
         _clipmap.Shader.SetShaderParameter("FresnelColor", FresnelColor);
@@ -139,33 +125,47 @@ public partial class Water : Node3D {
         _clipmap.Shader.SetShaderParameter("Near", Near);
         _clipmap.Shader.SetShaderParameter("Far", Far);
         _clipmap.Shader.SetShaderParameter("EdgeColor", EdgeColor);
-        _clipmap.Shader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
-
-        var newRippleImage = Image.Create(TerrainSize, TerrainSize, false, Image.Format.Rgba8);
-
-        newRippleImage.Fill(Colors.Black);
-        _rippleImage = ImageTexture.CreateFromImage(newRippleImage);
-
-        _rippleShader.SetShaderParameter("CollisionTexture", _rippleImage);
-        _rippleShader.SetShaderParameter("WaterRippleTextureSize", rippleTextureSize);
-
-        _rippleViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
-        _rippleBufferViewport.Size = new Vector2I(rippleTextureSize, rippleTextureSize);
     }
 
     public void AddRippleEffect(float x, float y) {
         var xPosition = (int) Math.Round(x);
         var yPosition = (int) Math.Round(y);
 
-        var pixelPosition = new Vector2I(xPosition + (TerrainSize / 2), yPosition + (TerrainSize / 2));
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, ZonesSize);
+        var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
-        var image = _rippleImage.GetImage();
-        image.SetPixel(pixelPosition.X, pixelPosition.Y, Colors.Red);
+        if (zone != null) {
+            var image = GetImageForTexture(zone.WaterTexture);
+            var pixelPosition = new Vector2I(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+            var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
 
-        _rippleImage.Update(image);
-        if (!_ripplePositions.ContainsKey(pixelPosition)) {
-            _ripplePositions[pixelPosition] = 1;
+            if (currentPixel.R > 0) {
+                image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 0));
+
+                zone.WaterTexture.Update(image);
+                TerrainZones.UpdateWaterTextures();
+
+                _ripplePositions.TryGetValue(zone.WaterTexture, out var listOfPoints);
+                if (listOfPoints == null) {
+                    listOfPoints = new Dictionary<Vector2I, float>();
+                    _ripplePositions.Add(zone.WaterTexture, listOfPoints);
+                }
+
+                if (!listOfPoints.ContainsKey(pixelPosition)) {
+                    listOfPoints.Add(pixelPosition, 0);
+                }
+            }
         }
+    }
+
+    private Image GetImageForTexture(ImageTexture imageTexture) {
+        _imagesCache.TryGetValue(imageTexture, out var image);
+        if (image == null) {
+            image = imageTexture.GetImage();
+            _imagesCache.Add(imageTexture, image);
+        }
+
+        return image;
     }
 }
 

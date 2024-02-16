@@ -1,22 +1,27 @@
-uniform sampler2D HeightmapTexture : hint_default_transparent, repeat_disable;
+uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform float InitialCellWidth = 1.0;
 
-void calculateVertex(mat4 modelMatrix, vec4 zonesMeta, inout vec3 vertex, out vec2 textureUV, out vec3 worldVertex) {
-	worldVertex = vertex + modelMatrix[3].xyz;
-	float heightmapSize = float(textureSize(HeightmapTexture, 0).x);
-	textureUV = (worldVertex.xz + (heightmapSize / 2.0)) / heightmapSize;
+#include "zones_shader_include.gdshaderinc"
 
-	vertex.y = texture(HeightmapTexture, textureUV).r;
+void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
+	worldVertex = vertex + modelMatrix[3].xyz;
 	
-	// Calculate the average height for mid zone vertices
-	if (zonesMeta.g > 0.0 || zonesMeta.b > 0.0) {
-		int level = int(zonesMeta.a * 100.0);
-		float levelMultiplicator = pow(2.0, float(level));
-		vec2 prevNextUVVector = ((vec2(zonesMeta.g, zonesMeta.b) / heightmapSize) * levelMultiplicator) * InitialCellWidth;
+	vec3 zoneUV = calculateZoneUV(worldVertex);		
+	if (zoneUV.z >= 0.0) {		
+		vertex.y = texture(HeightmapTextures, zoneUV).r;
 		
-		float previousHeight = texture(HeightmapTexture, textureUV - prevNextUVVector).r;
-		float nextHeight = texture(HeightmapTexture, textureUV + prevNextUVVector).r;
-		
-		vertex.y = (previousHeight + nextHeight) / 2.0;
-	}	
+		// Calculate the average height for mid zone vertices
+		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+			int level = int(levelsMeta.a * 100.0);
+			float levelMultiplicator = pow(2.0, float(level));
+			vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
+			vec3 previousZoneUV = calculateZoneUV(worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+			vec3 nextZoneUV = calculateZoneUV(worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+
+			float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
+			float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
+			
+			vertex.y = (previousHeight + nextHeight) / 2.0;
+		}		
+	}				
 }

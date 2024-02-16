@@ -6,15 +6,20 @@ public class WaterFlowTool : ToolBase {
     private Vector2 _previousWaterMousePosition = Vector2.Zero;
     private Vector2 _previousWaterMouseDirection = Vector2.Zero;
 
-    public override void Paint(TerraBrush terraBrush, TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (terraBrush.WaterTexture == null) {
+    public WaterFlowTool(TerraBrush terraBrush) : base(terraBrush) {}
+
+    protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
+        return zone.WaterTexture;
+    }
+
+    public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+        if (_terraBrush.WaterDefinition == null) {
             return;
         }
 
-        var waterImage = terraBrush.WaterTexture.GetImage();
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
-        ForEachBrushPixel(terraBrush, brushImage, brushSize, imagePosition, (pixelBrushStrength, xPosition, yPosition) => {
-            var currentPixel = waterImage.GetPixel(xPosition, yPosition);
             if (currentPixel.R > 0.0) {
                 var direction = _previousWaterMousePosition.DirectionTo(imagePosition) * -1;
 
@@ -35,11 +40,11 @@ public class WaterFlowTool : ToolBase {
                     Mathf.Lerp(currentPixel.B, newColor.B, pixelBrushStrength * brushStrength),
                     Mathf.Lerp(currentPixel.A, newColor.A, pixelBrushStrength * brushStrength)
                 );
-                waterImage.SetPixel(xPosition, yPosition, newValue);
+                imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
             }
         });
 
-        terraBrush.WaterTexture.Update(waterImage);
+        _terraBrush.TerrainZones.UpdateWaterTextures();
         _previousWaterMousePosition = imagePosition;
     }
 }

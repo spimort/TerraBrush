@@ -26,6 +26,7 @@ public partial class Plugin : EditorPlugin {
     private Control[] _editorViewports = null;
     private Control _overlaySelector = null;
     private Button _updateTerrainSettingsButton = null;
+    private CheckBox _autoAddZonesCheckbox = null;
 
     private void CreateCustomSetting(string name, Variant defaultValue, Variant.Type type, PropertyHint hint = PropertyHint.None, string hintString = null) {
         if (ProjectSettings.HasSetting(name)) {
@@ -52,6 +53,7 @@ public partial class Plugin : EditorPlugin {
 		AddCustomType("TerraBrush", "Node3D", script, icon);
         CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
+        CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
 		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
@@ -98,7 +100,6 @@ public partial class Plugin : EditorPlugin {
 
         if (@event is InputEventMouseMotion inputMotion) {
             var meshPosition = GetRayCastWithTerrain(viewportCamera, inputMotion.Position);
-
             if (meshPosition == Vector3.Inf) {
                 _brushDecal.Visible = false;
             } else {
@@ -116,7 +117,7 @@ public partial class Plugin : EditorPlugin {
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolPie)) {
                 ShowToolPieMenu();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushPie)) {
@@ -126,12 +127,12 @@ public partial class Plugin : EditorPlugin {
                         HideOverlaySelector();
                     });
                 });
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolContentPie)) {
                 ShowCurrentToolCustomContentPieMenu();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
@@ -139,20 +140,26 @@ public partial class Plugin : EditorPlugin {
                     _terrainControlDock.SetBrushSize(value);
                 });
 
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
-                ShowBrushNumericSelector(1, 200, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
+                ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 });
 
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.EscapeSelector) && _overlaySelector != null) {
                 HideOverlaySelector();
-                return (int) EditorPlugin.AfterGuiInput.Stop;
+                return (int) AfterGuiInput.Stop;
+            }
+
+            if (inputEvent.IsAction(KeybindManager.StringNames.ToggleAutoAddZones)) {
+                _autoAddZonesCheckbox.ButtonPressed = !_autoAddZonesCheckbox.ButtonPressed;
+                UpdateAutoAddZonesSetting();
+                return (int) AfterGuiInput.Stop;
             }
         }
 
@@ -172,73 +179,21 @@ public partial class Plugin : EditorPlugin {
                         _undoRedo.CreateAction("Modify terrain");
 
                         // Trigger a dirty state
-                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
-
-                        _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
-
-                        if (_currentTerraBrushNode.WaterTexture != null) {
-                            _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                        }
-
-                        if (_currentTerraBrushNode.SnowTexture != null) {
-                            _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                        }
-
-                        if (_currentTerraBrushNode.Splatmaps != null) {
-                            foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                            }
-                        }
-
-                        if (_currentTerraBrushNode.Foliages != null) {
-                            foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                            }
-                        }
-
-                        if (_currentTerraBrushNode.Objects != null) {
-                            foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                                _undoRedo.AddUndoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                            }
-                        }
+                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
                         _isMousePressed = true;
                         preventGuiInput = true;
+                        _currentTerraBrushNode.BeingEditTerrain();
                     }
                 } else if (_isMousePressed) {
-                    _currentTerraBrushNode.Terrain.TerrainUpdated(true);
+                    _currentTerraBrushNode.Terrain.TerrainUpdated();
                     _isMousePressed = false;
 
+
                     // Trigger a dirty state
-                    _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.TerrainSize), _currentTerraBrushNode.TerrainSize);
+                    _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
-                    _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.HeightMap, _currentTerraBrushNode.HeightMap.GetImage().GetData());
-
-                    if (_currentTerraBrushNode.WaterTexture != null) {
-                        _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.WaterTexture, _currentTerraBrushNode.WaterTexture.GetImage().GetData());
-                    }
-
-                    if (_currentTerraBrushNode.SnowTexture != null) {
-                        _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), _currentTerraBrushNode.SnowTexture, _currentTerraBrushNode.SnowTexture.GetImage().GetData());
-                    }
-
-                    if (_currentTerraBrushNode.Splatmaps != null) {
-                        foreach (var splatmap in _currentTerraBrushNode.Splatmaps) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), splatmap, splatmap.GetImage().GetData());
-                        }
-                    }
-
-                    if (_currentTerraBrushNode.Foliages != null) {
-                        foreach (var foliage in _currentTerraBrushNode.Foliages) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), foliage.Texture, foliage.Texture.GetImage().GetData());
-                        }
-                    }
-
-                    if (_currentTerraBrushNode.Objects != null) {
-                        foreach (var objectItem in _currentTerraBrushNode.Objects) {
-                            _undoRedo.AddDoMethod(this, nameof(OnUndoTexture), objectItem.Texture, objectItem.Texture.GetImage().GetData());
-                        }
-                    }
+                    _currentTerraBrushNode.EndEditTerrain();
 
                     _undoRedo.AddUndoMethod(this, nameof(OnUndoRedo));
                     _undoRedo.AddDoMethod(this, nameof(OnUndoRedo));
@@ -288,32 +243,61 @@ public partial class Plugin : EditorPlugin {
             return;
         }
 
-        _currentTerraBrushNode.Terrain.TerrainUpdated(true);
-        _currentTerraBrushNode.Terrain.TerrainSplatmapsUpdated();
-        _currentTerraBrushNode.UpdateFoliagesGroudTexture();
+        _currentTerraBrushNode.Terrain.TerrainUpdated();
+        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures();
 
         _currentTerraBrushNode.ClearObjects();
         await _currentTerraBrushNode.CreateObjects();
     }
 
     private Vector3 GetRayCastWithTerrain(Camera3D editorCamera, Vector2 mousePosition) {
+        var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
+
         if (editorCamera.GetViewport() is SubViewport viewport && viewport.GetParent() is SubViewportContainer viewportContainer) {
-            var screenPosition = mousePosition * viewport.Size / viewportContainer.Size;
+            var screenPosition = editorCamera.GetViewport().GetMousePosition();
 
             var from = editorCamera.ProjectRayOrigin(screenPosition);
             var dir = editorCamera.ProjectRayNormal(screenPosition);
 
-            var distance = editorCamera.Far * 1.2f;
-            var spaceState = _currentTerraBrushNode.GetWorld3D().DirectSpaceState;
-
-            var query = new PhysicsRayQueryParameters3D();
-            query.From = from;
-            query.To = from + dir * distance;
+            var distance = 2000;
+            var query = new PhysicsRayQueryParameters3D() {
+                From = from,
+                To = from + dir * distance
+            };
             var result = spaceState.IntersectRay(query);
 
             if (result?.Count > 0 && result["collider"].Obj == _currentTerraBrushNode.Terrain?.TerrainCollider) {
                 return (Vector3)result["position"] + new Vector3(0, 0.1f, 0);
+            } else {
+                return GetMouseClickToZoneHeight(from, dir);
             }
+        }
+
+        return Vector3.Inf;
+    }
+
+    private Vector3 GetMouseClickToZoneHeight(Vector3 from, Vector3 direction) {
+        var heightmapsCache = new Dictionary<ImageTexture, Image>();
+
+        for (var i = 0; i < 20000; i++) {
+            var position = from + (direction * i * 0.1f);
+
+            var zoneInfo = ZoneUtils.GetPixelToZoneInfo((int) Math.Round(position.X + (_currentTerraBrushNode.ZonesSize / 2)), (int) Math.Round(position.Z + (_currentTerraBrushNode.ZonesSize / 2)), _currentTerraBrushNode.ZonesSize);
+            var zone = _currentTerraBrushNode?.TerrainZones?.GetZoneForZoneInfo(zoneInfo);
+            if (zone != null && zone.HeightMapTexture != null) {
+                heightmapsCache.TryGetValue(zone.HeightMapTexture, out var heightMapImage);
+                if (heightMapImage == null) {
+                    heightMapImage = zone.HeightMapTexture.GetImage();
+                    heightmapsCache.Add(zone.HeightMapTexture, heightMapImage);
+                }
+
+                var zoneHeight = heightMapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+
+                if (zoneHeight >= position.Y) {
+                    return new Vector3(position.X, zoneHeight, position.Z);
+                }
+            }
+
         }
 
         return Vector3.Inf;
@@ -340,6 +324,13 @@ public partial class Plugin : EditorPlugin {
 
             _updateTerrainSettingsButton = null;
         }
+
+        if (_autoAddZonesCheckbox != null) {
+            RemoveControlFromContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
+            _autoAddZonesCheckbox.QueueFree();
+
+            _autoAddZonesCheckbox = null;
+        }
     }
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
@@ -360,6 +351,7 @@ public partial class Plugin : EditorPlugin {
             AddDock();
         };
         _undoRedo = GetUndoRedo();
+        _currentTerraBrushNode.UndoRedo = _undoRedo;
 
         AddDock();
 
@@ -373,10 +365,18 @@ public partial class Plugin : EditorPlugin {
         _terrainControlDock.EditorResourcePreview = EditorInterface.Singleton.GetResourcePreviewer();
         AddControlToDock(DockSlot.RightBl, _terrainControlDock);
 
-        _updateTerrainSettingsButton = new Button();
-        _updateTerrainSettingsButton.Text = "Update terrain";
+        _updateTerrainSettingsButton = new Button() {
+            Text = "Update terrain"
+        };
         _updateTerrainSettingsButton.Connect("pressed", new Callable(this, nameof(UpdateTerrainSettings)));
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
+
+        _autoAddZonesCheckbox = new CheckBox() {
+            Text = "Auto add zones",
+            ButtonPressed = _currentTerraBrushNode.AutoAddZones
+        };
+        _autoAddZonesCheckbox.Connect("pressed", new Callable(this, nameof(UpdateAutoAddZonesSetting)));
+        AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
     }
 
     private void OnExitEditTerrainNode() {
@@ -530,6 +530,10 @@ public partial class Plugin : EditorPlugin {
 
     private void UpdateTerrainSettings() {
         _currentTerraBrushNode?.OnUpdateTerrainSettings();
+    }
+
+    private void UpdateAutoAddZonesSetting() {
+        _currentTerraBrushNode.AutoAddZones = _autoAddZonesCheckbox.ButtonPressed;
     }
 }
 #endif

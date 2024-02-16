@@ -67,9 +67,11 @@ I'm gonna be happy to accept PR for new features if it fits.
     - N - Show the PieMenu for the current tool option (ex. While painting the textures, the PieMenu will show textures)
     - G - Show a quick select for the brush size
     - H - Show a quick select for the brush strength
+    - K - Toggle "Auto add zones"
   - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
+* **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 
 ## How To Use
 
@@ -104,8 +106,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Property|Description|
 |-------------|-------------|
 |**Terrain Settings**||
-|Terrain Size|This is the size of the terrain (in meters). By default, it will be 256m. There is no limit for this value but having a really high value will decrease the performance.|
-|HeightMap|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
+|Zones Size|This is the size of the zones (in meters). By default, it will be 256m. There is no limit for this value but having a really high value will decrease the performance. Each zone will be created with this size.|
 |Data Path|In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill in information by itself.|
 |Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be created since they could have a collision shape)|
 |Visual Instance Layers|The godot layer on which the terrain will be displayed.|
@@ -127,10 +128,8 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |TextureSetResource[x].NormalTexture|The normal map texture of the set.|
 |TextureSetResource[x].RoughnessTexture|The roughness texture of the set.|
 |Texture Detail|This will determine how often your textures will be repeated on the terrain. A higher value means more repetitions. The default value is 20.|
-|Splatmaps|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
-|FoliageResource[x].Texture|Unless you have existing foliage painting, leave this option empty, the tool will create it by itself.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
 |FoliageResource[x].Definition.Mesh|The mesh that will be used for the foliage. The mesh should have as few vertices as possible for better performance.|
 |FoliageResource[x].Definition.MeshMaterial|The material that will be used on the mesh.|
@@ -143,7 +142,6 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |**Objects**||
 |Default Object Frequency|This option is to define how often the objects will be placed on the terrain. This is the default for every objects. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
 |Objects|An array of ObjectResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
-|ObjectResource[x].Texture|Unless you have existing object painting, leave this option empty, the tool will create it by itself.|
 |ObjectResource[x].Definition|The definition of the object. Create a **ObjectDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
 |ObjectResource[x].Definition.ObjectFrequency|This option overrides the **Default Object Frequency** property if a value higher than -1 is set. This option is to define how often the objects will be placed on the terrain. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
 |ObjectResource[x].Definition.RandomRange|The range from which the random placement will be added from the original grid position.|
@@ -152,7 +150,6 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |ObjectResource[x].Definition.ObjectScenes|A list of packed scenes. A random one will be selected while painting.|
 |ObjectResource[x].Hide|Hide the whole layer of objects. This is useful when you want to see something on the terrain and the objects block the view.|
 |**Water**||
-|Water Texture|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
 |Water Definition|The definition of water. Create a **WaterResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |WaterResource.WaterFactor|This option lets you decide how deep the deepest water will be. A value of 1 will set the maximum deepness to 1m. The default value is 1.|
 |WaterResource.WaterInnerOffset|This is an offset of the water going into the ground. The goal is to prevent having square-looking water edges.|
@@ -177,7 +174,6 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |WaterResource.WaterEdgeColor|This is the color of the "foam".|
 |WaterResource.VisualInstanceLayers|The godot layer on which the water will be displayed.|
 |**Snow**||
-|Snow Texture|Unless you have an existing snow painting, leave this option empty, the tool will create it by itself.|
 |Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
 |SnowResource.SnowInnerOffset|This option is to decide the offset that the snow will get into the ground. This is to avoid having square edges of the snow.|
@@ -189,6 +185,14 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |SnowResource.NoiseFactor|This option defines how much the noise will affect the snow.|
 |SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
+|**Zones**||
+|Zones[x].ZonePosition|The position of the zone. This position is multiplied by the zone's size to position it in the world. The zones can be disconnected from each other. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**|
+|Zones[x].HeightMapTexture|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
+|Zones[x].SplatmapsTexture|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
+|Zones[x].FoliagesTexture[x]|Unless you have existing foliage painting, leave this option empty, the tool will create it by itself.|
+|Zones[x].ObjectsTexture[x]|Unless you have existing object painting, leave this option empty, the tool will create it by itself.|
+|Zones[x].WaterTexture|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
+|Zones[x].SnowTexture|Unless you have an existing snow painting, leave this option empty, the tool will create it by itself.|
 
 ### Interact with the terrain
 
