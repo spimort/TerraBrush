@@ -12,7 +12,7 @@ public partial class ZonesResource : Resource {
 
     private Texture2DArray _heightmapTextures = new();
     private Texture2DArray _splatmapsTextures = new();
-    private Texture2DArray _foliagesTextures = new();
+    private Texture2DArray[] _foliagesTextures;
     private Texture2DArray _objectsTextures = new();
     private Texture2DArray _waterTextures = new();
     private Texture2DArray _snowTextures = new();
@@ -20,7 +20,7 @@ public partial class ZonesResource : Resource {
 
     public Texture2DArray HeightmapTextures => _heightmapTextures;
     public Texture2DArray SplatmapsTextures => _splatmapsTextures;
-    public Texture2DArray FoliagesTextures => _foliagesTextures;
+    public Texture2DArray[] FoliagesTextures => _foliagesTextures;
     public Texture2DArray ObjectsTextures => _objectsTextures;
     public Texture2DArray WaterTextures => _waterTextures;
     public Texture2DArray SnowTextures => _snowTextures;
@@ -50,17 +50,23 @@ public partial class ZonesResource : Resource {
         }
     }
 
+    public void InitializeFoliageTextures(TerraBrush terraBrush) {
+        _foliagesTextures = terraBrush.Foliages?.Select(_ => new Texture2DArray()).ToArray();
+    }
+
     public void UpdateFoliagesTextures() {
-        var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
-            if (zone.FoliagesTexture != null) {
-                source.AddRange(zone.FoliagesTexture.Select(texture => texture.GetImage()));
+        if (_foliagesTextures?.Length > 0) {
+            for (var i = 0; i < _foliagesTextures.Length; i++) {
+                UpdateFoliagesTextures(i);
             }
+        }
+    }
 
-            return source;
-        });
+    public void UpdateFoliagesTextures(int foliageIndex) {
+        var images = Zones.Select(zone => zone.FoliagesTexture[foliageIndex].GetImage());
 
-        if (images.Count > 0) {
-            _foliagesTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        if (images.Any()) {
+            _foliagesTextures[foliageIndex].CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
     }
 

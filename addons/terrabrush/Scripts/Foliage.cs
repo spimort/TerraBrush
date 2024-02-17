@@ -36,7 +36,7 @@ public partial class Foliage : Node3D {
         }
     }
 
-    public void UpdateFoliage() {
+    public void UpdateFoliage(int foliageIndex) {
         if (_particles == null) {
             return;
         }
@@ -57,7 +57,7 @@ public partial class Foliage : Node3D {
     		_foliageShader.SetShaderParameter("TextureDetail", this.TextureDetail);
         }
 
-        _foliageShader.SetShaderParameter("FoliageTextures", TerrainZones.FoliagesTextures);
+        _foliageShader.SetShaderParameter("FoliageTextures", TerrainZones.FoliagesTextures[foliageIndex]);
         _foliageShader.SetShaderParameter("MeshScale", this.MeshScale);
         _foliageShader.SetShaderParameter("WindStrength", this.WindStrength);
 

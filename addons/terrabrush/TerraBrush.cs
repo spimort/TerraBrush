@@ -364,6 +364,7 @@ public partial class TerraBrush : TerraBrushTool {
             zone.FoliagesTexture = newList.ToArray();
         }
 
+        TerrainZones.InitializeFoliageTextures(this);
         TerrainZones.UpdateFoliagesTextures();
 
         for (var i = 0; i < Foliages.Count(); i++) {
@@ -387,7 +388,7 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
                 newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Definition.NoiseTexture) : _defaultNoise;
 
-                newFoliage.UpdateFoliage();
+                newFoliage.UpdateFoliage(i);
             }
         }
     }
