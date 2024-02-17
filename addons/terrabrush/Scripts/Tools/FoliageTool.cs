@@ -28,7 +28,7 @@ public class FoliageTool : ToolBase {
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
         });
 
-        _terraBrush.TerrainZones.UpdateFoliagesTextures();
+        _terraBrush.TerrainZones.UpdateFoliagesTextures(_terraBrush.FoliageIndex.Value);
     }
 }
 #endif
