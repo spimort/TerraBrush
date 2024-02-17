@@ -44,6 +44,7 @@ public partial class TerraBrushTool : Node3D {
     private int _brushSize = 100;
     private Image _originalBrushImage;
     private Image _brushImage;
+    private int? _selectedBrushIndex = null;
     private float _brushStrength = 0.1f;
     private int? _textureSetIndex = null;
     private int? _foliageIndex = null;
@@ -57,6 +58,7 @@ public partial class TerraBrushTool : Node3D {
     public int BrushSize => _brushSize;
     public float BrushStrength => _brushStrength;
     public Image BrushImage => _brushImage;
+    public int? SelectedBrushIndex => _selectedBrushIndex;
     public int? TextureSetIndex => _textureSetIndex;
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
@@ -114,7 +116,8 @@ public partial class TerraBrushTool : Node3D {
         _currentTool?.EndPaint();
     }
 
-    public void SetCurrentBrush(Image brushImage) {
+    public void SetCurrentBrush(int brushIndex, Image brushImage) {
+        _selectedBrushIndex = brushIndex;
         _originalBrushImage = brushImage;
 
         SetBrushSize(_brushSize);
