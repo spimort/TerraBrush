@@ -32,6 +32,7 @@ public partial class TerrainControlDock : Control {
             _brushSizeSlider.Value = TerraBrush.BrushSize;
             _brushStrengthSlider.Value = TerraBrush.BrushStrength;
             _selectedTool = TerraBrush.TerrainTool;
+            _selectedBrushIndex = TerraBrush.SelectedBrushIndex.GetValueOrDefault();
             _selectedTextureIndex = TerraBrush.TextureSetIndex;
             _selectedFoliageIndex = TerraBrush.FoliageIndex;
             _selectedObjectIndex = TerraBrush.ObjectIndex;
@@ -61,7 +62,7 @@ public partial class TerrainControlDock : Control {
             SetSelectedBrushIndex(index);
         });
 
-        UpdateSelectedBrush(true);
+        UpdateSelectedBrush();
     }
 
     public void SetBrushSize(int value) {
@@ -78,10 +79,10 @@ public partial class TerrainControlDock : Control {
     public void SetSelectedBrushIndex(int index) {
         _selectedBrushIndex = index;
 
-        UpdateSelectedBrush(false);
+        UpdateSelectedBrush();
     }
 
-    private void UpdateSelectedBrush(bool initialize) {
+    private void UpdateSelectedBrush() {
         var brushesPreview = _brushesContainer.GetChildren();
 
         for (var i = 0; i < brushesPreview.Count; i++) {
@@ -90,13 +91,10 @@ public partial class TerrainControlDock : Control {
             ((BrushPreview) brushPreview).ButtonPressed = i == _selectedBrushIndex;
         }
 
-        Image brushImage = initialize ? TerraBrush?.BrushImage : null;
-        if (brushImage == null) {
-            brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
-            brushImage.FlipY();
-            brushImage.FlipX();
-        }
-        TerraBrush?.SetCurrentBrush(brushImage);
+        var brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
+        brushImage.FlipY();
+        brushImage.FlipX();
+        TerraBrush?.SetCurrentBrush(_selectedBrushIndex, brushImage);
         BrushDecal?.SetBrushImage(brushImage);
     }
 
