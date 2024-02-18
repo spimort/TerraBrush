@@ -4,7 +4,15 @@ using Godot;
 
 namespace TerraBrush;
 
+enum LockedAxis {
+    None,
+    X,
+    Z
+}
+
 public abstract class ToolBase {
+    private LockedAxis? _lockedAxis = null;
+    private Vector2? _lockedAxisValue = null;
     private Dictionary<ZoneResource, Image> _imagesCache;
     private Dictionary<int, ZoneResource> _zonesPositionCache;
     protected TerraBrush _terraBrush;
@@ -17,10 +25,36 @@ public abstract class ToolBase {
     }
 
     public virtual string GetToolInfo(TerrainToolType toolType) {
+        if (_lockedAxis != null) {
+            return $"Locked axis : {_lockedAxis}";
+        }
+
         return string.Empty;
     }
 
     public virtual bool HandleInput(TerrainToolType toolType, InputEvent @event) {
+        if (@event is InputEventKey inputEvent && !Input.IsKeyPressed(Key.Ctrl)) {
+            if (inputEvent.IsAction(KeybindManager.StringNames.LockXAxis)) {
+                if (_lockedAxis != LockedAxis.X) {
+                    _lockedAxis = LockedAxis.X;
+                } else {
+                    _lockedAxis = LockedAxis.None;
+                    _lockedAxisValue = null;
+                }
+
+                return true;
+            } else if (inputEvent.IsAction(KeybindManager.StringNames.LockZAxis)) {
+                if (_lockedAxis != LockedAxis.Z) {
+                    _lockedAxis = LockedAxis.Z;
+                } else {
+                    _lockedAxis = LockedAxis.None;
+                    _lockedAxisValue = null;
+                }
+
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -38,6 +72,8 @@ public abstract class ToolBase {
 
         AddImagesToRedo();
         _modifiedUndoTextures = null;
+
+        _lockedAxisValue = null;
     }
 
     protected virtual ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
@@ -45,6 +81,18 @@ public abstract class ToolBase {
     }
 
     protected void ForEachBrushPixel(Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
+        if (_lockedAxis != null && _lockedAxis != LockedAxis.None) {
+            if (_lockedAxisValue == null) {
+                _lockedAxisValue = new Vector2(imagePosition.X, imagePosition.Y);
+            } else {
+                if (_lockedAxis == LockedAxis.X) {
+                    imagePosition = new Vector2(imagePosition.X, _lockedAxisValue.Value.Y);
+                } else {
+                    imagePosition = new Vector2(_lockedAxisValue.Value.X, imagePosition.Y);
+                }
+            }
+        }
+
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
                 var xPosition = (int) imagePosition.X - (x - brushSize / 2);

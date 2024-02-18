@@ -19,6 +19,8 @@ public partial class KeybindManager : RefCounted {
     private readonly InputEventKey BrushStrengthKey = new InputEventKey() { Keycode = Key.H };
     private readonly InputEventKey EscapeKey = new InputEventKey() { Keycode = Key.Escape };
     private readonly InputEventKey ToggleAutoAddZonesKey = new InputEventKey() { Keycode = Key.K };
+    private readonly InputEventKey LockXAxis = new InputEventKey() { Keycode = Key.X };
+    private readonly InputEventKey LockZAxis = new InputEventKey() { Keycode = Key.Z };
     #endregion
 
     #region Public String Names
@@ -32,6 +34,8 @@ public partial class KeybindManager : RefCounted {
 	    public static readonly StringName BrushStrengthSelector = new StringName("terrabrush_brush_strength_selector");
 	    public static readonly StringName EscapeSelector = new StringName("terrabrush_brush_escape_selector");
 	    public static readonly StringName ToggleAutoAddZones = new StringName("terrabrush_toggle_auto_add_zones");
+	    public static readonly StringName LockXAxis = new StringName("terrabrush_lock_x_axis");
+	    public static readonly StringName LockZAxis = new StringName("terrabrush_lock_z_axis");
     }
     #endregion
 
@@ -51,6 +55,8 @@ public partial class KeybindManager : RefCounted {
 			StringNames.BrushStrengthSelector,
 			StringNames.EscapeSelector,
 			StringNames.ToggleAutoAddZones,
+			StringNames.LockXAxis,
+			StringNames.LockZAxis,
 	    };
 	    _defaultKeys = new System.Collections.Generic.Dictionary<StringName, InputEventKey>() {
 		    { StringNames.ToolPie, ToolPieKey },
@@ -59,7 +65,9 @@ public partial class KeybindManager : RefCounted {
 		    { StringNames.BrushSizeSelector, BrushSizeKey },
 		    { StringNames.BrushStrengthSelector, BrushStrengthKey },
 		    { StringNames.EscapeSelector, EscapeKey },
-		    { StringNames.ToggleAutoAddZones, ToggleAutoAddZonesKey }
+		    { StringNames.ToggleAutoAddZones, ToggleAutoAddZonesKey },
+		    { StringNames.LockXAxis, LockXAxis },
+		    { StringNames.LockZAxis, LockZAxis },
 	    };
     }
 

@@ -18,11 +18,7 @@ public class SculptTool : ToolBase {
             return base.GetToolInfo(toolType);
         }
 
-        return $@"{
-base.GetToolInfo(toolType)}
-{(_setHeightValue == 0 ? @"Select height with CTRL + (click or mouse wheel or +/-)
-Use CTRL + ALT to set the increment to 0.1" : "")}
-Height : {_setHeightValue}".Trim();
+        return $"{base.GetToolInfo(toolType)}{(_setHeightValue == 0 ? "\nSelect height with CTRL + (click or mouse wheel or +/-)\nUse CTRL + ALT to set the increment to 0.1" : "")}\nHeight : {_setHeightValue}".Trim();
     }
 
     public override bool HandleInput(TerrainToolType toolType, InputEvent @event) {
