@@ -15,34 +15,34 @@ public partial class ZoneResource : Resource {
     [Export] public ImageTexture WaterTexture { get;set; }
     [Export] public ImageTexture SnowTexture { get;set; }
 
-    public void InitializeImagesForTerrain(TerraBrush terraBrush, int zoneIndex) {
-        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, zoneIndex, terraBrush.DataPath);
+    public void InitializeImagesForTerrain(TerraBrush terraBrush) {
+        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
 
         var numberOfSplatmaps = Mathf.CeilToInt((terraBrush.TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
         var splatmaps = new List<ImageTexture>();
         for (var i = 0; i < numberOfSplatmaps; i++) {
-            splatmaps.Add(ZoneUtils.CreateSplatmapImage(terraBrush.ZonesSize, zoneIndex, i, terraBrush.DataPath));
+            splatmaps.Add(ZoneUtils.CreateSplatmapImage(terraBrush.ZonesSize, ZonePosition, i, terraBrush.DataPath));
         }
         SplatmapsTexture = splatmaps.ToArray();
 
         if (terraBrush.Foliages != null) {
             FoliagesTexture = terraBrush.Foliages.Select((foliage, index) => {
-                return ZoneUtils.CreateFoliageImage(terraBrush.ZonesSize, zoneIndex, index, terraBrush.DataPath);
+                return ZoneUtils.CreateFoliageImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
             }).ToArray();
         }
 
         if (terraBrush.Objects != null) {
             ObjectsTexture = terraBrush.Objects.Select((objectItem, index) => {
-                return ZoneUtils.CreateObjectImage(terraBrush.ZonesSize, zoneIndex, index, terraBrush.DataPath);
+                return ZoneUtils.CreateObjectImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
             }).ToArray();
         }
 
         if (terraBrush.WaterDefinition != null) {
-            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, zoneIndex, terraBrush.DataPath);
+            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
         }
 
         if (terraBrush.SnowDefinition != null) {
-            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, zoneIndex, terraBrush.DataPath);
+            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
         }
     }
 }

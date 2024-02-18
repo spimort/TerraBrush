@@ -134,7 +134,7 @@ public partial class ZonesResource : Resource {
             ZonePosition = zonePosition
         };
 
-        zone.InitializeImagesForTerrain(terraBrush, Zones.Length);
+        zone.InitializeImagesForTerrain(terraBrush);
 
         var newList = new List<ZoneResource>(Zones) {
             zone
