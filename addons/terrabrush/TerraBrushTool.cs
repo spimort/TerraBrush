@@ -6,36 +6,22 @@ namespace TerraBrush;
 #if TOOLS
 public enum TerrainToolType {
     None = 0,
-    [ToolType(typeof(SculptTool))]
-    TerrainAdd = 1,
-    [ToolType(typeof(SculptTool))]
-    TerrainRemove = 2,
-    [ToolType(typeof(SculptTool))]
-    TerrainSmooth = 3,
-    [ToolType(typeof(SculptTool))]
-    TerrainFlattern = 4,
-    [ToolType(typeof(TextureTool))]
-    Paint = 5,
-    [ToolType(typeof(FoliageTool))]
-    FoliageAdd = 6,
-    [ToolType(typeof(FoliageTool))]
-    FoliagRemove = 7,
-    [ToolType(typeof(ObjectTool))]
-    ObjectAdd = 8,
-    [ToolType(typeof(ObjectTool))]
-    ObjectRemove = 9,
-    [ToolType(typeof(WaterTool))]
-    WaterAdd = 10,
-    [ToolType(typeof(WaterTool))]
-    WaterRemove = 11,
-    [ToolType(typeof(WaterFlowTool))]
-    WaterFlowAdd = 12,
-    [ToolType(typeof(WaterFlowTool))]
-    WaterFlowRemove = 13,
-    [ToolType(typeof(SnowTool))]
-    SnowAdd = 14,
-    [ToolType(typeof(SnowTool))]
-    SnowRemove = 15,
+    [ToolType(typeof(SculptTool))] TerrainAdd = 1,
+    [ToolType(typeof(SculptTool))] TerrainRemove = 2,
+    [ToolType(typeof(SculptTool))] TerrainSmooth = 3,
+    [ToolType(typeof(SculptTool))] TerrainFlattern = 4,
+    [ToolType(typeof(SculptTool))] TerrainSetHeight = 5,
+    [ToolType(typeof(TextureTool))] Paint = 6,
+    [ToolType(typeof(FoliageTool))] FoliageAdd = 7,
+    [ToolType(typeof(FoliageTool))] FoliagRemove = 8,
+    [ToolType(typeof(ObjectTool))] ObjectAdd = 9,
+    [ToolType(typeof(ObjectTool))] ObjectRemove = 10,
+    [ToolType(typeof(WaterTool))] WaterAdd = 11,
+    [ToolType(typeof(WaterTool))] WaterRemove = 12,
+    [ToolType(typeof(WaterFlowTool))] WaterFlowAdd = 13,
+    [ToolType(typeof(WaterFlowTool))] WaterFlowRemove = 14,
+    [ToolType(typeof(SnowTool))] SnowAdd = 15,
+    [ToolType(typeof(SnowTool))] SnowRemove = 16,
 }
 #endif
 
@@ -53,6 +39,7 @@ public partial class TerraBrushTool : Node3D {
     private TerrainToolType _terrainTool = TerrainToolType.TerrainAdd;
 
     public TerrainToolType TerrainTool => _terrainTool;
+    public ToolBase CurrentTool => _currentTool;
     public EditorUndoRedoManager UndoRedo { get;set; }
 
     public int BrushSize => _brushSize;

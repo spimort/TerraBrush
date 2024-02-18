@@ -10,6 +10,7 @@ namespace TerraBrush;
 [Tool]
 public partial class Plugin : EditorPlugin {
     private const float UpdateDelay = 0.005f;
+    private const int ToolInfoOffset = 20;
 
 	private TerrainControlDock _terrainControlDock;
     private PackedScene _terrainControlDockPrefab;
@@ -17,6 +18,7 @@ public partial class Plugin : EditorPlugin {
     private PackedScene _customContentPieMenuPrefab;
     private BrushDecal _brushDecal;
     private TerraBrush _currentTerraBrushNode;
+    private ToolInfo _toolInfo;
     private bool _isMousePressed;
     private Vector3 _mouseHitPosition;
     private float _updateTime = 0;
@@ -97,6 +99,11 @@ public partial class Plugin : EditorPlugin {
 
     public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
         var preventGuiInput = false;
+
+        if (_toolInfo != null) {
+            _toolInfo.Position = viewportCamera.GetViewport().GetMousePosition() + viewportCamera.GetViewport().GetParent<SubViewportContainer>().GlobalPosition + new Vector2I(ToolInfoOffset, ToolInfoOffset);
+            _toolInfo.SetText(_currentTerraBrushNode?.CurrentTool?.GetToolInfo(_currentTerraBrushNode.TerrainTool));
+        }
 
         if (@event is InputEventMouseMotion inputMotion) {
             var meshPosition = GetRayCastWithTerrain(viewportCamera);
@@ -210,6 +217,10 @@ public partial class Plugin : EditorPlugin {
         if (preventGuiInput) {
             return (int) EditorPlugin.AfterGuiInput.Stop;
         } else {
+            if ((_currentTerraBrushNode?.CurrentTool?.HandleInput(_currentTerraBrushNode.TerrainTool, @event)).GetValueOrDefault()) {
+                return (int) EditorPlugin.AfterGuiInput.Stop;
+            }
+
             return base._Forward3DGuiInput(viewportCamera, @event);
         }
     }
@@ -353,6 +364,13 @@ public partial class Plugin : EditorPlugin {
         _undoRedo = GetUndoRedo();
         _currentTerraBrushNode.UndoRedo = _undoRedo;
 
+        GetNodeOrNull("ToolInfo")?.QueueFree();
+        _toolInfo?.QueueFree();
+
+        _toolInfo = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
+        _toolInfo.Name = "ToolInfo";
+        AddChild(_toolInfo);
+
         AddDock();
 
         terraBrush.SetMeta("_edit_lock_", true);
@@ -385,8 +403,11 @@ public partial class Plugin : EditorPlugin {
 
         _brushDecal?.QueueFree();
         _brushDecal = null;
-
         GetNodeOrNull("BrushDecal")?.QueueFree();
+
+        GetNodeOrNull("ToolInfo")?.QueueFree();
+        _toolInfo?.QueueFree();
+        _toolInfo = null;
 
         _currentTerraBrushNode.SetMeta("_edit_lock_", false);
 
