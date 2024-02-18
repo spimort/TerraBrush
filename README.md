@@ -69,6 +69,8 @@ I'm gonna be happy to accept PR for new features if it fits.
     - G - Show a quick select for the brush size
     - H - Show a quick select for the brush strength
     - K - Toggle "Auto add zones"
+    - X - Lock on X axis
+    - Z - Lock on Z axis
   - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
