@@ -1,6 +1,5 @@
 #if TOOLS
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -15,6 +14,14 @@ public abstract class ToolBase {
 
     public ToolBase(TerraBrush terraBrush) {
         _terraBrush = terraBrush;
+    }
+
+    public virtual string GetToolInfo(TerrainToolType toolType) {
+        return string.Empty;
+    }
+
+    public virtual bool HandleInput(TerrainToolType toolType, InputEvent @event) {
+        return false;
     }
 
     public virtual void BeginPaint() {

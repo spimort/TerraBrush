@@ -41,6 +41,7 @@ I'm gonna be happy to accept PR for new features if it fits.
   - Decrease the terrain
   - Smooth the terrain
   - Flattern the terrain
+  - Set height (paint to a specific height)
 * **Paint textures** - Add colors to your terrain with the textures painting tool
   - Normal map and roughness texture are supported
 * **Foliage** - Add foliage to your terrain (ex. Grass)
