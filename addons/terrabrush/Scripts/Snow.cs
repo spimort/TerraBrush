@@ -95,10 +95,7 @@ public partial class Snow : Node3D {
     }
 
     public void AddCompressedSnow(float x, float y) {
-        var xPosition = (int) Math.Round(x);
-        var yPosition = (int) Math.Round(y);
-
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(xPosition, yPosition, ZonesSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize);
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {

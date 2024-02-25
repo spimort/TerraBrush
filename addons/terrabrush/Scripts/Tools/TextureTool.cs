@@ -32,7 +32,7 @@ public class TextureTool : ToolBase {
         var colorChannel = _terraBrush.TextureSetIndex.Value % 4;
         var numberOfSplatmaps = Mathf.CeilToInt(_terraBrush.TextureSets.TextureSets.Count() / 4.0);
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             for (int i = 0; i < numberOfSplatmaps; i++) {
                 Color splatmapColor = Colors.Transparent;
 

@@ -15,7 +15,7 @@ public class SnowTool : ToolBase {
             return;
         }
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newColor = toolType == TerrainToolType.SnowAdd ? Colors.Red : new Color(0, 0, 0, 0);
 

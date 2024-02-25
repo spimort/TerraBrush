@@ -128,16 +128,16 @@ public partial class Terrain : Node3D {
 
                         var currentZone = zone;
                         var lookupX = x;
-                        var loopupY = y;
+                        var lookupY = y;
                         if (x == 0 && leftNeighbourZone != null) {
                             currentZone = leftNeighbourZone;
                             lookupX = heightMapImage.GetWidth() - 1;
                         } else if (y == 0 && topNeighbourZone != null) {
                             currentZone = topNeighbourZone;
-                            loopupY = heightMapImage.GetHeight() - 1;
+                            lookupY = heightMapImage.GetHeight() - 1;
                         }
 
-                        var pixelHeight = GetHeightForZone(currentZone, lookupX, loopupY, imagesCache);
+                        var pixelHeight = GetHeightForZone(currentZone, lookupX, lookupY, imagesCache);
                         terrainData.Add(pixelHeight);
                     }
                 }

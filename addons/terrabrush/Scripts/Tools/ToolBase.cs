@@ -1,4 +1,5 @@
 #if TOOLS
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -18,7 +19,7 @@ public abstract class ToolBase {
     protected TerraBrush _terraBrush;
     private List<ImageTexture> _modifiedUndoTextures;
 
-    protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength, Vector2I absoluteImagePosition);
+    protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength);
 
     public ToolBase(TerraBrush terraBrush) {
         _terraBrush = terraBrush;
@@ -93,28 +94,29 @@ public abstract class ToolBase {
             }
         }
 
+        var startingX = imagePosition.X - (brushSize / 2);
+        var startingY = imagePosition.Y - (brushSize / 2);
+        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize);
+
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
-                var xPosition = (int) imagePosition.X - (x - brushSize / 2);
-                var yPosition = (int) imagePosition.Y - (y - brushSize / 2);
-
-                var imageZoneInfo = GetImageZoneInfoForPosition(xPosition, yPosition);
+                var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y);
                 if (imageZoneInfo != null) {
                     var brushPixelValue = brushImage.GetPixel(x, y);
                     var brushPixelStrength = brushPixelValue.A;
 
                     onBrushPixel(
                         imageZoneInfo,
-                        brushPixelStrength,
-                        new Vector2I(xPosition, yPosition)
+                        brushPixelStrength
                     );
                 }
             }
         }
+
     }
 
-    protected ImageZoneInfo GetImageZoneInfoForPosition(int x, int y) {
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, _terraBrush.ZonesSize);
+    protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY) {
+        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize);
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {

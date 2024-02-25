@@ -293,7 +293,7 @@ public partial class Plugin : EditorPlugin {
         for (var i = 0; i < 20000; i++) {
             var position = from + (direction * i * 0.1f);
 
-            var zoneInfo = ZoneUtils.GetPixelToZoneInfo((int) Math.Round(position.X + (_currentTerraBrushNode.ZonesSize / 2)), (int) Math.Round(position.Z + (_currentTerraBrushNode.ZonesSize / 2)), _currentTerraBrushNode.ZonesSize);
+            var zoneInfo = ZoneUtils.GetPixelToZoneInfo(position.X + (_currentTerraBrushNode.ZonesSize / 2), position.Z + (_currentTerraBrushNode.ZonesSize / 2), _currentTerraBrushNode.ZonesSize);
             var zone = _currentTerraBrushNode?.TerrainZones?.GetZoneForZoneInfo(zoneInfo);
             if (zone != null && zone.HeightMapTexture != null) {
                 heightmapsCache.TryGetValue(zone.HeightMapTexture, out var heightMapImage);

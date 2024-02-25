@@ -68,19 +68,44 @@ public static class ZoneUtils {
         return imageTexture;
     }
 
-    public static ZoneInfo GetPixelToZoneInfo(int x, int y, int zonesSize) {
-        var zoneXPosition = Mathf.FloorToInt(x / (float) zonesSize);
-        var zoneYPosition = Mathf.FloorToInt(y / (float) zonesSize);
-        var zoneBrushXPosition = (zonesSize * zoneXPosition * -1) + x;
-        var zoneBrushYPosition = (zonesSize * zoneYPosition * -1) + y;
+    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize) {
+        if (zonesSize % 2 == 0) {
+            x -= 0.5f;
+            y -= 0.5f;
+        }
 
+        var zoneXPosition = Mathf.FloorToInt(x / (zonesSize - 1));
+        var zoneYPosition = Mathf.FloorToInt(y / (zonesSize - 1));
         var zonePosition = new Vector2I(zoneXPosition, zoneYPosition);
+
+        var zoneBrushXPosition = Mathf.RoundToInt(((x / (zonesSize - 1)) - zoneXPosition) * (zonesSize - 1));
+        var zoneBrushYPosition = Mathf.RoundToInt(((y / (zonesSize - 1)) - zoneYPosition) * (zonesSize - 1));
+
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
         var zoneKey = (zonePosition.X << 8) + zonePosition.Y;
 
         return new ZoneInfo() {
             ZoneKey = zoneKey,
             ZonePosition = zonePosition,
+            ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+        };
+    }
+
+    public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize) {
+        var pixelPosition = new Vector2(startingZone.ImagePosition.X + offset.X, startingZone.ImagePosition.Y + offset.Y);
+        var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / zonesSize);
+        var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / zonesSize);
+
+        var zoneBrushXPosition = Mathf.RoundToInt(((pixelPosition.X / zonesSize) - zoneXPosition) * zonesSize);
+        var zoneBrushYPosition = Mathf.RoundToInt(((pixelPosition.Y / zonesSize) - zoneYPosition) * zonesSize);
+
+        // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
+        var absoluteZonePosition = new Vector2I(startingZone.ZonePosition.X + zoneXPosition, startingZone.ZonePosition.Y + zoneYPosition);
+        var zoneKey = (absoluteZonePosition.X << 8) + absoluteZonePosition.Y;
+
+        return new ZoneInfo() {
+            ZoneKey = zoneKey,
+            ZonePosition = absoluteZonePosition,
             ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
         };
     }

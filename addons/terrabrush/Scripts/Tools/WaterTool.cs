@@ -32,7 +32,7 @@ public class WaterTool : ToolBase {
             return;
         }
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             var newColor = toolType == TerrainToolType.WaterAdd ? new Color(1, currentPixel.G, currentPixel.B, 1) : new Color(0, 0.5f, 0.5f, 1);
