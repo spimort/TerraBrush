@@ -49,7 +49,7 @@ public class ObjectTool : ToolBase {
             noiseImage = noiseTexture.GetImage();
         }
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var zoneIndex = Array.IndexOf(_terraBrush.TerrainZones.Zones, imageZoneInfo.Zone);
             var objectsNodeName = $"{zoneIndex}_{_terraBrush.ObjectIndex.Value}";
 

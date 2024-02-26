@@ -92,7 +92,7 @@ public class SculptTool : ToolBase {
     }
 
     private void Sculpt(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = Colors.Red * (pixelBrushStrength * brushStrength) * _sculptingMultiplier;
             if (toolType == TerrainToolType.TerrainAdd) {
@@ -110,7 +110,7 @@ public class SculptTool : ToolBase {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             smoothValue += currentPixel;
@@ -119,7 +119,7 @@ public class SculptTool : ToolBase {
 
         smoothValue = smoothValue / numberOfSamples;
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, smoothValue.R, pixelBrushStrength * brushStrength),
@@ -134,25 +134,25 @@ public class SculptTool : ToolBase {
     }
 
     private void Smooth(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var directions = new List<float>();
 
-            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X - 1, absoluteImagePosition.Y);
+            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, -1, 0);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X + 1, absoluteImagePosition.Y);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 1, 0);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X, absoluteImagePosition.Y - 1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, -1);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(absoluteImagePosition.X, absoluteImagePosition.Y + 1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, 1);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
@@ -170,14 +170,15 @@ public class SculptTool : ToolBase {
 
     private void SetHeight(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         if (Input.IsKeyPressed(Key.Ctrl)) {
-            var imageZoneInfo = GetImageZoneInfoForPosition((int) imagePosition.X, (int) imagePosition.Y);
+            var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize);
+            var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0);
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
             _setHeightValue = currentPixel.R;
             return;
         }
 
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength, absoluteImagePosition) => {
+        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, _setHeightValue, pixelBrushStrength * brushStrength),
