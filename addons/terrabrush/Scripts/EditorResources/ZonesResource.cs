@@ -92,12 +92,20 @@ public partial class ZonesResource : Resource {
         _waterTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.WaterTexture.GetImage())));
     }
 
+    public void UpdateZoneWaterTexture(ZoneResource zone) {
+        _waterTextures.UpdateLayer(zone.WaterTexture.GetImage(), Array.IndexOf(Zones, zone));
+    }
+
     public void UpdateSnowTextures() {
         if (Zones.Any(zone => zone.SnowTexture == null)) {
             return;
         }
 
         _snowTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.SnowTexture.GetImage())));
+    }
+
+    public void UpdateZoneSnowTexture(ZoneResource zone) {
+        _snowTextures.UpdateLayer(zone.SnowTexture.GetImage(), Array.IndexOf(Zones, zone));
     }
 
     public void SaveResources() {

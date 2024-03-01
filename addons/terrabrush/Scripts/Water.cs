@@ -9,8 +9,8 @@ namespace TerraBrush;
 public partial class Water : Node3D {
     private const float RippleResetSpeed = 0.9f;
 
-    private Dictionary<ImageTexture, Dictionary<Vector2I, float>> _ripplePositions = new();
-    private Dictionary<ImageTexture, Image> _imagesCache = new();
+    private Dictionary<ZoneResource, Dictionary<Vector2I, float>> _ripplePositions = new();
+    private Dictionary<ZoneResource, Image> _imagesCache = new();
 
     [NodePath] private Clipmap _clipmap;
 
@@ -54,10 +54,10 @@ public partial class Water : Node3D {
         base._PhysicsProcess(delta);
         if (_ripplePositions.Count > 0) {
             for (var imageIndex = _ripplePositions.Count - 1; imageIndex >= 0; imageIndex--) {
-                var imageTexture = _ripplePositions.Keys.ElementAt(imageIndex);
-                var points = _ripplePositions[imageTexture];
+                var zone = _ripplePositions.Keys.ElementAt(imageIndex);
+                var points = _ripplePositions[zone];
 
-                var rippleWaterImage = GetImageForTexture(imageTexture);
+                var rippleWaterImage = GetImageForZone(zone);
 
                 for (var i = points.Count - 1; i >= 0; i--) {
                     var position = points.Keys.ElementAt(i);
@@ -78,14 +78,13 @@ public partial class Water : Node3D {
                     }
                 }
 
-                imageTexture.Update(rippleWaterImage);
+                zone.WaterTexture.Update(rippleWaterImage);
+                TerrainZones.UpdateZoneWaterTexture(zone);
 
                 if (points.Count == 0) {
-                    _ripplePositions.Remove(imageTexture);
+                    _ripplePositions.Remove(zone);
                 }
             }
-
-            TerrainZones.UpdateWaterTextures();
         }
     }
 
@@ -132,7 +131,7 @@ public partial class Water : Node3D {
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {
-            var image = GetImageForTexture(zone.WaterTexture);
+            var image = GetImageForZone(zone);
             var pixelPosition = new Vector2I(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
             var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
 
@@ -140,12 +139,12 @@ public partial class Water : Node3D {
                 image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 0));
 
                 zone.WaterTexture.Update(image);
-                TerrainZones.UpdateWaterTextures();
+                TerrainZones.UpdateZoneWaterTexture(zone);
 
-                _ripplePositions.TryGetValue(zone.WaterTexture, out var listOfPoints);
+                _ripplePositions.TryGetValue(zone, out var listOfPoints);
                 if (listOfPoints == null) {
                     listOfPoints = new Dictionary<Vector2I, float>();
-                    _ripplePositions.Add(zone.WaterTexture, listOfPoints);
+                    _ripplePositions.Add(zone, listOfPoints);
                 }
 
                 if (!listOfPoints.ContainsKey(pixelPosition)) {
@@ -155,11 +154,11 @@ public partial class Water : Node3D {
         }
     }
 
-    private Image GetImageForTexture(ImageTexture imageTexture) {
-        _imagesCache.TryGetValue(imageTexture, out var image);
+    private Image GetImageForZone(ZoneResource zone) {
+        _imagesCache.TryGetValue(zone, out var image);
         if (image == null) {
-            image = imageTexture.GetImage();
-            _imagesCache.Add(imageTexture, image);
+            image = zone.WaterTexture.GetImage();
+            _imagesCache.Add(zone, image);
         }
 
         return image;
