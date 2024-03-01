@@ -9,8 +9,8 @@ namespace TerraBrush;
 public partial class Snow : Node3D {
     private const float DeCompressSpeed = 0.5f;
 
-    private Dictionary<ImageTexture, Dictionary<Vector2I, float>> _compressedPositions = new();
-    private Dictionary<ImageTexture, Image> _imagesCache = new();
+    private Dictionary<ZoneResource, Dictionary<Vector2I, float>> _compressedPositions = new();
+    private Dictionary<ZoneResource, Image> _imagesCache = new();
 
     [NodePath] private Clipmap _clipmap;
 
@@ -59,10 +59,10 @@ public partial class Snow : Node3D {
 
         if (_compressedPositions.Count > 0) {
             for (var imageIndex = _compressedPositions.Count - 1; imageIndex >= 0; imageIndex--) {
-                var imageTexture = _compressedPositions.Keys.ElementAt(imageIndex);
-                var points = _compressedPositions[imageTexture];
+                var zone = _compressedPositions.Keys.ElementAt(imageIndex);
+                var points = _compressedPositions[zone];
 
-                var compressedSnowImage = GetImageForTexture(imageTexture);
+                var compressedSnowImage = GetImageForZone(zone);
 
                 for (var i = points.Count - 1; i >= 0; i--) {
                     var position = points.Keys.ElementAt(i);
@@ -83,14 +83,13 @@ public partial class Snow : Node3D {
                     }
                 }
 
-                imageTexture.Update(compressedSnowImage);
+                zone.SnowTexture.Update(compressedSnowImage);
+                TerrainZones.UpdateZoneSnowTexture(zone);
 
                 if (points.Count == 0) {
-                    _compressedPositions.Remove(imageTexture);
+                    _compressedPositions.Remove(zone);
                 }
             }
-
-            TerrainZones.UpdateSnowTextures();
         }
     }
 
@@ -99,7 +98,7 @@ public partial class Snow : Node3D {
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {
-            var image = GetImageForTexture(zone.SnowTexture);
+            var image = GetImageForZone(zone);
             var pixelPosition = new Vector2I(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
             var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
 
@@ -107,12 +106,12 @@ public partial class Snow : Node3D {
                 image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 0));
 
                 zone.SnowTexture.Update(image);
-                TerrainZones.UpdateSnowTextures();
+                TerrainZones.UpdateZoneSnowTexture(zone);
 
-                _compressedPositions.TryGetValue(zone.SnowTexture, out var listOfPoints);
+                _compressedPositions.TryGetValue(zone, out var listOfPoints);
                 if (listOfPoints == null) {
                     listOfPoints = new Dictionary<Vector2I, float>();
-                    _compressedPositions.Add(zone.SnowTexture, listOfPoints);
+                    _compressedPositions.Add(zone, listOfPoints);
                 }
 
                 if (!listOfPoints.ContainsKey(pixelPosition)) {
@@ -122,11 +121,11 @@ public partial class Snow : Node3D {
         }
     }
 
-    private Image GetImageForTexture(ImageTexture imageTexture) {
-        _imagesCache.TryGetValue(imageTexture, out var image);
+    private Image GetImageForZone(ZoneResource zone) {
+        _imagesCache.TryGetValue(zone, out var image);
         if (image == null) {
-            image = imageTexture.GetImage();
-            _imagesCache.Add(imageTexture, image);
+            image = zone.SnowTexture.GetImage();
+            _imagesCache.Add(zone, image);
         }
 
         return image;
