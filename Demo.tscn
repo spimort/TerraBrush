@@ -1,22 +1,27 @@
-[gd_scene load_steps=72 format=3 uid="uid://v4o1p7h4rn3j"]
+[gd_scene load_steps=77 format=3 uid="uid://v4o1p7h4rn3j"]
 
 [ext_resource type="Script" path="res://Demo.cs" id="1_ntfcg"]
 [ext_resource type="Script" path="res://addons/terrabrush/TerraBrush.cs" id="2_pdfhx"]
 [ext_resource type="Texture2D" uid="uid://mt1iq0ehpi76" path="res://Demo/Heightmap.res" id="3_ckogt"]
+[ext_resource type="Texture2D" uid="uid://bfdn06x04hed8" path="res://Assets/cc0_textures/grass_ground_0040_1k_XyLv8Z/ground_0040_height_1k.png" id="3_xqxaa"]
 [ext_resource type="Texture2D" uid="uid://clvc6qd408d0g" path="res://Assets/cc0_textures/grass_ground_0040_1k_XyLv8Z/ground_0040_color_1k.jpg" id="4_xle6n"]
 [ext_resource type="Texture2D" uid="uid://bh02pv1qtqbnx" path="res://Assets/cc0_textures/grass_ground_0040_1k_XyLv8Z/ground_0040_normal_opengl_1k.png" id="5_7h48r"]
 [ext_resource type="Texture2D" uid="uid://dqnngtensqqdf" path="res://Assets/cc0_textures/grass_ground_0040_1k_XyLv8Z/ground_0040_roughness_1k.jpg" id="6_f77n5"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetResource.cs" id="7_yvfmb"]
 [ext_resource type="Texture2D" uid="uid://c564h6uniucsk" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_color_1k.jpg" id="8_7f4ek"]
+[ext_resource type="Texture2D" uid="uid://c7h0hrakrlkpq" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_height_1k.png" id="8_srk7a"]
 [ext_resource type="Texture2D" uid="uid://b34wpvg5h4p4q" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_normal_opengl_1k.png" id="9_satbt"]
 [ext_resource type="Texture2D" uid="uid://ctdtau2iwdkla" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_roughness_1k.jpg" id="10_lt8js"]
 [ext_resource type="Texture2D" uid="uid://dfcyx4fhnyqmp" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_color_1k.jpg" id="11_1mp7w"]
+[ext_resource type="Texture2D" uid="uid://dtmmmald6xw7v" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_height_1k.png" id="11_b3m5x"]
 [ext_resource type="Texture2D" uid="uid://hosywlyneaqc" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_normal_opengl_1k.png" id="12_36x75"]
 [ext_resource type="Texture2D" uid="uid://6xypy41ao85" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_roughness_1k.jpg" id="13_43kc8"]
 [ext_resource type="Texture2D" uid="uid://kb1h7trfm56o" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_color_1k.jpg" id="14_v2wx4"]
 [ext_resource type="Texture2D" uid="uid://tait6si8fhul" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_normal_opengl_1k.png" id="15_6s3cb"]
 [ext_resource type="Texture2D" uid="uid://b1e8mhs42h3a1" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_roughness_1k.jpg" id="16_d4u8t"]
+[ext_resource type="Texture2D" uid="uid://cwjyrocs7hah6" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_height_1k.png" id="17_l1sku"]
 [ext_resource type="Texture2D" uid="uid://bi45fiplhg6an" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_color_1k.jpg" id="17_ngv3d"]
+[ext_resource type="Texture2D" uid="uid://dmtgcaq3rd8c2" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_height_1k.png" id="17_quhjx"]
 [ext_resource type="Texture2D" uid="uid://ckjbys2om7wsa" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_normal_opengl_1k.png" id="18_3axer"]
 [ext_resource type="Texture2D" uid="uid://ci2ebkk666awq" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_roughness_1k.jpg" id="19_b7yqj"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetsResource.cs" id="20_mt8yi"]
@@ -57,6 +62,7 @@ Name = "Grass"
 AlbedoTexture = ExtResource("4_xle6n")
 NormalTexture = ExtResource("5_7h48r")
 RoughnessTexture = ExtResource("6_f77n5")
+HeightTexture = ExtResource("3_xqxaa")
 
 [sub_resource type="Resource" id="Resource_al3h6"]
 script = ExtResource("7_yvfmb")
@@ -64,6 +70,7 @@ Name = "Brick"
 AlbedoTexture = ExtResource("8_7f4ek")
 NormalTexture = ExtResource("9_satbt")
 RoughnessTexture = ExtResource("10_lt8js")
+HeightTexture = ExtResource("8_srk7a")
 
 [sub_resource type="Resource" id="Resource_0e1fb"]
 script = ExtResource("7_yvfmb")
@@ -71,6 +78,7 @@ Name = "Dirt"
 AlbedoTexture = ExtResource("11_1mp7w")
 NormalTexture = ExtResource("12_36x75")
 RoughnessTexture = ExtResource("13_43kc8")
+HeightTexture = ExtResource("11_b3m5x")
 
 [sub_resource type="Resource" id="Resource_1laah"]
 script = ExtResource("7_yvfmb")
@@ -78,6 +86,7 @@ Name = "Snow"
 AlbedoTexture = ExtResource("14_v2wx4")
 NormalTexture = ExtResource("15_6s3cb")
 RoughnessTexture = ExtResource("16_d4u8t")
+HeightTexture = ExtResource("17_quhjx")
 
 [sub_resource type="Resource" id="Resource_xss3l"]
 script = ExtResource("7_yvfmb")
@@ -85,6 +94,7 @@ Name = "Sand"
 AlbedoTexture = ExtResource("17_ngv3d")
 NormalTexture = ExtResource("18_3axer")
 RoughnessTexture = ExtResource("19_b7yqj")
+HeightTexture = ExtResource("17_l1sku")
 
 [sub_resource type="Resource" id="Resource_nwvvi"]
 script = ExtResource("20_mt8yi")
@@ -197,6 +207,7 @@ WaterDefinition = ExtResource("23_rpaxe")
 SnowDefinition = SubResource("Resource_ibahd")
 TerrainZones = SubResource("Resource_dp21i")
 TerrainSize = 0
+Splatmaps = []
 metadata/_edit_lock_ = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

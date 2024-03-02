@@ -10,8 +10,10 @@ uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int TextureDetail;
 uniform int NumberOfTextures;
 uniform sampler2DArray Normals;
-uniform sampler2DArray RoughnessTexutres;
+uniform sampler2DArray RoughnessTextures;
+uniform sampler2DArray HeightTextures;
 uniform bool UseAntitile = true;
+uniform float BlendFactor;
 
 varying vec3 _worldVertex;
 
@@ -63,6 +65,22 @@ void vertex() {
 	VERTEX.y -= waterTexture.r * WaterFactor;
 }
 
+float getChannelValue(int currentChannel, vec4 currentSplatmap) {
+	if (currentChannel == 0) {
+		return currentSplatmap.x;
+	} else if (currentChannel == 1) {
+		return currentSplatmap.y;
+	} else if (currentChannel == 2) {
+		return currentSplatmap.z;
+	} else if (currentChannel == 3) {
+		return currentSplatmap.w;
+	}
+}
+
+float contrast(float factor, float v) {
+	return max(0.0, min(1.0, factor * (v - 0.5) + 0.5));
+}
+
 void fragment() {
 	vec4 resultTexture = vec4(0.0);
 	vec4 resultNormal = vec4(0.0);
@@ -78,23 +96,16 @@ void fragment() {
 	
 		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
 		vec4 currentNormal = UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV);
-		vec4 currentRoughness = UseAntitile ? texture_array_antitile(RoughnessTexutres, textureUV) : texture(RoughnessTexutres, textureUV);
+		vec4 currentRoughness = UseAntitile ? texture_array_antitile(RoughnessTextures, textureUV) : texture(RoughnessTextures, textureUV);
+		vec4 currentHeight = UseAntitile ? texture_array_antitile(HeightTextures, textureUV) : texture(HeightTextures, textureUV);
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 	
-		float channelValue = 0.0;
-		if (currentChannel == 0) {
-			channelValue = currentSplatmap.x;
-		} else if (currentChannel == 1) {
-			channelValue = currentSplatmap.y;
-		} else if (currentChannel == 2) {
-			channelValue = currentSplatmap.z;
-		} else if (currentChannel == 3) {
-			channelValue = currentSplatmap.w;
-		}
+		float channelValue = getChannelValue(currentChannel, currentSplatmap);
 	
-		resultTexture += currentTexture * channelValue;
+		float heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
+		resultTexture += currentTexture * heightBlendedChannelValue;
 		resultNormal += currentNormal * channelValue;
-		resultRoughness += currentRoughness * channelValue;
+		resultRoughness += currentRoughness * heightBlendedChannelValue;
 	
 		if (currentChannel == 3) {
 			currentChannel = 0;
@@ -105,7 +116,7 @@ void fragment() {
 	
 	ALBEDO = resultTexture.xyz;
 	ROUGHNESS = resultRoughness.x;
-	NORMAL_MAP = resultNormal.xyz;	
+	NORMAL_MAP = resultNormal.xyz;
 	ALPHA = 1.0;
 	ALPHA_SCISSOR_THRESHOLD = 1.0;
 	

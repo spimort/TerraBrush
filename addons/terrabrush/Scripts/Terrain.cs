@@ -21,6 +21,7 @@ public partial class Terrain : Node3D {
     [Export] public TextureSetsResource TextureSets { get;set;}
 	[Export] public int TextureDetail { get;set; } = 1;
     [Export] public bool UseAntiTile { get;set; } = true;
+    [Export] public float HeightBlendFactor { get;set; } = 10f;
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -180,7 +181,7 @@ public partial class Terrain : Node3D {
 	private void UpdateTextures() {
 		Clipmap.Shader.SetShaderParameter("TextureDetail", this.TextureDetail);
 
-        if (this.TextureSets?.TextureSets?.Count() > 0) {
+        if (this.TextureSets?.TextureSets?.Length > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
@@ -189,9 +190,13 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter("Normals", normalArray);
 
             var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
-            Clipmap.Shader.SetShaderParameter("RoughnessTexutres", roughnessArray);
+            Clipmap.Shader.SetShaderParameter("RoughnessTextures", roughnessArray);
+
+            var heightArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.HeightTexture));
+            Clipmap.Shader.SetShaderParameter("HeightTextures", heightArray);
 
             Clipmap.Shader.SetShaderParameter("UseAntitile", UseAntiTile);
+            Clipmap.Shader.SetShaderParameter("BlendFactor", HeightBlendFactor);
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
