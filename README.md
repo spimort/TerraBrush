@@ -75,6 +75,7 @@ I'm gonna be happy to accept PR for new features if it fits.
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
 * **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
+* **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
 
 ## How To Use
 
@@ -132,6 +133,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |TextureSetResource[x].RoughnessTexture|The roughness texture of the set.|
 |Texture Detail|This will determine how often your textures will be repeated on the terrain. A higher value means more repetitions. The default value is 20.|
 |Use Anti Tile|This will determine if the textures will use an Anti Tile algorithm.|
+|Height Blend Factor|The intensity (contrast) of the texture blending when using heightmaps/bumpmaps. 0 will use classic linear blending. The default value is 10. Negative or exaggerated values may produce interesting artistic effects.
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
