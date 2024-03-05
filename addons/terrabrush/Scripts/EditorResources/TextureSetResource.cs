@@ -17,28 +17,23 @@ public partial class TextureSetResource : Resource {
         get {
             return _albedoTexture;
         } set {
-            if (value != null && value.ResourcePath != _albedoTexture?.ResourcePath)
-            {
+            if (value != null && value.ResourcePath != _albedoTexture?.ResourcePath) {
                 var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), "");
                 var directoryFiles = DirAccess.GetFilesAt(directory);
 
                 var normalFiles = directoryFiles.Where(file => file.Contains(NormalFilesHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
                 var normalFile = string.Empty;
-                if (normalFiles.Count() == 1)
-                {
+                if (normalFiles.Count() == 1) {
                     normalFile = normalFiles.ElementAt(0);
                 }
-                else if (normalFiles.Count() > 1)
-                {
+                else if (normalFiles.Count() > 1) {
                     normalFiles = normalFiles.Where(file => file.Contains("GL"));
-                    if (normalFiles.Count() == 1)
-                    {
+                    if (normalFiles.Count() == 1) {
                         normalFile = normalFiles.ElementAt(0);
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(normalFile))
-                {
+                if (!string.IsNullOrWhiteSpace(normalFile)) {
                     NormalTexture = ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, normalFile));
                 }
 
@@ -52,8 +47,7 @@ public partial class TextureSetResource : Resource {
 
     private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
-        if (files.Count() == 1)
-        {
+        if (files.Count() == 1) {
             var file = files.ElementAt(0);
             return ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, file));
         }
