@@ -45,6 +45,10 @@ public partial class TextureSetResource : Resource {
         }
     }
 
+    [Export] public Texture2D NormalTexture { get;set; }
+    [Export] public Texture2D RoughnessTexture { get;set; }
+    [Export] public Texture2D HeightTexture { get;set; }
+
     private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
         if (files.Count() == 1) {
@@ -53,9 +57,4 @@ public partial class TextureSetResource : Resource {
         }
         return null;
     }
-
-
-    [Export] public Texture2D NormalTexture { get;set; }
-    [Export] public Texture2D RoughnessTexture { get;set; }
-    [Export] public Texture2D HeightTexture { get;set; }
 }
