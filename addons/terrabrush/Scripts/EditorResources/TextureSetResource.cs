@@ -25,8 +25,7 @@ public partial class TextureSetResource : Resource {
                 var normalFile = string.Empty;
                 if (normalFiles.Count() == 1) {
                     normalFile = normalFiles.ElementAt(0);
-                }
-                else if (normalFiles.Count() > 1) {
+                } else if (normalFiles.Count() > 1) {
                     normalFiles = normalFiles.Where(file => file.Contains("GL"));
                     if (normalFiles.Count() == 1) {
                         normalFile = normalFiles.ElementAt(0);

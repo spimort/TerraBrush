@@ -10,8 +10,11 @@ uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int TextureDetail;
 uniform int NumberOfTextures;
 uniform sampler2DArray Normals;
+uniform bool HasNormalTextures;
 uniform sampler2DArray RoughnessTextures;
+uniform bool HasRoughnessTextures;
 uniform sampler2DArray HeightTextures;
+uniform bool HasHeightTextures;
 uniform bool UseAntitile = true;
 uniform float BlendFactor;
 
@@ -95,14 +98,18 @@ void fragment() {
 		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
 	
 		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
-		vec4 currentNormal = UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV);
-		vec4 currentRoughness = UseAntitile ? texture_array_antitile(RoughnessTextures, textureUV) : texture(RoughnessTextures, textureUV);
-		vec4 currentHeight = UseAntitile ? texture_array_antitile(HeightTextures, textureUV) : texture(HeightTextures, textureUV);
+		vec4 currentNormal = HasNormalTextures ? (UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV)) : vec4(0);
+		vec4 currentRoughness = HasRoughnessTextures ? (UseAntitile ? texture_array_antitile(RoughnessTextures, textureUV) : texture(RoughnessTextures, textureUV)) : vec4(0);
+		vec4 currentHeight = HasHeightTextures ? (UseAntitile ? texture_array_antitile(HeightTextures, textureUV) : texture(HeightTextures, textureUV)) : vec4(0);
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 	
 		float channelValue = getChannelValue(currentChannel, currentSplatmap);
 	
-		float heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
+		float heightBlendedChannelValue = channelValue;
+		if (HasHeightTextures) {
+			heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
+		}
+		
 		resultTexture += currentTexture * heightBlendedChannelValue;
 		resultNormal += currentNormal * channelValue;
 		resultRoughness += currentRoughness * heightBlendedChannelValue;
@@ -115,8 +122,15 @@ void fragment() {
 	}
 	
 	ALBEDO = resultTexture.xyz;
-	ROUGHNESS = resultRoughness.x;
-	NORMAL_MAP = resultNormal.xyz;
+	
+	if (HasRoughnessTextures) {
+		ROUGHNESS = resultRoughness.x;		
+	}
+	
+	if (HasNormalTextures) {
+		NORMAL_MAP = resultNormal.xyz;	
+	}
+	
 	ALPHA = 1.0;
 	ALPHA_SCISSOR_THRESHOLD = 1.0;
 	
