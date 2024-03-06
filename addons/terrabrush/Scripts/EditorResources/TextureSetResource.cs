@@ -8,6 +8,7 @@ namespace TerraBrush;
 public partial class TextureSetResource : Resource {
     private const string NormalFilesHint = "normal";
     private const string RoughnessFilesHint = "roughness";
+    private const string HeightFilesHint = "height";
 
     private Texture2D _albedoTexture;
 
@@ -24,7 +25,8 @@ public partial class TextureSetResource : Resource {
                 var normalFile = string.Empty;
                 if (normalFiles.Count() == 1) {
                     normalFile = normalFiles.ElementAt(0);
-                } else if (normalFiles.Count() > 1) {
+                }
+                else if (normalFiles.Count() > 1) {
                     normalFiles = normalFiles.Where(file => file.Contains("GL"));
                     if (normalFiles.Count() == 1) {
                         normalFile = normalFiles.ElementAt(0);
@@ -35,16 +37,24 @@ public partial class TextureSetResource : Resource {
                     NormalTexture = ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, normalFile));
                 }
 
-                var roughnessFiles = directoryFiles.Where(file => file.Contains(RoughnessFilesHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
-                if (roughnessFiles.Count() == 1) {
-                    var roughnessFile = roughnessFiles.ElementAt(0);
-                    RoughnessTexture = ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, roughnessFile));
-                }
+                RoughnessTexture ??= FindTexture(RoughnessFilesHint, directory, directoryFiles);
+                HeightTexture ??= FindTexture(HeightFilesHint, directory, directoryFiles);
             }
 
             _albedoTexture = value;
         }
     }
+
     [Export] public Texture2D NormalTexture { get;set; }
     [Export] public Texture2D RoughnessTexture { get;set; }
+    [Export] public Texture2D HeightTexture { get;set; }
+
+    private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
+        var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
+        if (files.Count() == 1) {
+            var file = files.ElementAt(0);
+            return ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, file));
+        }
+        return null;
+    }
 }
