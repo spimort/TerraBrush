@@ -186,14 +186,23 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter("Textures", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
-            var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
-            Clipmap.Shader.SetShaderParameter("Normals", normalArray);
+            if (this.TextureSets.TextureSets.Any(x => x.NormalTexture != null)) {
+                var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
+                Clipmap.Shader.SetShaderParameter("Normals", normalArray);
+                Clipmap.Shader.SetShaderParameter("HasNormalTextures", true);
+            }
 
-            var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
-            Clipmap.Shader.SetShaderParameter("RoughnessTextures", roughnessArray);
+            if (this.TextureSets.TextureSets.Any(x => x.RoughnessTexture != null)) {
+                var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
+                Clipmap.Shader.SetShaderParameter("RoughnessTextures", roughnessArray);
+                Clipmap.Shader.SetShaderParameter("HasRoughnessTextures", true);
+            }
 
-            var heightArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.HeightTexture));
-            Clipmap.Shader.SetShaderParameter("HeightTextures", heightArray);
+            if (this.TextureSets.TextureSets.Any(x => x.HeightTexture != null)) {
+                var heightArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.HeightTexture));
+                Clipmap.Shader.SetShaderParameter("HeightTextures", heightArray);
+                Clipmap.Shader.SetShaderParameter("HasHeightTextures", true);
+            }
 
             Clipmap.Shader.SetShaderParameter("UseAntitile", UseAntiTile);
             Clipmap.Shader.SetShaderParameter("BlendFactor", HeightBlendFactor);
