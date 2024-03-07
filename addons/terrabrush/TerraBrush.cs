@@ -473,17 +473,14 @@ public partial class TerraBrush : TerraBrushTool {
                                     var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
                                     resultPosition -= new Vector3(ZonesSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), ZonesSize / 2);
 
-                                    var nodeName = $"{x}_{y}";
-
-                                    var newNode = objectItem.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
-                                    newNode.Name = nodeName;
-                                    newNode.Position = resultPosition;
-
-                                    if (objectItem.Definition.RandomYRotation) {
-                                        newNode.RotationDegrees = new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0);
-                                    }
-
-                                    objectNode.CallDeferred("add_child", newNode);
+                                    CallDeferred(
+                                        nameof(AddObjectNode),
+                                        objectItem.Definition.ObjectScenes[randomItemIndex],
+                                        objectNode,
+                                        $"{x}_{y}",
+                                        resultPosition,
+                                        objectItem.Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero
+                                    );
                                 }
                             }
                         }
@@ -495,6 +492,16 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         TerrainZones.UpdateObjectsTextures();
+    }
+
+    private void AddObjectNode(PackedScene packedScene, Node parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation) {
+        var newNode = packedScene.Instantiate<Node3D>();
+        newNode.Name = nodeName;
+        newNode.Position = nodePosition;
+
+        newNode.RotationDegrees = nodeRotation;
+
+        parentNode.AddChild(newNode);
     }
 
     private async Task CreateWater() {
