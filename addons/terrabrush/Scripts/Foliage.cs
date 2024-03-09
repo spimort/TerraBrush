@@ -18,7 +18,7 @@ public partial class Foliage : Node3D {
     [Export] public int MaximumRenderDistance { get;set; }
     [Export] public int EditorMaximumRenderDistance { get;set; }
     [Export] public float WindStrength { get;set; }
-    [Export] public BaseMaterial3D MeshMaterial { get;set; }
+    [Export] public Material MeshMaterial { get;set; }
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; }
