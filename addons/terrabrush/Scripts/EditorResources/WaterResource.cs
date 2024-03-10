@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace TerraBrush;
@@ -5,6 +6,8 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class WaterResource : Resource {
+    private ShaderMaterial _customShader;
+
     [Export] public float WaterFactor { get;set; } = 1.0f;
     [Export] public float WaterInnerOffset { get;set; } = 0.2f;
     [Export(PropertyHint.ColorNoAlpha)] public Color WaterColor { get;set; } = Colors.White;
@@ -27,4 +30,22 @@ public partial class WaterResource : Resource {
     [Export] public float WaterFar { get;set; } = 100f;
     [Export(PropertyHint.ColorNoAlpha)] public Color WaterEdgeColor { get;set; } = Colors.White;
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+
+    [Export] public ShaderMaterial CustomShader {
+        get {
+            return _customShader;
+        } set {
+            _customShader = value;
+
+            if (value != null && value.Shader == null) {
+                var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader");
+                var defaultCode = defaultShader.Code;
+
+                var shader = new Shader {
+                    Code = defaultCode
+                };
+                value.Shader = shader;
+            }
+        }
+    }
 }

@@ -54,9 +54,11 @@ I'm gonna be happy to accept PR for new features if it fits.
 * **Water** - Add water to your terrain
   - The water will make the terrain go lower for the painted area
   - The packed scenes and the foliage will also get lower with the water
+  - Support for custom shader
 * **Water flow** - Paint the direction of the water
 * **Snow** - Add thick snow to your terrain
   - The texture of the snow is configurable so it's easy to make something like sand
+  - Support for custom shader
 * **Multiple brushes**
   - Custom brushes are also available
 * **Pie menu**
@@ -179,6 +181,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |WaterResource.WaterFar|This option sets how to calculate whether the water is close or not for the "foam".|
 |WaterResource.WaterEdgeColor|This is the color of the "foam".|
 |WaterResource.VisualInstanceLayers|The godot layer on which the water will be displayed.|
+|WaterResource.CustomShader|A custom shader for ther water.|
 |**Snow**||
 |Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
@@ -191,6 +194,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |SnowResource.NoiseFactor|This option defines how much the noise will affect the snow.|
 |SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
+|SnowResource.CustomShader|A custom shader for the snow.|
 |**Zones**||
 |Zones[x].ZonePosition|The position of the zone. This position is multiplied by the zone's size to position it in the world. The zones can be disconnected from each other. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**|
 |Zones[x].HeightMapTexture|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|

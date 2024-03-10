@@ -42,6 +42,7 @@ public partial class Water : Node3D {
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
+    [Export] public ShaderMaterial CustomShader { get;set; }
 
     public Clipmap Clipmap => _clipmap;
 
@@ -99,6 +100,14 @@ public partial class Water : Node3D {
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;
+
+        if (CustomShader == null) {
+            _clipmap.Shader = new ShaderMaterial() {
+                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader")
+            };
+        } else {
+            _clipmap.Shader = CustomShader;
+        }
 
         _clipmap.CreateMesh();
 

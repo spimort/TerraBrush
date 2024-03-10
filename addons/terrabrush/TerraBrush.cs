@@ -550,6 +550,7 @@ public partial class TerraBrush : TerraBrushTool {
             _waterNode.LODLevels = LODLevels;
             _waterNode.LODRowsPerLevel = LODRowsPerLevel;
             _waterNode.LODInitialCellWidth = LODInitialCellWidth;
+            _waterNode.CustomShader = WaterDefinition.CustomShader;
 
             _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
             _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);

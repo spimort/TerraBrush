@@ -40,6 +40,14 @@ public partial class Snow : Node3D {
         _clipmap.RowsPerLevel = LODRowsPerLevel;
         _clipmap.InitialCellWidth = LODInitialCellWidth;
 
+        if (SnowDefinition.CustomShader == null) {
+            _clipmap.Shader = new ShaderMaterial() {
+                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader")
+            };
+        } else {
+            _clipmap.Shader = SnowDefinition.CustomShader;
+        }
+
         _clipmap.CreateMesh();
 
         _clipmap.Shader.SetShaderParameter("SnowTextures", TerrainZones.SnowTextures);
