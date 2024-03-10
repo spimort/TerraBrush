@@ -54,9 +54,11 @@ I'm gonna be happy to accept PR for new features if it fits.
 * **Water** - Add water to your terrain
   - The water will make the terrain go lower for the painted area
   - The packed scenes and the foliage will also get lower with the water
+  - Support for custom shader
 * **Water flow** - Paint the direction of the water
 * **Snow** - Add thick snow to your terrain
   - The texture of the snow is configurable so it's easy to make something like sand
+  - Support for custom shader
 * **Multiple brushes**
   - Custom brushes are also available
 * **Pie menu**
