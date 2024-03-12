@@ -111,7 +111,10 @@ public partial class Snow : Node3D {
             var currentPixel = image.GetPixel(pixelPosition.X, pixelPosition.Y);
 
             if (currentPixel.R > 0) {
-                image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, currentPixel.G, currentPixel.B, 0));
+                var offsetX = x - pixelPosition.X;
+                var offsetY = y - pixelPosition.Y;
+
+                image.SetPixel(pixelPosition.X, pixelPosition.Y, new Color(currentPixel.R, offsetX, offsetY, 0));
 
                 zone.SnowTexture.Update(image);
                 TerrainZones.UpdateZoneSnowTexture(zone);
