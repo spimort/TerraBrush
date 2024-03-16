@@ -13,7 +13,7 @@ config_version=5
 config/name="TerraBrush"
 run/main_scene="res://Demo.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
-config/icon="res://addons/terrabrush/icon.png"
+config/icon="res://terrabrush.png"
 
 [display]
 
