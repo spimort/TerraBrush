@@ -64,20 +64,19 @@ void vertex() {
 	
 	vec3 zoneUV = calculateZoneUV(_worldVertex);
 	
+	const vec3 off = vec3(1.0, 1.0, 0.0);
+	float hL = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, -off.xz);
+	float hR = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, off.xz);
+	float hB = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, -off.zy);
+	float hF = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, off.zy);
+	NORMAL = normalize(vec3(hL - hR, 2.0, hB - hF));
+	
 	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	VERTEX.y -= waterTexture.r * WaterFactor;
 }
 
 float getChannelValue(int currentChannel, vec4 currentSplatmap) {
-	if (currentChannel == 0) {
-		return currentSplatmap.x;
-	} else if (currentChannel == 1) {
-		return currentSplatmap.y;
-	} else if (currentChannel == 2) {
-		return currentSplatmap.z;
-	} else if (currentChannel == 3) {
-		return currentSplatmap.w;
-	}
+	return currentSplatmap[currentChannel];
 }
 
 float contrast(float factor, float v) {

@@ -3,13 +3,14 @@ uniform float InitialCellWidth = 1.0;
 
 #include "zones_shader_include.gdshaderinc"
 
-void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
-	worldVertex = vertex + modelMatrix[3].xyz;
+float calculateVertexHeight(mat4 modelMatrix, vec4 levelsMeta, vec3 vertex, vec2 offset) {
+	vec3 worldVertex = vertex + modelMatrix[3].xyz + vec3(offset.x, 0.0, offset.y);
 	
-	vec3 zoneUV = calculateZoneUV(worldVertex);		
-	if (zoneUV.z >= 0.0) {		
-		vertex.y = texture(HeightmapTextures, zoneUV).r;
-		
+	vec3 zoneUV = calculateZoneUV(worldVertex);
+	
+	float height = vertex.y;
+	
+	if (zoneUV.z >= 0.0) {
 		// Calculate the average height for mid zone vertices
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
 			int level = int(levelsMeta.a * 100.0);
@@ -21,7 +22,17 @@ void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out v
 			float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
 			float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
 			
-			vertex.y = (previousHeight + nextHeight) / 2.0;
-		}		
-	}				
+			height = (previousHeight + nextHeight) / 2.0;
+		} else {
+			height = texture(HeightmapTextures, zoneUV).r;
+		}
+	}
+	
+	return height;
+}
+
+void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
+	worldVertex = vertex + modelMatrix[3].xyz;
+	
+	vertex.y = calculateVertexHeight(modelMatrix, levelsMeta, vertex, vec2(0.0));
 }
