@@ -65,10 +65,10 @@ void vertex() {
 	vec3 zoneUV = calculateZoneUV(_worldVertex);
 	
 	const vec3 off = vec3(1.0, 1.0, 0.0);
-	float hL = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, -off.xz);
-	float hR = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, off.xz);
-	float hB = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, -off.zy);
-	float hF = calculateVertexHeight(MODEL_MATRIX, COLOR, VERTEX, off.zy);
+	float hL = calculateVertexHeight(COLOR, VERTEX, _worldVertex, -off.xz);
+	float hR = calculateVertexHeight(COLOR, VERTEX, _worldVertex, off.xz);
+	float hB = calculateVertexHeight(COLOR, VERTEX, _worldVertex, -off.zy);
+	float hF = calculateVertexHeight(COLOR, VERTEX, _worldVertex, off.zy);
 	NORMAL = normalize(vec3(hL - hR, 2.0, hB - hF));
 	
 	vec4 waterTexture = texture(WaterTextures, zoneUV);
