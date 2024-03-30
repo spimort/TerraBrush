@@ -38,6 +38,10 @@ public partial class PieMenu : Control {
 
             dockPreviewItem.ShowMouseOver();
             _previewDockPreviewOverItem = dockPreviewItem;
+
+            if (!string.IsNullOrWhiteSpace(dockPreviewItem.TooltipText)) {
+                _menuLabel.Text = dockPreviewItem.TooltipText;
+            }
         }
 
         UpdateCurrentAnglePanel();

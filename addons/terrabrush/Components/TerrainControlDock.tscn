@@ -77,6 +77,7 @@ layout_mode = 2
 [node name="TerrainToolAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Raise terrain"
 button_pressed = true
 ToolImage = ExtResource("3_tkn6e")
 ToolType = 1
@@ -84,82 +85,97 @@ ToolType = 1
 [node name="TerrainToolRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Lower terrain"
 ToolImage = ExtResource("4_r5iun")
 ToolType = 2
 
 [node name="TerrainToolSmooth" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Smooth terrain"
 ToolImage = ExtResource("5_ro3ul")
 ToolType = 3
 
 [node name="TerrainToolSmooth2" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Flattern terrain"
 ToolImage = ExtResource("6_pcl6t")
 ToolType = 4
 
 [node name="TerrainToolSmooth3" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Set terrain height"
 ToolImage = ExtResource("7_crl7m")
 ToolType = 5
 
 [node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Paint texture"
 ToolImage = ExtResource("6_byduj")
 ToolType = 6
 
 [node name="FoliageAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Add foliage"
 ToolImage = ExtResource("7_1nssx")
 ToolType = 7
 
 [node name="FoliageRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Remove foliage"
 ToolImage = ExtResource("8_glupl")
 ToolType = 8
 
 [node name="ObjectAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Add objects"
 ToolImage = ExtResource("9_d1w4v")
 ToolType = 9
 
 [node name="ObjectRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Remove objects"
 ToolImage = ExtResource("10_wcsh2")
 ToolType = 10
 
 [node name="WaterAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Add water"
 ToolImage = ExtResource("11_6ecx6")
 ToolType = 11
 
 [node name="WaterRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Remove water"
 ToolImage = ExtResource("12_nqxjx")
 ToolType = 12
 
 [node name="WaterFlowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Add water flow"
 ToolImage = ExtResource("13_wuhqm")
 ToolType = 13
 
 [node name="WaterFlowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Remove water flow"
 ToolImage = ExtResource("14_j3262")
 ToolType = 14
 
 [node name="SnowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Add snow"
 ToolImage = ExtResource("15_h2obh")
 ToolType = 15
 
 [node name="SnowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
+tooltip_text = "Remove snow"
 ToolImage = ExtResource("16_47ucd")
 ToolType = 16
 

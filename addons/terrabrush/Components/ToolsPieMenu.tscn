@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://w2mim3h8tuy5" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_rvs25"]
 [ext_resource type="Texture2D" uid="uid://caxwkj3ffjqjl" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_4ao1v"]
 [ext_resource type="Texture2D" uid="uid://bgwjnk5kgbted" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_4ykkx"]
+[ext_resource type="Texture2D" uid="uid://brbx5kn6ijhnm" path="res://addons/terrabrush/Assets/button_hover.png" id="15_a8cb7"]
 [ext_resource type="Texture2D" uid="uid://vrs8506vox0y" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_xtl3c"]
 [ext_resource type="Texture2D" uid="uid://dkk1jfutj402b" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_t3slk"]
 
@@ -36,6 +37,7 @@ offset_left = -24.0
 offset_top = -244.0
 offset_right = 24.0
 offset_bottom = -196.0
+tooltip_text = "Raise terrain"
 ToolImage = ExtResource("3_3isqm")
 ToolType = 1
 
@@ -45,6 +47,7 @@ offset_left = -85.9812
 offset_top = -235.088
 offset_right = -37.9812
 offset_bottom = -187.088
+tooltip_text = "Lower terrain"
 ToolImage = ExtResource("4_vmmfa")
 ToolType = 2
 
@@ -54,6 +57,7 @@ offset_left = -142.941
 offset_top = -209.076
 offset_right = -94.941
 offset_bottom = -161.075
+tooltip_text = "Smooth terrain"
 ToolImage = ExtResource("5_2rmhm")
 ToolType = 3
 
@@ -63,6 +67,7 @@ offset_left = -190.265
 offset_top = -168.069
 offset_right = -142.265
 offset_bottom = -120.067
+tooltip_text = "Flattern terrain"
 ToolImage = ExtResource("7_xlbte")
 ToolType = 4
 
@@ -71,7 +76,8 @@ layout_mode = 1
 offset_left = -224.119
 offset_top = -115.391
 offset_right = -176.119
-offset_bottom = -67.3897
+offset_bottom = -67.3901
+tooltip_text = "Set terrain height"
 ToolImage = ExtResource("9_sianb")
 ToolType = 5
 
@@ -82,7 +88,7 @@ anchors_preset = 0
 offset_left = -241.761
 offset_top = -55.3093
 offset_right = -193.761
-offset_bottom = -7.30898
+offset_bottom = -7.30902
 
 [node name="ToolPreview4" parent="PieMenu" instance=ExtResource("2_b6unk")]
 layout_mode = 1
@@ -90,6 +96,7 @@ offset_left = -241.761
 offset_top = 7.30917
 offset_right = -193.761
 offset_bottom = 55.3092
+tooltip_text = "Paint texture"
 ToolImage = ExtResource("6_5mgyo")
 ToolType = 6
 
@@ -108,6 +115,7 @@ offset_left = -190.265
 offset_top = 120.069
 offset_right = -142.265
 offset_bottom = 168.069
+tooltip_text = "Add foliage"
 ToolImage = ExtResource("7_fohis")
 ToolType = 7
 
@@ -117,6 +125,7 @@ offset_left = -142.941
 offset_top = 161.076
 offset_right = -94.9411
 offset_bottom = 209.078
+tooltip_text = "Remove foliage"
 ToolImage = ExtResource("8_a6e5p")
 ToolType = 8
 
@@ -135,6 +144,7 @@ offset_left = -24.0002
 offset_top = 196.0
 offset_right = 23.9998
 offset_bottom = 244.001
+tooltip_text = "Add objects"
 ToolImage = ExtResource("9_r50re")
 ToolType = 9
 
@@ -144,6 +154,7 @@ offset_left = 37.9809
 offset_top = 187.089
 offset_right = 85.981
 offset_bottom = 235.09
+tooltip_text = "Remove objects"
 ToolImage = ExtResource("10_fcsti")
 ToolType = 10
 
@@ -162,6 +173,7 @@ offset_left = 142.265
 offset_top = 120.07
 offset_right = 190.265
 offset_bottom = 168.07
+tooltip_text = "Add water"
 ToolImage = ExtResource("11_5fj54")
 ToolType = 11
 
@@ -171,6 +183,8 @@ offset_left = 176.119
 offset_top = 67.3916
 offset_right = 224.122
 offset_bottom = 115.392
+tooltip_text = "Remove water"
+texture_normal = ExtResource("15_a8cb7")
 ToolImage = ExtResource("12_rvs25")
 ToolType = 12
 
@@ -180,6 +194,7 @@ offset_left = 193.761
 offset_top = 7.30958
 offset_right = 241.761
 offset_bottom = 55.3106
+tooltip_text = "Add water flow"
 ToolImage = ExtResource("13_4ao1v")
 ToolType = 13
 
@@ -188,7 +203,8 @@ layout_mode = 1
 offset_left = 193.761
 offset_top = -55.3089
 offset_right = 241.761
-offset_bottom = -7.30795
+offset_bottom = -7.30798
+tooltip_text = "Remove water flow"
 ToolImage = ExtResource("14_4ykkx")
 ToolType = 14
 
@@ -207,6 +223,7 @@ offset_left = 142.265
 offset_top = -168.069
 offset_right = 190.266
 offset_bottom = -120.069
+tooltip_text = "Add snow"
 ToolImage = ExtResource("15_xtl3c")
 ToolType = 15
 
@@ -216,6 +233,7 @@ offset_left = 94.9413
 offset_top = -209.076
 offset_right = 142.942
 offset_bottom = -161.076
+tooltip_text = "Remove snow"
 ToolImage = ExtResource("16_t3slk")
 ToolType = 16
 
