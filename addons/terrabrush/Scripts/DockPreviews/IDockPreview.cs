@@ -8,4 +8,5 @@ public interface IDockPreview {
     void ShowMouseOver();
     void ClearMouseOver();
     Action OnSelect { get;set; }
+    string TooltipText { get;set; }
 }
