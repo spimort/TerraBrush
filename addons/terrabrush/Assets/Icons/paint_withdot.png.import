@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0caw8uixal4"
-path="res://.godot/imported/foliage_add.png-d6dd6cbf494912e5a451967f5729a6eb.ctex"
+uid="uid://dem7l621guytj"
+path="res://.godot/imported/paint_withdot.png-18c4a7f87141d731fd326d3cb107aae0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/Assets/Icons/foliage_add.png"
-dest_files=["res://.godot/imported/foliage_add.png-d6dd6cbf494912e5a451967f5729a6eb.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/paint_withdot.png"
+dest_files=["res://.godot/imported/paint_withdot.png-18c4a7f87141d731fd326d3cb107aae0.ctex"]
 
 [params]
 

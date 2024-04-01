@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0caw8uixal4"
-path="res://.godot/imported/foliage_add.png-d6dd6cbf494912e5a451967f5729a6eb.ctex"
+uid="uid://dvkadt1tngeiu"
+path="res://.godot/imported/circle_sign_normal.png-db5f4472db25130dcaa1a8feed936642.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/Assets/Icons/foliage_add.png"
-dest_files=["res://.godot/imported/foliage_add.png-d6dd6cbf494912e5a451967f5729a6eb.ctex"]
+source_file="res://addons/terrabrush/Assets/Buttons/circle_sign_normal.png"
+dest_files=["res://.godot/imported/circle_sign_normal.png-db5f4472db25130dcaa1a8feed936642.ctex"]
 
 [params]
 
