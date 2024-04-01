@@ -50,7 +50,7 @@ public partial class ToolPreview : TextureButton, IDockPreview {
         TextureNormal = _textureNormal;
         TextureHover = _textureHover;
         TexturePressed = _texturePressed;
-        TextureFocused = _texturePressed;
+        TextureFocused = _textureHover;
     }
 
     public void SetTextureImage(Texture2D toolImage) {

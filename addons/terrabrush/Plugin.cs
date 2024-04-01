@@ -132,7 +132,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddBrushesPreviewToParent(customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedBrushIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
                 return (int) AfterGuiInput.Stop;
             }
@@ -492,7 +492,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedTextureIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;
@@ -502,7 +502,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddFoliagesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedFoliageIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;
@@ -512,7 +512,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddObjectsPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedObjectIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;

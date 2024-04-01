@@ -10,6 +10,7 @@ public partial class TexturePreview : TextureButton, IDockPreview {
     [NodePath] private TextureRect _textureRect;
 
     public Action OnSelect { get;set; }
+    public bool UseCircleIcon { get;set; }
 
     public override void _Ready() {
         base._Ready();
@@ -18,6 +19,10 @@ public partial class TexturePreview : TextureButton, IDockPreview {
         Connect("pressed", new Callable(this, nameof(OnItemSelect)));
 
         _textureNormal = TextureNormal;
+
+        if (UseCircleIcon) {
+            DockPreviewUtils.HandleCircleIconShader(this, _textureRect);
+        }
     }
 
     public void SetTextureImage(Texture2D textureImage) {

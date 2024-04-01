@@ -11,6 +11,7 @@ public partial class BrushPreview : TextureButton, IDockPreview {
 
     public Texture2D BrushImage => _brushImageTexture.Texture;
     public Action OnSelect { get;set; }
+    public bool UseCircleIcon { get;set; }
 
     public override void _Ready() {
         base._Ready();
@@ -19,6 +20,10 @@ public partial class BrushPreview : TextureButton, IDockPreview {
         Connect("pressed", new Callable(this, nameof(OnItemSelect)));
 
         _textureNormal = TextureNormal;
+
+        if (UseCircleIcon) {
+            DockPreviewUtils.HandleCircleIconShader(this, _brushImageTexture);
+        }
     }
 
     public void SetTextureImage(Texture2D brushImage) {

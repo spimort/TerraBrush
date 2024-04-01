@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://b8kw5ja4h2lwa"]
 
-[ext_resource type="Texture2D" uid="uid://doncxenbqc6bn" path="res://addons/terrabrush/Assets/button.png" id="1_5npde"]
-[ext_resource type="Texture2D" uid="uid://cppo7meost05e" path="res://addons/terrabrush/Assets/button_pressed.png" id="2_qv0os"]
-[ext_resource type="Texture2D" uid="uid://brbx5kn6ijhnm" path="res://addons/terrabrush/Assets/button_hover.png" id="3_kvdm4"]
+[ext_resource type="Texture2D" uid="uid://b73g3vobnubmp" path="res://addons/terrabrush/Assets/Buttons/square_normal.png" id="1_x03e4"]
+[ext_resource type="Texture2D" uid="uid://c11h5h2dyn20s" path="res://addons/terrabrush/Assets/Buttons/square_pressed.png" id="2_fh24a"]
+[ext_resource type="Texture2D" uid="uid://yl56vpdqmie2" path="res://addons/terrabrush/Assets/Buttons/square_hover.png" id="3_csgpa"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/TexturePreview.cs" id="4_s2725"]
 
 [node name="TexturePreview" type="TextureButton"]
@@ -15,10 +15,10 @@ offset_bottom = -600.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-texture_normal = ExtResource("1_5npde")
-texture_pressed = ExtResource("2_qv0os")
-texture_hover = ExtResource("3_kvdm4")
-texture_focused = ExtResource("3_kvdm4")
+texture_normal = ExtResource("1_x03e4")
+texture_pressed = ExtResource("2_fh24a")
+texture_hover = ExtResource("3_csgpa")
+texture_focused = ExtResource("3_csgpa")
 ignore_texture_size = true
 script = ExtResource("4_s2725")
 

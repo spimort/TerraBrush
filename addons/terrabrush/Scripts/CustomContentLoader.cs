@@ -7,7 +7,7 @@ using Godot;
 namespace TerraBrush;
 
 public static class CustomContentLoader {
-    public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect) {
+    public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         var brushPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushPreview.tscn");
 
         var directories = new List<DirAccess>() {DirAccess.Open("res://addons/terrabrush/Assets/Brushes/")};
@@ -23,6 +23,7 @@ public static class CustomContentLoader {
                 if (file.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase)) {
                     var brushImage = ResourceLoader.Load<Texture2D>(Path.Combine(directory.GetCurrentDir(), file));
                     var brushPreview = brushPreviewPrefab.Instantiate<BrushPreview>();
+                    brushPreview.UseCircleIcon = useCircleIcon;
                     parentNode.AddChild(brushPreview);
 
                     brushPreview.SetTextureImage(brushImage);
@@ -38,7 +39,7 @@ public static class CustomContentLoader {
         }
     }
 
-    public static void AddTexturesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddTexturesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.TextureSets?.TextureSets != null) {
             var texturePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TexturePreview.tscn");
 
@@ -46,6 +47,7 @@ public static class CustomContentLoader {
                 var textureSet = terraBrush.TextureSets.TextureSets[i];
 
                 var texturePreview = texturePreviewPrefab.Instantiate<TexturePreview>();
+                texturePreview.UseCircleIcon = useCircleIcon;
                 parentNode.AddChild(texturePreview);
 
                 texturePreview.SetTextureImage(textureSet.AlbedoTexture);
@@ -58,7 +60,7 @@ public static class CustomContentLoader {
         }
     }
 
-    public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Foliages != null) {
             var foliagePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/FoliagePreview.tscn");
 
@@ -66,6 +68,7 @@ public static class CustomContentLoader {
                 var foliage = terraBrush.Foliages[i];
                 if (foliage.Definition != null) {
                     var foliagePreview = foliagePreviewPrefab.Instantiate<FoliagePreview>();
+                    foliagePreview.UseCircleIcon = useCircleIcon;
                     parentNode.AddChild(foliagePreview);
 
                     foliagePreview.LoadPreview(foliage.Definition.Mesh, foliage.Definition?.MeshMaterial);
@@ -79,7 +82,7 @@ public static class CustomContentLoader {
         }
     }
 
-    public static void AddObjectsPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddObjectsPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Objects != null) {
             var objectPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectPreview.tscn");
 
@@ -88,6 +91,7 @@ public static class CustomContentLoader {
 
                 if (objectItem.Definition?.ObjectScenes != null) {
                     var objectPreview = objectPreviewPrefab.Instantiate<ObjectPreview>();
+                    objectPreview.UseCircleIcon = useCircleIcon;
                     parentNode.AddChild(objectPreview);
 
                     objectPreview.LoadPreview(objectItem.Definition?.ObjectScenes[0]);
