@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cgnwd7d8im54" path="res://addons/terrabrush/Assets/white_circle.png" id="17_dxx0s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rumxx"]
-bg_color = Color(0.0862745, 0.0862745, 0.0862745, 1)
+bg_color = Color(0, 0.0823529, 0.121569, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -93,11 +93,10 @@ offset_top = 30.0
 offset_right = 75.0
 offset_bottom = 58.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.0862745, 0.0862745, 0.0862745, 1)
+theme_override_colors/font_outline_color = Color(0, 0.0823529, 0.121569, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_rumxx")
-text = "asdfasdfafa"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -116,7 +115,7 @@ offset_left = -20.0
 offset_top = -20.0
 offset_right = 20.0
 offset_bottom = 20.0
-rotation = 2.18966
+rotation = 1.21294
 pivot_offset = Vector2(20, 20)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_253w6")
 
