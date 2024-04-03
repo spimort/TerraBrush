@@ -6,7 +6,7 @@ bool isZoneInZonesMap(ivec2 zonePosition, ivec2 zonesMapSize) {
 	return zonePosition.x >= 0 && zonePosition.x < zonesMapSize.x && zonePosition.y >= 0 && zonePosition.y < zonesMapSize.y;
 }
 
-vec3 calculateZoneUV(vec3 worldVertex) {
+vec3 calculateZoneUVWithZoneInfo(vec3 worldVertex, out ivec2 zonesMapPosition) {
 	float fixedZonesSize = (ZonesSize - 1.0); 	
 	vec2 zoneArea = (worldVertex.xz + (fixedZonesSize / 2.0)) / fixedZonesSize;
 	
@@ -17,7 +17,7 @@ vec3 calculateZoneUV(vec3 worldVertex) {
 	int yZonesMap = zonesStep.y + int(zonesMapSize.y) / 2;
 	
 	vec4 zoneInfoPosition = vec4(-1);
-	ivec2 zonesMapPosition = ivec2(xZonesMap, yZonesMap);
+	zonesMapPosition = ivec2(xZonesMap, yZonesMap);
 	if (xZonesMap >= 0 && xZonesMap < zonesMapSize.x && yZonesMap >= 0 && yZonesMap < zonesMapSize.y) {
 		zoneInfoPosition = texelFetch(ZonesMap, zonesMapPosition, 0);
 	}	
@@ -63,5 +63,10 @@ vec3 calculateZoneUV(vec3 worldVertex) {
 		}
 	}	
 	
-	return vec3(-1);
+	return vec3(zoneX, zoneY, -1);	
+}
+
+vec3 calculateZoneUV(vec3 worldVertex) {
+	ivec2 zonesMapPosition = ivec2(0);
+	return calculateZoneUVWithZoneInfo(worldVertex, zonesMapPosition);
 }
