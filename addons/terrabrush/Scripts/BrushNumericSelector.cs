@@ -24,6 +24,11 @@ public partial class BrushNumericSelector : Control {
         this.RegisterNodePaths();
 
         _brushPreview.Modulate = WidgetColor;
+
+        var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
+        _valueLabel.Set("theme_override_colors/font_outline_color", iconsColor);
+        var normalStyle = (StyleBoxFlat) _valueLabel.Get("theme_override_styles/normal");
+        normalStyle.BgColor = iconsColor;
     }
 
     public override void _Process(double delta) {
