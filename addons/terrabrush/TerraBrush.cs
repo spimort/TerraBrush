@@ -123,34 +123,8 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public ZonesResource TerrainZones { get;set; }
 
-    #region " Deprecated exports, will be removed in the future "
-    [ExportGroup("Deprecated (DO NOT USE)")]
-    [Export()]
-    public int TerrainSize { get;set; } = 256;
-
-    [Export()]
-    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
-    public ImageTexture HeightMap { get;set; }
-
-    [Export()]
-    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
-    public ImageTexture[] Splatmaps { get;set; }
-
-    [Export()]
-    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
-    public ImageTexture WaterTexture { get;set; }
-
-    [Export()]
-    [Obsolete("This property was there before the zones were a thing, will be removed in the future")]
-    public ImageTexture SnowTexture { get;set; }
-    #endregion
-
     public async override void _Ready() {
         base._Ready();
-
-        if (Engine.IsEditorHint()) {
-            CompatibilityScript_0_3_Alpha.Convert(this);
-        }
 
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
