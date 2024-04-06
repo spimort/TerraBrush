@@ -56,6 +56,7 @@ public partial class Plugin : EditorPlugin {
         CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
+        CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Variant.Type.Color);
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
 		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");

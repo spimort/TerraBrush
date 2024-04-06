@@ -1,18 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://d243ps0q1hxp4"]
+[gd_scene load_steps=5 format=3 uid="uid://d243ps0q1hxp4"]
 
-[ext_resource type="Texture2D" uid="uid://b73g3vobnubmp" path="res://addons/terrabrush/Assets/Buttons/square_normal.png" id="1_v7lr0"]
-[ext_resource type="Texture2D" uid="uid://c11h5h2dyn20s" path="res://addons/terrabrush/Assets/Buttons/square_pressed.png" id="2_ehnpm"]
-[ext_resource type="Texture2D" uid="uid://yl56vpdqmie2" path="res://addons/terrabrush/Assets/Buttons/square_hover.png" id="3_sfq08"]
+[ext_resource type="Texture2D" uid="uid://cqcsl4r3p1dv7" path="res://addons/terrabrush/Assets/Buttons/circle_white.png" id="3_tbl55"]
+[ext_resource type="Texture2D" uid="uid://dqgc1ym8vyqgy" path="res://addons/terrabrush/Assets/Buttons/circle_sign_white.png" id="4_8lgvv"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/ToolPreview.cs" id="4_dvfei"]
-[ext_resource type="Texture2D" uid="uid://cug2t36nqwisi" path="res://addons/terrabrush/Assets/Buttons/circle_pressed.png" id="6_6s4kt"]
-[ext_resource type="Texture2D" uid="uid://dfx14ifkvb6kd" path="res://addons/terrabrush/Assets/Buttons/circle_hover.png" id="7_utkks"]
-[ext_resource type="Texture2D" uid="uid://osktkud1sc7t" path="res://addons/terrabrush/Assets/Buttons/circle_normal.png" id="8_kj61n"]
-[ext_resource type="Texture2D" uid="uid://dvkadt1tngeiu" path="res://addons/terrabrush/Assets/Buttons/circle_sign_normal.png" id="9_mos0l"]
-[ext_resource type="Texture2D" uid="uid://dekihpkikc0hr" path="res://addons/terrabrush/Assets/Buttons/circle_sign_hover.png" id="10_1sof6"]
-[ext_resource type="Texture2D" uid="uid://de2fvsumhvsbd" path="res://addons/terrabrush/Assets/Icons/water_add.png" id="11_27gul"]
-[ext_resource type="Texture2D" uid="uid://blmlk5kh38vgp" path="res://addons/terrabrush/Assets/Buttons/circle_sign_pressed.png" id="11_gee7e"]
+[ext_resource type="Texture2D" uid="uid://dy7hwn8w6ax3a" path="res://addons/terrabrush/Assets/Buttons/square_white.png" id="5_tb0eh"]
 
-[node name="ToolPreview" type="TextureButton"]
+[node name="ToolPreview" type="TextureButton" node_paths=PackedStringArray("TextureRect")]
+self_modulate = Color(0.8, 0.054902, 0.356863, 1)
 texture_filter = 4
 custom_minimum_size = Vector2(48, 48)
 anchors_preset = 15
@@ -23,22 +17,13 @@ offset_bottom = -600.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-texture_normal = ExtResource("1_v7lr0")
-texture_pressed = ExtResource("2_ehnpm")
-texture_hover = ExtResource("3_sfq08")
-texture_focused = ExtResource("2_ehnpm")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("4_dvfei")
-TextureNormalSquare = ExtResource("1_v7lr0")
-TextureHoverSquare = ExtResource("3_sfq08")
-TexturePressedSquare = ExtResource("2_ehnpm")
-TextureNormalCircle = ExtResource("8_kj61n")
-TextureHoverCircle = ExtResource("7_utkks")
-TexturePressedCircle = ExtResource("6_6s4kt")
-TextureNormalCircleWithSign = ExtResource("9_mos0l")
-TextureHoverCircleWithSign = ExtResource("10_1sof6")
-TexturePressedCircleWithSign = ExtResource("11_gee7e")
+TextureRect = NodePath("MarginContainer/ToolIconTextureRect")
+TextureSquare = ExtResource("5_tb0eh")
+TextureCircle = ExtResource("3_tbl55")
+TextureCircleWithSign = ExtResource("4_8lgvv")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -51,5 +36,4 @@ grow_vertical = 2
 [node name="ToolIconTextureRect" type="TextureRect" parent="MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-texture = ExtResource("11_27gul")
 expand_mode = 1

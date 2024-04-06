@@ -9,7 +9,7 @@ public partial class PieMenu : Control {
     private float _angleOffset;
     private int _buttonCount;
     private int _startingButtonsIndex;
-    private IDockPreview _previewDockPreviewOverItem;
+    private DockPreviewButton _previewDockPreviewOverItem;
 
     [NodePath] private Control _controlsContainer;
     [NodePath] private AnimationPlayer _animationPlayer;
@@ -27,13 +27,18 @@ public partial class PieMenu : Control {
         UpdateContent();
 
         _animationPlayer.Play("EnterTree");
+
+        var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
+        _menuLabel.Set("theme_override_colors/font_outline_color", iconsColor);
+        var normalStyle = (StyleBoxFlat) _menuLabel.Get("theme_override_styles/normal");
+        normalStyle.BgColor = iconsColor;
     }
 
     public override void _Process(double delta) {
         base._Process(delta);
 
         var itemForAngle = GetChild((int) GetMouseOverItemIndex());
-        if (itemForAngle is IDockPreview dockPreviewItem) {
+        if (itemForAngle is DockPreviewButton dockPreviewItem) {
             _previewDockPreviewOverItem?.ClearMouseOver();
 
             dockPreviewItem.ShowMouseOver();
@@ -52,7 +57,7 @@ public partial class PieMenu : Control {
 
         if (@event is InputEventMouseButton inputButton && inputButton.ButtonIndex == MouseButton.Left) {
             var itemForAngle = GetChild((int) GetMouseOverItemIndex());
-            if (itemForAngle is IDockPreview dockPreviewItem) {
+            if (itemForAngle is DockPreviewButton dockPreviewItem) {
                 dockPreviewItem.OnSelect?.Invoke();
             }
         }
