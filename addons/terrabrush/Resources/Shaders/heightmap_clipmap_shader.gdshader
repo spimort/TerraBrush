@@ -92,9 +92,9 @@ void fragment() {
 	
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
-		vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
-		vec3 textureUV = vec3(detailUV.x * float(TextureDetail), detailUV.y * float(TextureDetail), float(i));
-		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		vec2 worldVertexUV = _worldVertex.xz * (float(TextureDetail) * (1.0 / ZonesSize));
+		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
 	
 		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
 		vec4 currentNormal = HasNormalTextures ? (UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV)) : vec4(0);
