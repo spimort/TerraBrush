@@ -61,7 +61,7 @@ public static class CustomContentLoader {
 
                 var dockPreviewButton = texturePreviewPrefab.Instantiate<DockPreviewButton>();
                 dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
-                dockPreviewButton.Margin = 5;
+                dockPreviewButton.Margin = 10;
                 parentNode.AddChild(dockPreviewButton);
 
                 dockPreviewButton.SetTextureImage(textureSet.AlbedoTexture);
