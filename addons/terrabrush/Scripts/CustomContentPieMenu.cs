@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -13,3 +14,4 @@ public partial class CustomContentPieMenu : Control {
         this.RegisterNodePaths();
     }
 }
+#endif

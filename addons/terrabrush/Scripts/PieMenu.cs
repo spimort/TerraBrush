@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 using System;
 using System.Linq;
@@ -131,3 +132,4 @@ public partial class PieMenu : Control {
         }
     }
 }
+#endif

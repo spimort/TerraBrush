@@ -233,11 +233,5 @@ public partial class TerrainControlDock : Control {
         TerraBrush.SetTerrainTool(_temporaryTool == TerrainToolType.None ? _selectedTool : _temporaryTool);
         UpdateSelectedTerrainTool();
     }
-
-    private void OnDockPreviewThumbnailReady(string path, Texture2D preview, Texture2D thumbnail_preview, Variant dockPreview) {
-        if (preview != null) {
-            ((IDockPreview) dockPreview.AsGodotObject()).SetTextureImage(preview);
-        }
-    }
 }
 #endif
