@@ -56,11 +56,12 @@ void calculateSnowFragment(
 ) {
 	if (color[0] > 0.0f) {
 		vec3 zoneUV = calculateZoneUV(worldVertex);			
-		
-		albedo = texture(SnowColorTexture, zoneUV.xy).rgb;
-		normalMap = texture(SnowColorNormal, zoneUV.xy * SnowColorDetail).rgb;
+		vec2 worldVertexUV = worldVertex.xz * (float(SnowColorDetail) * (1.0 / ZonesSize));
+				
+		albedo = texture(SnowColorTexture, worldVertexUV).rgb;
+		normalMap = texture(SnowColorNormal, worldVertexUV).rgb;
 		metallic = Metallic;
-		roughness = texture(SnowColorRoughness, zoneUV.xy * SnowColorDetail).r;
+		roughness = texture(SnowColorRoughness, worldVertexUV).r;
 		
 		if (zoneUV.z < 0.0) {
 			alpha = 0.0;
