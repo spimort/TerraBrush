@@ -5,18 +5,23 @@ render_mode cull_back,blend_mix,depth_draw_opaque,diffuse_burley,specular_schlic
 
 uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
-uniform sampler2DArray Textures : source_color;
+uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
+uniform sampler2DArray TexturesNearest : source_color, filter_nearest_mipmap;
 uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int TextureDetail;
 uniform int NumberOfTextures;
-uniform sampler2DArray Normals;
+uniform sampler2DArray Normals : filter_linear_mipmap;
+uniform sampler2DArray NormalsNearest : filter_nearest_mipmap;
 uniform bool HasNormalTextures;
-uniform sampler2DArray RoughnessTextures;
+uniform sampler2DArray RoughnessTextures : filter_linear_mipmap;
+uniform sampler2DArray RoughnessTexturesNearest : filter_nearest_mipmap;
 uniform bool HasRoughnessTextures;
-uniform sampler2DArray HeightTextures;
+uniform sampler2DArray HeightTextures : filter_linear_mipmap;
+uniform sampler2DArray HeightTexturesNearest : filter_nearest_mipmap;
 uniform bool HasHeightTextures;
 uniform bool UseAntitile = true;
 uniform float BlendFactor;
+uniform bool NearestFilter = false;
 
 varying vec3 _worldVertex;
 
@@ -35,7 +40,7 @@ vec4 depth_blend2(vec4 a_value, float a_bump, vec4 b_value, float b_bump, float 
 }
 
 // Antitile from zylann's shader
-vec4 texture_array_antitile(sampler2DArray tex, vec3 uv) {
+vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest, vec3 uv) {
 	float frequency = 2.0;
 	float scale = 1.3;
 	float sharpness = 0.7;
@@ -46,8 +51,16 @@ vec4 texture_array_antitile(sampler2DArray tex, vec3 uv) {
 	float sina = sin(rot);
 	vec3 uv2 = vec3(rotate(uv.xy, cosa, sina) * scale, uv.z);
 
-	vec4 col0 = texture(tex, uv);
-	vec4 col1 = texture(tex, uv2);
+	vec4 col0 = vec4(0);
+	vec4 col1 = vec4(0);
+	
+	if (NearestFilter) {
+		col0 = texture(texNearest, uv);
+		col1 = texture(texNearest, uv2);
+	} else {
+		col0 = texture(texLinear, uv);
+		col1 = texture(texLinear, uv2);
+	}
 
 	// Periodically alternate between the two versions using a warped checker pattern
 	float t = 1.1 + 0.5
@@ -83,6 +96,14 @@ float contrast(float factor, float v) {
 	return max(0.0, min(1.0, factor * (v - 0.5) + 0.5));
 }
 
+void fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sampler2DArray nearestTextures, out vec4 resultTexture) {
+	if (NearestFilter) {
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);		
+	} else {
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);				
+	}
+}
+
 void fragment() {
 	vec4 resultTexture = vec4(0.0);
 	vec4 resultNormal = vec4(0.0);
@@ -94,14 +115,25 @@ void fragment() {
 	for (int i = 0; i < NumberOfTextures; i++) {
 		vec2 worldVertexUV = _worldVertex.xz * (float(TextureDetail) * (1.0 / ZonesSize));
 		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
-		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));	
 	
-		vec4 currentTexture = UseAntitile ? texture_array_antitile(Textures, textureUV) : texture(Textures, textureUV);
-		vec4 currentNormal = HasNormalTextures ? (UseAntitile ? texture_array_antitile(Normals, textureUV) : texture(Normals, textureUV)) : vec4(0);
-		vec4 currentRoughness = HasRoughnessTextures ? (UseAntitile ? texture_array_antitile(RoughnessTextures, textureUV) : texture(RoughnessTextures, textureUV)) : vec4(0);
-		vec4 currentHeight = HasHeightTextures ? (UseAntitile ? texture_array_antitile(HeightTextures, textureUV) : texture(HeightTextures, textureUV)) : vec4(0);
+		vec4 currentTexture = vec4(0);
+		vec4 currentNormal = vec4(0);
+		vec4 currentRoughness = vec4(0);
+		vec4 currentHeight = vec4(0);
+		
+		fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, currentTexture);
+		if (HasNormalTextures) {
+			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);		
+		}
+		if (HasRoughnessTextures) {
+			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);					
+		}
+		if (HasHeightTextures) {
+			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);					
+		}		
+		
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
-	
 		float channelValue = getChannelValue(currentChannel, currentSplatmap);
 	
 		float heightBlendedChannelValue = channelValue;
