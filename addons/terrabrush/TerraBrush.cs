@@ -96,6 +96,9 @@ public partial class TerraBrush : TerraBrushTool {
     public bool UseAntiTile { get;set; } = true;
 
     [Export]
+    public bool NearestTextureFilter { get;set; } = false;
+
+    [Export]
     public float HeightBlendFactor { get;set; } = 10f;
 
     [ExportGroup("Foliage")]
@@ -266,6 +269,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.HeightMapFactor = HeightMapFactor;
         _terrain.TextureDetail = TextureDetail;
         _terrain.UseAntiTile = UseAntiTile;
+        _terrain.NearestTextureFilter = NearestTextureFilter;
         _terrain.HeightBlendFactor = HeightBlendFactor;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
         _terrain.LODLevels = LODLevels;
