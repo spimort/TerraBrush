@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://dy7hwn8w6ax3a" path="res://addons/terrabrush/Assets/Buttons/square_white.png" id="5_tb0eh"]
 
 [node name="ToolPreview" type="TextureButton" node_paths=PackedStringArray("TextureRect")]
-self_modulate = Color(0.8, 0.054902, 0.356863, 1)
 texture_filter = 4
 custom_minimum_size = Vector2(48, 48)
 anchors_preset = 15
