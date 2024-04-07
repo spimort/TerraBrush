@@ -76,7 +76,6 @@ layout_mode = 2
 
 [node name="TerrainToolAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
-self_modulate = Color(0.88, 0.432941, 0.614118, 1)
 layout_mode = 2
 tooltip_text = "Raise terrain"
 button_pressed = true
