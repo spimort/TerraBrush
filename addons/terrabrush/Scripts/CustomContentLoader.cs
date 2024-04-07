@@ -7,8 +7,8 @@ using Godot;
 namespace TerraBrush;
 
 public static class CustomContentLoader {
-    public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect) {
-        var brushPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushPreview.tscn");
+    public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
+        var brushPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
         var directories = new List<DirAccess>() {DirAccess.Open("res://addons/terrabrush/Assets/Brushes/")};
 
@@ -22,13 +22,27 @@ public static class CustomContentLoader {
             foreach (var file in directory.GetFiles()) {
                 if (file.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase)) {
                     var brushImage = ResourceLoader.Load<Texture2D>(Path.Combine(directory.GetCurrentDir(), file));
-                    var brushPreview = brushPreviewPrefab.Instantiate<BrushPreview>();
-                    parentNode.AddChild(brushPreview);
+                    var dockPreviewButton = brushPreviewPrefab.Instantiate<DockPreviewButton>();
+                    dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                    dockPreviewButton.Margin = 5;
+                    parentNode.AddChild(dockPreviewButton);
 
-                    brushPreview.SetTextureImage(brushImage);
+                    dockPreviewButton.ButtonImage = brushImage; // We keep the original image in the ButtonImage so we can use it later.
+
+                    var whiteBrushImage = new Image();
+                    whiteBrushImage.CopyFrom(brushImage.GetImage());
+
+                    for (var x = 0; x < whiteBrushImage.GetWidth(); x++) {
+                        for (var y = 0; y < whiteBrushImage.GetHeight(); y++) {
+                            var pixel = whiteBrushImage.GetPixel(x, y);
+                            whiteBrushImage.SetPixel(x, y, new Color(1.0f - pixel.R, 1.0f - pixel.G, 1.0f - pixel.B, pixel.A));
+                        }
+                    }
+
+                    dockPreviewButton.SetTextureImage(ImageTexture.CreateFromImage(whiteBrushImage));
 
                     var currentIndex = index;
-                    brushPreview.OnSelect = () => {
+                    dockPreviewButton.OnSelect = () => {
                         onSelect(currentIndex);
                     };
 
@@ -38,40 +52,48 @@ public static class CustomContentLoader {
         }
     }
 
-    public static void AddTexturesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddTexturesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.TextureSets?.TextureSets != null) {
-            var texturePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TexturePreview.tscn");
+            var texturePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.TextureSets.TextureSets.Length; i++) {
                 var textureSet = terraBrush.TextureSets.TextureSets[i];
 
-                var texturePreview = texturePreviewPrefab.Instantiate<TexturePreview>();
-                parentNode.AddChild(texturePreview);
+                var dockPreviewButton = texturePreviewPrefab.Instantiate<DockPreviewButton>();
+                dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                dockPreviewButton.Margin = 10;
+                parentNode.AddChild(dockPreviewButton);
 
-                texturePreview.SetTextureImage(textureSet.AlbedoTexture);
+                dockPreviewButton.SetTextureImage(textureSet.AlbedoTexture);
 
                 var currentIndex = i;
-                texturePreview.OnSelect = () => {
+                dockPreviewButton.OnSelect = () => {
                     onSelect(currentIndex);
                 };
             }
         }
     }
 
-    public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Foliages != null) {
-            var foliagePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/FoliagePreview.tscn");
+            var foliagePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.Foliages.Length; i++) {
                 var foliage = terraBrush.Foliages[i];
                 if (foliage.Definition != null) {
-                    var foliagePreview = foliagePreviewPrefab.Instantiate<FoliagePreview>();
-                    parentNode.AddChild(foliagePreview);
+                    var dockPreviewButton = foliagePreviewPrefab.Instantiate<DockPreviewButton>();
+                    dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                    dockPreviewButton.Margin = 5;
+                    parentNode.AddChild(dockPreviewButton);
 
-                    foliagePreview.LoadPreview(foliage.Definition.Mesh, foliage.Definition?.MeshMaterial);
+                    if (foliage.Definition?.MeshMaterial == null) {
+                        dockPreviewButton.LoadResourcePreview(foliage.Definition.Mesh);
+                    } else {
+                        dockPreviewButton.LoadResourcePreview(foliage.Definition.MeshMaterial);
+                    }
 
                     var currentIndex = i;
-                    foliagePreview.OnSelect = () => {
+                    dockPreviewButton.OnSelect = () => {
                         onSelect(currentIndex);
                     };
                 }
@@ -79,21 +101,23 @@ public static class CustomContentLoader {
         }
     }
 
-    public static void AddObjectsPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect) {
+    public static void AddObjectsPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Objects != null) {
-            var objectPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectPreview.tscn");
+            var objectPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.Objects.Length; i++) {
                 var objectItem = terraBrush.Objects[i];
 
                 if (objectItem.Definition?.ObjectScenes != null) {
-                    var objectPreview = objectPreviewPrefab.Instantiate<ObjectPreview>();
-                    parentNode.AddChild(objectPreview);
+                    var dockPreviewButton = objectPreviewPrefab.Instantiate<DockPreviewButton>();
+                    dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                    dockPreviewButton.Margin = 5;
+                    parentNode.AddChild(dockPreviewButton);
 
-                    objectPreview.LoadPreview(objectItem.Definition?.ObjectScenes[0]);
+                    dockPreviewButton.LoadResourcePreview(objectItem.Definition?.ObjectScenes[0]);
 
                     var currentIndex = i;
-                    objectPreview.OnSelect = () => {
+                    dockPreviewButton.OnSelect = () => {
                         onSelect(currentIndex);
                     };
                 }

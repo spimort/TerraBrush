@@ -2,22 +2,22 @@
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
-[ext_resource type="Texture2D" uid="uid://bdht6w40ofxw3" path="res://addons/terrabrush/Assets/Icons/map_add.png" id="3_tkn6e"]
-[ext_resource type="Texture2D" uid="uid://bxrd6ysoqp4p4" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
-[ext_resource type="Texture2D" uid="uid://ci03cyirflno2" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
-[ext_resource type="Texture2D" uid="uid://dbb32vbtyf8df" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_byduj"]
-[ext_resource type="Texture2D" uid="uid://6jwu6vojgt7h" path="res://addons/terrabrush/Assets/Icons/map_flattern.png" id="6_pcl6t"]
-[ext_resource type="Texture2D" uid="uid://ddx07aojxcpp5" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
-[ext_resource type="Texture2D" uid="uid://cxtaved2r68h2" path="res://addons/terrabrush/Assets/Icons/map_set_height.png" id="7_crl7m"]
-[ext_resource type="Texture2D" uid="uid://dv0bmodrfkoq4" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
-[ext_resource type="Texture2D" uid="uid://dqxmj8mb1s8hd" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_d1w4v"]
-[ext_resource type="Texture2D" uid="uid://bsqfgbd8rcc6k" path="res://addons/terrabrush/Assets/Icons/object_remove.png" id="10_wcsh2"]
-[ext_resource type="Texture2D" uid="uid://cuqvl0jkj6qpu" path="res://addons/terrabrush/Assets/Icons/water_add.png" id="11_6ecx6"]
-[ext_resource type="Texture2D" uid="uid://w2mim3h8tuy5" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_nqxjx"]
-[ext_resource type="Texture2D" uid="uid://caxwkj3ffjqjl" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_wuhqm"]
-[ext_resource type="Texture2D" uid="uid://bgwjnk5kgbted" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_j3262"]
-[ext_resource type="Texture2D" uid="uid://vrs8506vox0y" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_h2obh"]
-[ext_resource type="Texture2D" uid="uid://dkk1jfutj402b" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_47ucd"]
+[ext_resource type="Texture2D" uid="uid://dxsbe136337p2" path="res://addons/terrabrush/Assets/Icons/map_add.png" id="3_tkn6e"]
+[ext_resource type="Texture2D" uid="uid://be5dy3m5y8fe" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
+[ext_resource type="Texture2D" uid="uid://dp0avalonr33v" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
+[ext_resource type="Texture2D" uid="uid://b853gh8gcmhg2" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_byduj"]
+[ext_resource type="Texture2D" uid="uid://btyfuwruiyi3a" path="res://addons/terrabrush/Assets/Icons/map_flatten.png" id="6_pcl6t"]
+[ext_resource type="Texture2D" uid="uid://cb0caw8uixal4" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
+[ext_resource type="Texture2D" uid="uid://d1lt6wkhkjsy2" path="res://addons/terrabrush/Assets/Icons/map_set_height.png" id="7_crl7m"]
+[ext_resource type="Texture2D" uid="uid://byom5fa2uoq4y" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
+[ext_resource type="Texture2D" uid="uid://buib12yv1sqq4" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_d1w4v"]
+[ext_resource type="Texture2D" uid="uid://bciybm80fsm0g" path="res://addons/terrabrush/Assets/Icons/object_remove.png" id="10_wcsh2"]
+[ext_resource type="Texture2D" uid="uid://de2fvsumhvsbd" path="res://addons/terrabrush/Assets/Icons/water_add.png" id="11_6ecx6"]
+[ext_resource type="Texture2D" uid="uid://xchvcx32vuoy" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_nqxjx"]
+[ext_resource type="Texture2D" uid="uid://clglkobyymycn" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_wuhqm"]
+[ext_resource type="Texture2D" uid="uid://cquypfnsqiu2g" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_j3262"]
+[ext_resource type="Texture2D" uid="uid://dc43ue31pa6x0" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_h2obh"]
+[ext_resource type="Texture2D" uid="uid://dshqhgb6asd2f" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_47ucd"]
 
 [node name="Terrain Editor" type="Control"]
 layout_mode = 3
@@ -79,105 +79,105 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Raise terrain"
 button_pressed = true
-ToolImage = ExtResource("3_tkn6e")
 ToolType = 1
+ButtonImage = ExtResource("3_tkn6e")
 
 [node name="TerrainToolRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Lower terrain"
-ToolImage = ExtResource("4_r5iun")
 ToolType = 2
+ButtonImage = ExtResource("4_r5iun")
 
 [node name="TerrainToolSmooth" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Smooth terrain"
-ToolImage = ExtResource("5_ro3ul")
 ToolType = 3
+ButtonImage = ExtResource("5_ro3ul")
 
 [node name="TerrainToolSmooth2" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Flattern terrain"
-ToolImage = ExtResource("6_pcl6t")
+tooltip_text = "Flatten terrain"
 ToolType = 4
+ButtonImage = ExtResource("6_pcl6t")
 
 [node name="TerrainToolSmooth3" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Set terrain height"
-ToolImage = ExtResource("7_crl7m")
 ToolType = 5
+ButtonImage = ExtResource("7_crl7m")
 
 [node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Paint texture"
-ToolImage = ExtResource("6_byduj")
 ToolType = 6
+ButtonImage = ExtResource("6_byduj")
 
 [node name="FoliageAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Add foliage"
-ToolImage = ExtResource("7_1nssx")
 ToolType = 7
+ButtonImage = ExtResource("7_1nssx")
 
 [node name="FoliageRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Remove foliage"
-ToolImage = ExtResource("8_glupl")
 ToolType = 8
+ButtonImage = ExtResource("8_glupl")
 
 [node name="ObjectAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Add objects"
-ToolImage = ExtResource("9_d1w4v")
 ToolType = 9
+ButtonImage = ExtResource("9_d1w4v")
 
 [node name="ObjectRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Remove objects"
-ToolImage = ExtResource("10_wcsh2")
 ToolType = 10
+ButtonImage = ExtResource("10_wcsh2")
 
 [node name="WaterAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Add water"
-ToolImage = ExtResource("11_6ecx6")
 ToolType = 11
+ButtonImage = ExtResource("11_6ecx6")
 
 [node name="WaterRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Remove water"
-ToolImage = ExtResource("12_nqxjx")
 ToolType = 12
+ButtonImage = ExtResource("12_nqxjx")
 
 [node name="WaterFlowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Add water flow"
-ToolImage = ExtResource("13_wuhqm")
 ToolType = 13
+ButtonImage = ExtResource("13_wuhqm")
 
 [node name="WaterFlowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Remove water flow"
-ToolImage = ExtResource("14_j3262")
 ToolType = 14
+ButtonImage = ExtResource("14_j3262")
 
 [node name="SnowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Add snow"
-ToolImage = ExtResource("15_h2obh")
 ToolType = 15
+ButtonImage = ExtResource("15_h2obh")
 
 [node name="SnowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 layout_mode = 2
 tooltip_text = "Remove snow"
-ToolImage = ExtResource("16_47ucd")
 ToolType = 16
+ButtonImage = ExtResource("16_47ucd")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2

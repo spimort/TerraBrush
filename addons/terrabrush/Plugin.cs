@@ -56,6 +56,7 @@ public partial class Plugin : EditorPlugin {
         CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
+        CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Variant.Type.Color);
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
 		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
@@ -132,7 +133,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddBrushesPreviewToParent(customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedBrushIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
                 return (int) AfterGuiInput.Stop;
             }
@@ -492,7 +493,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedTextureIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;
@@ -502,7 +503,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddFoliagesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedFoliageIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;
@@ -512,7 +513,7 @@ public partial class Plugin : EditorPlugin {
                     CustomContentLoader.AddObjectsPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedObjectIndex(index);
                         HideOverlaySelector();
-                    });
+                    }, true);
                 });
 
                 break;

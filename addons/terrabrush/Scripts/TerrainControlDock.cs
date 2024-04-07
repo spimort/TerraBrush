@@ -88,10 +88,10 @@ public partial class TerrainControlDock : Control {
         for (var i = 0; i < brushesPreview.Count; i++) {
             var brushPreview = brushesPreview[i];
 
-            ((BrushPreview) brushPreview).ButtonPressed = i == _selectedBrushIndex;
+            ((DockPreviewButton) brushPreview).ButtonPressed = i == _selectedBrushIndex;
         }
 
-        var brushImage = ((BrushPreview) brushesPreview[_selectedBrushIndex]).BrushImage.GetImage();
+        var brushImage = ((DockPreviewButton) brushesPreview[_selectedBrushIndex]).ButtonImage.GetImage();
         brushImage.FlipY();
         brushImage.FlipX();
         TerraBrush?.SetCurrentBrush(_selectedBrushIndex, brushImage);
@@ -143,7 +143,7 @@ public partial class TerrainControlDock : Control {
         for (var i = 0; i < texturesPreview.Count; i++) {
             var texturePreview = texturesPreview[i];
 
-            ((TexturePreview) texturePreview).ButtonPressed = i == _selectedTextureIndex;
+            ((DockPreviewButton) texturePreview).ButtonPressed = i == _selectedTextureIndex;
         }
 
         TerraBrush?.SetTextureSet(_selectedTextureIndex);
@@ -173,7 +173,7 @@ public partial class TerrainControlDock : Control {
         for (var i = 0; i < foliagesPreview.Count; i++) {
             var foliagePreview = foliagesPreview[i];
 
-            ((FoliagePreview) foliagePreview).ButtonPressed = i == _selectedFoliageIndex;
+            ((DockPreviewButton) foliagePreview).ButtonPressed = i == _selectedFoliageIndex;
         }
 
         TerraBrush?.SetFoliage(_selectedFoliageIndex);
@@ -203,7 +203,7 @@ public partial class TerrainControlDock : Control {
         for (var i = 0; i < objectsPreview.Count; i++) {
             var objectPreview = objectsPreview[i];
 
-            ((ObjectPreview) objectPreview).ButtonPressed = i == _selectedObjectIndex;
+            ((DockPreviewButton) objectPreview).ButtonPressed = i == _selectedObjectIndex;
         }
 
         TerraBrush?.SetObject(_selectedObjectIndex);
@@ -211,7 +211,7 @@ public partial class TerrainControlDock : Control {
 
     public void SetShiftPressed(bool pressed) {
         if (pressed) {
-            if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlattern) {
+            if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlatten) {
                 _temporaryTool = TerrainToolType.TerrainSmooth;
             } else if (_selectedTool == TerrainToolType.FoliageAdd) {
                 _temporaryTool = TerrainToolType.FoliagRemove;
@@ -232,12 +232,6 @@ public partial class TerrainControlDock : Control {
 
         TerraBrush.SetTerrainTool(_temporaryTool == TerrainToolType.None ? _selectedTool : _temporaryTool);
         UpdateSelectedTerrainTool();
-    }
-
-    private void OnDockPreviewThumbnailReady(string path, Texture2D preview, Texture2D thumbnail_preview, Variant dockPreview) {
-        if (preview != null) {
-            ((IDockPreview) dockPreview.AsGodotObject()).SetTextureImage(preview);
-        }
     }
 }
 #endif

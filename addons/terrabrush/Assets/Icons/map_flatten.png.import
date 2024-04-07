@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xba2aetdptd6"
-path="res://.godot/imported/foliage.png-f07ab844a566cc936bcbf417b489cdd6.ctex"
+uid="uid://btyfuwruiyi3a"
+path="res://.godot/imported/map_flatten.png-3ac4dc39b1b88b6e97645aaffb287635.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/Assets/Icons/foliage.png"
-dest_files=["res://.godot/imported/foliage.png-f07ab844a566cc936bcbf417b489cdd6.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/map_flatten.png"
+dest_files=["res://.godot/imported/map_flatten.png-3ac4dc39b1b88b6e97645aaffb287635.ctex"]
 
 [params]
 

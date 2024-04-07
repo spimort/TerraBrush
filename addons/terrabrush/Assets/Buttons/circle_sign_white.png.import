@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6jwu6vojgt7h"
-path="res://.godot/imported/map_flattern.png-1cc9087ab4d2a7372c0783c9faffd508.ctex"
+uid="uid://dqgc1ym8vyqgy"
+path="res://.godot/imported/circle_sign_white.png-aed6a700cc94cf1111c0fccacdd050a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/Assets/Icons/map_flattern.png"
-dest_files=["res://.godot/imported/map_flattern.png-1cc9087ab4d2a7372c0783c9faffd508.ctex"]
+source_file="res://addons/terrabrush/Assets/Buttons/circle_sign_white.png"
+dest_files=["res://.godot/imported/circle_sign_white.png-aed6a700cc94cf1111c0fccacdd050a7.ctex"]
 
 [params]
 
