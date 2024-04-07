@@ -211,7 +211,7 @@ public partial class TerrainControlDock : Control {
 
     public void SetShiftPressed(bool pressed) {
         if (pressed) {
-            if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlattern) {
+            if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlatten) {
                 _temporaryTool = TerrainToolType.TerrainSmooth;
             } else if (_selectedTool == TerrainToolType.FoliageAdd) {
                 _temporaryTool = TerrainToolType.FoliagRemove;

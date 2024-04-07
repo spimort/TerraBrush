@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://be5dy3m5y8fe" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
 [ext_resource type="Texture2D" uid="uid://dp0avalonr33v" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
 [ext_resource type="Texture2D" uid="uid://b853gh8gcmhg2" path="res://addons/terrabrush/Assets/Icons/paint.png" id="6_byduj"]
-[ext_resource type="Texture2D" uid="uid://btyfuwruiyi3a" path="res://addons/terrabrush/Assets/Icons/map_flattern.png" id="6_pcl6t"]
+[ext_resource type="Texture2D" uid="uid://btyfuwruiyi3a" path="res://addons/terrabrush/Assets/Icons/map_flatten.png" id="6_pcl6t"]
 [ext_resource type="Texture2D" uid="uid://cb0caw8uixal4" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
 [ext_resource type="Texture2D" uid="uid://d1lt6wkhkjsy2" path="res://addons/terrabrush/Assets/Icons/map_set_height.png" id="7_crl7m"]
 [ext_resource type="Texture2D" uid="uid://byom5fa2uoq4y" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
@@ -99,7 +99,7 @@ ButtonImage = ExtResource("5_ro3ul")
 [node name="TerrainToolSmooth2" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Flattern terrain"
+tooltip_text = "Flatten terrain"
 ToolType = 4
 ButtonImage = ExtResource("6_pcl6t")
 

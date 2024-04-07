@@ -9,7 +9,7 @@ public enum TerrainToolType {
     [ToolType(typeof(SculptTool))] TerrainAdd = 1,
     [ToolType(typeof(SculptTool))] TerrainRemove = 2,
     [ToolType(typeof(SculptTool))] TerrainSmooth = 3,
-    [ToolType(typeof(SculptTool))] TerrainFlattern = 4,
+    [ToolType(typeof(SculptTool))] TerrainFlatten = 4,
     [ToolType(typeof(SculptTool))] TerrainSetHeight = 5,
     [ToolType(typeof(TextureTool))] Paint = 6,
     [ToolType(typeof(FoliageTool))] FoliageAdd = 7,

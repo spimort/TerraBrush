@@ -79,8 +79,8 @@ public class SculptTool : ToolBase {
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         if (toolType == TerrainToolType.TerrainSmooth) {
             Smooth(toolType, brushImage, brushSize, brushStrength, imagePosition);
-        } else if (toolType == TerrainToolType.TerrainFlattern) {
-            Flattern(toolType, brushImage, brushSize, brushStrength, imagePosition);
+        } else if (toolType == TerrainToolType.TerrainFlatten) {
+            Flatten(toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else if (toolType == TerrainToolType.TerrainSetHeight) {
             SetHeight(toolType, brushImage, brushSize, brushStrength, imagePosition);
         } else {
@@ -106,7 +106,7 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Flattern(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+    private void Flatten(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
