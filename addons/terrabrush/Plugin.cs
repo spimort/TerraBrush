@@ -11,6 +11,7 @@ namespace TerraBrush;
 public partial class Plugin : EditorPlugin {
     private const float UpdateDelay = 0.005f;
     private const int ToolInfoOffset = 20;
+    private const string OverlayActionNameKey = "ActionName";
 
 	private TerrainControlDock _terrainControlDock;
     private PackedScene _terrainControlDockPrefab;
@@ -124,7 +125,7 @@ public partial class Plugin : EditorPlugin {
             if (!inputEvent.Pressed || inputEvent.Echo) return base._Forward3DGuiInput(viewportCamera, @event);
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolPie)) {
-                ShowToolPieMenu();
+                ShowToolPieMenu(KeybindManager.StringNames.ToolPie);
                 return (int) AfterGuiInput.Stop;
             }
 
@@ -146,7 +147,7 @@ public partial class Plugin : EditorPlugin {
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
                 ShowBrushNumericSelector(1, 200, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
-                });
+                }, KeybindManager.StringNames.BrushSizeSelector);
 
                 return (int) AfterGuiInput.Stop;
             }
@@ -154,7 +155,7 @@ public partial class Plugin : EditorPlugin {
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
                 ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
-                });
+                }, KeybindManager.StringNames.BrushStrengthSelector);
 
                 return (int) AfterGuiInput.Stop;
             }
@@ -440,49 +441,61 @@ public partial class Plugin : EditorPlugin {
         });
     }
 
-    private void HideOverlaySelector() {
+    private string HideOverlaySelector() {
         if (_overlaySelector != null) {
+            var overlayActionName = (string) _overlaySelector.GetMeta(OverlayActionNameKey, default(string));
+
             _overlaySelector.QueueFree();
             _overlaySelector = null;
+
+            return overlayActionName;
         }
+
+        return string.Empty;
     }
 
-    private void ShowToolPieMenu() {
-        HideOverlaySelector();
+    private void ShowToolPieMenu(string actionName) {
+        var previewActionName = HideOverlaySelector();
 
-        var activeViewport = GetActiveViewport();
-        if (activeViewport != null) {
-            var pieMenu = _toolsPieMenuPrefab.Instantiate<ToolsPieMenu>();
-            pieMenu.OnToolSelected = toolType => {
-                _terrainControlDock.SelectToolType(toolType);
+        if (previewActionName != actionName) {
+            var activeViewport = GetActiveViewport();
+            if (activeViewport != null) {
+                var pieMenu = _toolsPieMenuPrefab.Instantiate<ToolsPieMenu>();
+                pieMenu.OnToolSelected = toolType => {
+                    _terrainControlDock.SelectToolType(toolType);
 
-                HideOverlaySelector();
-            };
+                    HideOverlaySelector();
+                };
 
-            _overlaySelector = pieMenu;
+                _overlaySelector = pieMenu;
 
-            _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector.SetMeta(OverlayActionNameKey, actionName);
 
-            EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
+                EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
+            }
         }
     }
 
     private void ShowCustomContentPieMenu(string label, Action<CustomContentPieMenu> addItems) {
-        HideOverlaySelector();
+        var previewActionName = HideOverlaySelector();
 
-        var activeViewport = GetActiveViewport();
-        if (activeViewport != null) {
-            var customContentPieMenu = _customContentPieMenuPrefab.Instantiate<CustomContentPieMenu>();
+        if (previewActionName != label) {
+            var activeViewport = GetActiveViewport();
+            if (activeViewport != null) {
+                var customContentPieMenu = _customContentPieMenuPrefab.Instantiate<CustomContentPieMenu>();
 
-            _overlaySelector = customContentPieMenu;
-            _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector = customContentPieMenu;
+                _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector.SetMeta(OverlayActionNameKey, label);
 
-            EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
+                EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
 
-            addItems(customContentPieMenu);
+                addItems(customContentPieMenu);
 
-            customContentPieMenu.PieMenu.Label = label;
-            customContentPieMenu.PieMenu.UpdateContent();
+                customContentPieMenu.PieMenu.Label = label;
+                customContentPieMenu.PieMenu.UpdateContent();
+            }
         }
     }
 
@@ -520,33 +533,36 @@ public partial class Plugin : EditorPlugin {
         }
     }
 
-    private void ShowBrushNumericSelector(int minVale, int maxValue, Color widgetColor, int initialValue, Action<int> onValueSelected) {
-        HideOverlaySelector();
+    private void ShowBrushNumericSelector(int minVale, int maxValue, Color widgetColor, int initialValue, Action<int> onValueSelected, string actionName) {
+        var previewActionName = HideOverlaySelector();
 
-        var activeViewport = GetActiveViewport();
-        if (activeViewport != null) {
-            var selectorPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushNumericSelector.tscn");
-            var selector = selectorPrefab.Instantiate<BrushNumericSelector>();
+        if (previewActionName != actionName) {
+            var activeViewport = GetActiveViewport();
+            if (activeViewport != null) {
+                var selectorPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushNumericSelector.tscn");
+                var selector = selectorPrefab.Instantiate<BrushNumericSelector>();
 
-            selector.MinValue = minVale;
-            selector.MaxValue = maxValue;
-            selector.WidgetColor = widgetColor;
+                selector.MinValue = minVale;
+                selector.MaxValue = maxValue;
+                selector.WidgetColor = widgetColor;
 
-            _overlaySelector = selector;
-            _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector = selector;
+                _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
+                _overlaySelector.SetMeta(OverlayActionNameKey, actionName);
 
-            EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
+                EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
 
-            selector.SetInitialValue(initialValue);
+                selector.SetInitialValue(initialValue);
 
-            selector.OnValueSelected = value => {
-                onValueSelected(value);
-                HideOverlaySelector();
-            };
+                selector.OnValueSelected = value => {
+                    onValueSelected(value);
+                    HideOverlaySelector();
+                };
 
-            selector.OnCancel = () => {
-                HideOverlaySelector();
-            };
+                selector.OnCancel = () => {
+                    HideOverlaySelector();
+                };
+            }
         }
     }
 
