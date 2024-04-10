@@ -46,8 +46,8 @@ public partial class DockPreviewButton : TextureButton {
         var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
 
         _normalColor = iconsColor;
-        _hoverColor = _normalColor.Lightened(0.2f);
-        _pressedColor = _normalColor.Lightened(0.3f);
+        _hoverColor = _normalColor.Lightened(0.4f);
+        _pressedColor = _normalColor.Lightened(0.5f);
 
         if (MarginContainer != null && Margin > 0) {
             MarginContainer.Set("theme_override_constants/margin_left", Margin);
