@@ -76,6 +76,8 @@ public partial class Snow : Node3D {
                     var position = points.Keys.ElementAt(i);
                     var pixel = compressedSnowImage.GetPixel(position.X, position.Y);
                     var compressionValue = points[position];
+                    var offsetX = pixel.G;
+                    var offsetY = pixel.B;
 
                     if (compressionValue < 1) {
                         compressionValue += (float) delta * DeCompressSpeed;
@@ -83,11 +85,14 @@ public partial class Snow : Node3D {
                         if (compressionValue >= 1.0) {
                             compressionValue = 1.0f;
                             points.Remove(position);
+
+                            offsetX = 0f;
+                            offsetY = 0f;
                         } else {
                             points[position] = compressionValue;
                         }
 
-                        compressedSnowImage.SetPixel(position.X, position.Y, new Color(pixel.R, pixel.G, pixel.B, compressionValue));
+                        compressedSnowImage.SetPixel(position.X, position.Y, new Color(pixel.R, offsetX, offsetY, compressionValue));
                     }
                 }
 
