@@ -180,7 +180,6 @@ public partial class Terrain : Node3D {
     }
 
 	private void UpdateTextures() {
-		Clipmap.Shader.SetShaderParameter("TextureDetail", this.TextureDetail);
 		Clipmap.Shader.SetShaderParameter("NearestFilter", NearestTextureFilter);
 
         var filterParamName = string.Empty;
@@ -190,6 +189,7 @@ public partial class Terrain : Node3D {
 
         if (this.TextureSets?.TextureSets?.Length > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
+            Clipmap.Shader.SetShaderParameter("TexturesDetail", TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray());
             Clipmap.Shader.SetShaderParameter($"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
 
@@ -215,9 +215,9 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter("BlendFactor", HeightBlendFactor);
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
+            Clipmap.Shader.SetShaderParameter("TexturesDetail", new int[] {TextureDetail});
             Clipmap.Shader.SetShaderParameter($"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter("NumberOfTextures", textureArray.GetLayers());
-
             Clipmap.Shader.SetShaderParameter("UseAntitile", false);
         }
 	}
