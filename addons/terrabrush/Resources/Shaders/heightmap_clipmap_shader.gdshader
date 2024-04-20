@@ -8,7 +8,7 @@ uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
 uniform sampler2DArray TexturesNearest : source_color, filter_nearest_mipmap;
 uniform sampler2DArray Splatmaps : repeat_disable;
-uniform int TextureDetail;
+uniform int[100] TexturesDetail;
 uniform int NumberOfTextures;
 uniform sampler2DArray Normals : filter_linear_mipmap;
 uniform sampler2DArray NormalsNearest : filter_nearest_mipmap;
@@ -113,7 +113,8 @@ void fragment() {
 	
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
-		vec2 worldVertexUV = _worldVertex.xz * (float(TextureDetail) * (1.0 / ZonesSize));
+		int textureDetail = TexturesDetail[i];
+		vec2 worldVertexUV = _worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
 		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
 		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));	
 	
