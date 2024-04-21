@@ -32,6 +32,7 @@ public partial class TerraBrushTool : Node3D {
     private Image _brushImage;
     private int? _selectedBrushIndex = null;
     private float _brushStrength = 0.1f;
+    private float _selectedSetHeight = 0;
     private int? _textureSetIndex = null;
     private int? _foliageIndex = null;
     private int? _objectIndex = null;
@@ -46,6 +47,7 @@ public partial class TerraBrushTool : Node3D {
     public float BrushStrength => _brushStrength;
     public Image BrushImage => _brushImage;
     public int? SelectedBrushIndex => _selectedBrushIndex;
+    public float SelectedSetHeight => _selectedSetHeight;
     public int? TextureSetIndex => _textureSetIndex;
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
@@ -132,6 +134,10 @@ public partial class TerraBrushTool : Node3D {
 
     public void SetObject(int? objectIndex) {
         _objectIndex = objectIndex;
+    }
+
+    public void UpdateSetHeightValue(float value) {
+        _selectedSetHeight = value;
     }
 #endif
 

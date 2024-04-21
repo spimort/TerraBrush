@@ -67,7 +67,7 @@ I'm gonna be happy to accept PR for new features if it fits.
     - LShift - Reverse the tool. Usually, this option will go from "Add" to "Remove". For the sculpting option, this does the "Smooth" option.
     - V - Show the PieMenu for the current tool
     - B - Show the PieMenu for the current brush
-    - N - Show the PieMenu for the current tool option (ex. While painting the textures, the PieMenu will show textures)
+    - N - Show the options for the current tool (ex. While painting the textures, the PieMenu will show textures)
     - G - Show a quick select for the brush size
     - H - Show a quick select for the brush strength
     - K - Toggle "Auto add zones"
