@@ -140,7 +140,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolContentPie)) {
-                ShowCurrentToolCustomContentPieMenu();
+                ShowCurrentToolMenu();
                 return (int) AfterGuiInput.Stop;
             }
 
@@ -499,8 +499,15 @@ public partial class Plugin : EditorPlugin {
         }
     }
 
-    private void ShowCurrentToolCustomContentPieMenu() {
+    private async void ShowCurrentToolMenu() {
         switch (_currentTerraBrushNode.TerrainTool) {
+            case TerrainToolType.TerrainSetHeight:
+                var sculptTool = (SculptTool) _currentTerraBrushNode.CurrentTool;
+                var heightValue = await DialogUtils.ShowNumericSelector(this, sculptTool.GetSetHeightValue());
+                if (heightValue.HasValue) {
+                    sculptTool.UpdateSetHeightValue(heightValue.Value);
+                }
+                break;
             case TerrainToolType.Paint:
                 ShowCustomContentPieMenu("Textures", customContentPieMenu => {
                     CustomContentLoader.AddTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {

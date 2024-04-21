@@ -11,7 +11,9 @@ public class SculptTool : ToolBase {
     private int _sculptingMultiplier = 1;
     private HashSet<ZoneResource> _sculptedZones;
 
-    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {}
+    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {
+        _setHeightValue = terraBrush.SelectedSetHeight;
+    }
 
     public override string GetToolInfo(TerrainToolType toolType) {
         if (toolType != TerrainToolType.TerrainSetHeight) {
@@ -49,7 +51,7 @@ public class SculptTool : ToolBase {
 
             if (incrementValue != null) {
                 _setHeightValue += incrementValue.Value;
-                _setHeightValue = (float) Math.Round(_setHeightValue, roundFactor);
+                UpdateSetHeightValue((float) Math.Round(_setHeightValue, roundFactor));
                 return true;
             }
         }
@@ -174,7 +176,7 @@ public class SculptTool : ToolBase {
             var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0);
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
-            _setHeightValue = currentPixel.R;
+            UpdateSetHeightValue(_setHeightValue = currentPixel.R);
             return;
         }
 
@@ -190,6 +192,15 @@ public class SculptTool : ToolBase {
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
             _sculptedZones.Add(imageZoneInfo.Zone);
         });
+    }
+
+    public float GetSetHeightValue() {
+        return _setHeightValue;
+    }
+
+    public void UpdateSetHeightValue(float value) {
+        _setHeightValue = value;
+        _terraBrush.UpdateSetHeightValue(value);
     }
 }
 #endif
