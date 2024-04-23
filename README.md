@@ -151,6 +151,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |FoliageResource[x].Definition.VisualInstanceLayers|The godot layer on which the foliage will be displayed.|
 |**Objects**||
 |Default Object Frequency|This option is to define how often the objects will be placed on the terrain. This is the default for every objects. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
+|Object Loading Stratety|Drives how the objects are being loaded (in a thread or not). The default value is ThreadedInEditorOnly.|
 |Objects|An array of ObjectResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |ObjectResource[x].Definition|The definition of the object. Create a **ObjectDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
 |ObjectResource[x].Definition.ObjectFrequency|This option overrides the **Default Object Frequency** property if a value higher than -1 is set. This option is to define how often the objects will be placed on the terrain. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
