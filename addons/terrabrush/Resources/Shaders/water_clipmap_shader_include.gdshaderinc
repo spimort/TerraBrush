@@ -122,7 +122,12 @@ void calculateWaterFragment(
 		
 		if (zoneUV.z < 0.0) {
 			alpha = 0.0;
-		}			
+		} else {
+			float hole = texture(HeightmapTextures, zoneUV).g;
+			if (hole > 0.0f) {
+				alpha = 0.0f;
+			}			
+		}
 	} else {
 		alpha = 0.0;
 	}

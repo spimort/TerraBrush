@@ -223,6 +223,8 @@ public partial class TerrainControlDock : Control {
                 _temporaryTool = TerrainToolType.WaterFlowRemove;
             } else if (_selectedTool == TerrainToolType.SnowAdd) {
                 _temporaryTool = TerrainToolType.SnowRemove;
+            } else if (_selectedTool == TerrainToolType.HoleAdd) {
+                _temporaryTool = TerrainToolType.HoleRemove;
             } else {
                 _temporaryTool = TerrainToolType.None;
             }

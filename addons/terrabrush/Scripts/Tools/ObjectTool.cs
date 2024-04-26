@@ -107,20 +107,23 @@ public class ObjectTool : ToolBase {
 
                             var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
                             if (resultImagePosition.X >= 0 && resultImagePosition.X < _terraBrush.ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < _terraBrush.ZonesSize) {
-                                var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
-
-                                var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
-                                newNode.Name = nodeName;
-                                currentObjectsNode.AddChild(newNode);
-
                                 var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-                                var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-                                resultPosition -= new Vector3(_terraBrush.ZonesSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (_terraBrush.WaterDefinition?.WaterFactor ?? 0))), _terraBrush.ZonesSize / 2);
+                                // Check for hole
+                                if (heightmapPixel.G == 0.0) {
+                                    var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
 
-                                newNode.Position = resultPosition;
+                                    var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
+                                    newNode.Name = nodeName;
+                                    currentObjectsNode.AddChild(newNode);
 
-                                if (currentObject.Definition.RandomYRotation) {
-                                    newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((xPosition * 1000) + yPosition, 0f, 360f), newNode.RotationDegrees.Z);
+                                    var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
+                                    resultPosition -= new Vector3(_terraBrush.ZonesSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (_terraBrush.WaterDefinition?.WaterFactor ?? 0))), _terraBrush.ZonesSize / 2);
+
+                                    newNode.Position = resultPosition;
+
+                                    if (currentObject.Definition.RandomYRotation) {
+                                        newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((xPosition * 1000) + yPosition, 0f, 360f), newNode.RotationDegrees.Z);
+                                    }
                                 }
                             }
                         }

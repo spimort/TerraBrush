@@ -101,47 +101,50 @@ void start() {
 			bool foliagePresence = foliagePosition.x > 0.0;
 			
 			if (foliagePresence) {
-				ACTIVE = true;
-				
-				vec3 particlePosition = vec3(xPosition, 0, yPosition);				
-				
 				// HeightMap Texture (height calculation)
-				vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);								
-				float height = heightMapPosition.x;
-				
-				vec4 waterPosition = texture(WaterTextures, zoneUV);
-				float waterHeight = waterPosition.x * WaterFactor;
-				
-				height -= waterHeight;
-				
-				particlePosition.y = height;
-						
-				// Assign the position to the transform
-				TRANSFORM = mat4(vec4(MeshScale.x * foliagePosition.a, 0.0, 0.0, 0.0), vec4(0.0, MeshScale.y * foliagePosition.a, 0.0, 0.0), vec4(0.0, 0.0, MeshScale.z * foliagePosition.a, 0.0), vec4(particlePosition, 1.0));
-				
-				// Apply random rotation to each foliage
-				float randomValue = hash_noise_range(particlePosition).x;
-				float randomRotation = mix(0, radians(360), randomValue);
-				TRANSFORM *= __build_rotation_mat4(vec3(0, 1, 0), randomRotation);
-				
-				// Apply the transform for each blades
-				TRANSFORM = EMISSION_TRANSFORM * TRANSFORM;
-				
-				// Make the foliage wave with wind
-				float windDirection = 0.0;
-				if (randomValue > 0.5) {
-					windDirection = sin(TIME);
+				vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);
+				if (heightMapPosition.g > 0.0) {
+					ACTIVE = false;	
 				} else {
-					windDirection = cos(TIME);
-				}
-				windDirection *= randomValue * WindStrength;
-				
-				TRANSFORM[1] += vec4(windDirection, 0, windDirection, 1.0);
+					ACTIVE = true;
+					
+					vec3 particlePosition = vec3(xPosition, 0, yPosition);											
+					float height = heightMapPosition.x;
+					
+					vec4 waterPosition = texture(WaterTextures, zoneUV);
+					float waterHeight = waterPosition.x * WaterFactor;
+					
+					height -= waterHeight;
+					
+					particlePosition.y = height;
+							
+					// Assign the position to the transform
+					TRANSFORM = mat4(vec4(MeshScale.x * foliagePosition.a, 0.0, 0.0, 0.0), vec4(0.0, MeshScale.y * foliagePosition.a, 0.0, 0.0), vec4(0.0, 0.0, MeshScale.z * foliagePosition.a, 0.0), vec4(particlePosition, 1.0));
+					
+					// Apply random rotation to each foliage
+					float randomValue = hash_noise_range(particlePosition).x;
+					float randomRotation = mix(0, radians(360), randomValue);
+					TRANSFORM *= __build_rotation_mat4(vec3(0, 1, 0), randomRotation);
+					
+					// Apply the transform for each blades
+					TRANSFORM = EMISSION_TRANSFORM * TRANSFORM;
+					
+					// Make the foliage wave with wind
+					float windDirection = 0.0;
+					if (randomValue > 0.5) {
+						windDirection = sin(TIME);
+					} else {
+						windDirection = cos(TIME);
+					}
+					windDirection *= randomValue * WindStrength;
+					
+					TRANSFORM[1] += vec4(windDirection, 0, windDirection, 1.0);	
+					
+					COLOR = calculateGroundColor(zoneUV);
+				}								
 			} else {
 				ACTIVE = false;
 			}
-						
-			COLOR = calculateGroundColor(zoneUV);
 		}
 	}
 }
