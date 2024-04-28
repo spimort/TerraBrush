@@ -24,8 +24,6 @@ public class HoleTool : ToolBase {
     public override void EndPaint() {
         base.EndPaint();
 
-        _terraBrush.UpdateObjectsForHole(_sculptedZones.ToList());
-
         _sculptedZones = null;
     }
 

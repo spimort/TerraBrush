@@ -324,8 +324,6 @@ public partial class Plugin : EditorPlugin {
 	}
 
     private void RemoveDock() {
-        GD.Print("RemoveDock ", new System.Diagnostics.StackTrace().ToString());
-
 		if (_terrainControlDock != null) {
 			RemoveControlFromDocks(_terrainControlDock);
 			_terrainControlDock.Free();
@@ -381,8 +379,6 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void AddDock() {
-        GD.Print("AddDock ", new System.Diagnostics.StackTrace().ToString());
-
         _terrainControlDock = _terrainControlDockPrefab.Instantiate<TerrainControlDock>();
         _terrainControlDock.TerraBrush = _currentTerraBrushNode;
         _terrainControlDock.BrushDecal = _brushDecal;
