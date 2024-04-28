@@ -7,6 +7,12 @@ using Godot;
 
 namespace TerraBrush;
 
+public enum ObjectLoadingStrategy {
+    ThreadedInEditorOnly = 1,
+    Threaded = 2,
+    NotThreaded = 3
+}
+
 [Tool]
 public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
@@ -108,6 +114,9 @@ public partial class TerraBrush : TerraBrushTool {
     [ExportGroup("Objects")]
     [Export]
     public int DefaultObjectFrequency { get;set; } = 10;
+
+    [Export]
+    public ObjectLoadingStrategy ObjectLoadingStratety { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
 
     [Export]
     public ObjectResource[] Objects { get;set; }
@@ -378,9 +387,15 @@ public partial class TerraBrush : TerraBrushTool {
     public async Task CreateObjects() {
         _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
 
-        await Task.Factory.StartNew(async () => {
+        var loadInThread = ObjectLoadingStratety == ObjectLoadingStrategy.Threaded || (ObjectLoadingStratety == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
+
+        if (loadInThread) {
+            await Task.Factory.StartNew(async () => {
+                await CreateObjectsAsync();
+            });
+        } else {
             await CreateObjectsAsync();
-        });
+        }
     }
 
     private async Task CreateObjectsAsync() {
