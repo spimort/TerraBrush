@@ -30,6 +30,7 @@ public partial class TerraBrush : TerraBrushTool {
     private Dictionary<ImageTexture, Image> _imageTexturesCache = new();
     private Texture2D _defaultNoise;
     private string _dataPath;
+    private CancellationTokenSource _objectsCreationCancellationTokenSource;
 
     public Terrain Terrain => _terrain;
     public Water Water => _waterNode;
@@ -390,15 +391,18 @@ public partial class TerraBrush : TerraBrushTool {
         var loadInThread = ObjectLoadingStratety == ObjectLoadingStrategy.Threaded || (ObjectLoadingStratety == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
 
         if (loadInThread) {
+            _objectsCreationCancellationTokenSource?.Cancel();
+            _objectsCreationCancellationTokenSource = new CancellationTokenSource();
+
             await Task.Factory.StartNew(async () => {
-                await CreateObjectsAsync();
-            });
+                await CreateObjectsAsync(_objectsCreationCancellationTokenSource.Token);
+            }, _objectsCreationCancellationTokenSource.Token);
         } else {
-            await CreateObjectsAsync();
+            await CreateObjectsAsync(CancellationToken.None);
         }
     }
 
-    private async Task CreateObjectsAsync() {
+    private async Task CreateObjectsAsync(CancellationToken cancellationToken) {
         if (Objects == null || Objects.Length == 0) {
             return;
         }
@@ -408,7 +412,15 @@ public partial class TerraBrush : TerraBrushTool {
             CallDeferred("add_child", _objectsContainerNode);
         }
 
+        if (cancellationToken.IsCancellationRequested) {
+            return;
+        }
+
         for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
+            if (cancellationToken.IsCancellationRequested) {
+                return;
+            }
+
             var zone = TerrainZones.Zones[zoneIndex];
 
             var heightmapImage = zone.HeightMapTexture.GetImage();
@@ -416,6 +428,10 @@ public partial class TerraBrush : TerraBrushTool {
 
             var newList = new List<ImageTexture>();
             for (var objectIndex = 0; objectIndex < Objects.Count(); objectIndex++) {
+                if (cancellationToken.IsCancellationRequested) {
+                    return;
+                }
+
                 ImageTexture imageTexture = null;
                 if (zone.ObjectsTexture?.Length > objectIndex) {
                     imageTexture = zone.ObjectsTexture[objectIndex];
@@ -446,7 +462,15 @@ public partial class TerraBrush : TerraBrushTool {
                     var objectsImage = imageTexture.GetImage();
 
                     for (var x = 0; x < objectsImage.GetWidth(); x++) {
+                        if (cancellationToken.IsCancellationRequested) {
+                            return;
+                        }
+
                         for (var y = 0; y < objectsImage.GetHeight(); y++) {
+                            if (cancellationToken.IsCancellationRequested) {
+                                return;
+                            }
+
                             var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, objectItem.Definition.ObjectScenes.Count() - 1);
 
                             var objectPixel = objectsImage.GetPixel(x, y);
@@ -467,6 +491,10 @@ public partial class TerraBrush : TerraBrushTool {
                                     if (heightmapPixel.G == 0.0) {
                                         var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
                                         resultPosition -= new Vector3(ZonesSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), ZonesSize / 2);
+
+                                        if (cancellationToken.IsCancellationRequested) {
+                                            return;
+                                        }
 
                                         CallDeferred(
                                             nameof(AddObjectNode),

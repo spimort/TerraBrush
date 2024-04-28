@@ -21,10 +21,13 @@ public class HoleTool : ToolBase {
         _sculptedZones = new HashSet<ZoneResource>();
     }
 
-    public override void EndPaint() {
+    public async override void EndPaint() {
         base.EndPaint();
 
         _sculptedZones = null;
+
+        _terraBrush.ClearObjects();
+        await _terraBrush.CreateObjects();
     }
 
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
@@ -34,7 +37,7 @@ public class HoleTool : ToolBase {
 
             var newValue = new Color(
                 currentPixel.R,
-                Math.Max(0.0f, Math.Min(1.0f, Mathf.Lerp(currentPixel.G, holeValue, pixelBrushStrength * (brushStrength * 10.0f)))),
+                Math.Max(0.0f, Math.Min(1.0f, Mathf.Lerp(currentPixel.G, holeValue, (float) Math.Ceiling(pixelBrushStrength) * (brushStrength * 100.0f)))),
                 currentPixel.B,
                 currentPixel.A
             );
