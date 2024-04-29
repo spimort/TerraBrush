@@ -117,7 +117,7 @@ public partial class ZonesResource : Resource {
     }
 
     private void SaveImageResource(ImageTexture image) {
-        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && FileAccess.FileExists(image.ResourcePath)) {
+        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && Godot.FileAccess.FileExists(image.ResourcePath)) {
             ResourceSaver.Save(image, image.ResourcePath);
         }
     }
