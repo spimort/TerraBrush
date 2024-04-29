@@ -139,6 +139,10 @@ public partial class TerraBrush : TerraBrushTool {
     public async override void _Ready() {
         base._Ready();
 
+        if (Engine.IsEditorHint()) {
+            CompatibilityScript_0_4_Alpha.Convert(this);
+        }
+
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
         if (string.IsNullOrEmpty(DataPath)) {

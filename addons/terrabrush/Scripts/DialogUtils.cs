@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Godot;
 
@@ -24,5 +25,40 @@ public static class DialogUtils {
         dialog.SetValue(defaultValue);
 
 		return completionSource.Task;
+	}
+
+    public static Task<bool> ShowConfirmDialog(Node soruceNode, string title, string content) {
+        var completionSource = new TaskCompletionSource<bool>();
+
+        var dialog = new ConfirmationDialog() {
+            CancelButtonText = "Cancel",
+            OkButtonText = "OK",
+            DialogText = content,
+            Title = title,
+            Exclusive = true,
+            Unresizable = true,
+            Size = new Vector2I(300, 90),
+        };
+
+        soruceNode.GetTree().Root.AddChild(dialog);
+
+        dialog.PopupCentered();
+
+        Action onOkButton = null;
+        onOkButton = () => {
+            completionSource.TrySetResult(true);
+            dialog.GetOkButton().Pressed -= onOkButton;
+        };
+
+        Action onCancelButton = null;
+        onCancelButton = () => {
+            completionSource.TrySetResult(false);
+            dialog.GetCancelButton().Pressed -= onCancelButton;
+        };
+
+        dialog.GetOkButton().Pressed += onOkButton;
+        dialog.GetCancelButton().Pressed += onCancelButton;
+
+        return completionSource.Task;
 	}
 }
