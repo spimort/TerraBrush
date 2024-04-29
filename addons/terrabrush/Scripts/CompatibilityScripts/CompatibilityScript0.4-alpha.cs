@@ -10,7 +10,7 @@ public static class CompatibilityScript_0_4_Alpha {
             var result = await DialogUtils.ShowConfirmDialog(terraBrush, "Convert", "Heightmaps has been created before the hole feature was a thing, which means that they are in the wrong format.\nThey must be converted in order for the hole feature to work.\nDo you want to convert them?");
 
             if (result) {
-                GD.Print("Starting heightmaps convertion...");
+                GD.Print("Starting heightmaps conversion...");
 
                 foreach (var zone in terraBrush.TerrainZones.Zones) {
                     if (zone.HeightMapTexture.GetFormat() == Image.Format.Rf) {
@@ -29,7 +29,7 @@ public static class CompatibilityScript_0_4_Alpha {
                     }
                 }
 
-                GD.Print("Convertion done!");
+                GD.Print("Conversion done!");
             }
         }
     }
