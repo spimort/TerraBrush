@@ -7,8 +7,6 @@
 render_priority = 0
 shader = ExtResource("2_xinug")
 shader_parameter/InitialCellWidth = 1.0
-shader_parameter/ZonesSize = null
-shader_parameter/NumberOfZones = null
 
 [node name="Clipmap" type="Node3D"]
 script = ExtResource("1_lt4y1")
