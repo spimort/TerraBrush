@@ -10,6 +10,8 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Terrain : Node3D {
+    private const float HoleValue = float.NaN;
+
     private CancellationTokenSource _collisionCancellationSource = null;
 
     [NodePath] private Clipmap _clipmap;
@@ -223,7 +225,7 @@ public partial class Terrain : Node3D {
 	}
 
     private float GetHeightForZone(ZoneResource zone, int x, int y, Dictionary<ZoneResource, CollisionZoneImages> imagesCache) {
-        CollisionZoneImages zoneImages = null;
+        CollisionZoneImages zoneImages;
         if (imagesCache.ContainsKey(zone)) {
             zoneImages = imagesCache[zone];
         } else {
@@ -234,7 +236,12 @@ public partial class Terrain : Node3D {
             imagesCache.Add(zone, zoneImages);
         }
 
-        var pixelHeight = zoneImages.HeightmapImage.GetPixel(x, y).R * HeightMapFactor;
+        var pixel = zoneImages.HeightmapImage.GetPixel(x, y);
+        if (pixel.G > 0.0f) {
+            return HoleValue;
+        }
+
+        var pixelHeight = pixel.R * HeightMapFactor;
         var waterHeight = zoneImages.WaterImage?.GetPixel(x, y).R ?? 0;
         pixelHeight -= waterHeight * WaterFactor;
 

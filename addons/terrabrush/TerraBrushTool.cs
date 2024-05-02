@@ -22,6 +22,8 @@ public enum TerrainToolType {
     [ToolType(typeof(WaterFlowTool))] WaterFlowRemove = 14,
     [ToolType(typeof(SnowTool))] SnowAdd = 15,
     [ToolType(typeof(SnowTool))] SnowRemove = 16,
+    [ToolType(typeof(HoleTool))] HoleAdd = 17,
+    [ToolType(typeof(HoleTool))] HoleRemove = 18,
 }
 #endif
 

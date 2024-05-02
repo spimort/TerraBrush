@@ -96,14 +96,15 @@ public class SculptTool : ToolBase {
     private void Sculpt(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
-            var newValue = Colors.Red * (pixelBrushStrength * brushStrength) * _sculptingMultiplier;
+            var newValue = pixelBrushStrength * brushStrength * _sculptingMultiplier;
             if (toolType == TerrainToolType.TerrainAdd) {
-                newValue = currentPixel + newValue;
+                newValue = currentPixel.R + newValue;
             } else if (toolType == TerrainToolType.TerrainRemove) {
-                newValue = currentPixel - newValue;
+                newValue = currentPixel.R - newValue;
             }
 
-            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
+            var newPixel = new Color(newValue, currentPixel.G, currentPixel.B, currentPixel.A);
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newPixel);
             _sculptedZones.Add(imageZoneInfo.Zone);
         });
     }
@@ -125,9 +126,9 @@ public class SculptTool : ToolBase {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, smoothValue.R, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.G, smoothValue.G, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.B, smoothValue.B, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.A, smoothValue.A, pixelBrushStrength * brushStrength)
+                currentPixel.G,
+                currentPixel.B,
+                currentPixel.A
             );
 
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
@@ -159,13 +160,14 @@ public class SculptTool : ToolBase {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y).R;
-            directions.Add(currentPixel);
+            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
+            directions.Add(currentPixel.R);
 
             float average = directions.Average();
-            float resultValue = Mathf.Lerp(currentPixel, average, pixelBrushStrength * brushStrength);
+            float resultValue = Mathf.Lerp(currentPixel.R, average, pixelBrushStrength * brushStrength);
 
-            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, new Color(resultValue, 0, 0, 1.0f));
+            var newPixel = new Color(resultValue, currentPixel.G, currentPixel.B, currentPixel.A);
+            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newPixel);
             _sculptedZones.Add(imageZoneInfo.Zone);
         });
     }
@@ -184,9 +186,9 @@ public class SculptTool : ToolBase {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, _setHeightValue, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.G, currentPixel.G, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.B, currentPixel.B, pixelBrushStrength * brushStrength),
-                Mathf.Lerp(currentPixel.A, currentPixel.A, pixelBrushStrength * brushStrength)
+                currentPixel.G,
+                currentPixel.B,
+                currentPixel.A
             );
 
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);

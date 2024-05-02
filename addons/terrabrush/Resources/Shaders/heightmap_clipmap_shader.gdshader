@@ -168,5 +168,10 @@ void fragment() {
 	
 	if (zoneUV.z < 0.0) {
 		ALPHA = 0.0;
+	} else {
+		float hole = texture(HeightmapTextures, zoneUV).g;
+		if (hole > 0.0) {
+			ALPHA = 0.0;
+		}
 	}
 }

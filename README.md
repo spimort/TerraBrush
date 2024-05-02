@@ -59,6 +59,7 @@ I'm gonna be happy to accept PR for new features if it fits.
 * **Snow** - Add thick snow to your terrain
   - The texture of the snow is configurable so it's easy to make something like sand
   - Support for custom shader
+* **Hole** - Paint hole. Useful to create cave or juste to make a terrain that is not square.
 * **Multiple brushes**
   - Custom brushes are also available
 * **Pie menu**

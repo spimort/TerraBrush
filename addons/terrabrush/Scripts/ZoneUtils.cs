@@ -11,7 +11,7 @@ public static class ZoneUtils {
     private const string SnowFileName = "Snow_{0}_{1}.res";
 
     public static ImageTexture CreateHeightmapImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rf);
+        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgf);
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 

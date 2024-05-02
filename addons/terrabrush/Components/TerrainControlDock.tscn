@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://clqmuo5dunyap"]
+[gd_scene load_steps=22 format=3 uid="uid://clqmuo5dunyap"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
+[ext_resource type="Texture2D" uid="uid://dy7hwn8w6ax3a" path="res://addons/terrabrush/Assets/Buttons/square_white.png" id="3_sxr5p"]
 [ext_resource type="Texture2D" uid="uid://dxsbe136337p2" path="res://addons/terrabrush/Assets/Icons/map_add.png" id="3_tkn6e"]
 [ext_resource type="Texture2D" uid="uid://be5dy3m5y8fe" path="res://addons/terrabrush/Assets/Icons/map_remove.png" id="4_r5iun"]
 [ext_resource type="Texture2D" uid="uid://dp0avalonr33v" path="res://addons/terrabrush/Assets/Icons/map_smooth.png" id="5_ro3ul"]
@@ -18,6 +19,8 @@
 [ext_resource type="Texture2D" uid="uid://cquypfnsqiu2g" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_j3262"]
 [ext_resource type="Texture2D" uid="uid://dc43ue31pa6x0" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_h2obh"]
 [ext_resource type="Texture2D" uid="uid://dshqhgb6asd2f" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_47ucd"]
+[ext_resource type="Texture2D" uid="uid://bcapglulgvwma" path="res://addons/terrabrush/Assets/Icons/holes_add.png" id="20_n1csi"]
+[ext_resource type="Texture2D" uid="uid://den6wvuky6x37" path="res://addons/terrabrush/Assets/Icons/holes_remove.png" id="20_n7xsa"]
 
 [node name="Terrain Editor" type="Control"]
 layout_mode = 3
@@ -76,108 +79,156 @@ layout_mode = 2
 
 [node name="TerrainToolAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0.5, 0.541176, 0.560784, 1)
 layout_mode = 2
 tooltip_text = "Raise terrain"
 button_pressed = true
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 1
 ButtonImage = ExtResource("3_tkn6e")
 
 [node name="TerrainToolRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Lower terrain"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 2
 ButtonImage = ExtResource("4_r5iun")
 
 [node name="TerrainToolSmooth" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Smooth terrain"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 3
 ButtonImage = ExtResource("5_ro3ul")
 
 [node name="TerrainToolSmooth2" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Flatten terrain"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 4
 ButtonImage = ExtResource("6_pcl6t")
 
 [node name="TerrainToolSmooth3" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Set terrain height"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 5
 ButtonImage = ExtResource("7_crl7m")
 
 [node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Paint texture"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 6
 ButtonImage = ExtResource("6_byduj")
 
 [node name="FoliageAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Add foliage"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 7
 ButtonImage = ExtResource("7_1nssx")
 
 [node name="FoliageRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Remove foliage"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 8
 ButtonImage = ExtResource("8_glupl")
 
 [node name="ObjectAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Add objects"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 9
 ButtonImage = ExtResource("9_d1w4v")
 
 [node name="ObjectRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Remove objects"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 10
 ButtonImage = ExtResource("10_wcsh2")
 
 [node name="WaterAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Add water"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 11
 ButtonImage = ExtResource("11_6ecx6")
 
 [node name="WaterRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Remove water"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 12
 ButtonImage = ExtResource("12_nqxjx")
 
 [node name="WaterFlowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Add water flow"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 13
 ButtonImage = ExtResource("13_wuhqm")
 
 [node name="WaterFlowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Remove water flow"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 14
 ButtonImage = ExtResource("14_j3262")
 
 [node name="SnowAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Add snow"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 15
 ButtonImage = ExtResource("15_h2obh")
 
 [node name="SnowRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 2
 tooltip_text = "Remove snow"
+texture_normal = ExtResource("3_sxr5p")
 ToolType = 16
 ButtonImage = ExtResource("16_47ucd")
+
+[node name="HoleAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 2
+tooltip_text = "Add hole"
+texture_normal = ExtResource("3_sxr5p")
+ToolType = 17
+ButtonImage = ExtResource("20_n1csi")
+
+[node name="HoleRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 2
+tooltip_text = "Remove hole"
+texture_normal = ExtResource("3_sxr5p")
+ToolType = 18
+ButtonImage = ExtResource("20_n7xsa")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
