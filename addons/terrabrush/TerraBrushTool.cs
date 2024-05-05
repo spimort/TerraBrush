@@ -13,7 +13,7 @@ public enum TerrainToolType {
     [ToolType(typeof(SculptTool))] TerrainSetHeight = 5,
     [ToolType(typeof(TextureTool))] Paint = 6,
     [ToolType(typeof(FoliageTool))] FoliageAdd = 7,
-    [ToolType(typeof(FoliageTool))] FoliagRemove = 8,
+    [ToolType(typeof(FoliageTool))] FoliageRemove = 8,
     [ToolType(typeof(ObjectTool))] ObjectAdd = 9,
     [ToolType(typeof(ObjectTool))] ObjectRemove = 10,
     [ToolType(typeof(WaterTool))] WaterAdd = 11,

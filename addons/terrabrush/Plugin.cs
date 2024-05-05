@@ -518,7 +518,7 @@ public partial class Plugin : EditorPlugin {
 
                 break;
             case TerrainToolType.FoliageAdd:
-            case TerrainToolType.FoliagRemove:
+            case TerrainToolType.FoliageRemove:
                 ShowCustomContentPieMenu("Foliages", customContentPieMenu => {
                     CustomContentLoader.AddFoliagesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedFoliageIndex(index);

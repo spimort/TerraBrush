@@ -214,7 +214,7 @@ public partial class TerrainControlDock : Control {
             if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlatten) {
                 _temporaryTool = TerrainToolType.TerrainSmooth;
             } else if (_selectedTool == TerrainToolType.FoliageAdd) {
-                _temporaryTool = TerrainToolType.FoliagRemove;
+                _temporaryTool = TerrainToolType.FoliageRemove;
             } else if (_selectedTool == TerrainToolType.ObjectAdd) {
                 _temporaryTool = TerrainToolType.ObjectRemove;
             } else if (_selectedTool == TerrainToolType.WaterAdd) {
