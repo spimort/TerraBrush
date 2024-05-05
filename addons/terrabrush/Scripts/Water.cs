@@ -111,28 +111,28 @@ public partial class Water : Node3D {
 
         _clipmap.CreateMesh();
 
-        _clipmap.Shader.SetShaderParameter("WaterInnerOffset", WaterInnerOffset);
-        _clipmap.Shader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
-        _clipmap.Shader.SetShaderParameter("WaterFactor", WaterFactor);
-        _clipmap.Shader.SetShaderParameter("WaterColor", WaterColor);
-        _clipmap.Shader.SetShaderParameter("FresnelColor", FresnelColor);
-        _clipmap.Shader.SetShaderParameter("Metallic", Metallic);
-        _clipmap.Shader.SetShaderParameter("Roughness", Roughness);
-        _clipmap.Shader.SetShaderParameter("NormalMap", NormalMap);
-        _clipmap.Shader.SetShaderParameter("NormalMap2", NormalMap2);
-        _clipmap.Shader.SetShaderParameter("TimeScale", TimeScale);
-        _clipmap.Shader.SetShaderParameter("Strength", Strength);
-        _clipmap.Shader.SetShaderParameter("Wave", Wave);
-        _clipmap.Shader.SetShaderParameter("NoiseScale", NoiseScale);
-        _clipmap.Shader.SetShaderParameter("HeightScale", HeightScale);
-        _clipmap.Shader.SetShaderParameter("ColorDeep", ColorDeep);
-        _clipmap.Shader.SetShaderParameter("ColorShallow", ColorShallow);
-        _clipmap.Shader.SetShaderParameter("BeersLaw", BeersLaw);
-        _clipmap.Shader.SetShaderParameter("DepthOffset", DepthOffset);
-        _clipmap.Shader.SetShaderParameter("EdgeScale", EdgeScale);
-        _clipmap.Shader.SetShaderParameter("Near", Near);
-        _clipmap.Shader.SetShaderParameter("Far", Far);
-        _clipmap.Shader.SetShaderParameter("EdgeColor", EdgeColor);
+        _clipmap.Shader.SetShaderParameter(StringNames.WaterInnerOffset, WaterInnerOffset);
+        _clipmap.Shader.SetShaderParameter(StringNames.WaterTextures, TerrainZones.WaterTextures);
+        _clipmap.Shader.SetShaderParameter(StringNames.WaterFactor, WaterFactor);
+        _clipmap.Shader.SetShaderParameter(StringNames.WaterColor, WaterColor);
+        _clipmap.Shader.SetShaderParameter(StringNames.FresnelColor, FresnelColor);
+        _clipmap.Shader.SetShaderParameter(StringNames.Metallic, Metallic);
+        _clipmap.Shader.SetShaderParameter(StringNames.Roughness, Roughness);
+        _clipmap.Shader.SetShaderParameter(StringNames.NormalMap, NormalMap);
+        _clipmap.Shader.SetShaderParameter(StringNames.NormalMap2, NormalMap2);
+        _clipmap.Shader.SetShaderParameter(StringNames.TimeScale, TimeScale);
+        _clipmap.Shader.SetShaderParameter(StringNames.Strength, Strength);
+        _clipmap.Shader.SetShaderParameter(StringNames.Wave, Wave);
+        _clipmap.Shader.SetShaderParameter(StringNames.NoiseScale, NoiseScale);
+        _clipmap.Shader.SetShaderParameter(StringNames.HeightScale, HeightScale);
+        _clipmap.Shader.SetShaderParameter(StringNames.ColorDeep, ColorDeep);
+        _clipmap.Shader.SetShaderParameter(StringNames.ColorShallow, ColorShallow);
+        _clipmap.Shader.SetShaderParameter(StringNames.BeersLaw, BeersLaw);
+        _clipmap.Shader.SetShaderParameter(StringNames.DepthOffset, DepthOffset);
+        _clipmap.Shader.SetShaderParameter(StringNames.EdgeScale, EdgeScale);
+        _clipmap.Shader.SetShaderParameter(StringNames.Near, Near);
+        _clipmap.Shader.SetShaderParameter(StringNames.Far, Far);
+        _clipmap.Shader.SetShaderParameter(StringNames.EdgeColor, EdgeColor);
     }
 
     public void AddRippleEffect(float x, float y) {
