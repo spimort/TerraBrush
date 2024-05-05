@@ -117,7 +117,7 @@ public partial class TerraBrush : TerraBrushTool {
     public int DefaultObjectFrequency { get;set; } = 10;
 
     [Export]
-    public ObjectLoadingStrategy ObjectLoadingStratety { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
+    public ObjectLoadingStrategy ObjectLoadingStrategy { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
 
     [Export]
     public ObjectResource[] Objects { get;set; }
@@ -392,7 +392,7 @@ public partial class TerraBrush : TerraBrushTool {
     public async Task CreateObjects() {
         _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
 
-        var loadInThread = ObjectLoadingStratety == ObjectLoadingStrategy.Threaded || (ObjectLoadingStratety == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
+        var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
 
         if (loadInThread) {
             _objectsCreationCancellationTokenSource?.Cancel();
