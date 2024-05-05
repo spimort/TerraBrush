@@ -32,7 +32,7 @@ public partial class Foliage : Node3D {
 
     public override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
-            this._foliageShader.SetShaderParameter("GlobalPosition", this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero);
+            this._foliageShader.SetShaderParameter(StringNames.GlobalPosition, this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero);
         }
     }
 
@@ -45,45 +45,45 @@ public partial class Foliage : Node3D {
         this._particles.DrawPass1 = this.Mesh;
         this._particles.MaterialOverride = this.MeshMaterial;
 
-        _foliageShader.SetShaderParameter("HeightmapTextures", TerrainZones.HeightmapTextures);
-        _foliageShader.SetShaderParameter("ZonesSize", (float) ZonesSize);
-        _foliageShader.SetShaderParameter("NumberOfZones", (float) TerrainZones.Zones.Count());
-		_foliageShader.SetShaderParameter("ZonesMap", TerrainZones.ZonesMap);
+        _foliageShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
+        _foliageShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
+        _foliageShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Count());
+		_foliageShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
 
         if (TextureSets?.TextureSets != null) {
-            _foliageShader.SetShaderParameter("Splatmaps", TerrainZones.SplatmapsTextures);
-            _foliageShader.SetShaderParameter("Textures", Utils.TexturesToTextureArray(TextureSets.TextureSets.Select(x => x.AlbedoTexture)));
-            _foliageShader.SetShaderParameter("NumberOfTextures", TextureSets?.TextureSets?.Count() ?? 0);
-    		_foliageShader.SetShaderParameter("TextureDetail", this.TextureDetail);
+            _foliageShader.SetShaderParameter(StringNames.Splatmaps, TerrainZones.SplatmapsTextures);
+            _foliageShader.SetShaderParameter(StringNames.Textures, Utils.TexturesToTextureArray(TextureSets.TextureSets.Select(x => x.AlbedoTexture)));
+            _foliageShader.SetShaderParameter(StringNames.NumberOfTextures, TextureSets?.TextureSets?.Count() ?? 0);
+    		_foliageShader.SetShaderParameter(StringNames.TextureDetail, this.TextureDetail);
         }
 
-        _foliageShader.SetShaderParameter("FoliageTextures", TerrainZones.FoliagesTextures[foliageIndex]);
-        _foliageShader.SetShaderParameter("MeshScale", this.MeshScale);
-        _foliageShader.SetShaderParameter("WindStrength", this.WindStrength);
+        _foliageShader.SetShaderParameter(StringNames.FoliageTextures, TerrainZones.FoliagesTextures[foliageIndex]);
+        _foliageShader.SetShaderParameter(StringNames.MeshScale, this.MeshScale);
+        _foliageShader.SetShaderParameter(StringNames.WindStrength, this.WindStrength);
 
-        _foliageShader.SetShaderParameter("WaterTextures", TerrainZones.WaterTextures);
-        _foliageShader.SetShaderParameter("WaterFactor", this.WaterFactor);
+        _foliageShader.SetShaderParameter(StringNames.WaterTextures, TerrainZones.WaterTextures);
+        _foliageShader.SetShaderParameter(StringNames.WaterFactor, this.WaterFactor);
 
         if (NoiseTexture != null) {
             var noiseImage = new Image();
             noiseImage.CopyFrom(NoiseTexture.GetImage());
             noiseImage.Resize(this.ZonesSize, this.ZonesSize);
 
-            this._foliageShader.SetShaderParameter("NoiseTexture", ImageTexture.CreateFromImage(noiseImage));
+            this._foliageShader.SetShaderParameter(StringNames.NoiseTexture, ImageTexture.CreateFromImage(noiseImage));
         }
 
         if (Engine.IsEditorHint()) {
             this._particles.Amount = this.EditorMaximumRenderDistance * this.EditorMaximumRenderDistance;
 
-            this._foliageShader.SetShaderParameter("MaximumDistance", this.EditorMaximumRenderDistance);
+            this._foliageShader.SetShaderParameter(StringNames.MaximumDistance, this.EditorMaximumRenderDistance);
         } else {
             this._particles.Amount = this.MaximumRenderDistance * this.MaximumRenderDistance;
 
-            this._foliageShader.SetShaderParameter("MaximumDistance", this.MaximumRenderDistance);
+            this._foliageShader.SetShaderParameter(StringNames.MaximumDistance, this.MaximumRenderDistance);
         }
     }
 
     public void UpdateEditorCameraPosition(Camera3D viewportCamera) {
-        this._foliageShader?.SetShaderParameter("GlobalPosition", viewportCamera.GlobalPosition);
+        this._foliageShader?.SetShaderParameter(StringNames.GlobalPosition, viewportCamera.GlobalPosition);
     }
 }

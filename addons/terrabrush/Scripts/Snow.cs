@@ -50,16 +50,16 @@ public partial class Snow : Node3D {
 
         _clipmap.CreateMesh();
 
-        _clipmap.Shader.SetShaderParameter("SnowTextures", TerrainZones.SnowTextures);
-        _clipmap.Shader.SetShaderParameter("SnowFactor", SnowDefinition.SnowFactor);
-        _clipmap.Shader.SetShaderParameter("SnowInnerOffset", SnowDefinition.SnowInnerOffset);
-        _clipmap.Shader.SetShaderParameter("SnowColorTexture", SnowDefinition.SnowColorTexture);
-        _clipmap.Shader.SetShaderParameter("SnowColorNormal", SnowDefinition.SnowColorNormal);
-        _clipmap.Shader.SetShaderParameter("SnowColorRoughness", SnowDefinition.SnowColorRoughness);
-        _clipmap.Shader.SetShaderParameter("SnowColorDetail", SnowDefinition.SnowColorDetail);
-        _clipmap.Shader.SetShaderParameter("Noise", SnowDefinition.Noise);
-        _clipmap.Shader.SetShaderParameter("NoiseFactor", SnowDefinition.NoiseFactor);
-        _clipmap.Shader.SetShaderParameter("Metallic", SnowDefinition.Metallic);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowTextures, TerrainZones.SnowTextures);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowFactor, SnowDefinition.SnowFactor);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowInnerOffset, SnowDefinition.SnowInnerOffset);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowColorTexture, SnowDefinition.SnowColorTexture);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowColorNormal, SnowDefinition.SnowColorNormal);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowColorRoughness, SnowDefinition.SnowColorRoughness);
+        _clipmap.Shader.SetShaderParameter(StringNames.SnowColorDetail, SnowDefinition.SnowColorDetail);
+        _clipmap.Shader.SetShaderParameter(StringNames.Noise, SnowDefinition.Noise);
+        _clipmap.Shader.SetShaderParameter(StringNames.NoiseFactor, SnowDefinition.NoiseFactor);
+        _clipmap.Shader.SetShaderParameter(StringNames.Metallic, SnowDefinition.Metallic);
     }
 
     public override void _PhysicsProcess(double delta) {
