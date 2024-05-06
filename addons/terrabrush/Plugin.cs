@@ -502,10 +502,10 @@ public partial class Plugin : EditorPlugin {
     private async void ShowCurrentToolMenu() {
         switch (_currentTerraBrushNode.TerrainTool) {
             case TerrainToolType.TerrainSetHeight:
-                var sculptTool = (SculptTool) _currentTerraBrushNode.CurrentTool;
-                var heightValue = await DialogUtils.ShowNumericSelector(this, sculptTool.GetSetHeightValue());
+                var setHeightTool = (SetHeightTool) _currentTerraBrushNode.CurrentTool;
+                var heightValue = await DialogUtils.ShowNumericSelector(this, setHeightTool.GetSetHeightValue());
                 if (heightValue.HasValue) {
-                    sculptTool.UpdateSetHeightValue(heightValue.Value);
+                    setHeightTool.UpdateSetHeightValue(heightValue.Value);
                 }
                 break;
             case TerrainToolType.Paint:

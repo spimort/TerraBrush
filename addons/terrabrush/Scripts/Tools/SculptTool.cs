@@ -7,57 +7,10 @@ using Godot;
 namespace TerraBrush;
 
 public class SculptTool : ToolBase {
-    private float _setHeightValue = 0;
     private int _sculptingMultiplier = 1;
     private HashSet<ZoneResource> _sculptedZones;
 
-    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {
-        _setHeightValue = terraBrush.SelectedSetHeight;
-    }
-
-    public override string GetToolInfo(TerrainToolType toolType) {
-        if (toolType != TerrainToolType.TerrainSetHeight) {
-            return base.GetToolInfo(toolType);
-        }
-
-        return $"{base.GetToolInfo(toolType)}{(_setHeightValue == 0 ? "\nSelect height with CTRL + (click or mouse wheel or +/-)\nUse CTRL + ALT to set the increment to 0.1" : "")}\nHeight : {_setHeightValue}".Trim();
-    }
-
-    public override bool HandleInput(TerrainToolType toolType, InputEvent @event) {
-        if (toolType == TerrainToolType.TerrainSetHeight && Input.IsKeyPressed(Key.Ctrl)) {
-            float increment = 1;
-            int roundFactor = 0;
-            if (Input.IsKeyPressed(Key.Alt)) {
-                increment = 0.1f;
-                roundFactor = 1;
-            }
-
-            float? incrementValue = null;
-            if (@event is InputEventMouseButton inputMouseButton) {
-                if (inputMouseButton.ButtonIndex == MouseButton.WheelUp) {
-                    incrementValue = increment;
-                } else if (inputMouseButton.ButtonIndex == MouseButton.WheelDown) {
-                    incrementValue = -increment;
-                }
-            }
-
-            if (@event is InputEventKey inputEvent) {
-                if (inputEvent.Keycode == Key.Equal) {
-                    incrementValue = increment;
-                } else if (inputEvent.Keycode == Key.Minus) {
-                    incrementValue = -increment;
-                }
-            }
-
-            if (incrementValue != null) {
-                _setHeightValue += incrementValue.Value;
-                UpdateSetHeightValue((float) Math.Round(_setHeightValue, roundFactor));
-                return true;
-            }
-        }
-
-        return base.HandleInput(toolType, @event);
-    }
+    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     public override void BeginPaint() {
         base.BeginPaint();
@@ -79,15 +32,17 @@ public class SculptTool : ToolBase {
     }
 
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (toolType == TerrainToolType.TerrainSmooth) {
-            Smooth(toolType, brushImage, brushSize, brushStrength, imagePosition);
-        } else if (toolType == TerrainToolType.TerrainFlatten) {
-            Flatten(toolType, brushImage, brushSize, brushStrength, imagePosition);
-        } else if (toolType == TerrainToolType.TerrainSetHeight) {
-            SetHeight(toolType, brushImage, brushSize, brushStrength, imagePosition);
-        } else {
-            Sculpt(toolType, brushImage, brushSize, brushStrength, imagePosition);
-            Smooth(toolType, brushImage, brushSize, brushStrength, imagePosition);
+        switch (toolType) {
+            case TerrainToolType.TerrainSmooth:
+                Smooth(brushImage, brushSize, brushStrength, imagePosition);
+                break;
+            case TerrainToolType.TerrainFlatten:
+                Flatten(brushImage, brushSize, brushStrength, imagePosition);
+                break;
+            default:
+                Sculpt(toolType, brushImage, brushSize, brushStrength, imagePosition);
+                Smooth(brushImage, brushSize, brushStrength, imagePosition);
+                break;
         }
 
         _terraBrush.TerrainZones.UpdateHeightmaps();
@@ -109,7 +64,7 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Flatten(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+    private void Flatten(Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         Color smoothValue = Colors.Transparent;
         var numberOfSamples = 0;
 
@@ -136,7 +91,7 @@ public class SculptTool : ToolBase {
         });
     }
 
-    private void Smooth(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+    private void Smooth(Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var directions = new List<float>();
 
@@ -170,39 +125,6 @@ public class SculptTool : ToolBase {
             imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newPixel);
             _sculptedZones.Add(imageZoneInfo.Zone);
         });
-    }
-
-    private void SetHeight(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (Input.IsKeyPressed(Key.Ctrl)) {
-            var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize);
-            var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0);
-            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
-
-            UpdateSetHeightValue(_setHeightValue = currentPixel.R);
-            return;
-        }
-
-        ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
-            var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
-            var newValue = new Color(
-                Mathf.Lerp(currentPixel.R, _setHeightValue, pixelBrushStrength * brushStrength),
-                currentPixel.G,
-                currentPixel.B,
-                currentPixel.A
-            );
-
-            imageZoneInfo.Image.SetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y, newValue);
-            _sculptedZones.Add(imageZoneInfo.Zone);
-        });
-    }
-
-    public float GetSetHeightValue() {
-        return _setHeightValue;
-    }
-
-    public void UpdateSetHeightValue(float value) {
-        _setHeightValue = value;
-        _terraBrush.UpdateSetHeightValue(value);
     }
 }
 #endif
