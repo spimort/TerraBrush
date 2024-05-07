@@ -12,10 +12,19 @@ public class SetAngleTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
     private float _setAngleValue = 0;
     private Vector3? _setAngleInitialPoint = null;
+    private Node3D _initialPointMesh = null;
 
     public SetAngleTool(TerraBrush terraBrush) : base(terraBrush) {
+        ClearInitialPointMesh();
+
         _setAngleValue = terraBrush.SelectedSetAngle;
         _setAngleInitialPoint = terraBrush.SelectedSetAngleInitialPoint;
+
+        UpdateInitialPointMesh();
+    }
+
+    public override void BeforeDeselect () {
+        ClearInitialPointMesh();
     }
 
     public override bool HandleInput(TerrainToolType toolType, InputEvent @event) {
@@ -71,7 +80,6 @@ public class SetAngleTool : ToolBase {
 
         return $"""
             {initialValue}
-            Initial point : {(_setAngleInitialPoint == null ? "unset" : _setAngleInitialPoint)}
             Angle : {_setAngleValue}
             """.Trim();
     }
@@ -103,6 +111,7 @@ public class SetAngleTool : ToolBase {
             _setAngleInitialPoint = new Vector3(imagePosition.X, currentPixel.R, imagePosition.Y);
 
             UpdateSetAngleValue(_setAngleValue);
+            UpdateInitialPointMesh();
 
             return;
         }
@@ -140,6 +149,35 @@ public class SetAngleTool : ToolBase {
 
         _setAngleValue = value;
         _terraBrush.UpdateSetAngleValue(value, _setAngleInitialPoint);
+    }
+
+    private void UpdateInitialPointMesh() {
+        if (_setAngleInitialPoint == null) {
+            _initialPointMesh?.QueueFree();
+        } else {
+            if (_initialPointMesh == null) {
+                _initialPointMesh = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/SetAngleInitialPoint.tscn").Instantiate<Node3D>();
+
+                var container = _terraBrush.GetNodeOrNull(new NodePath(StringNames.SetAnglePointContainer));
+                if (container == null) {
+                    container = new Node3D();
+                    container.Name = StringNames.SetAnglePointContainer;
+                    _terraBrush.AddChild(container);
+                }
+
+                container.AddChild(_initialPointMesh);
+            }
+
+            _initialPointMesh.GlobalPosition = _setAngleInitialPoint.Value - new Vector3(_terraBrush.ZonesSize / 2.0f, 0, _terraBrush.ZonesSize / 2.0f);
+        }
+    }
+
+    private void ClearInitialPointMesh() {
+        var existingPointContainer = _terraBrush.GetNodeOrNull(new NodePath(StringNames.SetAnglePointContainer));
+        if (existingPointContainer != null) {
+            existingPointContainer.Name = new StringName($"{StringNames.SetAnglePointContainer}_temp");
+            existingPointContainer.QueueFree();
+        }
     }
 }
 #endif

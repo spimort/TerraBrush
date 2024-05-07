@@ -91,8 +91,10 @@ public partial class TerraBrushTool : Node3D {
 
         var terrainToolTypeAttribute = AttributeUtils.GetAttribute<ToolTypeAttribute>(terrainToolType);
         if (terrainToolTypeAttribute == null) {
+            _currentTool?.BeforeDeselect();
             _currentTool = null;
         } else if (_currentTool == null || _currentTool.GetType() != terrainToolTypeAttribute.PaintToolType) {
+            _currentTool?.BeforeDeselect();
             _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType, this);
         }
     }
