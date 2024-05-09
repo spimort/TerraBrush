@@ -50,8 +50,8 @@ public partial class Clipmap : Node3D {
         zPosition -= zPosition % maxCellWidth;
 
         if (isEven) {
-            xPosition -= (InitialCellWidth / 2.0f);
-            zPosition -= (InitialCellWidth / 2.0f);
+            xPosition -= InitialCellWidth / 2.0f;
+            zPosition -= InitialCellWidth / 2.0f;
         }
 
         var newPosition = new Vector3(xPosition, 0, zPosition);
