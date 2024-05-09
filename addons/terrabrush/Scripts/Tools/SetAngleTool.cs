@@ -31,10 +31,6 @@ public class SetAngleTool : ToolBase {
         if (Input.IsKeyPressed(Key.Ctrl)) {
             float increment = 1;
             int roundFactor = 0;
-            if (Input.IsKeyPressed(Key.Alt)) {
-                increment = 0.1f;
-                roundFactor = 1;
-            }
 
             float? incrementValue = null;
             if (@event is InputEventMouseButton inputMouseButton) {
@@ -71,17 +67,10 @@ public class SetAngleTool : ToolBase {
         }
 
         if (_setAngleValue == 0) {
-            initialValue = $"""
-                {initialValue}
-                Select angle with CTRL + (mouse wheel or +/-)
-                Use CTRL + ALT to set the increment to 0.1
-                """;
+            initialValue = $"{initialValue}\nSelect angle with CTRL + (mouse wheel or +/-)";
         }
 
-        return $"""
-            {initialValue}
-            Angle : {_setAngleValue}
-            """.Trim();
+        return $"{initialValue}\nAngle : {_setAngleValue}\n".Trim();
     }
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {

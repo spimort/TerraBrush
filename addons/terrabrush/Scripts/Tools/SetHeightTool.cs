@@ -53,16 +53,10 @@ public class SetHeightTool : ToolBase {
     public override string GetToolInfo(TerrainToolType toolType) {
         var initialValue = string.Empty;
         if (_setHeightValue == 0) {
-            initialValue = """
-                Select height with CTRL + (click or mouse wheel or +/-)
-                Use CTRL + ALT to set the increment to 0.1
-                """;
+            initialValue = "Select height with CTRL + (click or mouse wheel or +/-)\nUse CTRL + ALT to set the increment to 0.1";
         }
 
-        return $"""
-            {initialValue}
-            Height : {_setHeightValue}
-            """.Trim();
+        return $"{initialValue}\nHeight : {_setHeightValue}".Trim();
     }
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
