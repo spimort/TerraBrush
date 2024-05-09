@@ -43,11 +43,13 @@ public partial class Clipmap : Node3D {
         var xPosition = ((int) Math.Floor(position.X)) + offset;
         var zPosition = ((int) Math.Floor(position.Z)) + offset;
 
-        xPosition -= xPosition % InitialCellWidth;
-        zPosition -= zPosition % InitialCellWidth;
+        var maxCellWidth = InitialCellWidth * Mathf.Pow(2, Levels - 1);
+
+        xPosition -= (xPosition % maxCellWidth) - (InitialCellWidth / 2.0f);
+        zPosition -= (zPosition % maxCellWidth) - (InitialCellWidth / 2.0f);
 
         var newPosition = new Vector3(xPosition, 0, zPosition);
-        if (newPosition.DistanceTo(_clipmapMesh.GlobalPosition) > 25) {
+        if (newPosition.DistanceTo(_clipmapMesh.GlobalPosition) > maxCellWidth) {
             _clipmapMesh.GlobalPosition = newPosition;
         }
     }
