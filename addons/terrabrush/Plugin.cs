@@ -508,6 +508,13 @@ public partial class Plugin : EditorPlugin {
                     setHeightTool.UpdateSetHeightValue(heightValue.Value);
                 }
                 break;
+            case TerrainToolType.TerrainSetAngle:
+                var setAngleTool = (SetAngleTool) _currentTerraBrushNode.CurrentTool;
+                var angleValue = await DialogUtils.ShowNumericSelector(this, setAngleTool.GetSetAngleValue(), -89.9f, 89.9f);
+                if (angleValue.HasValue) {
+                    setAngleTool.UpdateSetAngleValue(angleValue.Value);
+                }
+                break;
             case TerrainToolType.Paint:
                 ShowCustomContentPieMenu("Textures", customContentPieMenu => {
                     CustomContentLoader.AddTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
