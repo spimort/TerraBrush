@@ -45,8 +45,8 @@ public partial class Clipmap : Node3D {
 
         var maxCellWidth = InitialCellWidth * Mathf.Pow(2, Levels - 1);
 
-        xPosition -= xPosition % maxCellWidth;
-        zPosition -= zPosition % maxCellWidth;
+        xPosition -= (xPosition % maxCellWidth) - (InitialCellWidth / 2.0f);
+        zPosition -= (zPosition % maxCellWidth) - (InitialCellWidth / 2.0f);
 
         var newPosition = new Vector3(xPosition, 0, zPosition);
         if (newPosition.DistanceTo(_clipmapMesh.GlobalPosition) > maxCellWidth) {
