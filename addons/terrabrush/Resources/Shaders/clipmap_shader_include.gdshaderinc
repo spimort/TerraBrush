@@ -10,7 +10,9 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 	float height = vertex.y;
 	
 	if (zoneUV.z >= 0.0) {
-		// Calculate the average height for mid zone vertices
+		height = texture(HeightmapTextures, zoneUV).r;
+		
+		// Calculate the average height for mid zone vertices		
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
 			int level = int(levelsMeta.a * 100.0);
 			float levelMultiplicator = pow(2.0, float(level));
@@ -18,12 +20,12 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 			vec3 previousZoneUV = calculateZoneUV(offsetWorldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
 			vec3 nextZoneUV = calculateZoneUV(offsetWorldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
 
-			float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
-			float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
-			
-			height = (previousHeight + nextHeight) / 2.0;
-		} else {
-			height = texture(HeightmapTextures, zoneUV).r;
+			if (previousZoneUV.z >= 0.0 && nextZoneUV.z >= 0.0) {
+				float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
+				float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
+				
+				height = (previousHeight + nextHeight) / 2.0;				
+			}
 		}
 	} else {
 		// Try to match the height of neighbors zones for a specific range so the transition to go hidden is easier
