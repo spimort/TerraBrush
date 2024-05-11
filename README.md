@@ -42,6 +42,7 @@ I'm gonna be happy to accept PR for new features if it fits.
   - Smooth the terrain
   - Flatten the terrain
   - Set height (paint to a specific height)
+  - Set angle (paint from a starting point with a specific angle)
 * **Paint textures** - Add colors to your terrain with the textures painting tool
   - Normal map and roughness texture are supported
 * **Foliage** - Add foliage to your terrain (ex. Grass)

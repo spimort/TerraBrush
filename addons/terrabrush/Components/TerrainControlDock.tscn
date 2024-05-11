@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://clqmuo5dunyap"]
+[gd_scene load_steps=23 format=3 uid="uid://clqmuo5dunyap"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cb0caw8uixal4" path="res://addons/terrabrush/Assets/Icons/foliage_add.png" id="7_1nssx"]
 [ext_resource type="Texture2D" uid="uid://d1lt6wkhkjsy2" path="res://addons/terrabrush/Assets/Icons/map_set_height.png" id="7_crl7m"]
 [ext_resource type="Texture2D" uid="uid://byom5fa2uoq4y" path="res://addons/terrabrush/Assets/Icons/foliage_remove.png" id="8_glupl"]
+[ext_resource type="Texture2D" uid="uid://ci8h4u8w31qd6" path="res://addons/terrabrush/Assets/Icons/map_set_angle.png" id="9_2o28m"]
 [ext_resource type="Texture2D" uid="uid://buib12yv1sqq4" path="res://addons/terrabrush/Assets/Icons/object_add.png" id="9_d1w4v"]
 [ext_resource type="Texture2D" uid="uid://bciybm80fsm0g" path="res://addons/terrabrush/Assets/Icons/object_remove.png" id="10_wcsh2"]
 [ext_resource type="Texture2D" uid="uid://de2fvsumhvsbd" path="res://addons/terrabrush/Assets/Icons/water_add.png" id="11_6ecx6"]
@@ -122,6 +123,14 @@ tooltip_text = "Set terrain height"
 texture_normal = ExtResource("3_sxr5p")
 ToolType = 5
 ButtonImage = ExtResource("7_crl7m")
+
+[node name="ToolPreview" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 2
+tooltip_text = "Set terrain angle"
+texture_normal = ExtResource("3_sxr5p")
+ToolType = 19
+ButtonImage = ExtResource("9_2o28m")
 
 [node name="ToolPaint" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
 unique_name_in_owner = true

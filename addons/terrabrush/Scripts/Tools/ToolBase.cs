@@ -25,6 +25,8 @@ public abstract class ToolBase {
         _terraBrush = terraBrush;
     }
 
+    public virtual void BeforeDeselect() {}
+
     public virtual string GetToolInfo(TerrainToolType toolType) {
         if (_lockedAxis != null) {
             return $"Locked axis : {_lockedAxis}";

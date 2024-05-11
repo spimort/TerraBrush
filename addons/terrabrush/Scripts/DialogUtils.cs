@@ -5,9 +5,11 @@ using Godot;
 namespace TerraBrush;
 
 public static class DialogUtils {
-	public static Task<float?> ShowNumericSelector(Node sourceNode, float defaultValue = 0) {
+	public static Task<float?> ShowNumericSelector(Node sourceNode, float defaultValue = 0, float? minValue = null, float? maxValue = null) {
 		var completionSource = new TaskCompletionSource<float?>();
 		var dialog = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/NumericSelectorDialog.tscn").Instantiate<NumericSelectorDialog>();
+        dialog.MinValue = minValue;
+        dialog.MaxValue = maxValue;
 
 		dialog.NumericSelectorAccepted += (value) => {
 			dialog.QueueFree();

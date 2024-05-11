@@ -55,4 +55,5 @@ internal static class StringNames {
     public static readonly StringName Near = "Near";
     public static readonly StringName Far = "Far";
     public static readonly StringName EdgeColor = "EdgeColor";
+    public static readonly StringName SetAnglePointContainer = "SetAnglePointContainer";
 }

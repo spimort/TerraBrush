@@ -16,6 +16,9 @@ public partial class NumericSelectorDialog : Window {
 	[NodePath] private Button _okButton;
 	[NodePath] private Button _cancelButton;
 
+	public float? MinValue { get;set; }
+	public float? MaxValue { get;set; }
+
 	public override void _Ready() {
 		this.RegisterNodePaths();
 
@@ -26,6 +29,14 @@ public partial class NumericSelectorDialog : Window {
 		CloseRequested += () => EmitSignal(SignalName.NumericSelectorCancelled);
 
 		_spinBox.GetLineEdit().GrabFocus();
+
+		if (MinValue.HasValue) {
+			_spinBox.MinValue = MinValue.Value;
+		}
+
+		if (MaxValue.HasValue) {
+			_spinBox.MaxValue = MaxValue.Value;
+		}
 	}
 
     public void SetValue(float value) {
@@ -41,6 +52,6 @@ public partial class NumericSelectorDialog : Window {
     }
 
 	private void SendResult() {
-		EmitSignal(SignalName.NumericSelectorAccepted, _spinBox.Value);
+		EmitSignal(SignalName.NumericSelectorAccepted, (float) Math.Round(_spinBox.Value, 2));
 	}
 }

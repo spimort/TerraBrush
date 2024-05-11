@@ -10,7 +10,8 @@ public enum TerrainToolType {
     [ToolType(typeof(SculptTool))] TerrainRemove = 2,
     [ToolType(typeof(SculptTool))] TerrainSmooth = 3,
     [ToolType(typeof(SculptTool))] TerrainFlatten = 4,
-    [ToolType(typeof(SculptTool))] TerrainSetHeight = 5,
+    [ToolType(typeof(SetHeightTool))] TerrainSetHeight = 5,
+    [ToolType(typeof(SetAngleTool))] TerrainSetAngle = 19,
     [ToolType(typeof(TextureTool))] Paint = 6,
     [ToolType(typeof(FoliageTool))] FoliageAdd = 7,
     [ToolType(typeof(FoliageTool))] FoliageRemove = 8,
@@ -35,6 +36,8 @@ public partial class TerraBrushTool : Node3D {
     private int? _selectedBrushIndex = null;
     private float _brushStrength = 0.1f;
     private float _selectedSetHeight = 0;
+    private float _selectedSetAngle = 0;
+    private Vector3? _selectedSetAngleInitialPoint = null;
     private int? _textureSetIndex = null;
     private int? _foliageIndex = null;
     private int? _objectIndex = null;
@@ -50,6 +53,8 @@ public partial class TerraBrushTool : Node3D {
     public Image BrushImage => _brushImage;
     public int? SelectedBrushIndex => _selectedBrushIndex;
     public float SelectedSetHeight => _selectedSetHeight;
+    public float SelectedSetAngle => _selectedSetAngle;
+    public Vector3? SelectedSetAngleInitialPoint => _selectedSetAngleInitialPoint;
     public int? TextureSetIndex => _textureSetIndex;
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
@@ -86,8 +91,10 @@ public partial class TerraBrushTool : Node3D {
 
         var terrainToolTypeAttribute = AttributeUtils.GetAttribute<ToolTypeAttribute>(terrainToolType);
         if (terrainToolTypeAttribute == null) {
+            _currentTool?.BeforeDeselect();
             _currentTool = null;
         } else if (_currentTool == null || _currentTool.GetType() != terrainToolTypeAttribute.PaintToolType) {
+            _currentTool?.BeforeDeselect();
             _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType, this);
         }
     }
@@ -140,6 +147,11 @@ public partial class TerraBrushTool : Node3D {
 
     public void UpdateSetHeightValue(float value) {
         _selectedSetHeight = value;
+    }
+
+    public void UpdateSetAngleValue(float value, Vector3? initialPoint) {
+        _selectedSetAngle = value;
+        _selectedSetAngleInitialPoint = initialPoint;
     }
 #endif
 
