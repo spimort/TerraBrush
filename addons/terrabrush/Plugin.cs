@@ -13,6 +13,8 @@ public partial class Plugin : EditorPlugin {
     private const int ToolInfoOffset = 20;
     private const string OverlayActionNameKey = "ActionName";
 
+    private bool _isDockPresent = false;
+    private bool _isEditingTerrainNode = false;
 	private TerrainControlDock _terrainControlDock;
     private PackedScene _terrainControlDockPrefab;
     private PackedScene _toolsPieMenuPrefab;
@@ -325,8 +327,8 @@ public partial class Plugin : EditorPlugin {
 
     private void RemoveDock() {
 		if (_terrainControlDock != null) {
-			RemoveControlFromDocks(_terrainControlDock);
-			_terrainControlDock.Free();
+            RemoveControlFromDocks(_terrainControlDock);
+			_terrainControlDock?.QueueFree();
 
             _terrainControlDock = null;
 		}
@@ -347,12 +349,18 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
+        if (_isEditingTerrainNode) {
+            return;
+        }
+
+        _isEditingTerrainNode = true;
+
         RemoveDock();
-        GetNodeOrNull("BrushDecal")?.QueueFree();
-        _brushDecal?.QueueFree();
+        if (_brushDecal != null) {
+            _brushDecal.QueueFree();
+        }
 
         _brushDecal = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
-        _brushDecal.Name = "BrushDecal";
         AddChild(_brushDecal);
 
         _brushDecal.SetSize(terraBrush.BrushSize);
@@ -379,6 +387,12 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void AddDock() {
+        if (_isDockPresent) {
+            return;
+        }
+
+        _isDockPresent = true;
+
         _terrainControlDock = _terrainControlDockPrefab.Instantiate<TerrainControlDock>();
         _terrainControlDock.TerraBrush = _currentTerraBrushNode;
         _terrainControlDock.BrushDecal = _brushDecal;
@@ -400,6 +414,8 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void OnExitEditTerrainNode() {
+        _isEditingTerrainNode = false;
+
         RemoveDock();
         HideOverlaySelector();
 
@@ -411,9 +427,11 @@ public partial class Plugin : EditorPlugin {
         _toolInfo?.QueueFree();
         _toolInfo = null;
 
-        _currentTerraBrushNode.SetMeta("_edit_lock_", false);
+        _currentTerraBrushNode?.SetMeta("_edit_lock_", false);
 
         _currentTerraBrushNode = null;
+
+        _isDockPresent = false;
     }
 
     private Node GetEditorViewportsContainer() {
