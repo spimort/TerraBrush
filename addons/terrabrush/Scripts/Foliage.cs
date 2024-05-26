@@ -9,6 +9,7 @@ public partial class Foliage : Node3D {
 
     [NodePath] private GpuParticles3D _particles;
 
+    [Export] public int FoliageIndex { get;set; }
     [Export] public int ZonesSize { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
@@ -28,6 +29,8 @@ public partial class Foliage : Node3D {
         this.RegisterNodePaths();
 
         this._foliageShader = (ShaderMaterial) this._particles.ProcessMaterial;
+
+        UpdateFoliage();
     }
 
     public override void _Process(double delta) {
@@ -36,7 +39,7 @@ public partial class Foliage : Node3D {
         }
     }
 
-    public void UpdateFoliage(int foliageIndex) {
+    public void UpdateFoliage() {
         if (_particles == null) {
             return;
         }
@@ -57,7 +60,7 @@ public partial class Foliage : Node3D {
     		_foliageShader.SetShaderParameter(StringNames.TextureDetail, this.TextureDetail);
         }
 
-        _foliageShader.SetShaderParameter(StringNames.FoliageTextures, TerrainZones.FoliagesTextures[foliageIndex]);
+        _foliageShader.SetShaderParameter(StringNames.FoliageTextures, TerrainZones.FoliagesTextures[FoliageIndex]);
         _foliageShader.SetShaderParameter(StringNames.MeshScale, this.MeshScale);
         _foliageShader.SetShaderParameter(StringNames.WindStrength, this.WindStrength);
 

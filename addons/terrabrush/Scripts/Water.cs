@@ -49,6 +49,8 @@ public partial class Water : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
+
+        UpdateWater();
     }
 
     public override void _PhysicsProcess(double delta) {

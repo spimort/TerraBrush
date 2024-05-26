@@ -263,10 +263,10 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;
         _terrain.LODInitialCellWidth = LODInitialCellWidth;
+        _terrain.CollisionOnly = CollisionOnly;
         _terrain.CreateCollisionInThread = CreateCollisionInThread;
 
         AddChild(_terrain);
-        _terrain.BuildTerrain(!Engine.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly));
 
         await CreateObjects();
 
@@ -368,8 +368,8 @@ public partial class TerraBrush : TerraBrushTool {
 
             if (foliage.Definition != null) {
                 var newFoliage = prefab.Instantiate<Foliage>();
-                _foliagesNode.AddChild(newFoliage);
 
+                newFoliage.FoliageIndex = i;
                 newFoliage.ZonesSize = ZonesSize;
                 newFoliage.TerrainZones = TerrainZones;
                 newFoliage.TextureSets = TextureSets;
@@ -384,7 +384,7 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
                 newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Definition.NoiseTexture) : _defaultNoise;
 
-                newFoliage.UpdateFoliage(i);
+                _foliagesNode.AddChild(newFoliage);
             }
         }
     }
@@ -585,8 +585,6 @@ public partial class TerraBrush : TerraBrushTool {
             _waterNode.NormalMap2 = await WaitForTextureReady(WaterDefinition.WaterNormalMap2);
 
             _waterNodeContainer.AddChild(_waterNode);
-
-            _waterNode.UpdateWater();
         }
     }
 
@@ -624,8 +622,6 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         _snowNodeContainer.AddChild(_snowNode);
-
-        _snowNode.UpdateSnow();
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {

@@ -26,6 +26,8 @@ public partial class Snow : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
+
+        UpdateSnow();
     }
 
     public void UpdateSnow() {
