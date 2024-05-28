@@ -118,6 +118,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Data Path|In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill in information by itself.|
 |Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be created since they could have a collision shape)|
 |Visual Instance Layers|The godot layer on which the terrain will be displayed.|
+|Custom Shader|Allow you to use a custom shader for the terrain.|
 |Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
 |Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|

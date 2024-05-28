@@ -20,6 +20,7 @@ public partial class Terrain : Node3D {
     [Export] public int ZonesSize { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
+    [Export] public ShaderMaterial CustomShader { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
 	[Export] public int TextureDetail { get;set; } = 1;
     [Export] public bool UseAntiTile { get;set; } = true;
@@ -46,6 +47,14 @@ public partial class Terrain : Node3D {
     public void BuildTerrain(bool collisionOnly = false) {
         if (_clipmap == null) {
             return;
+        }
+
+        if (CustomShader == null) {
+            _clipmap.Shader = new ShaderMaterial() {
+                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader")
+            };
+        } else {
+            _clipmap.Shader = CustomShader;
         }
 
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
