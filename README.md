@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-<h4 align="center">A minimal Terrain heightmap editor for <a href="[http://electron.atom.io](https://godotengine.org/)" target="_blank">Godot engine 4.2</a>.</h4>
+<h4 align="center">A minimal Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.2</a></h4>
 
 <p align="center">
   <a href="https://godotengine.org/">
@@ -12,7 +12,7 @@
   </a>
 </p>
 
-<center>
+<div align="center">
 
   [Disclaimer](#disclaimer) •
   [Key Features](#key-features) •
@@ -20,7 +20,7 @@
   [Support](#support) •
   [License](#license)
 
-</center>
+</div>
 
 <div align="center">
 
