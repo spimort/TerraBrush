@@ -111,6 +111,7 @@ Some properties of the node require the terrain to refresh (mainly for the shade
 For example, if you add a new texture, add foliage, add an object, add a water definition or add snow, you'll have to hit the "UpdateTerrain" button.
 
 **Node properties**
+
 |Property|Description|
 |-------------|-------------|
 |**Terrain Settings**||
