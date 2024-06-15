@@ -34,6 +34,7 @@ public partial class Terrain : Node3D {
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
+    [Export] public bool CollisionOnly { get;set; } = false;
     [Export] public bool CreateCollisionInThread { get;set; } = true;
 
     public StaticBody3D TerrainCollider => _terrainCollider;
@@ -42,9 +43,11 @@ public partial class Terrain : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
+
+        BuildTerrain();
     }
 
-    public void BuildTerrain(bool collisionOnly = false) {
+    public void BuildTerrain() {
         if (_clipmap == null) {
             return;
         }
@@ -62,7 +65,7 @@ public partial class Terrain : Node3D {
         _terrainCollider.CollisionLayer = (uint) CollisionLayers;
         _terrainCollider.CollisionMask = (uint) CollisionMask;
 
-        if (collisionOnly) {
+        if (!Engine.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly)) {
             UpdateCollisionShape();
             _clipmap.ClipmapMesh.Visible = false;
         } else {
