@@ -4,6 +4,7 @@
 /.github                  export-ignore
 /.vscode                  export-ignore
 /Assets                   export-ignore
+/docs                     export-ignore
 /Demo                     export-ignore
 /Resources                export-ignore
 /.gitattributes           export-ignore

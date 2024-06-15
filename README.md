@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-<h4 align="center">A minimal Terrain heightmap editor for <a href="[http://electron.atom.io](https://godotengine.org/)" target="_blank">Godot engine</a>.</h4>
+<h4 align="center">A minimal Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.2</a></h4>
 
 <p align="center">
   <a href="https://godotengine.org/">
@@ -12,13 +12,15 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="#disclaimer">Disclaimer</a> •
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#support">Support</a> •
-  <a href="#license">License</a>
-</p>
+<div align="center">
+
+  [Disclaimer](#disclaimer) •
+  [Key Features](#key-features) •
+  [How To Use](#how-to-use) •
+  [Support](#support) •
+  [License](#license)
+
+</div>
 
 <div align="center">
 
@@ -111,6 +113,7 @@ Some properties of the node require the terrain to refresh (mainly for the shade
 For example, if you add a new texture, add foliage, add an object, add a water definition or add snow, you'll have to hit the "UpdateTerrain" button.
 
 **Node properties**
+
 |Property|Description|
 |-------------|-------------|
 |**Terrain Settings**||
@@ -118,6 +121,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Data Path|In order to work, TerraBrush needs to have somewhere to store some files. Make sure the option for "Data Path" is filled. If possible, the tool will fill in information by itself.|
 |Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be created since they could have a collision shape)|
 |Visual Instance Layers|The godot layer on which the terrain will be displayed.|
+|Custom Shader|Allow you to use a custom shader for the terrain.|
 |Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
 |Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
