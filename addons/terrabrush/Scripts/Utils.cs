@@ -61,4 +61,17 @@ public static class Utils {
 
 		return textureArray;
 	}
+
+	public static ShaderMaterial CreateCustomShaderCopy(ShaderMaterial customShader) {
+		var newShader = new ShaderMaterial {
+			Shader = customShader.Shader
+		};
+
+		foreach (Godot.Collections.Dictionary uniform in customShader.Shader.GetShaderUniformList()) {
+			var uniformName = (string) uniform.GetValueOrDefault("name");
+			newShader.SetShaderParameter(uniformName, customShader.GetShaderParameter(uniformName));
+		}
+
+		return newShader;
+	}
 }
