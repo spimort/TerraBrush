@@ -8,6 +8,7 @@ namespace TerraBrush;
 [Tool]
 public partial class Snow : Node3D {
     private const float DeCompressSpeed = 0.5f;
+    private const float DeCompressOffsetSpeed = 2.0f;
 
     private Dictionary<ZoneResource, Dictionary<Vector2I, float>> _compressedPositions = new();
     private Dictionary<ZoneResource, Image> _imagesCache = new();
@@ -92,6 +93,17 @@ public partial class Snow : Node3D {
                             offsetY = 0f;
                         } else {
                             points[position] = compressionValue;
+
+                            offsetX -= (float) delta * DeCompressOffsetSpeed;
+                            offsetY -= (float) delta * DeCompressOffsetSpeed;
+
+                            if (offsetX < 0.0) {
+                                offsetX = 0.0f;
+                            }
+
+                            if (offsetY < 0.0) {
+                                offsetY = 0.0f;
+                            }
                         }
 
                         compressedSnowImage.SetPixel(position.X, position.Y, new Color(pixel.R, offsetX, offsetY, compressionValue));
