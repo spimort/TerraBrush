@@ -28,7 +28,7 @@ void calculateSnowVertex(
 	vec4 currentNoiseColor = texture(Noise, zoneUV.xy);
 
 	if (currentSnowColor.r > 0.0f) {
-		float compressedSnowValue = remap(currentSnowColor.a, 0.0, 1.0, 0.0, 1.0);
+		float compressedSnowValue = currentSnowColor.a;
 
 		vertex.y += ((currentSnowColor.r * SnowFactor) * compressedSnowValue) + (currentNoiseColor.r * NoiseFactor) - SnowInnerOffset;
 		
