@@ -40,7 +40,7 @@ public partial class Foliage : Node3D {
     }
 
     public void UpdateFoliage() {
-        if (_particles == null) {
+        if (_particles == null || TerrainZones == null) {
             return;
         }
 

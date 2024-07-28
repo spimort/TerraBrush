@@ -16,6 +16,8 @@ uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor;
 
 uniform int MaximumDistance;
+uniform float ScaleFalloffDistance = 10.0;
+uniform int LODRange = 10;
 uniform vec3 MeshScale = vec3(1.0);
 uniform float WindStrength = 0.1;
 
@@ -33,6 +35,10 @@ mat4 __build_rotation_mat4(vec3 axis, float angle) {
 	float c = cos(angle);
 	float oc = 1.0 - c;
 	return mat4(vec4(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s, 0), vec4(oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s, 0), vec4(oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c, 0), vec4(0, 0, 0, 1));
+}
+
+float remap(float value, float from1, float to1, float from2, float to2) {
+    return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
 }
 
 vec4 calculateGroundColor(vec3 zoneUV) {
@@ -99,8 +105,10 @@ void start() {
 		if (RESTART_POSITION) {
 			vec4 foliagePosition = texture(FoliageTextures, zoneUV);						
 			bool foliagePresence = foliagePosition.x > 0.0;
-			
-			if (foliagePresence) {
+			float particleDistance = length(vec2(xPosition, yPosition) - GlobalPosition.xz);	
+			// From center means that we need to divide the max distance by 2.0
+			float maxDistanceFromCenter = float(MaximumDistance) / 2.0;
+			if (foliagePresence && particleDistance <= maxDistanceFromCenter) {
 				// HeightMap Texture (height calculation)
 				vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);
 				if (heightMapPosition.g > 0.0) {
@@ -117,9 +125,16 @@ void start() {
 					height -= waterHeight;
 					
 					particlePosition.y = height;
+					
+					float meshScaleFactor = foliagePosition.a;
+					
+					// Calculate the distance so we can make the foliage fade when far distance
+					if (particleDistance >= maxDistanceFromCenter - ScaleFalloffDistance) {
+						meshScaleFactor = remap(particleDistance, maxDistanceFromCenter - ScaleFalloffDistance, maxDistanceFromCenter, meshScaleFactor, 0.0);						
+					}
 							
 					// Assign the position to the transform
-					TRANSFORM = mat4(vec4(MeshScale.x * foliagePosition.a, 0.0, 0.0, 0.0), vec4(0.0, MeshScale.y * foliagePosition.a, 0.0, 0.0), vec4(0.0, 0.0, MeshScale.z * foliagePosition.a, 0.0), vec4(particlePosition, 1.0));
+					TRANSFORM = mat4(vec4(MeshScale.x * meshScaleFactor, 0.0, 0.0, 0.0), vec4(0.0, MeshScale.y * meshScaleFactor, 0.0, 0.0), vec4(0.0, 0.0, MeshScale.z * meshScaleFactor, 0.0), vec4(particlePosition, 1.0));
 					
 					// Apply random rotation to each foliage
 					float randomValue = hash_noise_range(particlePosition).x;
