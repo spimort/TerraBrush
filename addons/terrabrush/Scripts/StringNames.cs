@@ -56,4 +56,8 @@ internal static class StringNames {
     public static readonly StringName Far = "Far";
     public static readonly StringName EdgeColor = "EdgeColor";
     public static readonly StringName SetAnglePointContainer = "SetAnglePointContainer";
+    public static readonly StringName NumberOfParticles = "NumberOfParticles";
+    public static readonly StringName InitialCellWidth = "InitialCellWidth";
+    public static readonly StringName LODRowsPerLevel = "LODRowsPerLevel";
+    public static readonly StringName LODLevels = "LODLevels";
 }

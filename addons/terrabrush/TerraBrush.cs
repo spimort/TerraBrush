@@ -397,8 +397,11 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.VisualInstanceLayers = foliage.Definition.VisualInstanceLayers;
                 newFoliage.Mesh = foliage.Definition.Mesh;
                 newFoliage.MeshScale = foliage.Definition.MeshScale;
-                newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
-                newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
+                // newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
+                // newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
+                newFoliage.LODInitialCellWidth = foliage.Definition.LODInitialCellWidth;
+                newFoliage.LODLevels = foliage.Definition.LODLevels;
+                newFoliage.LODRowsPerLevel = foliage.Definition.LODRowsPerLevel;
                 newFoliage.WindStrength = foliage.Definition.WindStrength;
                 newFoliage.MeshMaterial = foliage.Definition.MeshMaterial;
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
