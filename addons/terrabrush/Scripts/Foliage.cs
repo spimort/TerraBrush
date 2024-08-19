@@ -4,13 +4,20 @@ using Godot;
 
 namespace TerraBrush;
 
+public enum FoliageStrategy {
+    MultiMesh = 1,
+    GPUParticle = 2
+}
+
 [Tool]
 public partial class Foliage : Node3D {
     private ShaderMaterial _foliageShader;
     private Vector3 _lastUpdatedPosition = Vector3.Zero;
+    private MultiMeshInstance3D _multiMeshInstance3D;
 
     [NodePath] private GpuParticles3D _particles;
 
+    [Export] public FoliageStrategy Strategy { get;set; } = FoliageStrategy.MultiMesh;
     [Export] public int FoliageIndex { get;set; }
     [Export] public int ZonesSize { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
@@ -33,9 +40,20 @@ public partial class Foliage : Node3D {
         base._Ready();
         this.RegisterNodePaths();
 
-        this._foliageShader = (ShaderMaterial) this._particles.ProcessMaterial;
+        if (Strategy == FoliageStrategy.MultiMesh)  {
+            _multiMeshInstance3D = new MultiMeshInstance3D();
+            AddChild(_multiMeshInstance3D);
+            var shaderMaterial = new ShaderMaterial() {
+                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader")
+            };
+            _multiMeshInstance3D.MaterialOverride = shaderMaterial;
+            _foliageShader = shaderMaterial;
+        } else {
+            this._foliageShader = (ShaderMaterial) this._particles.ProcessMaterial;
+        }
 
         UpdateFoliage();
+        UpdateAABB();
     }
 
     public override void _Process(double delta) {
@@ -46,14 +64,63 @@ public partial class Foliage : Node3D {
         }
     }
 
-    public void UpdateFoliage() {
-        if (_particles == null || TerrainZones == null) {
+    private void UpdateFoliage() {
+        if ((_particles == null && _multiMeshInstance3D == null) || TerrainZones == null) {
             return;
         }
 
-        this._particles.Layers = (uint) VisualInstanceLayers;
-        this._particles.DrawPass1 = this.Mesh;
-        this._particles.MaterialOverride = this.MeshMaterial;
+        var numberOfLevels = LODLevels;
+        var rowsPerLevel = LODRowsPerLevel;
+        if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
+            rowsPerLevel += 1;
+        }
+
+        var numberOfPointsFirstLevel = (rowsPerLevel - (-1 - rowsPerLevel)) + 2;
+        var center = numberOfPointsFirstLevel * numberOfPointsFirstLevel;
+
+        var topBottomLines = (rowsPerLevel + 1) / 2;
+        var numberOfPointsOtherLevel = (rowsPerLevel - (-1 - rowsPerLevel)) + 2;
+        var topBottom = (numberOfPointsOtherLevel * topBottomLines * 2) * numberOfLevels;
+
+        var numberOfSides = numberOfPointsFirstLevel - (topBottomLines * 2);
+        var numberOfSidesPoints = (rowsPerLevel + 1) / 2;
+        var sides = numberOfSides * numberOfSidesPoints * 2 * numberOfLevels;
+
+        var numberOfPoints = center + topBottom + sides;
+
+        if (Strategy == FoliageStrategy.MultiMesh) {
+            _particles.Visible = false;
+
+            _multiMeshInstance3D.Layers = (uint) VisualInstanceLayers;
+            _multiMeshInstance3D.Multimesh = new MultiMesh() {
+                TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
+                Mesh = Mesh,
+                InstanceCount = numberOfPoints,
+                Buffer = Enumerable.Range(0, numberOfPoints).Select(_ => {
+                    return new float[] {
+                        1f,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        1f,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        1f,
+                        0f
+                    };
+                }).SelectMany(x => x).ToArray()
+            };
+        } else {
+            _particles.Visible = true;
+
+            this._particles.Layers = (uint) VisualInstanceLayers;
+            this._particles.DrawPass1 = this.Mesh;
+            this._particles.MaterialOverride = this.MeshMaterial;
+            this._particles.Amount = numberOfPoints;
+        }
 
         _foliageShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
         _foliageShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
@@ -82,31 +149,9 @@ public partial class Foliage : Node3D {
             this._foliageShader.SetShaderParameter(StringNames.NoiseTexture, ImageTexture.CreateFromImage(noiseImage));
         }
 
-        var numberOfLevels = LODLevels;
-        var rowsPerLevel = LODRowsPerLevel;
-        if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
-            rowsPerLevel += 1;
-        }
-
-        var numberOfPointsFirstLevel = (rowsPerLevel - (-1 - rowsPerLevel)) + 2;
-        var center = numberOfPointsFirstLevel * numberOfPointsFirstLevel;
-
-        var topBottomLines = (rowsPerLevel + 1) / 2;
-        var numberOfPointsOtherLevel = (rowsPerLevel - (-1 - rowsPerLevel)) + 2;
-        var topBottom = (numberOfPointsOtherLevel * topBottomLines * 2) * numberOfLevels;
-
-        var numberOfSides = numberOfPointsFirstLevel - (topBottomLines * 2);
-        var numberOfSidesPoints = (rowsPerLevel + 1) / 2;
-        var sides = numberOfSides * numberOfSidesPoints * 2 * numberOfLevels;
-
-        var numberOfPoints = center + topBottom + sides;
-        this._particles.Amount = numberOfPoints;
-
         _foliageShader.SetShaderParameter(StringNames.InitialCellWidth, LODInitialCellWidth);
         _foliageShader.SetShaderParameter(StringNames.LODRowsPerLevel, LODRowsPerLevel);
         _foliageShader.SetShaderParameter(StringNames.LODLevels, LODLevels);
-
-        _foliageShader.SetShaderParameter(StringNames.NumberOfParticles, _particles.Amount);
     }
 
     public void UpdateEditorCameraPosition(Camera3D viewportCamera) {
@@ -137,6 +182,28 @@ public partial class Foliage : Node3D {
         if (newPosition.DistanceTo(_lastUpdatedPosition) > maxCellWidth) {
             this._foliageShader.SetShaderParameter(StringNames.GlobalPosition, newPosition);
             _lastUpdatedPosition = newPosition;
+        }
+    }
+
+    public void UpdateAABB() {
+        if ((_particles == null && _multiMeshInstance3D == null) || TerrainZones == null) {
+            return;
+        }
+
+        var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
+        var maxX = zonePositions.Max(x => Math.Abs(x.X));
+        var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+
+        var aabbXSize = Math.Max(maxX * ZonesSize * 2, ZonesSize * 2);
+        var aabbYSize = Math.Max(maxY * ZonesSize * 2, ZonesSize * 2);
+        var aabbXPoint = -(aabbXSize / 2);
+        var aabbYPoint = -(aabbYSize / 2);
+
+        var aabb = new Aabb(new Vector3(aabbXPoint, Math.Max(aabbXPoint, aabbYPoint), aabbYPoint), new Vector3(aabbXSize, Math.Max(aabbXSize, aabbYSize), aabbYSize));
+        if (Strategy == FoliageStrategy.MultiMesh) {
+            _multiMeshInstance3D.CustomAabb = aabb;
+        } else {
+            _particles.CustomAabb = aabb;
         }
     }
 }

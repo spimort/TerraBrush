@@ -5,6 +5,7 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class FoliageDefinitionResource : Resource {
+    [Export] public FoliageStrategy Strategy { get;set; } = FoliageStrategy.MultiMesh;
     [Export] public Mesh Mesh { get;set; }
     [Export] public Material MeshMaterial { get;set; }
     [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);

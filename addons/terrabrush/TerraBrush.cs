@@ -389,6 +389,7 @@ public partial class TerraBrush : TerraBrushTool {
             if (foliage.Definition != null) {
                 var newFoliage = prefab.Instantiate<Foliage>();
 
+                newFoliage.Strategy = foliage.Definition.Strategy;
                 newFoliage.FoliageIndex = i;
                 newFoliage.ZonesSize = ZonesSize;
                 newFoliage.TerrainZones = TerrainZones;
