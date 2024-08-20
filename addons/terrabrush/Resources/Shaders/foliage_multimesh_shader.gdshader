@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_disabled;
+render_mode cull_disabled, diffuse_burley;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 
@@ -29,14 +29,6 @@ uniform float WindStrength = 0.1;
 vec3 hash_noise_range(vec3 p) {
 	p *= mat3(vec3(127.1, 311.7, -53.7), vec3(269.5, 183.3, 77.1), vec3(-301.7, 27.3, 215.3));
 	return 2.0 * fract(fract(p)*4375.55) -1.;
-}
-
-mat4 __build_rotation_mat4(vec3 axis, float angle) {
-	axis = normalize(axis);
-	float s = sin(angle);
-	float c = cos(angle);
-	float oc = 1.0 - c;
-	return mat4(vec4(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s, 0), vec4(oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s, 0), vec4(oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c, 0), vec4(0, 0, 0, 1));
 }
 
 // This code has been taken from https://godotshaders.com/shader/vertex-mesh-rotator/
@@ -80,10 +72,6 @@ mat3 rotateX(float theta) {
 	);
 	
 	return rotate_x;
-}
-
-float remap(float value, float from1, float to1, float from2, float to2) {
-    return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
 }
 
 vec4 calculateGroundColor(vec3 zoneUV) {
@@ -248,46 +236,38 @@ void vertex() {
 				
 				height -= waterHeight;
 				
-				particlePosition.y = height;
-				
-				float meshScaleFactor = foliagePosition.a;
-				
-				// Calculate the distance so we can make the foliage fade when far distance
-				//if (particleDistance >= maxDistanceFromCenter - ScaleFalloffDistance) {
-					//meshScaleFactor = remap(particleDistance, maxDistanceFromCenter - ScaleFalloffDistance, maxDistanceFromCenter, meshScaleFactor, 0.0);						
-				//}
+				particlePosition.y = height;				
 						
 				// Assign the position to the transform
 				VERTEX.x += particlePosition.x;
 				VERTEX.y += particlePosition.y;
 				VERTEX.z += particlePosition.z;
-
-				//// Apply random rotation to each foliage
-				float randomValue = hash_noise_range(particlePosition).x;
-				float randomRotation = mix(0, radians(360), randomValue);				
-				mat3 randomRotationMat = rotateY(randomRotation);				
-				VERTEX = ((VERTEX - particlePosition) * randomRotationMat) + particlePosition;
-				
-				//
-				//// Apply the transform for each blades
-				//TRANSFORM = EMISSION_TRANSFORM * TRANSFORM;
 				
 				// Make the foliage wave with wind
-				float windDirection = 0.0;
+				float randomValue = hash_noise_range(particlePosition).x;
+				float windDirection = 0.0;				
 				if (randomValue > 0.5) {
 					windDirection = sin(TIME);
 				} else {
 					windDirection = cos(TIME);
 				}
-				windDirection *= randomValue * WindStrength;
-				
-				//TRANSFORM[1] += vec4(windDirection, 0, windDirection, 1.0);	
+				windDirection *= randomValue * WindStrength;				
+				VERTEX = ((VERTEX - particlePosition) * rotateX(windDirection)) + particlePosition;				
+
+				// Apply random rotation to each foliage				
+				float randomRotation = mix(0, radians(360), randomValue);				
+				mat3 randomRotationMat = rotateY(randomRotation);				
+				VERTEX = ((VERTEX - particlePosition) * randomRotationMat) + particlePosition;						
 				
 				COLOR = calculateGroundColor(zoneUV);
-			}								
+			}
 		} else {
 			// Disable instance			
 			VERTEX.y = 0.0; // Scale down the mesh so it "vanish"
 		}
 	}
+}
+
+void fragment() {
+	ALBEDO = COLOR.rgb;
 }

@@ -25,8 +25,8 @@ public partial class Foliage : Node3D {
 	[Export] public int TextureDetail { get;set; } = 1;
     [Export] public Mesh Mesh { get;set; }
     [Export] public Vector3 MeshScale { get;set; }
-    // [Export] public int MaximumRenderDistance { get;set; }
-    // [Export] public int EditorMaximumRenderDistance { get;set; }
+    [Export] public int MaximumRenderDistance { get;set; }
+    [Export] public int EditorMaximumRenderDistance { get;set; }
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
@@ -113,6 +113,10 @@ public partial class Foliage : Node3D {
                     };
                 }).SelectMany(x => x).ToArray()
             };
+
+            _foliageShader.SetShaderParameter(StringNames.InitialCellWidth, LODInitialCellWidth);
+            _foliageShader.SetShaderParameter(StringNames.LODRowsPerLevel, LODRowsPerLevel);
+            _foliageShader.SetShaderParameter(StringNames.LODLevels, LODLevels);
         } else {
             _particles.Visible = true;
 
@@ -120,6 +124,16 @@ public partial class Foliage : Node3D {
             this._particles.DrawPass1 = this.Mesh;
             this._particles.MaterialOverride = this.MeshMaterial;
             this._particles.Amount = numberOfPoints;
+
+            if (Engine.IsEditorHint()) {
+                this._particles.Amount = this.EditorMaximumRenderDistance * this.EditorMaximumRenderDistance;
+
+                this._foliageShader.SetShaderParameter(StringNames.MaximumDistance, this.EditorMaximumRenderDistance);
+            } else {
+                this._particles.Amount = this.MaximumRenderDistance * this.MaximumRenderDistance;
+
+                this._foliageShader.SetShaderParameter(StringNames.MaximumDistance, this.MaximumRenderDistance);
+            }
         }
 
         _foliageShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
@@ -148,10 +162,6 @@ public partial class Foliage : Node3D {
 
             this._foliageShader.SetShaderParameter(StringNames.NoiseTexture, ImageTexture.CreateFromImage(noiseImage));
         }
-
-        _foliageShader.SetShaderParameter(StringNames.InitialCellWidth, LODInitialCellWidth);
-        _foliageShader.SetShaderParameter(StringNames.LODRowsPerLevel, LODRowsPerLevel);
-        _foliageShader.SetShaderParameter(StringNames.LODLevels, LODLevels);
     }
 
     public void UpdateEditorCameraPosition(Camera3D viewportCamera) {
