@@ -18,6 +18,7 @@ shader_parameter/NumberOfZones = null
 
 [node name="Foliage" type="Node3D"]
 script = ExtResource("1_lxro2")
+AlbedoTextures = []
 MeshScale = Vector3(1, 1, 1)
 WindStrength = 0.1
 

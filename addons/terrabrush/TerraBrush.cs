@@ -401,9 +401,9 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.LODLevels = foliage.Definition.LODLevels;
                 newFoliage.LODRowsPerLevel = foliage.Definition.LODRowsPerLevel;
                 newFoliage.Albedo = foliage.Definition.Albedo;
-                newFoliage.AlbedoTexture = foliage.Definition.AlbedoTexture;
+                newFoliage.AlbedoTextures = foliage.Definition.AlbedoTextures;
                 newFoliage.UseGroundColor = foliage.Definition.UseGroundColor;
-                newFoliage.AlphaScissorThreshold = foliage.Definition.AlphaScissorThreshold;
+                newFoliage.CastShadow = foliage.Definition.CastShadow;
                 newFoliage.MeshScale = foliage.Definition.MeshScale;
                 newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
                 newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;

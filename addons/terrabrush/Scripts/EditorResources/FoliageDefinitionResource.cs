@@ -12,9 +12,9 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public int LODRowsPerLevel { get;set; } = 101;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public Color Albedo { get;set; } = Colors.White;
-    [Export] public Texture2D AlbedoTexture { get;set; }
+    [Export] public Texture2D[] AlbedoTextures { get;set; }
     [Export] public bool UseGroundColor { get;set; } = true;
-    [Export] public float AlphaScissorThreshold { get;set; } = 0.5f;
+    [Export] public bool CastShadow { get;set; } = false;
     // Particles settings
     [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
     [Export] public Material MeshMaterial { get;set; }

@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_toon, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_toon, specular_schlick_ggx, depth_prepass_alpha;
 
 // The position of the camera
 uniform vec3 GlobalPosition;
@@ -9,9 +9,9 @@ uniform int LODRowsPerLevel = 10;
 uniform int LODLevels = 5;
 uniform float WindStrength = 0.1;
 uniform vec4 FoliageAlbedo: source_color = vec4(1.0);
-uniform sampler2D FoliageAlbedoTexture: hint_default_white, repeat_disable;
+uniform sampler2DArray FoliageAlbedoTextures: hint_default_white, repeat_disable;
+uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
-uniform float AlphaScissorThreshold = 0.5;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -113,7 +113,9 @@ vec4 calculateGroundColor(vec3 zoneUV) {
 	return resultTexture;
 }
 
-void vertex() {
+varying flat vec3 _instancePosition;
+
+void vertex() {		
 	// Compute the clipmap INDEX position
 	int currentIndex = int(INSTANCE_ID);
 
@@ -196,6 +198,8 @@ void vertex() {
 	// Apply the global position on top of the clipmap
 	particlePosition.x += roundEven(GlobalPosition.x);
 	particlePosition.z += roundEven(GlobalPosition.z);
+	
+	_instancePosition = particlePosition;	
 
 	// Fetch the zoneUV with the "Grid" position of the foliage.
 	vec3 worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
@@ -203,11 +207,12 @@ void vertex() {
 
 	// Calculate the noise/random value with the zoneUV;
 	vec4 noiseTextureValue = texture(NoiseTexture, zoneUV.xy);
-	float noiseRandom = hash_noise_range(noiseTextureValue.rgb).x;
-	float noiseValue = mix(-1, 1, noiseRandom);
+	vec3 noiseRandom = hash_noise_range(noiseTextureValue.rgb);
+	float noiseRandomXValue = mix(-1, 1, noiseRandom.x);
+	float noiseRandomZValue = mix(-1, 1, noiseRandom.z);
 
-	particlePosition.x += noiseValue;
-	particlePosition.z += noiseValue;
+	particlePosition.x += noiseRandomXValue;
+	particlePosition.z += noiseRandomZValue;
 
 	// Update the zoneUV so it fits the new position of the foliage, with the random value
 	worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
@@ -246,7 +251,7 @@ void vertex() {
 				VERTEX.z += particlePosition.z;
 
 				// Make the foliage wave with wind
-				float randomValue = hash_noise_range(particlePosition).x;
+				float randomValue = hash_noise_range(_instancePosition).x;
 				float windDirection = 0.0;
 				if (randomValue > 0.5) {
 					windDirection = sin(TIME);
@@ -272,10 +277,15 @@ void vertex() {
 	}
 }
 
-void fragment() {	
-	vec4 albedoTexture = texture(FoliageAlbedoTexture, UV);
+void fragment() {
+	vec4 albedoTexture = vec4(1.0);
+	if (FoliageNumberOfTexture > 0) {
+		float randomValue = hash_noise_range(_instancePosition).x;
+		float randomTexture = mix(0.0, float(FoliageNumberOfTexture - 1), randomValue);
+		
+		albedoTexture = texture(FoliageAlbedoTextures, vec3(UV.x, UV.y, randomTexture));		
+	}
 	
 	ALBEDO = COLOR.rgb * albedoTexture.rgb * FoliageAlbedo.rgb;
 	ALPHA = FoliageAlbedo.a * albedoTexture.a;
-	ALPHA_SCISSOR_THRESHOLD = AlphaScissorThreshold;
 }

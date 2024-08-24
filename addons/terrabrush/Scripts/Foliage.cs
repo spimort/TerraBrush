@@ -29,9 +29,9 @@ public partial class Foliage : Node3D {
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public Color Albedo { get;set; } = Colors.White;
-    [Export] public Texture2D AlbedoTexture { get;set; }
+    [Export] public Texture2D[] AlbedoTextures { get;set; }
     [Export] public bool UseGroundColor { get;set; } = true;
-    [Export] public float AlphaScissorThreshold { get;set; } = 0.5f;
+    [Export] public bool CastShadow { get;set; } = false;
     // Particles settings
     [Export] public Vector3 MeshScale { get;set; }
     [Export] public int MaximumRenderDistance { get;set; }
@@ -121,13 +121,25 @@ public partial class Foliage : Node3D {
                 }).SelectMany(x => x).ToArray()
             };
 
+            if (CastShadow) {
+                _multiMeshInstance3D.CastShadow = GeometryInstance3D.ShadowCastingSetting.On;
+            } else {
+                _multiMeshInstance3D.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
+            }
+
             _foliageShader.SetShaderParameter(StringNames.InitialCellWidth, LODInitialCellWidth);
             _foliageShader.SetShaderParameter(StringNames.LODRowsPerLevel, LODRowsPerLevel);
             _foliageShader.SetShaderParameter(StringNames.LODLevels, LODLevels);
             _foliageShader.SetShaderParameter(StringNames.FoliageAlbedo, Albedo);
-            _foliageShader.SetShaderParameter(StringNames.FoliageAlbedoTexture, AlbedoTexture);
+
+            if (AlbedoTextures?.Length > 0) {
+                var albedoTextures = new Texture2DArray();
+                albedoTextures.CreateFromImages(new Godot.Collections.Array<Image>(AlbedoTextures.Select(x => x.GetImage())));
+                _foliageShader.SetShaderParameter(StringNames.FoliageAlbedoTextures, albedoTextures);
+                _foliageShader.SetShaderParameter(StringNames.FoliageNumberOfTexture, AlbedoTextures.Length);
+            }
+
             _foliageShader.SetShaderParameter(StringNames.UseGroundColor, UseGroundColor);
-            _foliageShader.SetShaderParameter(StringNames.AlphaScissorThreshold, AlphaScissorThreshold);
         } else {
             _particles.Visible = true;
 
