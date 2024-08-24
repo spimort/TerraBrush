@@ -24,14 +24,21 @@ public partial class Foliage : Node3D {
     [Export] public TextureSetsResource TextureSets { get;set;}
 	[Export] public int TextureDetail { get;set; } = 1;
     [Export] public Mesh Mesh { get;set; }
-    [Export] public Vector3 MeshScale { get;set; }
-    [Export] public int MaximumRenderDistance { get;set; }
-    [Export] public int EditorMaximumRenderDistance { get;set; }
+    // MultiMesh settings
     [Export] public int LODLevels { get;set; } = 8;
     [Export] public int LODRowsPerLevel { get;set; } = 21;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
-    [Export] public float WindStrength { get;set; }
+    [Export] public Color Albedo { get;set; } = Colors.White;
+    [Export] public Texture2D AlbedoTexture { get;set; }
+    [Export] public bool UseGroundColor { get;set; } = true;
+    [Export] public float AlphaScissorThreshold { get;set; } = 0.5f;
+    // Particles settings
+    [Export] public Vector3 MeshScale { get;set; }
+    [Export] public int MaximumRenderDistance { get;set; }
+    [Export] public int EditorMaximumRenderDistance { get;set; }
     [Export] public Material MeshMaterial { get;set; }
+    // General settings
+    [Export] public float WindStrength { get;set; }
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; }
@@ -117,6 +124,10 @@ public partial class Foliage : Node3D {
             _foliageShader.SetShaderParameter(StringNames.InitialCellWidth, LODInitialCellWidth);
             _foliageShader.SetShaderParameter(StringNames.LODRowsPerLevel, LODRowsPerLevel);
             _foliageShader.SetShaderParameter(StringNames.LODLevels, LODLevels);
+            _foliageShader.SetShaderParameter(StringNames.FoliageAlbedo, Albedo);
+            _foliageShader.SetShaderParameter(StringNames.FoliageAlbedoTexture, AlbedoTexture);
+            _foliageShader.SetShaderParameter(StringNames.UseGroundColor, UseGroundColor);
+            _foliageShader.SetShaderParameter(StringNames.AlphaScissorThreshold, AlphaScissorThreshold);
         } else {
             _particles.Visible = true;
 

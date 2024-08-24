@@ -7,13 +7,20 @@ namespace TerraBrush;
 public partial class FoliageDefinitionResource : Resource {
     [Export] public FoliageStrategy Strategy { get;set; } = FoliageStrategy.MultiMesh;
     [Export] public Mesh Mesh { get;set; }
-    [Export] public Material MeshMaterial { get;set; }
-    [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
+    // Multimesh settings
     [Export] public int LODLevels { get;set; } = 5;
     [Export] public int LODRowsPerLevel { get;set; } = 101;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
+    [Export] public Color Albedo { get;set; } = Colors.White;
+    [Export] public Texture2D AlbedoTexture { get;set; }
+    [Export] public bool UseGroundColor { get;set; } = true;
+    [Export] public float AlphaScissorThreshold { get;set; } = 0.5f;
+    // Particles settings
+    [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
+    [Export] public Material MeshMaterial { get;set; }
     [Export] public int MaximumRenderDistance { get;set; } = 50;
     [Export] public int EditorMaximumRenderDistance { get;set; } = 50;
+    // General settings
     [Export] public float WindStrength { get;set; } = 0.1f;
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
