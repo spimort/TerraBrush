@@ -16,6 +16,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public bool UseGroundColor { get;set; } = true;
     [Export] public bool CastShadow { get;set; } = false;
     [Export] public bool UseBrushScale { get;set; } = true;
+    [Export] public Texture2D ScaleNoiseTexture { get;set; }
     // Particles settings
     [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
     [Export] public Material MeshMaterial { get;set; }

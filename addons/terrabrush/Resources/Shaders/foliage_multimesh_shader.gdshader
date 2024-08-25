@@ -14,6 +14,7 @@ uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
 uniform vec3 MeshScale = vec3(1.0);
 uniform bool UseBrushScale = true;
+uniform sampler2D ScaleNoiseTexture: hint_default_white;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -250,6 +251,8 @@ void vertex() {
 					float meshScaleFactor = foliagePosition.a;
 					VERTEX *= meshScaleFactor;
 				}
+				
+				VERTEX *= texture(ScaleNoiseTexture, zoneUV.xy).r;					
 
 				// Assign the position to the transform
 				VERTEX.x += particlePosition.x;
@@ -293,5 +296,5 @@ void fragment() {
 	}
 	
 	ALBEDO = COLOR.rgb * albedoTexture.rgb * FoliageAlbedo.rgb;
-	ALPHA = FoliageAlbedo.a * albedoTexture.a;
+	ALPHA = FoliageAlbedo.a * albedoTexture.a;	
 }
