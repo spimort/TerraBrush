@@ -12,6 +12,7 @@ uniform vec4 FoliageAlbedo: source_color = vec4(1.0);
 uniform sampler2DArray FoliageAlbedoTextures: hint_default_white, repeat_disable;
 uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
+uniform vec3 MeshScale = vec3(1.0);
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -134,7 +135,6 @@ void vertex() {
 	int currentLODLevel = 0;
 
 	if (currentIndex < (lodLevelNumberOfPoints * lodLevelNumberOfPoints)) {
-		COLOR = vec4(1, 0, 0, 1);
 		currentLODLevel = 1;
 
 		clipMapXPosition = roundEven(float(currentIndex % lodLevelNumberOfPoints) - (float(lodLevelNumberOfPoints / 2)));
@@ -240,6 +240,9 @@ void vertex() {
 				height -= waterHeight;
 
 				particlePosition.y = height;
+
+				// Apply the meshscale
+				VERTEX *= MeshScale;
 
 				// Adjust the scale of the grass with the alpha of the texture
 				//float meshScaleFactor = foliagePosition.a;

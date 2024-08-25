@@ -8,8 +8,8 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public FoliageStrategy Strategy { get;set; } = FoliageStrategy.MultiMesh;
     [Export] public Mesh Mesh { get;set; }
     // Multimesh settings
-    [Export] public int LODLevels { get;set; } = 5;
-    [Export] public int LODRowsPerLevel { get;set; } = 101;
+    [Export] public int LODLevels { get;set; } = 3;
+    [Export] public int LODRowsPerLevel { get;set; } = 50;
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public Color Albedo { get;set; } = Colors.White;
     [Export] public Texture2D[] AlbedoTextures { get;set; }
