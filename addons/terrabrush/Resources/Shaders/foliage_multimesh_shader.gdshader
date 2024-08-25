@@ -13,6 +13,7 @@ uniform sampler2DArray FoliageAlbedoTextures: hint_default_white, repeat_disable
 uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
 uniform vec3 MeshScale = vec3(1.0);
+uniform bool UseBrushScale = true;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -244,9 +245,11 @@ void vertex() {
 				// Apply the meshscale
 				VERTEX *= MeshScale;
 
-				// Adjust the scale of the grass with the alpha of the texture
-				//float meshScaleFactor = foliagePosition.a;
-				//VERTEX *= meshScaleFactor;
+				if (UseBrushScale){
+					// Adjust the scale of the grass with the alpha of the texture
+					float meshScaleFactor = foliagePosition.a;
+					VERTEX *= meshScaleFactor;
+				}
 
 				// Assign the position to the transform
 				VERTEX.x += particlePosition.x;

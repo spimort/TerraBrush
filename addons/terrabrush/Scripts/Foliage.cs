@@ -32,6 +32,7 @@ public partial class Foliage : Node3D {
     [Export] public Texture2D[] AlbedoTextures { get;set; }
     [Export] public bool UseGroundColor { get;set; } = true;
     [Export] public bool CastShadow { get;set; } = false;
+    [Export] public bool UseBrushScale { get;set; } = true;
     // Particles settings
     [Export] public Vector3 MeshScale { get;set; }
     [Export] public int MaximumRenderDistance { get;set; }
@@ -140,6 +141,7 @@ public partial class Foliage : Node3D {
             }
 
             _foliageShader.SetShaderParameter(StringNames.UseGroundColor, UseGroundColor);
+            _foliageShader.SetShaderParameter(StringNames.UseBrushScale, UseBrushScale);
         } else {
             _particles.Visible = true;
 

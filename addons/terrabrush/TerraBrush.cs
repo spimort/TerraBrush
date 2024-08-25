@@ -404,6 +404,7 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.AlbedoTextures = foliage.Definition.AlbedoTextures;
                 newFoliage.UseGroundColor = foliage.Definition.UseGroundColor;
                 newFoliage.CastShadow = foliage.Definition.CastShadow;
+                newFoliage.UseBrushScale = foliage.Definition.UseBrushScale;
                 newFoliage.MeshScale = foliage.Definition.MeshScale;
                 newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
                 newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
