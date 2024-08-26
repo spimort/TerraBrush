@@ -17,6 +17,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public bool CastShadow { get;set; } = false;
     [Export] public bool UseBrushScale { get;set; } = true;
     [Export] public Texture2D ScaleNoiseTexture { get;set; }
+    [Export] public float RandomPlacementRange { get;set; } = 3.0f;
     // Particles settings
     [Export] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
     [Export] public Material MeshMaterial { get;set; }

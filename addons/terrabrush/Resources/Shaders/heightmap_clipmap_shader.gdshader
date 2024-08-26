@@ -7,7 +7,7 @@ varying vec3 _worldVertex;
 
 void vertex() {
 	_worldVertex = vec3(0);
-	calculateHeightmapVertex(MODEL_MATRIX, COLOR, VERTEX, NORMAL, _worldVertex);	
+	calculateHeightmapVertex(MODEL_MATRIX, COLOR, VERTEX, NORMAL, _worldVertex);
 }
 
 void fragment() {

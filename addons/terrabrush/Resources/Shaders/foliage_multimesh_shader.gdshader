@@ -15,6 +15,7 @@ uniform bool UseGroundColor = true;
 uniform vec3 MeshScale = vec3(1.0);
 uniform bool UseBrushScale = true;
 uniform sampler2D ScaleNoiseTexture: hint_default_white;
+uniform float RandomPlacementRange = 2.0;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -118,7 +119,7 @@ vec4 calculateGroundColor(vec3 zoneUV) {
 
 varying flat vec3 _instancePosition;
 
-void vertex() {		
+void vertex() {
 	// Compute the clipmap INDEX position
 	int currentIndex = int(INSTANCE_ID);
 
@@ -200,8 +201,8 @@ void vertex() {
 	// Apply the global position on top of the clipmap
 	particlePosition.x += roundEven(GlobalPosition.x);
 	particlePosition.z += roundEven(GlobalPosition.z);
-	
-	_instancePosition = particlePosition;	
+
+	_instancePosition = particlePosition;
 
 	// Fetch the zoneUV with the "Grid" position of the foliage.
 	vec3 worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
@@ -210,8 +211,8 @@ void vertex() {
 	// Calculate the noise/random value with the zoneUV;
 	vec4 noiseTextureValue = texture(NoiseTexture, zoneUV.xy);
 	vec3 noiseRandom = hash_noise_range(noiseTextureValue.rgb);
-	float noiseRandomXValue = mix(-1, 1, noiseRandom.x);
-	float noiseRandomZValue = mix(-1, 1, noiseRandom.z);
+	float noiseRandomXValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.x);
+	float noiseRandomZValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.z);
 
 	particlePosition.x += noiseRandomXValue;
 	particlePosition.z += noiseRandomZValue;
@@ -251,8 +252,8 @@ void vertex() {
 					float meshScaleFactor = foliagePosition.a;
 					VERTEX *= meshScaleFactor;
 				}
-				
-				VERTEX *= texture(ScaleNoiseTexture, zoneUV.xy).r;					
+
+				VERTEX *= texture(ScaleNoiseTexture, zoneUV.xy).r;
 
 				// Assign the position to the transform
 				VERTEX.x += particlePosition.x;
@@ -276,7 +277,7 @@ void vertex() {
 				VERTEX = ((VERTEX - particlePosition) * randomRotationMat) + particlePosition;
 
 				if (UseGroundColor) {
-					COLOR = calculateGroundColor(zoneUV);					
+					COLOR = calculateGroundColor(zoneUV);
 				}
 			}
 		} else {
@@ -291,10 +292,10 @@ void fragment() {
 	if (FoliageNumberOfTexture > 0) {
 		float randomValue = hash_noise_range(_instancePosition).x;
 		float randomTexture = mix(0.0, float(FoliageNumberOfTexture - 1), randomValue);
-		
-		albedoTexture = texture(FoliageAlbedoTextures, vec3(UV.x, UV.y, randomTexture));		
+
+		albedoTexture = texture(FoliageAlbedoTextures, vec3(UV.x, UV.y, randomTexture));
 	}
-	
+
 	ALBEDO = COLOR.rgb * albedoTexture.rgb * FoliageAlbedo.rgb;
-	ALPHA = FoliageAlbedo.a * albedoTexture.a;	
+	ALPHA = FoliageAlbedo.a * albedoTexture.a;
 }

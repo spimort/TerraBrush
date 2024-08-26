@@ -406,6 +406,7 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.CastShadow = foliage.Definition.CastShadow;
                 newFoliage.UseBrushScale = foliage.Definition.UseBrushScale;
                 newFoliage.ScaleNoiseTexture = foliage.Definition.ScaleNoiseTexture;
+                newFoliage.RandomPlacementRange = foliage.Definition.RandomPlacementRange;
                 newFoliage.MeshScale = foliage.Definition.MeshScale;
                 newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
                 newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
