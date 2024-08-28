@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_toon, specular_schlick_ggx, depth_prepass_alpha;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx, alpha_to_coverage;
 
 // The position of the camera
 uniform vec3 GlobalPosition;
@@ -276,7 +276,7 @@ void vertex() {
 				mat3 randomRotationMat = rotateY(randomRotation);
 				VERTEX = ((VERTEX - particlePosition) * randomRotationMat) + particlePosition;
 				
-				NORMAL *= randomRotationMat;		
+				NORMAL *= randomRotationMat;
 
 				if (UseGroundColor) {
 					COLOR = calculateGroundColor(zoneUV);
@@ -300,4 +300,6 @@ void fragment() {
 
 	ALBEDO = COLOR.rgb * albedoTexture.rgb * FoliageAlbedo.rgb;
 	ALPHA = FoliageAlbedo.a * albedoTexture.a;
+	ALPHA_SCISSOR_THRESHOLD = 0.01;
+	ALPHA_ANTIALIASING_EDGE = 0.5;
 }
