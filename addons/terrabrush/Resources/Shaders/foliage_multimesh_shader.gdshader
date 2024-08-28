@@ -275,6 +275,8 @@ void vertex() {
 				float randomRotation = mix(0, radians(360), randomValue);
 				mat3 randomRotationMat = rotateY(randomRotation);
 				VERTEX = ((VERTEX - particlePosition) * randomRotationMat) + particlePosition;
+				
+				NORMAL *= randomRotationMat;		
 
 				if (UseGroundColor) {
 					COLOR = calculateGroundColor(zoneUV);
@@ -284,7 +286,7 @@ void vertex() {
 			// Disable instance
 			VERTEX.y = 0.0; // Scale down the mesh so it "vanish"
 		}
-	}
+	}		
 }
 
 void fragment() {
