@@ -230,8 +230,8 @@ public partial class Foliage : Node3D {
         }
 
         var zonePositions = TerrainZones.Zones.Select(zone => zone.ZonePosition).ToArray();
-        var maxX = zonePositions.Max(x => Math.Abs(x.X));
-        var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+        var maxX = zonePositions.Max(x => Math.Abs(x.X)) + 1;
+        var maxY = zonePositions.Max(x => Math.Abs(x.Y)) + 1;
 
         var aabbXSize = Math.Max(maxX * ZonesSize * 2, ZonesSize * 2);
         var aabbYSize = Math.Max(maxY * ZonesSize * 2, ZonesSize * 2);
