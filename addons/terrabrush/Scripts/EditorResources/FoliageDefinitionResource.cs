@@ -27,4 +27,8 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public float WindStrength { get;set; } = 0.1f;
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+
+    public FoliageDefinitionResource() {
+        Strategy = 0; // Because of the legacy, we default it to 0 so we can detect that this is an old value
+    }
 }
