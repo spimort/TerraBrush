@@ -147,14 +147,26 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
+|FoliageResource[x].Definition.Strategy|The stretegy used to generate the foliage (MultiMesh or GPUParticles). The default value is MultiMesh.|
 |FoliageResource[x].Definition.Mesh|The mesh that will be used for the foliage. The mesh should have as few vertices as possible for better performance.|
-|FoliageResource[x].Definition.MeshMaterial|The material that will be used on the mesh.|
 |FoliageResource[x].Definition.MeshScale|The scale of the mesh.|
-|FoliageResource[x].Definition.MaximumRenderDistance|This is the maximum distance the foliage will appear from the camera. A high value will decrease the performance.|
-|FoliageResource[x].Definition.EditorMaximumRenderDistance|This is the maximum distance the foliage will appear from the camera, but only for the editor. A high value will decrease the performances. Useful if you want to see far.|
 |FoliageResource[x].Definition.WindStrength|Creates some movement for the mesh. The default value is 0.1.|
 |FoliageResource[x].Definition.NoiseTexture|This texture makes sure that the foliage placement is not too straight. If not specified, the default noise texture will be used.|
 |FoliageResource[x].Definition.VisualInstanceLayers|The godot layer on which the foliage will be displayed.|
+|FoliageResource[x].Definition.LODLevels|**(MultiMesh only)** The number of levels the clipmap will be made of. The default value is 3.|
+|FoliageResource[x].Definition.LODRowsPerLevel|**(MultiMesh only)** The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 50.|
+|FoliageResource[x].Definition.LODInitialCellWidth|**(MultiMesh only)** The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|
+|FoliageResource[x].Definition.Albedo|**(MultiMesh only)** The base color of the mesh. The default value is white|
+|FoliageResource[x].Definition.AlbedoTextures|**(MultiMesh only)** A set of textures that will be chosen randomly for each instance.|
+|FoliageResource[x].Definition.UseGroundColor|**(MultiMesh only)** If true, the color of the ground, depending on the position of the mesh, will be sent to the COLOR uniform and then to the color of the mesh. The default value is true.|
+|FoliageResource[x].Definition.CastShadow|**(MultiMesh only)** If true, the shadow will be enabled on the multimesh. The default value is false.|
+|FoliageResource[x].Definition.UseBrushScale|**(MultiMesh only)** If true, the more you paint at a specific location, the bigger the foliage will be (on a range of 0.0 to 1.0). The default value is true.|
+|FoliageResource[x].Definition.ScaleNoiseTexture|**(MultiMesh only)** A texture to help get various height on the foliage.|
+|FoliageResource[x].Definition.RandomPlacementRange|**(MultiMesh only)** A value that helps place randomly each mesh instance. The position will be between -RandomPlacementRange to RandomPlacementRange from the center of the original position in the clipmap. This helps blend each layers of the clipmap. The default value is 3.0.|
+|FoliageResource[x].Definition.CustomShader|**(MultiMesh only)** A custom shader for the foliage.|
+|FoliageResource[x].Definition.MeshMaterial|**(GPUParticles only)** The material that will be used on the mesh.|
+|FoliageResource[x].Definition.MaximumRenderDistance|**(GPUParticles only)** This is the maximum distance the foliage will appear from the camera. A high value will decrease the performance.|
+|FoliageResource[x].Definition.EditorMaximumRenderDistance|**(GPUParticles only)** This is the maximum distance the foliage will appear from the camera, but only for the editor. A high value will decrease the performances. Useful if you want to see far.|
 |**Objects**||
 |Default Object Frequency|This option is to define how often the objects will be placed on the terrain. This is the default for every objects. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
 |Object Loading Strategy|Drives how the objects are being loaded (in a thread or not). The default value is ThreadedInEditorOnly.|
