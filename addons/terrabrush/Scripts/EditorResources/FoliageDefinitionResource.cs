@@ -69,11 +69,11 @@ public partial class FoliageDefinitionResource : Resource {
             if (_gpuParticlesProperties.Contains((string) property["name"])) {
                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
             } else if (_multimeshProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Editor;
+                property["usage"] = (long) PropertyUsageFlags.Default;
             }
         } else if (Strategy == FoliageStrategy.GPUParticle) {
             if (_gpuParticlesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Editor;
+                property["usage"] = (long) PropertyUsageFlags.Default;
             } else if (_multimeshProperties.Contains((string) property["name"])) {
                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
             }

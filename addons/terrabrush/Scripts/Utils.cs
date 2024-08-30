@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 
 namespace TerraBrush;
@@ -73,5 +74,21 @@ public static class Utils {
 		}
 
 		return newShader;
-	}
+    }
+
+    public static Task<Texture2D> WaitForTextureReady(Texture2D texture) {
+        var asyncEvent = new TaskCompletionSource<Texture2D>();
+        if (texture is NoiseTexture2D noiseTexture && noiseTexture.GetImage() == null) {
+            void afterChanged() {
+                asyncEvent.SetResult(texture);
+                noiseTexture.Changed -= afterChanged;
+            }
+
+            noiseTexture.Changed += afterChanged;
+        } else {
+            asyncEvent.SetResult(texture);
+        }
+
+        return asyncEvent.Task;
+    }
 }
