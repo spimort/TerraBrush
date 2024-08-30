@@ -147,7 +147,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
-|FoliageResource[x].Definition.Strategy|The stretegy used to generate the foliage (MultiMesh or GPUParticles). The default value is MultiMesh.|
+|FoliageResource[x].Definition.Strategy|The strategy used to generate the foliage (MultiMesh or GPUParticles). The default value is MultiMesh.|
 |FoliageResource[x].Definition.Mesh|The mesh that will be used for the foliage. The mesh should have as few vertices as possible for better performance.|
 |FoliageResource[x].Definition.MeshScale|The scale of the mesh.|
 |FoliageResource[x].Definition.WindStrength|Creates some movement for the mesh. The default value is 0.1.|
