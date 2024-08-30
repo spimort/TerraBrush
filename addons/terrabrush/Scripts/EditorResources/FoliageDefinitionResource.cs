@@ -17,7 +17,8 @@ public partial class FoliageDefinitionResource : Resource {
         nameof(CastShadow),
         nameof(UseBrushScale),
         nameof(ScaleNoiseTexture),
-        nameof(RandomPlacementRange)
+        nameof(RandomPlacementRange),
+        nameof(CustomShader),
     ];
 
     private static readonly List<string> _gpuParticlesProperties = [
@@ -27,6 +28,7 @@ public partial class FoliageDefinitionResource : Resource {
     ];
 
     private FoliageStrategy _strategy = FoliageStrategy.MultiMesh;
+    private ShaderMaterial _customShader;
 
     [Export] public FoliageStrategy Strategy {
         get {
@@ -53,6 +55,23 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public bool UseBrushScale { get;set; } = true;
     [Export] public Texture2D ScaleNoiseTexture { get;set; }
     [Export] public float RandomPlacementRange { get;set; } = 3.0f;
+    [Export] public ShaderMaterial CustomShader {
+        get {
+            return _customShader;
+        } set {
+            _customShader = value;
+
+            if (value != null && value.Shader == null) {
+                var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader");
+                var defaultCode = defaultShader.Code;
+
+                var shader = new Shader {
+                    Code = defaultCode
+                };
+                value.Shader = shader;
+            }
+        }
+    }
     // Particles settings
     [Export] public Material MeshMaterial { get;set; }
     [Export] public int MaximumRenderDistance { get;set; } = 50;

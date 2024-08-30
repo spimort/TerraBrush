@@ -34,9 +34,16 @@ public partial class Foliage : Node3D {
         if (Definition.Strategy == FoliageStrategy.MultiMesh)  {
             _multiMeshInstance3D = new MultiMeshInstance3D();
             AddChild(_multiMeshInstance3D);
-            var shaderMaterial = new ShaderMaterial() {
-                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader")
-            };
+
+            ShaderMaterial shaderMaterial;
+            if (Definition.CustomShader == null) {
+                shaderMaterial = new ShaderMaterial() {
+                    Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader")
+                };
+            } else {
+                shaderMaterial = Utils.CreateCustomShaderCopy(Definition.CustomShader);
+            }
+
             _multiMeshInstance3D.MaterialOverride = shaderMaterial;
             _foliageShader = shaderMaterial;
         } else {
