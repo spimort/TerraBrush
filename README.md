@@ -233,6 +233,10 @@ To retrieve information from the map (for example, to get what texture the playe
 
 These two functions can be called from **GDScript** and **C#**.
 
+### Navigation mesh
+
+In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
+
 ## Support
 
 You want to support my work?
