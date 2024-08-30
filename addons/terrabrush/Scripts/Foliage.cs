@@ -29,7 +29,6 @@ public partial class Foliage : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
-        GD.Print("IsDef? ", Definition.MeshMaterial == null);
 
         if (Definition.Strategy == FoliageStrategy.MultiMesh)  {
             _multiMeshInstance3D = new MultiMeshInstance3D();
