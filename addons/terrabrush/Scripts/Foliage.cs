@@ -30,6 +30,10 @@ public partial class Foliage : Node3D {
         base._Ready();
         this.RegisterNodePaths();
 
+        if (Definition == null) {
+            return;
+        }
+
         if (Definition.Strategy == FoliageStrategy.MultiMesh)  {
             _multiMeshInstance3D = new MultiMeshInstance3D();
             AddChild(_multiMeshInstance3D);
