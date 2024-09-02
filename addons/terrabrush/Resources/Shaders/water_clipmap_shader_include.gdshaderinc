@@ -30,8 +30,10 @@ float fresnel(float amount, vec3 normal, vec3 view) {
 }
 
 float edge(float depth) {
-	depth = 2.0 * depth - 1.0;
-	return Near * Far / (Far + depth * (Near - Far));
+    // Invert the depth value
+    depth = 1.0 - depth;
+    depth = 2.0 * depth - 1.0;
+    return Near * Far / (Far + depth * (Near - Far));	
 }
 
 void calculateWaterVertex(
