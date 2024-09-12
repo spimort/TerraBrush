@@ -80,7 +80,7 @@ public partial class FoliageDefinitionResource : Resource {
     public override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
 
-        if (Strategy == FoliageStrategy.MultiMesh || Strategy == 0) { // 0 is considered as Multimesh
+        if (Strategy == FoliageStrategy.MultiMesh) {
             if (_gpuParticlesProperties.Contains((string) property["name"])) {
                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
             } else if (_multimeshProperties.Contains((string) property["name"])) {
