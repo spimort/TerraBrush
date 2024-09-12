@@ -160,7 +160,6 @@ public partial class TerraBrush : TerraBrushTool {
 
         if (Engine.IsEditorHint()) {
             CompatibilityScript_0_4_Alpha.Convert(this);
-            CompatibilityScript_0_8_Alpha.Convert(this);
         }
 
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");

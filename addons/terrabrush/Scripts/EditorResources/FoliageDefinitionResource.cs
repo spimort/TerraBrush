@@ -77,10 +77,6 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public int MaximumRenderDistance { get;set; } = 50;
     [Export] public int EditorMaximumRenderDistance { get;set; } = 50;
 
-    public FoliageDefinitionResource() {
-        Strategy = 0; // Because of the legacy, we default it to 0 so we can detect that this is an old value
-    }
-
     public override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
 
