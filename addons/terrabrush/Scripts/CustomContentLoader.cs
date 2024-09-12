@@ -86,10 +86,12 @@ public static class CustomContentLoader {
                     dockPreviewButton.Margin = 5;
                     parentNode.AddChild(dockPreviewButton);
 
-                    if (foliage.Definition?.MeshMaterial == null) {
+                    if (foliage.Definition?.MeshMaterial == null && foliage.Definition?.AlbedoTextures?.Length == 0 && foliage.Definition.Mesh != null) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.Mesh);
-                    } else {
+                    } else if (foliage.Definition?.MeshMaterial != null) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.MeshMaterial);
+                    } else if (foliage.Definition?.AlbedoTextures?.Length > 0) {
+                        dockPreviewButton.LoadResourcePreview(foliage.Definition.AlbedoTextures[0]);
                     }
 
                     var currentIndex = i;

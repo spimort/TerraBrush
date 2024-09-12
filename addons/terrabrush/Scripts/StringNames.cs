@@ -56,4 +56,14 @@ internal static class StringNames {
     public static readonly StringName Far = "Far";
     public static readonly StringName EdgeColor = "EdgeColor";
     public static readonly StringName SetAnglePointContainer = "SetAnglePointContainer";
+    public static readonly StringName InitialCellWidth = "InitialCellWidth";
+    public static readonly StringName LODRowsPerLevel = "LODRowsPerLevel";
+    public static readonly StringName LODLevels = "LODLevels";
+    public static readonly StringName FoliageAlbedo = "FoliageAlbedo";
+    public static readonly StringName FoliageAlbedoTextures = "FoliageAlbedoTextures";
+    public static readonly StringName UseGroundColor = "UseGroundColor";
+    public static readonly StringName FoliageNumberOfTexture = "FoliageNumberOfTexture";
+    public static readonly StringName UseBrushScale = "UseBrushScale";
+    public static readonly StringName ScaleNoiseTexture = "ScaleNoiseTexture";
+    public static readonly StringName RandomPlacementRange = "RandomPlacementRange";
 }

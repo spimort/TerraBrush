@@ -258,7 +258,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainZones.UpdateZonesMap();
         TerrainZones.UpdateHeightmaps();
 
-        await WaitForTextureReady(_defaultNoise);
+        await Utils.WaitForTextureReady(_defaultNoise);
 
         if (Engine.IsEditorHint() || (!CollisionOnly && !DefaultSettings.CollisionOnly)) {
             // Water needs to be created first so we have the reference to the image texture
@@ -394,15 +394,8 @@ public partial class TerraBrush : TerraBrushTool {
                 newFoliage.TerrainZones = TerrainZones;
                 newFoliage.TextureSets = TextureSets;
                 newFoliage.TextureDetail = TextureDetail;
-                newFoliage.VisualInstanceLayers = foliage.Definition.VisualInstanceLayers;
-                newFoliage.Mesh = foliage.Definition.Mesh;
-                newFoliage.MeshScale = foliage.Definition.MeshScale;
-                newFoliage.MaximumRenderDistance = foliage.Definition.MaximumRenderDistance;
-                newFoliage.EditorMaximumRenderDistance = foliage.Definition.EditorMaximumRenderDistance;
-                newFoliage.WindStrength = foliage.Definition.WindStrength;
-                newFoliage.MeshMaterial = foliage.Definition.MeshMaterial;
                 newFoliage.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
-                newFoliage.NoiseTexture = foliage.Definition.NoiseTexture != null ? await WaitForTextureReady(foliage.Definition.NoiseTexture) : _defaultNoise;
+                newFoliage.Definition = foliage.Definition;
 
                 _foliagesNode.AddChild(newFoliage);
             }
@@ -468,7 +461,7 @@ public partial class TerraBrush : TerraBrushTool {
                 var objectItem = Objects[objectIndex];
 
                 if (objectItem.Definition != null) {
-                    var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
+                    var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await Utils.WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
                     Image noiseImage = null;
                     if (noiseTexture != null) {
                         noiseImage = new Image();
@@ -600,9 +593,9 @@ public partial class TerraBrush : TerraBrushTool {
             _waterNode.LODInitialCellWidth = LODInitialCellWidth;
             _waterNode.CustomShader = WaterDefinition.CustomShader;
 
-            _waterNode.Wave = await WaitForTextureReady(WaterDefinition.WaterWave);
-            _waterNode.NormalMap = await WaitForTextureReady(WaterDefinition.WaterNormalMap);
-            _waterNode.NormalMap2 = await WaitForTextureReady(WaterDefinition.WaterNormalMap2);
+            _waterNode.Wave = await Utils.WaitForTextureReady(WaterDefinition.WaterWave);
+            _waterNode.NormalMap = await Utils.WaitForTextureReady(WaterDefinition.WaterNormalMap);
+            _waterNode.NormalMap2 = await Utils.WaitForTextureReady(WaterDefinition.WaterNormalMap2);
 
             _waterNodeContainer.AddChild(_waterNode);
         }
@@ -638,7 +631,7 @@ public partial class TerraBrush : TerraBrushTool {
         _snowNode.LODInitialCellWidth = LODInitialCellWidth;
 
         if (SnowDefinition.Noise != null) {
-            await WaitForTextureReady(SnowDefinition.Noise);
+            await Utils.WaitForTextureReady(SnowDefinition.Noise);
         }
 
         _snowNodeContainer.AddChild(_snowNode);
@@ -779,22 +772,6 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         return image;
-    }
-
-    private Task<Texture2D> WaitForTextureReady(Texture2D texture) {
-        var asyncEvent = new TaskCompletionSource<Texture2D>();
-        if (texture is NoiseTexture2D noiseTexture && noiseTexture.GetImage() == null) {
-            void afterChanged() {
-                asyncEvent.SetResult(texture);
-                noiseTexture.Changed -= afterChanged;
-            }
-
-            noiseTexture.Changed += afterChanged;
-        } else {
-            asyncEvent.SetResult(texture);
-        }
-
-        return asyncEvent.Task;
     }
 
     public override Godot.Collections.Array<Godot.Collections.Dictionary> _GetPropertyList()

@@ -6,25 +6,29 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6tf5l"]
 resource_local_to_scene = true
 shader = ExtResource("2_hixc1")
-shader_parameter/HeightMapSize = 0
-shader_parameter/HeightMapFactor = null
+shader_parameter/GlobalPosition = null
+shader_parameter/TextureDetail = null
+shader_parameter/NumberOfTextures = null
 shader_parameter/WaterFactor = null
-shader_parameter/PlayerPosition = Vector3(0, 0, 0)
 shader_parameter/MaximumDistance = null
 shader_parameter/MeshScale = Vector3(1, 1, 1)
 shader_parameter/WindStrength = 0.1
+shader_parameter/ZonesSize = null
+shader_parameter/NumberOfZones = null
 
 [node name="Foliage" type="Node3D"]
 script = ExtResource("1_lxro2")
-HeightMapFactor = 1.0
+AlbedoTextures = []
 MeshScale = Vector3(1, 1, 1)
 WindStrength = 0.1
 
 [node name="Particles" type="GPUParticles3D" parent="."]
 unique_name_in_owner = true
+layers = 0
 amount = 1
 lifetime = 0.01
 explosiveness = 1.0
-fixed_fps = 60
+fixed_fps = 1000
+interpolate = false
 visibility_aabb = AABB(-1015.87, -562.614, -939.237, 2031.75, 1125.23, 1878.47)
 process_material = SubResource("ShaderMaterial_6tf5l")
