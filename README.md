@@ -164,7 +164,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |FoliageResource[x].Definition.LODInitialCellWidth|**(MultiMesh only)** The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|
 |FoliageResource[x].Definition.Albedo|**(MultiMesh only)** The base color of the mesh. The default value is white|
 |FoliageResource[x].Definition.AlbedoTextures|**(MultiMesh only)** A set of textures that will be chosen randomly for each instance.|
-|FoliageResource[x].Definition.UseGroundColor|**(MultiMesh only)** If true, the color of the ground, depending on the position of the mesh, will be sent to the COLOR uniform and then to the color of the mesh. The default value is true.|
+|FoliageResource[x].Definition.UseGroundColor|**(MultiMesh only)** If true, the color of the ground, depending on the position of the mesh, will be sent to the COLOR uniform and then to the color of the mesh. The default value is false.|
 |FoliageResource[x].Definition.CastShadow|**(MultiMesh only)** If true, the shadow will be enabled on the multimesh. The default value is false.|
 |FoliageResource[x].Definition.UseBrushScale|**(MultiMesh only)** If true, the more you paint at a specific location, the bigger the foliage will be (on a range of 0.0 to 1.0). The default value is true.|
 |FoliageResource[x].Definition.ScaleNoiseTexture|**(MultiMesh only)** A texture to help get various height on the foliage.|
