@@ -7,7 +7,7 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class FoliageDefinitionResource : Resource {
-    private static readonly List<string> _multimeshProperties = [
+    private static readonly List<string> _multimeshProperties = new List<string> {
         nameof(LODLevels),
         nameof(LODRowsPerLevel),
         nameof(LODInitialCellWidth),
@@ -19,13 +19,13 @@ public partial class FoliageDefinitionResource : Resource {
         nameof(ScaleNoiseTexture),
         nameof(RandomPlacementRange),
         nameof(CustomShader),
-    ];
+    };
 
-    private static readonly List<string> _gpuParticlesProperties = [
+    private static readonly List<string> _gpuParticlesProperties = new List<string> {
         nameof(MeshMaterial),
         nameof(MaximumRenderDistance),
         nameof(EditorMaximumRenderDistance),
-    ];
+    };
 
     private FoliageStrategy _strategy = FoliageStrategy.MultiMesh;
     private ShaderMaterial _customShader;
@@ -50,7 +50,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public Color Albedo { get;set; } = Colors.White;
     [Export] public Texture2D[] AlbedoTextures { get;set; }
-    [Export] public bool UseGroundColor { get;set; } = true;
+    [Export] public bool UseGroundColor { get;set; }
     [Export] public bool CastShadow { get;set; } = false;
     [Export] public bool UseBrushScale { get;set; } = true;
     [Export] public Texture2D ScaleNoiseTexture { get;set; }
