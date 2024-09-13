@@ -249,6 +249,13 @@ You want to support my work?
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N4N1SC96Z)
 
+## Demo credits
+Trees: https://www.turbosquid.com/3d-models/3d-shapespark-low-poly-plants-kit-1826978
+<br>
+Grass: https://opengameart.org/content/stylized-grass-and-bush-textures-0
+<br>
+Textures: https://ambientcg.com/
+
 ## License
 
 MIT
