@@ -1,8 +1,8 @@
-[gd_scene load_steps=13 format=4 uid="uid://clkvfnxdtmfyx"]
+[gd_scene load_steps=11 format=4 uid="uid://clkvfnxdtmfyx"]
 
-[ext_resource type="Texture2D" uid="uid://c8q4rnjhh3ydn" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_bark.jpg" id="1_e08mr"]
-[ext_resource type="Texture2D" uid="uid://ca0lli6al4yrr" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_branch-1-01.png" id="2_yjlmd"]
-[ext_resource type="Texture2D" uid="uid://bwe2skbkcmeri" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_branch-1-02.png" id="3_p4qpw"]
+[ext_resource type="Texture2D" uid="uid://c8q4rnjhh3ydn" path="res://Assets/Models/shapespark-low-poly-plants-kit_bark.jpg" id="1_e08mr"]
+[ext_resource type="Texture2D" uid="uid://ca0lli6al4yrr" path="res://Assets/Models/shapespark-low-poly-plants-kit_branch-1-01.png" id="2_yjlmd"]
+[ext_resource type="Texture2D" uid="uid://bwe2skbkcmeri" path="res://Assets/Models/shapespark-low-poly-plants-kit_branch-1-02.png" id="3_p4qpw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hl32b"]
 resource_name = "trunk-01"
@@ -101,24 +101,18 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dj773")
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ifdbn"]
-load_path = "res://.godot/imported/shapespark-low-poly-plants-kit_branch-1-01.png-61be0c8045c0ef557811c881171cb4a7.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_72a12"]
 resource_name = "branch-2-01"
 render_priority = 1
 transparency = 4
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_ifdbn")
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_b3ebc"]
-load_path = "res://.godot/imported/shapespark-low-poly-plants-kit_branch-1-02.png-8cb1c689bbc4d888641633329f94f076.s3tc.ctex"
+albedo_texture = ExtResource("2_yjlmd")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yggfq"]
 resource_name = "branch-2-02"
 transparency = 4
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_b3ebc")
+albedo_texture = ExtResource("3_p4qpw")
 
 [node name="Tree-02-1" type="MeshInstance3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)

@@ -1,8 +1,8 @@
-[gd_scene load_steps=15 format=4 uid="uid://bcw1uunyy5sdy"]
+[gd_scene load_steps=12 format=4 uid="uid://bcw1uunyy5sdy"]
 
-[ext_resource type="Texture2D" uid="uid://c8q4rnjhh3ydn" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_bark.jpg" id="1_qmfh7"]
-[ext_resource type="Texture2D" uid="uid://bfa3ulfpjjtdk" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_branch-01.png" id="2_jnkrk"]
-[ext_resource type="Texture2D" uid="uid://n8kn5vkus0gs" path="res://NewDemoAssets/Models/shapespark-low-poly-plants-kit_branch-02.png" id="3_t71bb"]
+[ext_resource type="Texture2D" uid="uid://c8q4rnjhh3ydn" path="res://Assets/Models/shapespark-low-poly-plants-kit_bark.jpg" id="1_qmfh7"]
+[ext_resource type="Texture2D" uid="uid://bfa3ulfpjjtdk" path="res://Assets/Models/shapespark-low-poly-plants-kit_branch-01.png" id="2_jnkrk"]
+[ext_resource type="Texture2D" uid="uid://n8kn5vkus0gs" path="res://Assets/Models/shapespark-low-poly-plants-kit_branch-02.png" id="3_t71bb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hl32b"]
 resource_name = "trunk-01"
@@ -100,33 +100,24 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_q621g")
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mrb6m"]
-load_path = "res://.godot/imported/shapespark-low-poly-plants-kit_bark.jpg-64a74cc91d2b1a3759bd6e53541ef2ae.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vkicv"]
 resource_name = "trunk-01"
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_mrb6m")
+albedo_texture = ExtResource("1_qmfh7")
 roughness = 0.343182
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vqakd"]
-load_path = "res://.godot/imported/shapespark-low-poly-plants-kit_branch-01.png-dda9fea7acfccec5d86cd77a82c80fe6.s3tc.ctex"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ka0r"]
 resource_name = "branch-1-01"
 render_priority = 1
 transparency = 4
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_vqakd")
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mcmf0"]
-load_path = "res://.godot/imported/shapespark-low-poly-plants-kit_branch-02.png-901447abe1891a45b3800f90b1c02f2a.s3tc.ctex"
+albedo_texture = ExtResource("2_jnkrk")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84xc2"]
 resource_name = "branch-1-02"
 transparency = 4
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_mcmf0")
+albedo_texture = ExtResource("3_t71bb")
 
 [node name="Tree-01-1" type="MeshInstance3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
