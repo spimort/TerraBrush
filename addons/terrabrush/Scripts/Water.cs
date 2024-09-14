@@ -135,6 +135,14 @@ public partial class Water : Node3D {
         _clipmap.Shader.SetShaderParameter(StringNames.Near, Near);
         _clipmap.Shader.SetShaderParameter(StringNames.Far, Far);
         _clipmap.Shader.SetShaderParameter(StringNames.EdgeColor, EdgeColor);
+
+        // This is for compatibility with Godot 4.2
+        var engineVersion = Engine.GetVersionInfo();
+        var major = (int) engineVersion["major"];
+        var minor = (int) engineVersion["minor"];
+        if (major == 4 && minor < 3) {
+            _clipmap.Shader.SetShaderParameter(StringNames.InvertedZ, false);
+        }
     }
 
     public void AddRippleEffect(float x, float y) {

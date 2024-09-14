@@ -24,16 +24,19 @@ uniform float EdgeScale = 0.1;
 uniform float Near = 0.5;
 uniform float Far = 100.0;
 uniform vec3 EdgeColor: source_color;
+uniform bool InvertedZ = true;
 
 float fresnel(float amount, vec3 normal, vec3 view) {
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0)), amount);
 }
 
 float edge(float depth) {
-    // Invert the depth value
-    depth = 1.0 - depth;
-    depth = 2.0 * depth - 1.0;
-    return Near * Far / (Far + depth * (Near - Far));	
+	// Invert the depth value
+	if (InvertedZ) {
+		depth = 1.0 - depth;		
+	}
+	depth = 2.0 * depth - 1.0;
+	return Near * Far / (Far + depth * (Near - Far));	
 }
 
 void calculateWaterVertex(

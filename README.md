@@ -38,9 +38,7 @@ I'm gonna be happy to accept PR for new features if it fits.
 
 ## Godot 4.2 and lower (4.x)
 
-Starting with Godot 4.3, a breaking change has been introduced in the engine (see [this post from the Godot Team](https://godotengine.org/article/introducing-reverse-z/)). This forces TerraBrush to adapt to the new requirements.
-
-This breaking change impacts the water shader used in the plugin. If you are still using a version before Godot 4.3, you should stick to a version of TerraBrush before 0.8.0-alpha.
+The demo scene has been updated to Godot 4.3 which makes it break with older version of Godot.
 
 ## Key Features
 
