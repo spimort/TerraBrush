@@ -33,7 +33,7 @@ float fresnel(float amount, vec3 normal, vec3 view) {
 float edge(float depth) {
 	// Invert the depth value
 	if (InvertedZ) {
-	depth = 1.0 - depth;		
+		depth = 1.0 - depth;		
 	}
 	depth = 2.0 * depth - 1.0;
 	return Near * Far / (Far + depth * (Near - Far));	
