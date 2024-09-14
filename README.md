@@ -239,6 +239,50 @@ To retrieve information from the map (for example, to get what texture the playe
 
 These two functions can be called from **GDScript** and **C#**.
 
+#### C# Snippet
+```c#
+// Let's assume we have a variable called "TerraBrush" that is a TerraBrush Node.
+// Let's validate that we are on the ground
+if (IsOnFloor() && GetLastSlideCollision() != null) {
+    // Get the current collision
+    var collision = GetLastSlideCollision();
+
+    // Let's make sure the collider is the collider of the Terrain
+    if (collision?.GetCollider() == TerraBrush?.Terrain?.TerrainCollider) {
+        // The variable playerX and playerZ are the variables for the global position of the player
+        var result = TerraBrush.GetPositionInformation(playerX, playerZ);
+        // If we don't get a result, it means we are out of the terrain
+        if (result != null) {
+            // The texture at position 0 is the most present one
+            var mainTexture = result.Textures?.Length > 0 ? result.Textures?[0].Name : "";
+
+            // Do something with the mainTexture information
+            ...
+        }
+    }
+}
+```
+
+#### GDScript Snippet
+```gdscript
+# Let's assume we have a variable called "%TerraBrush" that is a TerraBrush Node.
+# Let's validate that we are on the ground
+if is_on_floor() and get_last_slide_collision() != null:
+    # Get the current collision
+    var collision = get_last_slide_collision()
+
+    # Let's make sure the collider is the collider of the Terrain
+    if collision.get_collider() == %TerraBrush.Terrain.TerrainCollider:
+        # The variable playerX and playerZ are the variables for the global position of the player
+        var result = %TerraBrush.GetPositionInformation(playerX, playerZ)
+        # If we don't get a result, it means we are out of the terrain
+        if result != null:
+            # The texture at position 0 is the most present one
+            var mainTexture = result.Textures[0].Name if result.Textures.size() > 0 else ""
+            # Do something with the mainTexture information
+            ...
+```
+
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
