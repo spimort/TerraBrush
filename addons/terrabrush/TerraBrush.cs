@@ -17,6 +17,9 @@ public enum ObjectLoadingStrategy {
 public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
 
+	[Signal]
+	public delegate void TerrainLoadedEventHandler();
+
     private int _zonesSize = 256;
     private ShaderMaterial _customShader;
     private Terrain _terrain;
@@ -294,6 +297,8 @@ public partial class TerraBrush : TerraBrushTool {
             await CreateFoliages();
             await CreateSnow();
         }
+
+        EmitSignal(StringNames.TerrainLoaded);
     }
 
     public override async void OnUpdateTerrainSettings() {

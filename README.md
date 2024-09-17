@@ -229,6 +229,12 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Zones[x].WaterTexture|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
 |Zones[x].SnowTexture|Unless you have an existing snow painting, leave this option empty, the tool will create it by itself.|
 
+**Node Signals**
+
+|Signal Name|Description|
+|---|---|
+|**TerrainLoaded**|Occurs when the terrain is done loading all the different components.|
+
 ### Interact with the terrain
 
 To interact with the terrain (for example, to make water ripple), you can call the function `AddInteractionPoint` on the TerraBrush node. This function requires an x and y position, corresponding to the x and y coordinates on the map, in meters.

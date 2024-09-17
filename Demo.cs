@@ -13,6 +13,8 @@ public partial class Demo : CharacterBody3D {
 
     public override void _Ready(){
         base._Ready();
+
+		Terrain.Connect(TerraBrush.StringNames.TerrainLoaded, Callable.From(() => GD.Print("TerrainLoaded")));
     }
 
 	public override void _Input(InputEvent e) {

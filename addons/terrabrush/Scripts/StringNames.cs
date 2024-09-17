@@ -67,4 +67,5 @@ internal static class StringNames {
     public static readonly StringName ScaleNoiseTexture = "ScaleNoiseTexture";
     public static readonly StringName RandomPlacementRange = "RandomPlacementRange";
     public static readonly StringName InvertedZ = "InvertedZ";
+    public static readonly StringName TerrainLoaded = "TerrainLoaded";
 }
