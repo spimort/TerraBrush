@@ -13,6 +13,11 @@ void vertex() {
 void fragment() {
 	calculateHeightmapFragment(
 		_worldVertex,
+		VERTEX,
+		NORMAL,
+		TANGENT,
+		BINORMAL,
+		EYE_OFFSET,
 		ALBEDO,
 		NORMAL_MAP,
 		ROUGHNESS,

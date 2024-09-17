@@ -13,12 +13,12 @@
 [ext_resource type="Texture2D" uid="uid://c7h0hrakrlkpq" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_height_1k.png" id="8_srk7a"]
 [ext_resource type="Texture2D" uid="uid://b34wpvg5h4p4q" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_normal_opengl_1k.png" id="9_satbt"]
 [ext_resource type="Texture2D" uid="uid://ctdtau2iwdkla" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_roughness_1k.jpg" id="10_lt8js"]
-[ext_resource type="Texture2D" uid="uid://dfcyx4fhnyqmp" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_color_1k.jpg" id="11_1mp7w"]
-[ext_resource type="Texture2D" uid="uid://dtmmmald6xw7v" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_height_1k.png" id="11_b3m5x"]
-[ext_resource type="Texture2D" uid="uid://hosywlyneaqc" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_normal_opengl_1k.png" id="12_36x75"]
-[ext_resource type="Texture2D" uid="uid://6xypy41ao85" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_roughness_1k.jpg" id="13_43kc8"]
+[ext_resource type="Texture2D" uid="uid://j71kk5vsfvjt" path="res://Assets/cc0_textures/Rocks007_1K-JPG/Rocks007_1K-JPG_Color.jpg" id="12_ldkw2"]
+[ext_resource type="Texture2D" uid="uid://bjkf5w7sweljg" path="res://Assets/cc0_textures/Rocks007_1K-JPG/Rocks007_1K-JPG_Displacement.jpg" id="13_qetvg"]
+[ext_resource type="Texture2D" uid="uid://dii1ihsw4gyjl" path="res://Assets/cc0_textures/Rocks007_1K-JPG/Rocks007_1K-JPG_NormalGL.jpg" id="14_ailxh"]
 [ext_resource type="Texture2D" uid="uid://kb1h7trfm56o" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_color_1k.jpg" id="14_v2wx4"]
 [ext_resource type="Texture2D" uid="uid://tait6si8fhul" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_normal_opengl_1k.png" id="15_6s3cb"]
+[ext_resource type="Texture2D" uid="uid://dyd541va1c5sj" path="res://Assets/cc0_textures/Rocks007_1K-JPG/Rocks007_1K-JPG_Roughness.jpg" id="15_pxu6k"]
 [ext_resource type="Texture2D" uid="uid://b1e8mhs42h3a1" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_roughness_1k.jpg" id="16_d4u8t"]
 [ext_resource type="Texture2D" uid="uid://cwjyrocs7hah6" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_height_1k.png" id="17_l1sku"]
 [ext_resource type="Texture2D" uid="uid://bi45fiplhg6an" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_color_1k.jpg" id="17_ngv3d"]
@@ -91,10 +91,10 @@ TextureDetail = -1
 [sub_resource type="Resource" id="Resource_0e1fb"]
 script = ExtResource("7_yvfmb")
 Name = "Dirt"
-AlbedoTexture = ExtResource("11_1mp7w")
-NormalTexture = ExtResource("12_36x75")
-RoughnessTexture = ExtResource("13_43kc8")
-HeightTexture = ExtResource("11_b3m5x")
+AlbedoTexture = ExtResource("12_ldkw2")
+NormalTexture = ExtResource("14_ailxh")
+RoughnessTexture = ExtResource("15_pxu6k")
+HeightTexture = ExtResource("13_qetvg")
 TextureDetail = -1
 
 [sub_resource type="Resource" id="Resource_1laah"]
@@ -144,7 +144,7 @@ LODInitialCellWidth = 1.0
 Albedo = Color(1, 1, 1, 1)
 AlbedoTextures = [ExtResource("25_e6dcx")]
 UseGroundColor = true
-CastShadow = false
+CastShadow = true
 UseBrushScale = true
 ScaleNoiseTexture = SubResource("NoiseTexture2D_rb8l3")
 RandomPlacementRange = 3.0
@@ -222,7 +222,7 @@ Objects = [SubResource("Resource_0o1vb")]
 WaterDefinition = ExtResource("23_rpaxe")
 SnowDefinition = SubResource("Resource_ibahd")
 TerrainZones = SubResource("Resource_dp21i")
-metadata/_edit_lock_ = false
+metadata/_edit_lock_ = true
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("Camera", "Terrain", "DebugLabel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.4413, 21.1014, 57.3405)

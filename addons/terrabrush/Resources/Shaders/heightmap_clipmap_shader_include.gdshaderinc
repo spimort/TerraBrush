@@ -106,6 +106,11 @@ void fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sa
 
 void calculateHeightmapFragment(
 	vec3 worldVertex,	
+	vec3 vertex,
+	vec3 normal,
+	vec3 tangent,
+	vec3 binormal,
+	vec3 eyeOffset,
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float roughness,
@@ -119,7 +124,7 @@ void calculateHeightmapFragment(
 	vec3 zoneUV = calculateZoneUV(worldVertex);		
 	
 	int currentChannel = 0;
-	for (int i = 0; i < NumberOfTextures; i++) {
+	for (int i = 0; i < NumberOfTextures; i++) {					
 		int textureDetail = TexturesDetail[i];
 		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
 		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
@@ -129,6 +134,37 @@ void calculateHeightmapFragment(
 		vec4 currentNormal = vec4(0);
 		vec4 currentRoughness = vec4(0);
 		vec4 currentHeight = vec4(0);
+				
+		vec2 baseUV = textureUV.xy;	
+		//{
+			//// Height: Enabled
+			//vec3 view_dir = normalize(normalize(-vertex + eyeOffset) * mat3(tangent, -binormal, normal));
+//
+			//// Height Deep Parallax: Enabled
+			//float num_layers = mix(float(32), float(8), abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
+			//float layer_depth = 1.0 / num_layers;
+			//float current_layer_depth = 0.0;
+			//vec2 p = view_dir.xy * -16.0 * 0.01;
+			//vec2 delta = p / num_layers;
+			//vec2 ofs = baseUV;
+			//float depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
+//
+			//float current_depth = 0.0;
+			//while (current_depth < depth) {
+				//ofs -= delta;
+				//depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
+//
+				//current_depth += layer_depth;
+			//}
+//
+			//vec2 prev_ofs = ofs + delta;
+			//float after_depth = depth - current_depth;
+			//float before_depth = (1.0 - texture(HeightTextures, vec3(prev_ofs, float(i))).r) - current_depth + layer_depth;
+//
+			//float weight = after_depth / (after_depth - before_depth);
+			//ofs = mix(ofs, prev_ofs, weight);
+			//textureUV = vec3(ofs, textureUV.z);
+		//}		
 		
 		fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, currentTexture);
 		if (HasNormalTextures) {
