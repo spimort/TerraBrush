@@ -17,7 +17,7 @@ public partial class TextureSetResource : Resource {
         get {
             return _albedoTexture;
         } set {
-            if (value != null && value.ResourcePath != _albedoTexture?.ResourcePath) {
+            if (value != null && !string.IsNullOrWhiteSpace(value.ResourcePath) && value.ResourcePath != _albedoTexture?.ResourcePath) {
                 var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), "");
                 var directoryFiles = DirAccess.GetFilesAt(directory);
 
