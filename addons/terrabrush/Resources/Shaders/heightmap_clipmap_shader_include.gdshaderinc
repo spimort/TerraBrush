@@ -48,7 +48,7 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 
 	vec4 col0 = vec4(0);
 	vec4 col1 = vec4(0);
-	
+
 	if (NearestFilter) {
 		col0 = texture(texNearest, uv);
 		col1 = texture(texNearest, uv2);
@@ -74,16 +74,16 @@ void calculateHeightmapVertex(
 	inout vec3 worldVertex
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
-	
+
 	vec3 zoneUV = calculateZoneUV(worldVertex);
-	
+
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
 	float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
 	float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
 	float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
 	normal = normalize(vec3(hL - hR, 2.0, hB - hF));
-	
+
 	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	vertex.y -= waterTexture.r * WaterFactor;
 }
@@ -98,14 +98,14 @@ float contrast(float factor, float v) {
 
 void fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sampler2DArray nearestTextures, out vec4 resultTexture) {
 	if (NearestFilter) {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);		
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);
 	} else {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);				
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);
 	}
 }
 
 void calculateHeightmapFragment(
-	vec3 worldVertex,	
+	vec3 worldVertex,
 	vec3 vertex,
 	vec3 normal,
 	vec3 tangent,
@@ -119,96 +119,96 @@ void calculateHeightmapFragment(
 ) {
 	vec4 resultTexture = vec4(0.0);
 	vec4 resultNormal = vec4(0.0);
-	vec4 resultRoughness = vec4(0.0);	
-	
-	vec3 zoneUV = calculateZoneUV(worldVertex);		
-	
+	vec4 resultRoughness = vec4(0.0);
+
+	vec3 zoneUV = calculateZoneUV(worldVertex);
+
 	int currentChannel = 0;
-	for (int i = 0; i < NumberOfTextures; i++) {					
+	for (int i = 0; i < NumberOfTextures; i++) {
 		int textureDetail = TexturesDetail[i];
 		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
-		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
-		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));	
-	
+		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+
 		vec4 currentTexture = vec4(0);
 		vec4 currentNormal = vec4(0);
 		vec4 currentRoughness = vec4(0);
 		vec4 currentHeight = vec4(0);
-				
-		vec2 baseUV = textureUV.xy;	
-		//{
-			//// Height: Enabled
-			//vec3 view_dir = normalize(normalize(-vertex + eyeOffset) * mat3(tangent, -binormal, normal));
-//
-			//// Height Deep Parallax: Enabled
-			//float num_layers = mix(float(32), float(8), abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
-			//float layer_depth = 1.0 / num_layers;
-			//float current_layer_depth = 0.0;
-			//vec2 p = view_dir.xy * -16.0 * 0.01;
-			//vec2 delta = p / num_layers;
-			//vec2 ofs = baseUV;
-			//float depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
-//
-			//float current_depth = 0.0;
-			//while (current_depth < depth) {
-				//ofs -= delta;
-				//depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
-//
-				//current_depth += layer_depth;
-			//}
-//
-			//vec2 prev_ofs = ofs + delta;
-			//float after_depth = depth - current_depth;
-			//float before_depth = (1.0 - texture(HeightTextures, vec3(prev_ofs, float(i))).r) - current_depth + layer_depth;
-//
-			//float weight = after_depth / (after_depth - before_depth);
-			//ofs = mix(ofs, prev_ofs, weight);
-			//textureUV = vec3(ofs, textureUV.z);
-		//}		
-		
+
+		vec2 baseUV = textureUV.xy;
+		{
+			// Height: Enabled
+			vec3 view_dir = normalize(normalize(-vertex + eyeOffset) * mat3(tangent, -binormal, normal));
+
+			// Height Deep Parallax: Enabled
+			float num_layers = mix(float(32), float(8), abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
+			float layer_depth = 1.0 / num_layers;
+			float current_layer_depth = 0.0;
+			vec2 p = view_dir.xy * -16.0 * 0.01;
+			vec2 delta = p / num_layers;
+			vec2 ofs = baseUV;
+			float depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
+
+			float current_depth = 0.0;
+			while (current_depth < depth) {
+				ofs -= delta;
+				depth = 1.0 - texture(HeightTextures, vec3(ofs, float(i))).r;
+
+				current_depth += layer_depth;
+			}
+
+			vec2 prev_ofs = ofs + delta;
+			float after_depth = depth - current_depth;
+			float before_depth = (1.0 - texture(HeightTextures, vec3(prev_ofs, float(i))).r) - current_depth + layer_depth;
+
+			float weight = after_depth / (after_depth - before_depth);
+			ofs = mix(ofs, prev_ofs, weight);
+			textureUV = vec3(ofs, textureUV.z);
+		}
+
 		fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, currentTexture);
 		if (HasNormalTextures) {
-			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);		
+			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);
 		}
 		if (HasRoughnessTextures) {
-			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);					
+			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);
 		}
 		if (HasHeightTextures) {
-			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);					
-		}		
-		
+			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);
+		}
+
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 		float channelValue = getChannelValue(currentChannel, currentSplatmap);
-	
+
 		float heightBlendedChannelValue = channelValue;
 		if (HasHeightTextures) {
 			heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
 		}
-		
+
 		resultTexture += currentTexture * heightBlendedChannelValue;
 		resultNormal += currentNormal * channelValue;
 		resultRoughness += currentRoughness * heightBlendedChannelValue;
-	
+
 		if (currentChannel == 3) {
 			currentChannel = 0;
 		} else {
 			currentChannel++;
 		}
 	}
-	
+
 	albedo = resultTexture.xyz;
-	
+
 	if (HasRoughnessTextures) {
-		roughness = resultRoughness.x;		
+		roughness = resultRoughness.x;
 	}
-	
+
 	if (HasNormalTextures) {
-		normalMap = resultNormal.xyz;	
+		normalMap = resultNormal.xyz;
 	}
-	
+
 	alpha = 1.0;
 	alphaScissorThreshold = 1.0;
-	
+
 	if (zoneUV.z < 0.0) {
 		alpha = 0.0;
 	} else {
