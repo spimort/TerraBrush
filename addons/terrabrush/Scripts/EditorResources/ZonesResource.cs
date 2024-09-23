@@ -10,6 +10,7 @@ namespace TerraBrush;
 public partial class ZonesResource : Resource {
     private HashSet<ImageTexture> _dirtyImageTextures = new();
 
+    private Texture2DArray _lockTextures = new();
     private Texture2DArray _heightmapTextures = new();
     private Texture2DArray _splatmapsTextures = new();
     private Texture2DArray[] _foliagesTextures;
@@ -18,6 +19,7 @@ public partial class ZonesResource : Resource {
     private Texture2DArray _snowTextures = new();
     private ImageTexture _zonesMap = new();
 
+    public Texture2DArray LockTextures => _lockTextures;
     public Texture2DArray HeightmapTextures => _heightmapTextures;
     public Texture2DArray SplatmapsTextures => _splatmapsTextures;
     public Texture2DArray[] FoliagesTextures => _foliagesTextures;
@@ -27,6 +29,14 @@ public partial class ZonesResource : Resource {
     public ImageTexture ZonesMap => _zonesMap;
 
     [Export] public ZoneResource[] Zones { get;set; }
+
+    public void UpdateLockTexture() {
+        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? Image.CreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rh));
+
+        if (images.Any()) {
+            _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
+    }
 
     public void UpdateHeightmaps() {
         var images = Zones.Select(zone => zone.HeightMapTexture.GetImage());
@@ -127,7 +137,7 @@ public partial class ZonesResource : Resource {
 		var maxX = zonePositions.Max(x => Math.Abs(x.X));
 		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
 
-		var zonesMap = Image.Create((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
+		var zonesMap = Image.CreateEmpty((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
 		zonesMap.Fill(new Color(-1, 0, 0, 0));
 		for (var i = 0; i < zonePositions.Count(); i++) {
 			var position = zonePositions[i];
@@ -163,6 +173,9 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateImageTextures() {
+        if (Engine.IsEditorHint()) {
+            UpdateLockTexture();
+        }
         UpdateHeightmaps();
         UpdateSplatmapsTextures();
         UpdateFoliagesTextures();

@@ -198,7 +198,6 @@ public partial class Plugin : EditorPlugin {
                     _currentTerraBrushNode.Terrain.TerrainUpdated();
                     _isMousePressed = false;
 
-
                     // Trigger a dirty state
                     _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
