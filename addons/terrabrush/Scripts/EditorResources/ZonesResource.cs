@@ -31,7 +31,7 @@ public partial class ZonesResource : Resource {
     [Export] public ZoneResource[] Zones { get;set; }
 
     public void UpdateLockTexture() {
-        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? Image.CreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rh));
+        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? Image.CreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf));
 
         if (images.Any()) {
             _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));

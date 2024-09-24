@@ -24,7 +24,7 @@ public class LockTool : ToolBase {
                 var lockValue = toolType == TerrainToolType.LockAdd ? 1f : 0f;
 
                 var newValue = new Color(
-                    lockValue,
+                    Mathf.Lerp(currentPixel.R, lockValue, pixelBrushStrength * brushStrength),
                     currentPixel.G,
                     currentPixel.B,
                     currentPixel.A

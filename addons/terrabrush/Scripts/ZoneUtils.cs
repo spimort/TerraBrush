@@ -11,7 +11,7 @@ public static class ZoneUtils {
     private const string SnowFileName = "Snow_{0}_{1}.res";
 
     public static ImageTexture CreateLockImage(int zoneSize, Vector2I zonePosition, bool lockAll = false) {
-        var image = Image.CreateEmpty(zoneSize, zoneSize, false, Image.Format.Rh);
+        var image = Image.CreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf);
         if (lockAll) {
             image.Fill(Colors.White);
         }

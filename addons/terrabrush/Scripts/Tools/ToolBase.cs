@@ -105,7 +105,7 @@ public abstract class ToolBase {
                 var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y, ignoreLockedZone);
                 if (imageZoneInfo != null) {
                     var brushPixelValue = brushImage.GetPixel(x, y);
-                    var brushPixelStrength = brushPixelValue.A;
+                    var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
 
                     onBrushPixel(
                         imageZoneInfo,
@@ -138,38 +138,46 @@ public abstract class ToolBase {
             }
         }
 
-        if (zone != null && (ignoreLockedZone || !IsZonePixelLocked(zone, zoneInfo))) {
-            _imagesCache.TryGetValue(zone, out Image image);
-            var imageTexture = GetToolCurrentImageTexture(zone);
-
-            if (imageTexture != null) {
-                if (image == null) {
-                    image = imageTexture.GetImage();
-                    _imagesCache.Add(zone, image);
-                }
-
-                _terraBrush.TerrainZones.AddDirtyImageTexture(imageTexture);
-                AddTextureToUndo(imageTexture);
+        if (zone != null) {
+            (bool locked, float lockedStrength) lockInfo = (false, 0.0f);
+            if (!ignoreLockedZone) {
+                lockInfo = IsZonePixelLocked(zone, zoneInfo);
             }
 
-            return new ImageZoneInfo() {
-                Image = image,
-                ZoneInfo = zoneInfo,
-                Zone = zone
-            };
+            if (!lockInfo.locked) {
+                _imagesCache.TryGetValue(zone, out Image image);
+                var imageTexture = GetToolCurrentImageTexture(zone);
+
+                if (imageTexture != null) {
+                    if (image == null) {
+                        image = imageTexture.GetImage();
+                        _imagesCache.Add(zone, image);
+                    }
+
+                    _terraBrush.TerrainZones.AddDirtyImageTexture(imageTexture);
+                    AddTextureToUndo(imageTexture);
+                }
+
+                return new ImageZoneInfo() {
+                    Image = image,
+                    ZoneInfo = zoneInfo,
+                    Zone = zone,
+                    LockedStrength = lockInfo!.lockedStrength
+                };
+            }
         }
 
         return null;
     }
 
-    private bool IsZonePixelLocked(ZoneResource zone, ZoneInfo zoneInfo) {
+    private (bool locked, float lockedStrength) IsZonePixelLocked(ZoneResource zone, ZoneInfo zoneInfo) {
         if (zone.LockTexture == null) {
-            return false;
+            return (false, 0.0f);
         }
 
         var image = zone.LockTexture.GetImage();
         var pixel = image.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
-        return pixel.R == 1.0;
+        return (pixel.R == 1.0, pixel.R);
     }
 
     protected void AddTextureToUndo(ImageTexture texture) {
@@ -197,6 +205,7 @@ public abstract class ToolBase {
         public Image Image { get;set; }
         public ZoneInfo ZoneInfo { get;set; }
         public ZoneResource Zone { get;set; }
+        public float LockedStrength { get;set; }
     }
 }
 #endif
