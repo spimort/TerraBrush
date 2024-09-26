@@ -55,6 +55,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public bool UseBrushScale { get;set; } = true;
     [Export] public Texture2D ScaleNoiseTexture { get;set; }
     [Export] public float RandomPlacementRange { get;set; } = 3.0f;
+    [Export] public int[] ApplyOnTextureIndexes { get;set; }
     [Export] public ShaderMaterial CustomShader {
         get {
             return _customShader;
