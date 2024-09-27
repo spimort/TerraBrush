@@ -77,6 +77,11 @@ public partial class Terrain : Node3D {
 
             _clipmap.CreateMesh();
 
+            if (Engine.IsEditorHint()) {
+                Clipmap.Shader.SetShaderParameter(StringNames.ApplyLockTextures, true);
+                Clipmap.Shader.SetShaderParameter(StringNames.LockTextures, TerrainZones.LockTextures);
+            }
+
             TerrainUpdated();
             TerrainTextureUpdated();
             TerrainWaterUpdated();

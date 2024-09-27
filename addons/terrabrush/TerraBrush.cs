@@ -258,6 +258,9 @@ public partial class TerraBrush : TerraBrushTool {
             CreateSplatmaps(zone);
         }
 
+        if (Engine.IsEditorHint()) {
+            TerrainZones.UpdateLockTexture();
+        }
         TerrainZones.UpdateZonesMap();
         TerrainZones.UpdateHeightmaps();
 
@@ -779,8 +782,23 @@ public partial class TerraBrush : TerraBrushTool {
         return image;
     }
 
-    public override Godot.Collections.Array<Godot.Collections.Dictionary> _GetPropertyList()
-    {
-        return base._GetPropertyList();
+    public override void OnLockTerrain() {
+        if (TerrainZones?.Zones != null) {
+            foreach (var zone in TerrainZones.Zones) {
+                zone.LockTexture = ZoneUtils.CreateLockImage(ZonesSize, zone.ZonePosition, true);
+            }
+
+            TerrainZones.UpdateLockTexture();
+        }
+    }
+
+    public override void OnUnlockTerrain() {
+        if (TerrainZones?.Zones != null) {
+            foreach (var zone in TerrainZones.Zones) {
+                zone.LockTexture = null;
+            }
+
+            TerrainZones.UpdateLockTexture();
+        }
     }
 }

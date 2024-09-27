@@ -25,6 +25,8 @@ public enum TerrainToolType {
     [ToolType(typeof(SnowTool))] SnowRemove = 16,
     [ToolType(typeof(HoleTool))] HoleAdd = 17,
     [ToolType(typeof(HoleTool))] HoleRemove = 18,
+    [ToolType(typeof(LockTool))] LockAdd = 20,
+    [ToolType(typeof(LockTool))] LockRemove = 21,
 }
 #endif
 
@@ -75,6 +77,20 @@ public partial class TerraBrushTool : Node3D {
 
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnRemoveTerrain)}")]
     public bool RemoveTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnLockTerrain)}")]
+    public bool LockAllTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUnlockTerrain)}")]
+    public bool UnlockAllTerrain {
         get {
             return false;
         } set {}
@@ -160,5 +176,7 @@ public partial class TerraBrushTool : Node3D {
     public virtual void OnCreateTerrain() {}
     public virtual void OnUpdateTerrainSettings() {}
     public virtual void OnRemoveTerrain() {}
+    public virtual void OnLockTerrain() {}
+    public virtual void OnUnlockTerrain() {}
 #endregion
 }

@@ -54,7 +54,7 @@ public partial class Plugin : EditorPlugin {
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
 		AddCustomType("TerraBrush", "Node3D", script, icon);
-        CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
+        CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
         CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Variant.Type.Color);
@@ -197,7 +197,6 @@ public partial class Plugin : EditorPlugin {
                 } else if (_isMousePressed) {
                     _currentTerraBrushNode.Terrain.TerrainUpdated();
                     _isMousePressed = false;
-
 
                     // Trigger a dirty state
                     _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
