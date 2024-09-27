@@ -167,7 +167,7 @@ void calculateHeightmapFragment(
 	if (ApplyLockTextures) {
 		vec4 lockTexture = texture(LockTextures, zoneUV);
 		float lockValue = (1.0 - lockTexture.r);
-		albedo *= vec3(max(lockValue, 0.5), max(lockValue, 0), max(lockValue, 0));	
+		albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);	
 	}
 	
 	if (HasRoughnessTextures) {
