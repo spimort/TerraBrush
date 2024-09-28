@@ -13,6 +13,8 @@ uniform vec3 MeshScale = vec3(1.0);
 uniform bool UseBrushScale = true;
 uniform sampler2D ScaleNoiseTexture: hint_default_white;
 uniform float RandomPlacementRange = 2.0;
+uniform int[100] ApplyOnTextureIndexes;
+uniform int NumberOfTexturesToApplyOn = 0;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -77,6 +79,23 @@ mat3 rotateX(float theta) {
 	);
 
 	return rotate_x;
+}
+
+bool calculateTexturePresence(vec3 zoneUV) {
+	for (int i = 0; i < NumberOfTexturesToApplyOn; i++) {
+		int textureIndex = ApplyOnTextureIndexes[i];
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(textureIndex/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		
+		int channelIndex = textureIndex % 4;
+		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
+		float channelValue = currentSplatmap[channelIndex];
+
+		if (channelValue > 0.2) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 vec4 calculateGroundColor(vec3 zoneUV) {
@@ -221,7 +240,19 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 		vertex.y = 0.0; // Scale down the mesh so it "vanish"
 	} else {
 		vec4 foliagePosition = texture(FoliageTextures, zoneUV);
-		bool foliagePresence = foliagePosition.x > 0.0;
+		bool foliagePresence = false;
+		bool presenceByTexture = false;
+		if (NumberOfTexturesToApplyOn > 0) {
+			foliagePresence = calculateTexturePresence(zoneUV);
+			
+			if (foliagePresence) {
+				presenceByTexture = true;				
+			}
+		}
+		
+		if (!foliagePresence) {
+			foliagePresence = foliagePosition.x > 0.0;	
+		}
 
 		if (foliagePresence) {
 			// HeightMap Texture (height calculation)
@@ -242,7 +273,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 				// Apply the meshscale
 				vertex *= MeshScale;
 
-				if (UseBrushScale){
+				if (UseBrushScale && !presenceByTexture){
 					// Adjust the scale of the grass with the alpha of the texture
 					float meshScaleFactor = foliagePosition.a;
 					vertex *= meshScaleFactor;

@@ -170,6 +170,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |FoliageResource[x].Definition.UseBrushScale|**(MultiMesh only)** If true, the more you paint at a specific location, the bigger the foliage will be (on a range of 0.0 to 1.0). The default value is true.|
 |FoliageResource[x].Definition.ScaleNoiseTexture|**(MultiMesh only)** A texture to help get various height on the foliage.|
 |FoliageResource[x].Definition.RandomPlacementRange|**(MultiMesh only)** A value that helps place randomly each mesh instance. The position will be between -RandomPlacementRange to RandomPlacementRange from the center of the original position in the clipmap. This helps blend each layers of the clipmap. The default value is 3.0.|
+|FoliageResource[x].Definition.ApplyOnTextureIndexes|**(MultiMesh only)** A list of texture indexes where foliage should be applied.|
 |FoliageResource[x].Definition.CustomShader|**(MultiMesh only)** A custom shader for the foliage.|
 |FoliageResource[x].Definition.MeshMaterial|**(GPUParticles only)** The material that will be used on the mesh.|
 |FoliageResource[x].Definition.MaximumRenderDistance|**(GPUParticles only)** This is the maximum distance the foliage will appear from the camera. A high value will decrease the performance.|
