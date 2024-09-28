@@ -7,6 +7,7 @@ namespace TerraBrush;
 [Tool]
 [GlobalClass]
 public partial class ZoneResource : Resource {
+    public ImageTexture LockTexture { get;set; }
     [Export] public Vector2I ZonePosition { get;set; }
     [Export] public ImageTexture HeightMapTexture { get;set; }
     [Export] public ImageTexture[] SplatmapsTexture { get;set; }
