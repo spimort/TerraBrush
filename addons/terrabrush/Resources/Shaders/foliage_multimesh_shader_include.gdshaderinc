@@ -244,7 +244,10 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 		bool presenceByTexture = false;
 		if (NumberOfTexturesToApplyOn > 0) {
 			foliagePresence = calculateTexturePresence(zoneUV);
-			presenceByTexture = true;
+			
+			if (foliagePresence) {
+				presenceByTexture = true;				
+			}
 		}
 		
 		if (!foliagePresence) {
