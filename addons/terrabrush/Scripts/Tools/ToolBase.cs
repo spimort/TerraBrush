@@ -83,7 +83,7 @@ public abstract class ToolBase {
         return null;
     }
 
-    protected void ForEachBrushPixel(Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel) {
+    protected void ForEachBrushPixel(Image brushImage, int brushSize, Vector2 imagePosition, OnBrushPixel onBrushPixel, bool ignoreLockedZone = false) {
         if (_lockedAxis != null && _lockedAxis != LockedAxis.None) {
             if (_lockedAxisValue == null) {
                 _lockedAxisValue = new Vector2(imagePosition.X, imagePosition.Y);
@@ -102,10 +102,10 @@ public abstract class ToolBase {
 
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
-                var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y);
+                var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y, ignoreLockedZone);
                 if (imageZoneInfo != null) {
                     var brushPixelValue = brushImage.GetPixel(x, y);
-                    var brushPixelStrength = brushPixelValue.A;
+                    var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
 
                     onBrushPixel(
                         imageZoneInfo,
@@ -117,7 +117,7 @@ public abstract class ToolBase {
 
     }
 
-    protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY) {
+    protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false) {
         var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize);
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
@@ -139,27 +139,45 @@ public abstract class ToolBase {
         }
 
         if (zone != null) {
-            _imagesCache.TryGetValue(zone, out Image image);
-            var imageTexture = GetToolCurrentImageTexture(zone);
-
-            if (imageTexture != null) {
-                if (image == null) {
-                    image = imageTexture.GetImage();
-                    _imagesCache.Add(zone, image);
-                }
-
-                _terraBrush.TerrainZones.AddDirtyImageTexture(imageTexture);
-                AddTextureToUndo(imageTexture);
+            (bool locked, float lockedStrength) lockInfo = (false, 0.0f);
+            if (!ignoreLockedZone) {
+                lockInfo = IsZonePixelLocked(zone, zoneInfo);
             }
 
-            return new ImageZoneInfo() {
-                Image = image,
-                ZoneInfo = zoneInfo,
-                Zone = zone
-            };
+            if (!lockInfo.locked) {
+                _imagesCache.TryGetValue(zone, out Image image);
+                var imageTexture = GetToolCurrentImageTexture(zone);
+
+                if (imageTexture != null) {
+                    if (image == null) {
+                        image = imageTexture.GetImage();
+                        _imagesCache.Add(zone, image);
+                    }
+
+                    _terraBrush.TerrainZones.AddDirtyImageTexture(imageTexture);
+                    AddTextureToUndo(imageTexture);
+                }
+
+                return new ImageZoneInfo() {
+                    Image = image,
+                    ZoneInfo = zoneInfo,
+                    Zone = zone,
+                    LockedStrength = lockInfo!.lockedStrength
+                };
+            }
         }
 
         return null;
+    }
+
+    private (bool locked, float lockedStrength) IsZonePixelLocked(ZoneResource zone, ZoneInfo zoneInfo) {
+        if (zone.LockTexture == null) {
+            return (false, 0.0f);
+        }
+
+        var image = zone.LockTexture.GetImage();
+        var pixel = image.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+        return (pixel.R == 1.0, pixel.R);
     }
 
     protected void AddTextureToUndo(ImageTexture texture) {
@@ -187,6 +205,7 @@ public abstract class ToolBase {
         public Image Image { get;set; }
         public ZoneInfo ZoneInfo { get;set; }
         public ZoneResource Zone { get;set; }
+        public float LockedStrength { get;set; }
     }
 }
 #endif

@@ -13,6 +13,7 @@ public partial class Plugin : EditorPlugin {
     private const int ToolInfoOffset = 20;
     private const string OverlayActionNameKey = "ActionName";
 
+	private Control _terrainDockContainer;
 	private TerrainControlDock _terrainControlDock;
     private PackedScene _terrainControlDockPrefab;
     private PackedScene _toolsPieMenuPrefab;
@@ -54,11 +55,16 @@ public partial class Plugin : EditorPlugin {
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
 		AddCustomType("TerraBrush", "Node3D", script, icon);
-        CreateCustomSetting(SettingContants.DecalColor, Colors.Red, Variant.Type.Color);
+        CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Variant.Type.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
         CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Variant.Type.Color);
         AddInspectorPlugin(new ButtonInspectorPlugin());
+
+        _terrainDockContainer = new Control() {
+            Name = "Terrain Editor"
+        };
+        AddControlToDock(DockSlot.RightBl, _terrainDockContainer);
 
 		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
         _toolsPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ToolsPieMenu.tscn");
@@ -198,7 +204,6 @@ public partial class Plugin : EditorPlugin {
                     _currentTerraBrushNode.Terrain.TerrainUpdated();
                     _isMousePressed = false;
 
-
                     // Trigger a dirty state
                     _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
@@ -317,6 +322,13 @@ public partial class Plugin : EditorPlugin {
     }
 
 	public override void _ExitTree() {
+        if (_terrainDockContainer != null) {
+            RemoveControlFromDocks(_terrainDockContainer);
+            _terrainDockContainer.Free();
+
+            _terrainDockContainer = null;
+        }
+
 		RemoveCustomType("TerraBrush");
         RemoveToolMenuItem("TerraBrush Key bindings");
 
@@ -325,9 +337,7 @@ public partial class Plugin : EditorPlugin {
 
     private void RemoveDock() {
 		if (_terrainControlDock != null) {
-			RemoveControlFromDocks(_terrainControlDock);
-			_terrainControlDock.Free();
-
+			_terrainControlDock.QueueFree();
             _terrainControlDock = null;
 		}
 
@@ -383,7 +393,7 @@ public partial class Plugin : EditorPlugin {
         _terrainControlDock.TerraBrush = _currentTerraBrushNode;
         _terrainControlDock.BrushDecal = _brushDecal;
         _terrainControlDock.EditorResourcePreview = EditorInterface.Singleton.GetResourcePreviewer();
-        AddControlToDock(DockSlot.RightBl, _terrainControlDock);
+        _terrainDockContainer.AddChild(_terrainControlDock);
 
         _updateTerrainSettingsButton = new Button() {
             Text = "Update terrain"

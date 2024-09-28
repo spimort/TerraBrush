@@ -86,6 +86,7 @@ The demo scene has been updated to Godot 4.3 which makes it break with older ver
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
 * **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 * **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
+* **Paint locked areas** - Areas on the terrain can be locked so you don't modify completed parts
 
 ## How To Use
 
@@ -129,6 +130,8 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
 |Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
+|Lock all terrain|Lock all parts of the current Terrain.|
+|Unlock all terrain|Unlock all parts of the current Terrain.|
 |**LOD**||
 |LOD Levels|The number of levels the clipmap will be made of. The default value is 5.|
 |LOD Rows Per Level|The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 101.|

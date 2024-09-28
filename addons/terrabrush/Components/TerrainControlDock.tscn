@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://clqmuo5dunyap"]
+[gd_scene load_steps=25 format=3 uid="uid://clqmuo5dunyap"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/TerrainControlDock.cs" id="1_piufe"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_7e1t1"]
@@ -22,6 +22,8 @@
 [ext_resource type="Texture2D" uid="uid://dshqhgb6asd2f" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_47ucd"]
 [ext_resource type="Texture2D" uid="uid://bcapglulgvwma" path="res://addons/terrabrush/Assets/Icons/holes_add.png" id="20_n1csi"]
 [ext_resource type="Texture2D" uid="uid://den6wvuky6x37" path="res://addons/terrabrush/Assets/Icons/holes_remove.png" id="20_n7xsa"]
+[ext_resource type="Texture2D" uid="uid://bi5l51gtfk3lv" path="res://addons/terrabrush/Assets/Icons/lock_add.png" id="23_csabe"]
+[ext_resource type="Texture2D" uid="uid://desor1wuqgunw" path="res://addons/terrabrush/Assets/Icons/lock_remove.png" id="24_5ypwn"]
 
 [node name="Terrain Editor" type="Control"]
 layout_mode = 3
@@ -50,9 +52,11 @@ layout_mode = 2
 [node name="TabContainer2" type="TabContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="Tools" type="Control" parent="MarginContainer/VBoxContainer/TabContainer2"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools"]
 layout_mode = 1
@@ -239,6 +243,22 @@ texture_normal = ExtResource("3_sxr5p")
 ToolType = 18
 ButtonImage = ExtResource("20_n7xsa")
 
+[node name="LockAdd" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 2
+tooltip_text = "Lock"
+texture_normal = ExtResource("3_sxr5p")
+ToolType = 20
+ButtonImage = ExtResource("23_csabe")
+
+[node name="LockRemove" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer/ToolTypesContainer" instance=ExtResource("2_7e1t1")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 2
+tooltip_text = "Unlock"
+texture_normal = ExtResource("3_sxr5p")
+ToolType = 21
+ButtonImage = ExtResource("24_5ypwn")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer2/Tools/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -283,9 +303,11 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
+current_tab = 0
 
 [node name="Textures" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Textures"]
 layout_mode = 1
@@ -302,6 +324,7 @@ layout_mode = 2
 [node name="Foliage" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Foliage"]
 layout_mode = 1
@@ -318,6 +341,7 @@ layout_mode = 2
 [node name="Objects" type="Control" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Objects"]
 layout_mode = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bfgf5k0vqj828"]
+[gd_scene load_steps=27 format=3 uid="uid://bfgf5k0vqj828"]
 
 [ext_resource type="PackedScene" uid="uid://rmuvkqdg8w8q" path="res://addons/terrabrush/Components/PieMenu.tscn" id="1_efnm5"]
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/ToolsPieMenu.cs" id="1_fiy40"]
@@ -24,6 +24,8 @@
 [ext_resource type="Texture2D" uid="uid://dshqhgb6asd2f" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_t3slk"]
 [ext_resource type="Texture2D" uid="uid://bcapglulgvwma" path="res://addons/terrabrush/Assets/Icons/holes_add.png" id="23_1c8k5"]
 [ext_resource type="Texture2D" uid="uid://den6wvuky6x37" path="res://addons/terrabrush/Assets/Icons/holes_remove.png" id="24_cvnmj"]
+[ext_resource type="Texture2D" uid="uid://bi5l51gtfk3lv" path="res://addons/terrabrush/Assets/Icons/lock_add.png" id="26_s53c0"]
+[ext_resource type="Texture2D" uid="uid://desor1wuqgunw" path="res://addons/terrabrush/Assets/Icons/lock_remove.png" id="27_y7ikb"]
 
 [node name="ToolsPieMenu" type="Control"]
 layout_mode = 3
@@ -39,9 +41,9 @@ Label = "Tools"
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
 offset_left = -24.0
-offset_top = -284.0
+offset_top = -314.0
 offset_right = 24.0
-offset_bottom = -236.0
+offset_bottom = -266.0
 tooltip_text = "Raise terrain"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 1
@@ -51,10 +53,10 @@ IconType = 3
 [node name="ToolPreview2" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -86.2221
-offset_top = -276.445
-offset_right = -38.2221
-offset_bottom = -228.445
+offset_left = -86.3414
+offset_top = -307.22
+offset_right = -38.3414
+offset_bottom = -259.22
 tooltip_text = "Lower terrain"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 2
@@ -64,10 +66,10 @@ IconType = 3
 [node name="ToolPreview3" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -144.828
-offset_top = -254.219
-offset_right = -96.8281
-offset_bottom = -206.218
+offset_left = -145.768
+offset_top = -287.197
+offset_right = -97.7678
+offset_bottom = -239.196
 tooltip_text = "Smooth terrain"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 3
@@ -77,10 +79,10 @@ IconType = 3
 [node name="ToolPreview15" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -196.412
-offset_top = -218.613
-offset_right = -148.412
-offset_bottom = -170.611
+offset_left = -199.5
+offset_top = -254.867
+offset_right = -151.5
+offset_bottom = -206.865
 tooltip_text = "Flatten terrain"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 4
@@ -88,12 +90,12 @@ ButtonImage = ExtResource("7_xlbte")
 IconType = 3
 
 [node name="ToolPreview16" parent="PieMenu" instance=ExtResource("2_b6unk")]
-self_modulate = Color(0.270987, 0.331023, 0.359612, 1)
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -237.976
-offset_top = -171.697
-offset_right = -189.976
-offset_bottom = -123.697
+offset_left = -245.027
+offset_top = -211.742
+offset_right = -197.027
+offset_bottom = -163.742
 tooltip_text = "Set terrain height"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 5
@@ -106,10 +108,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = -267.104
-offset_top = -116.197
-offset_right = -219.104
-offset_bottom = -68.1972
+offset_left = -280.218
+offset_top = -159.839
+offset_right = -232.218
+offset_bottom = -111.839
 grow_horizontal = 1
 grow_vertical = 1
 tooltip_text = "Set terrain angle"
@@ -122,18 +124,18 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -282.104
-offset_top = -55.3394
-offset_right = -234.104
-offset_bottom = -7.33929
+offset_left = -303.429
+offset_top = -101.583
+offset_right = -255.429
+offset_bottom = -53.5832
 
 [node name="ToolPreview4" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -282.104
-offset_top = 7.33969
-offset_right = -234.104
-offset_bottom = 55.3397
+offset_left = -313.575
+offset_top = -39.7005
+offset_right = -265.575
+offset_bottom = 8.29955
 tooltip_text = "Paint texture"
 texture_normal = ExtResource("11_45nc6")
 ToolType = 6
@@ -144,18 +146,18 @@ IconType = 2
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -267.104
-offset_top = 68.1974
-offset_right = -219.104
-offset_bottom = 116.197
+offset_left = -310.18
+offset_top = 22.9166
+offset_right = -262.18
+offset_bottom = 70.9166
 
 [node name="ToolPreview5" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -237.976
-offset_top = 123.697
-offset_right = -189.976
-offset_bottom = 171.697
+offset_left = -293.403
+offset_top = 83.3398
+offset_right = -245.403
+offset_bottom = 131.34
 tooltip_text = "Add foliage"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 7
@@ -165,10 +167,10 @@ IconType = 3
 [node name="ToolPreview6" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -196.412
-offset_top = 170.613
-offset_right = -148.412
-offset_bottom = 218.615
+offset_left = -264.03
+offset_top = 138.744
+offset_right = -216.03
+offset_bottom = 186.746
 tooltip_text = "Remove foliage"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 8
@@ -179,18 +181,18 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -144.828
-offset_top = 206.219
-offset_right = -96.8273
-offset_bottom = 254.22
+offset_left = -223.433
+offset_top = 186.538
+offset_right = -175.432
+offset_bottom = 234.539
 
 [node name="ToolPreview7" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -86.2219
-offset_top = 228.445
-offset_right = -38.2219
-offset_bottom = 276.446
+offset_left = -173.511
+offset_top = 224.488
+offset_right = -125.511
+offset_bottom = 272.489
 tooltip_text = "Add objects"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 9
@@ -200,10 +202,10 @@ IconType = 3
 [node name="ToolPreview8" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = -23.9997
-offset_top = 236.0
-offset_right = 24.0004
-offset_bottom = 284.001
+offset_left = -116.598
+offset_top = 250.819
+offset_right = -68.5977
+offset_bottom = 298.82
 tooltip_text = "Remove objects"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 10
@@ -214,18 +216,18 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 38.2223
-offset_top = 228.445
-offset_right = 86.2225
-offset_bottom = 276.445
+offset_left = -55.3549
+offset_top = 264.3
+offset_right = -7.35491
+offset_bottom = 312.3
 
 [node name="ToolPreview9" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = 96.8283
-offset_top = 206.218
-offset_right = 144.828
-offset_bottom = 254.218
+offset_left = 7.35409
+offset_top = 264.3
+offset_right = 55.3541
+offset_bottom = 312.3
 tooltip_text = "Add water"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 11
@@ -235,10 +237,10 @@ IconType = 3
 [node name="ToolPreview10" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = 148.412
-offset_top = 170.613
-offset_right = 196.415
-offset_bottom = 218.613
+offset_left = 68.597
+offset_top = 250.82
+offset_right = 116.6
+offset_bottom = 298.82
 tooltip_text = "Remove water"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 12
@@ -248,10 +250,10 @@ IconType = 3
 [node name="ToolPreview11" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = 189.976
-offset_top = 123.697
-offset_right = 237.976
-offset_bottom = 171.698
+offset_left = 125.51
+offset_top = 224.489
+offset_right = 173.51
+offset_bottom = 272.49
 tooltip_text = "Add water flow"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 13
@@ -261,10 +263,10 @@ IconType = 3
 [node name="ToolPreview12" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = 219.104
-offset_top = 68.1969
-offset_right = 267.104
-offset_bottom = 116.198
+offset_left = 175.432
+offset_top = 186.539
+offset_right = 223.432
+offset_bottom = 234.54
 tooltip_text = "Remove water flow"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 14
@@ -275,18 +277,18 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 234.104
-offset_top = 7.33913
-offset_right = 282.104
-offset_bottom = 55.3391
+offset_left = 216.029
+offset_top = 138.745
+offset_right = 264.029
+offset_bottom = 186.745
 
 [node name="ToolPreview13" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
-offset_left = 234.104
-offset_top = -55.34
-offset_right = 282.105
-offset_bottom = -7.33997
+offset_left = 245.403
+offset_top = 83.3406
+offset_right = 293.404
+offset_bottom = 131.341
 tooltip_text = "Add snow"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 15
@@ -294,12 +296,12 @@ ButtonImage = ExtResource("15_xtl3c")
 IconType = 3
 
 [node name="ToolPreview14" parent="PieMenu" instance=ExtResource("2_b6unk")]
-self_modulate = Color(0, 0.0823529, 0.121569, 1)
+self_modulate = Color(0.4, 0.449412, 0.472941, 1)
 layout_mode = 1
-offset_left = 219.104
-offset_top = -116.198
-offset_right = 267.105
-offset_bottom = -68.1977
+offset_left = 262.18
+offset_top = 22.9174
+offset_right = 310.181
+offset_bottom = 70.918
 tooltip_text = "Remove snow"
 texture_normal = ExtResource("4_dsg64")
 ToolType = 16
@@ -310,10 +312,10 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 189.976
-offset_top = -171.697
-offset_right = 237.976
-offset_bottom = -123.697
+offset_left = 265.575
+offset_top = -39.6996
+offset_right = 313.575
+offset_bottom = 8.30037
 
 [node name="ToolPreview17" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
@@ -321,10 +323,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = 148.412
-offset_top = -218.613
-offset_right = 196.412
-offset_bottom = -170.613
+offset_left = 255.43
+offset_top = -101.583
+offset_right = 303.43
+offset_bottom = -53.5826
 grow_horizontal = 1
 grow_vertical = 1
 tooltip_text = "Add hole"
@@ -339,10 +341,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = 96.8276
-offset_top = -254.219
-offset_right = 144.828
-offset_bottom = -206.219
+offset_left = 232.219
+offset_top = -159.838
+offset_right = 280.219
+offset_bottom = -111.838
 grow_horizontal = 1
 grow_vertical = 1
 tooltip_text = "Remove hole"
@@ -355,7 +357,50 @@ IconType = 3
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 38.2215
-offset_top = -276.445
-offset_right = 86.2215
-offset_bottom = -228.445
+offset_left = 197.027
+offset_top = -211.741
+offset_right = 245.027
+offset_bottom = -163.741
+
+[node name="ToolPreview20" parent="PieMenu" instance=ExtResource("2_b6unk")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 151.501
+offset_top = -254.867
+offset_right = 199.501
+offset_bottom = -206.867
+grow_horizontal = 1
+grow_vertical = 1
+tooltip_text = "Lock"
+texture_normal = ExtResource("4_dsg64")
+ToolType = 20
+ButtonImage = ExtResource("26_s53c0")
+IconType = 3
+
+[node name="ToolPreview21" parent="PieMenu" instance=ExtResource("2_b6unk")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 97.7686
+offset_top = -287.197
+offset_right = 145.769
+offset_bottom = -239.197
+grow_horizontal = 1
+grow_vertical = 1
+tooltip_text = "Unlock"
+texture_normal = ExtResource("4_dsg64")
+ToolType = 21
+ButtonImage = ExtResource("27_y7ikb")
+IconType = 3
+
+[node name="Splitter8" type="Control" parent="PieMenu"]
+anchors_preset = 0
+offset_left = 38.3422
+offset_top = -307.22
+offset_right = 78.3422
+offset_bottom = -267.22

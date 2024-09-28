@@ -1,5 +1,7 @@
 #include "clipmap_shader_include.gdshaderinc"
 
+uniform bool ApplyLockTextures = false;
+uniform sampler2DArray LockTextures : hint_default_black;
 uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
@@ -139,7 +141,7 @@ void calculateHeightmapFragment(
 		}
 		if (HasHeightTextures) {
 			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);					
-		}		
+		}	
 		
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 		float channelValue = getChannelValue(currentChannel, currentSplatmap);
@@ -160,7 +162,13 @@ void calculateHeightmapFragment(
 		}
 	}
 	
-	albedo = resultTexture.xyz;
+	albedo = resultTexture.xyz;	
+	
+	if (ApplyLockTextures) {
+		vec4 lockTexture = texture(LockTextures, zoneUV);
+		float lockValue = (1.0 - lockTexture.r);
+		albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);	
+	}
 	
 	if (HasRoughnessTextures) {
 		roughness = resultRoughness.x;		

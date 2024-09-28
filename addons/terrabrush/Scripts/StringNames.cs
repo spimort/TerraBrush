@@ -68,6 +68,8 @@ internal static class StringNames {
     public static readonly StringName RandomPlacementRange = "RandomPlacementRange";
     public static readonly StringName InvertedZ = "InvertedZ";
     public static readonly StringName TerrainLoaded = "TerrainLoaded";
+    public static readonly StringName LockTextures = "LockTextures";
+    public static readonly StringName ApplyLockTextures = "ApplyLockTextures";
     public static readonly StringName ApplyOnTextureIndexes = "ApplyOnTextureIndexes";
     public static readonly StringName NumberOfTexturesToApplyOn = "NumberOfTexturesToApplyOn";
 }
