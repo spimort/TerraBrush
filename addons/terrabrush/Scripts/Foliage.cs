@@ -139,7 +139,7 @@ public partial class Foliage : Node3D {
             _foliageShader.SetShaderParameter(StringNames.UseBrushScale, Definition.UseBrushScale);
             _foliageShader.SetShaderParameter(StringNames.ScaleNoiseTexture, Definition.ScaleNoiseTexture);
             _foliageShader.SetShaderParameter(StringNames.RandomPlacementRange, Definition.RandomPlacementRange);
-            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, Definition.ApplyOnTextureIndexes ?? []);
+            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, Definition.ApplyOnTextureIndexes ?? new int[] {});
             _foliageShader.SetShaderParameter(StringNames.NumberOfTexturesToApplyOn, Definition.ApplyOnTextureIndexes?.Length ?? 0);
         } else {
             _particles.Visible = true;
