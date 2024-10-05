@@ -21,6 +21,12 @@ uniform bool HasHeightTextures;
 uniform bool UseAntitile = true;
 uniform float BlendFactor;
 uniform bool NearestFilter = false;
+uniform int AlbedoAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
+uniform int NormalAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
+
+const int ALPHA_CHANNEL_USAGE_NONE = 0;
+const int ALPHA_CHANNEL_USAGE_ROUGHNESS = 1;
+const int ALPHA_CHANNEL_USAGE_HEIGHT = 2;
 
 vec2 rotate(vec2 v, float cosa, float sina) {
 	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
@@ -50,7 +56,7 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 
 	vec4 col0 = vec4(0);
 	vec4 col1 = vec4(0);
-	
+
 	if (NearestFilter) {
 		col0 = texture(texNearest, uv);
 		col1 = texture(texNearest, uv2);
@@ -76,16 +82,16 @@ void calculateHeightmapVertex(
 	inout vec3 worldVertex
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
-	
+
 	vec3 zoneUV = calculateZoneUV(worldVertex);
-	
+
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
 	float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
 	float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
 	float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
 	normal = normalize(vec3(hL - hR, 2.0, hB - hF));
-	
+
 	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	vertex.y -= waterTexture.r * WaterFactor;
 }
@@ -100,14 +106,14 @@ float contrast(float factor, float v) {
 
 void fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sampler2DArray nearestTextures, out vec4 resultTexture) {
 	if (NearestFilter) {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);		
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);
 	} else {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);				
+		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);
 	}
 }
 
 void calculateHeightmapFragment(
-	vec3 worldVertex,	
+	vec3 worldVertex,
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float roughness,
@@ -116,71 +122,75 @@ void calculateHeightmapFragment(
 ) {
 	vec4 resultTexture = vec4(0.0);
 	vec4 resultNormal = vec4(0.0);
-	vec4 resultRoughness = vec4(0.0);	
-	
-	vec3 zoneUV = calculateZoneUV(worldVertex);		
-	
+	vec4 resultRoughness = vec4(0.0);
+
+	vec3 zoneUV = calculateZoneUV(worldVertex);
+
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
 		int textureDetail = TexturesDetail[i];
 		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
-		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));		
-		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));	
-	
+		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+
 		vec4 currentTexture = vec4(0);
 		vec4 currentNormal = vec4(0);
 		vec4 currentRoughness = vec4(0);
 		vec4 currentHeight = vec4(0);
-		
+
 		fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, currentTexture);
+		currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
+		currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
 		if (HasNormalTextures) {
-			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);		
+			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);
+			currentRoughness = max(currentRoughness, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_ROUGHNESS && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS)));
+			currentHeight = max(currentHeight, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_HEIGHT && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT)));
 		}
 		if (HasRoughnessTextures) {
-			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);					
+			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);
 		}
 		if (HasHeightTextures) {
-			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);					
-		}	
-		
+			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);
+		}
+
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 		float channelValue = getChannelValue(currentChannel, currentSplatmap);
-	
+
 		float heightBlendedChannelValue = channelValue;
-		if (HasHeightTextures) {
+		if (HasHeightTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT) {
 			heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
 		}
-		
+
 		resultTexture += currentTexture * heightBlendedChannelValue;
 		resultNormal += currentNormal * channelValue;
 		resultRoughness += currentRoughness * heightBlendedChannelValue;
-	
+
 		if (currentChannel == 3) {
 			currentChannel = 0;
 		} else {
 			currentChannel++;
 		}
 	}
-	
-	albedo = resultTexture.xyz;	
-	
+
+	albedo = resultTexture.xyz;
+
 	if (ApplyLockTextures) {
 		vec4 lockTexture = texture(LockTextures, zoneUV);
 		float lockValue = (1.0 - lockTexture.r);
-		albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);	
+		albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);
 	}
-	
-	if (HasRoughnessTextures) {
-		roughness = resultRoughness.x;		
+
+	if (HasRoughnessTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS) {
+		roughness = resultRoughness.x;
 	}
-	
+
 	if (HasNormalTextures) {
-		normalMap = resultNormal.xyz;	
+		normalMap = resultNormal.xyz;
 	}
-	
+
 	alpha = 1.0;
 	alphaScissorThreshold = 1.0;
-	
+
 	if (zoneUV.z < 0.0) {
 		alpha = 0.0;
 	} else {

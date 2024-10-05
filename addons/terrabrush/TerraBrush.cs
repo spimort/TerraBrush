@@ -130,6 +130,12 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public float HeightBlendFactor { get;set; } = 10f;
 
+    [Export]
+    public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+
+    [Export]
+    public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+
     [ExportGroup("Foliage")]
     [Export]
     public FoliageResource[] Foliages { get;set; }
@@ -285,6 +291,8 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.UseAntiTile = UseAntiTile;
         _terrain.NearestTextureFilter = NearestTextureFilter;
         _terrain.HeightBlendFactor = HeightBlendFactor;
+        _terrain.AlbedoAlphaChannelUsage = AlbedoAlphaChannelUsage;
+        _terrain.NormalAlphaChannelUsage = NormalAlphaChannelUsage;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;

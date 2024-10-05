@@ -151,6 +151,8 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Use Anti Tile|This will determine if the textures will use an Anti Tile algorithm.|
 |Height Blend Factor|The intensity (contrast) of the texture blending when using heightmaps/bumpmaps. 0 will use classic linear blending. The default value is 10. Negative or exaggerated values may produce interesting artistic effects.
 |Nearest Texture Filter|Use nearest texture filter instead of linear filter.|
+|Albedo Alpha Channel Usage|Allow the use of the alpha channel of the albedo texture for either roughness or height. The default value is none.|
+|Normal Alpha Channel Usage|Allow the use of the alpha channel of the normal texture for either roughness or height. The default value is none.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
