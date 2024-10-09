@@ -13,20 +13,16 @@ public static class CompatibilityScript_0_4_Alpha {
 		
 		GD.Print("Starting heightmaps conversion...");
 
-		if (terraBrush.TerrainZones?.Zones != null)
-		{
-			foreach (var zone in terraBrush.TerrainZones.Zones)
-			{
+		if (terraBrush.TerrainZones?.Zones != null) {
+			foreach (var zone in terraBrush.TerrainZones.Zones) {
 				if (zone.HeightMapTexture.GetFormat() != Image.Format.Rf) continue;
 				
 				var image = zone.HeightMapTexture.GetImage();
 				var newImage = Image.CreateEmpty(image.GetWidth(), image.GetHeight(), image.HasMipmaps(),
 					Image.Format.Rgf);
 
-				for (var x = 0; x < image.GetWidth(); x++)
-				{
-					for (var y = 0; y < image.GetWidth(); y++)
-					{
+				for (var x = 0; x < image.GetWidth(); x++) {
+					for (var y = 0; y < image.GetWidth(); y++) {
 						var pixel = image.GetPixel(x, y);
 						newImage.SetPixel(x, y, pixel);
 					}

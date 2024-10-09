@@ -38,8 +38,7 @@ public partial class ZonesResource : Resource {
         }
     }
 
-    public void UpdateHeightmaps()
-	{
+    public void UpdateHeightmaps() {
 		var images = Zones.Select(zone => zone.HeightMapTexture.GetImage()).ToArray();
 		if (images.Length != 0) {
             _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
