@@ -8,6 +8,12 @@ using Godot;
 
 namespace TerraBrush;
 
+public enum AlphaChannelUsage {
+    None = 0,
+    Roughness = 1,
+    Height = 2
+}
+
 [Tool]
 public partial class Terrain : Node3D {
     private const float HoleValue = float.NaN;
@@ -26,6 +32,8 @@ public partial class Terrain : Node3D {
     [Export] public bool UseAntiTile { get;set; } = true;
     [Export] public bool NearestTextureFilter { get;set; } = false;
     [Export] public float HeightBlendFactor { get;set; } = 10f;
+    [Export] public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    [Export] public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -232,6 +240,8 @@ public partial class Terrain : Node3D {
 
             Clipmap.Shader.SetShaderParameter(StringNames.UseAntitile, UseAntiTile);
             Clipmap.Shader.SetShaderParameter(StringNames.BlendFactor, HeightBlendFactor);
+            Clipmap.Shader.SetShaderParameter(StringNames.AlbedoAlphaChannelUsage, (int) AlbedoAlphaChannelUsage);
+            Clipmap.Shader.SetShaderParameter(StringNames.NormalAlphaChannelUsage, (int) NormalAlphaChannelUsage);
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new int[] {TextureDetail});
