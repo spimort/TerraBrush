@@ -31,7 +31,7 @@ public partial class ZonesResource : Resource {
     [Export] public ZoneResource[] Zones { get;set; }
 
     public void UpdateLockTexture() {
-        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? Image.CreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf)).ToArray();
+        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf)).ToArray();
 		
 		if (images.Length != 0) {
             _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
@@ -136,7 +136,7 @@ public partial class ZonesResource : Resource {
 		var maxX = zonePositions.Max(x => Math.Abs(x.X));
 		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
 
-		var zonesMap = Image.CreateEmpty((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
+		var zonesMap = GodotAgnostic.ImageCreateEmpty((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
 		zonesMap.Fill(new Color(-1, 0, 0, 0));
 		for (var i = 0; i < zonePositions.Length; i++) {
 			var position = zonePositions[i];

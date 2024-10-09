@@ -18,7 +18,7 @@ public static class CompatibilityScript_0_4_Alpha {
 				if (zone.HeightMapTexture.GetFormat() != Image.Format.Rf) continue;
 				
 				var image = zone.HeightMapTexture.GetImage();
-				var newImage = Image.CreateEmpty(image.GetWidth(), image.GetHeight(), image.HasMipmaps(),
+				var newImage = GodotAgnostic.ImageCreateEmpty(image.GetWidth(), image.GetHeight(), image.HasMipmaps(),
 					Image.Format.Rgf);
 
 				for (var x = 0; x < image.GetWidth(); x++) {
