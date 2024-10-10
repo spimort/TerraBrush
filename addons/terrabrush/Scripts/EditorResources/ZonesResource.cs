@@ -31,17 +31,16 @@ public partial class ZonesResource : Resource {
     [Export] public ZoneResource[] Zones { get;set; }
 
     public void UpdateLockTexture() {
-        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? Image.Create(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf));
-
-        if (images.Any()) {
+        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf)).ToArray();
+		
+		if (images.Length != 0) {
             _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
     }
 
     public void UpdateHeightmaps() {
-        var images = Zones.Select(zone => zone.HeightMapTexture.GetImage());
-
-        if (images.Any()) {
+		var images = Zones.Select(zone => zone.HeightMapTexture.GetImage()).ToArray();
+		if (images.Length != 0) {
             _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
     }
@@ -65,17 +64,17 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateFoliagesTextures() {
-        if (_foliagesTextures?.Length > 0) {
-            for (var i = 0; i < _foliagesTextures.Length; i++) {
-                UpdateFoliagesTextures(i);
-            }
-        }
-    }
+		if (_foliagesTextures?.Length <= 0) return;
+		
+		for (var i = 0; i < _foliagesTextures?.Length; i++) {
+			UpdateFoliagesTextures(i);
+		}
+	}
 
     public void UpdateFoliagesTextures(int foliageIndex) {
-        var images = Zones.Select(zone => zone.FoliagesTexture[foliageIndex].GetImage());
+        var images = Zones.Select(zone => zone.FoliagesTexture[foliageIndex].GetImage()).ToArray();
 
-        if (images.Any()) {
+        if (images.Length > 0) {
             _foliagesTextures[foliageIndex].CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
     }
@@ -127,7 +126,7 @@ public partial class ZonesResource : Resource {
     }
 
     private void SaveImageResource(ImageTexture image) {
-        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && Godot.FileAccess.FileExists(image.ResourcePath)) {
+        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && FileAccess.FileExists(image.ResourcePath)) {
             ResourceSaver.Save(image, image.ResourcePath);
         }
     }
@@ -137,9 +136,9 @@ public partial class ZonesResource : Resource {
 		var maxX = zonePositions.Max(x => Math.Abs(x.X));
 		var maxY = zonePositions.Max(x => Math.Abs(x.Y));
 
-		var zonesMap = Image.Create((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
+		var zonesMap = GodotAgnostic.ImageCreateEmpty((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
 		zonesMap.Fill(new Color(-1, 0, 0, 0));
-		for (var i = 0; i < zonePositions.Count(); i++) {
+		for (var i = 0; i < zonePositions.Length; i++) {
 			var position = zonePositions[i];
 			zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
 		}

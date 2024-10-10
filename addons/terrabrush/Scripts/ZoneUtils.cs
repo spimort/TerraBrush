@@ -11,7 +11,7 @@ public static class ZoneUtils {
     private const string SnowFileName = "Snow_{0}_{1}.res";
 
     public static ImageTexture CreateLockImage(int zoneSize, Vector2I zonePosition, bool lockAll = false) {
-        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rf);
+        var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf);
         if (lockAll) {
             image.Fill(Colors.White);
         }
@@ -20,12 +20,12 @@ public static class ZoneUtils {
     }
 
     public static ImageTexture CreateHeightmapImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgf);
+        var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgf);
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
     public static ImageTexture CreateSplatmapImage(int zoneSize, Vector2I zonePosition, int splatmapIndex, string dataPath) {
-        var splatmapImage = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgba8);
+        var splatmapImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
 
         if (splatmapIndex == 0) {
             splatmapImage.Fill(new Color(1, 0, 0, 0));
@@ -37,24 +37,24 @@ public static class ZoneUtils {
     }
 
     public static ImageTexture CreateFoliageImage(int zoneSize, Vector2I zonePosition, int foliageIndex, string dataPath) {
-        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgba8);
+        var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
         return GetImageTextureResource(image, string.Format(FoliageFileName, zonePosition.X, zonePosition.Y, foliageIndex), dataPath);
     }
 
     public static ImageTexture CreateObjectImage(int zoneSize, Vector2I zonePosition, int objectIndex, string dataPath) {
-        var image = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgba8);
+        var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
         return GetImageTextureResource(image, string.Format(ObjectFileName, zonePosition.X, zonePosition.Y, objectIndex), dataPath);
     }
 
     public static ImageTexture CreateWaterImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var waterImage = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgba8);
+        var waterImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
         waterImage.Fill(new Color(0, 0.5f, 0.5f, 1));
 
         return GetImageTextureResource(waterImage, string.Format(WaterFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
     public static ImageTexture CreateSnowImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var snowImage = Image.Create(zoneSize, zoneSize, false, Image.Format.Rgba8);
+        var snowImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
         return GetImageTextureResource(snowImage, string.Format(SnowFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
