@@ -1,24 +1,27 @@
 #if TOOLS
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace TerraBrush;
 
 public class ObjectTool : ToolBase {
-    private Dictionary<string, Node3D> _objectsNodeCache = null;
+    private Dictionary<string, ObjectsZone> _objectsNodeCache = null;
     private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
     private Dictionary<ZoneResource, Image> _waterImagesCache = null;
+    private PackedScene _objectItemPackedScene;
+    private PackedScene _objectsZonePackedScene;
 
     public ObjectTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     public override void BeginPaint() {
         base.BeginPaint();
 
-        _objectsNodeCache = new Dictionary<string, Node3D>();
+        _objectsNodeCache = new Dictionary<string, ObjectsZone>();
         _heightmapImagesCache = new Dictionary<ZoneResource, Image>();
         _waterImagesCache = new Dictionary<ZoneResource, Image>();
+        _objectsZonePackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectsZone.tscn");
+        _objectItemPackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectItem.tscn");
     }
 
     public override void EndPaint() {
@@ -39,7 +42,7 @@ public class ObjectTool : ToolBase {
         }
 
         var currentObject = _terraBrush.Objects[_terraBrush.ObjectIndex.Value];
-        if (currentObject?.Definition?.ObjectScenes == null) {
+        if (currentObject?.Definition?.ObjectScenes == null || currentObject.Hide) {
             return;
         }
 
@@ -51,20 +54,30 @@ public class ObjectTool : ToolBase {
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var zoneIndex = Array.IndexOf(_terraBrush.TerrainZones.Zones, imageZoneInfo.Zone);
-            var objectsNodeName = $"{zoneIndex}_{_terraBrush.ObjectIndex.Value}";
+            var objectsAndZoneNodeName = $"{_terraBrush.ObjectIndex.Value}_{zoneIndex}";
 
-            _objectsNodeCache.TryGetValue(objectsNodeName, out Node3D currentObjectsNode);
+            _objectsNodeCache.TryGetValue(objectsAndZoneNodeName, out ObjectsZone currentObjectsNode);
             if (currentObjectsNode == null) {
-                currentObjectsNode = _terraBrush.ObjectsContainerNode.GetNode<Node3D>(objectsNodeName);
-                if (currentObjectsNode == null) {
-                    currentObjectsNode = new Node3D();
-                    currentObjectsNode.Name = objectsNodeName;
-                    currentObjectsNode.Visible = !currentObject.Hide;
-                    currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * _terraBrush.ZonesSize, 0, imageZoneInfo.Zone.ZonePosition.Y * _terraBrush.ZonesSize);
-                    _terraBrush.ObjectsContainerNode.AddChild(currentObjectsNode);
+                var objectsNode = _terraBrush.ObjectsContainerNode.GetNodeOrNull<Node3D>($"{_terraBrush.ObjectIndex.Value}");
+                if (objectsNode == null) {
+                    objectsNode = new Node3D {
+                        Name = $"{_terraBrush.ObjectIndex.Value}"
+                    };
+                    _terraBrush.ObjectsContainerNode.AddChild(objectsNode);
                 }
 
-                _objectsNodeCache.Add(objectsNodeName, currentObjectsNode);
+                currentObjectsNode = objectsNode.GetNodeOrNull<ObjectsZone>($"{zoneIndex}");
+                if (currentObjectsNode == null) {
+                    currentObjectsNode = _objectsZonePackedScene.Instantiate<ObjectsZone>();
+
+                    currentObjectsNode.Name = $"{zoneIndex}";
+                    currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * _terraBrush.ZonesSize, 0, imageZoneInfo.Zone.ZonePosition.Y * _terraBrush.ZonesSize);
+                    currentObjectsNode.MaximumDistance = currentObject.Definition.MaximumDistance;
+                    currentObjectsNode.ZonesSize = _terraBrush.ZonesSize;
+                    objectsNode.AddChild(currentObjectsNode);
+                }
+
+                _objectsNodeCache.Add(objectsAndZoneNodeName, currentObjectsNode);
             }
 
             _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);
@@ -90,54 +103,36 @@ public class ObjectTool : ToolBase {
 
             if (pixelBrushStrength > 0f) {
                 var nodeName = $"{xPosition}_{yPosition}";
+                newColor = toolType == TerrainToolType.ObjectAdd ? Colors.Red : Colors.Transparent;
 
-                if (toolType == TerrainToolType.ObjectAdd) {
-                    var objectFrequency = currentObject.Definition.ObjectFrequency < 1 ? _terraBrush.DefaultObjectFrequency : currentObject.Definition.ObjectFrequency;
+                var existingNode = currentObjectsNode.ObjectsContainer.GetNodeOrNull<Node3D>(nodeName);
+                if (toolType != TerrainToolType.ObjectAdd || existingNode == null) {
+                    var objectNodeItem = currentObjectsNode.GetParent<Objects>();
+                    objectNodeItem.CalculateObjectPresenceForPixel(
+                        heightmapImage,
+                        waterImage,
+                        noiseImage,
+                        xPosition,
+                        yPosition,
+                        newColor,
+                        result => {
+                            var newNode =  _objectItemPackedScene.Instantiate<ObjectItem>();
+                            newNode.Name = nodeName;
+                            newNode.Position = result.ResultPosition;
+                            newNode.RotationDegrees = result.ResultRotation;
+                            newNode.MaximumDistance = currentObject.Definition.MaximumDistance;
+                            newNode.ObjectPackedScene = currentObject.Definition.ObjectScenes[result.ResultPackedSceneIndex];
 
-                    if (xPosition % objectFrequency == 0 && yPosition % objectFrequency == 0) {
-                        var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
-                        if (existingNode == null) {
-                            var resultPosition = new Vector3(xPosition, 0, yPosition);
-                            if (noiseImage != null) {
-                                var noisePixel = noiseImage.GetPixel(xPosition, yPosition).R;
-                                var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
-                                var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -currentObject.Definition.RandomRange, currentObject.Definition.RandomRange);
-                                resultPosition += new Vector3(randomValueX, 0, randomValueZ);
-                            }
+                            currentObjectsNode.AddObject(newNode);
 
-                            var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                            if (resultImagePosition.X >= 0 && resultImagePosition.X < _terraBrush.ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < _terraBrush.ZonesSize) {
-                                var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-                                // Check for hole
-                                if (heightmapPixel.G == 0.0) {
-                                    var randomItemIndex = Utils.GetNextIntWithSeed((xPosition * 1000) + yPosition, 0, currentObject.Definition.ObjectScenes.Count() - 1);
-
-                                    var newNode = currentObject.Definition.ObjectScenes[randomItemIndex].Instantiate<Node3D>();
-                                    newNode.Name = nodeName;
-                                    currentObjectsNode.AddChild(newNode);
-
-                                    var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-                                    resultPosition -= new Vector3(_terraBrush.ZonesSize / 2, -((heightmapPixel.R * TerraBrush.HeightMapFactor) - (waterHeight * (_terraBrush.WaterDefinition?.WaterFactor ?? 0))), _terraBrush.ZonesSize / 2);
-
-                                    newNode.Position = resultPosition;
-
-                                    if (currentObject.Definition.RandomYRotation) {
-                                        newNode.RotationDegrees = new Vector3(newNode.RotationDegrees.X, Utils.GetNextFloatWithSeed((xPosition * 1000) + yPosition, 0f, 360f), newNode.RotationDegrees.Z);
-                                    }
-                                }
-                            }
+                            newNode.AddChild(newNode.ObjectPackedScene.Instantiate());
+                        },
+                        () => {
+                            existingNode?.QueueFree();
                         }
-
-                        newColor = Colors.Red;
-                    }
-                } else {
-                    var existingNode = currentObjectsNode.GetNodeOrNull<Node3D>(nodeName);
-                    if (existingNode != null) {
-                        existingNode.QueueFree();
-                    }
-
-                    newColor = Colors.Transparent;
+                    );
                 }
+
 
                 imageZoneInfo.Image.SetPixel(xPosition, yPosition, newColor);
             }

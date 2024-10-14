@@ -61,7 +61,7 @@ public partial class Foliage : Node3D {
 
     public override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
-            var position = this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
+            var position = GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
 
             UpdateFoliagePosition(position);
         }

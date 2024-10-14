@@ -10,4 +10,5 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export] public bool RandomYRotation { get;set; }
     [Export] public PackedScene[] ObjectScenes { get;set; }
+    [Export] public float MaximumDistance { get;set; }  = 0;
 }
