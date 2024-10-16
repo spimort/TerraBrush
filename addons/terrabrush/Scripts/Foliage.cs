@@ -101,18 +101,9 @@ public partial class Foliage : Node3D {
                 InstanceCount = numberOfPoints,
                 Buffer = Enumerable.Range(0, numberOfPoints).Select(_ => {
                     return new float[] {
-                        1f,
-                        0f,
-                        0f,
-                        0f,
-                        0f,
-                        1f,
-                        0f,
-                        0f,
-                        0f,
-                        0f,
-                        1f,
-                        0f
+                        1f, 0f, 0f, 0f,
+                        0f, 1f, 0f, 0f,
+                        0f, 0f, 1f, 0f
                     };
                 }).SelectMany(x => x).ToArray()
             };

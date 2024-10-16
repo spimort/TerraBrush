@@ -442,6 +442,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
+        // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/MultiMeshObjects.tscn", CancellationToken.None);
         var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None);
 
         for (var objectIndex = 0; objectIndex < Objects.Length; objectIndex++) {
@@ -450,6 +451,7 @@ public partial class TerraBrush : TerraBrushTool {
                 continue;
             }
 
+            // var objectNode = prefab.Instantiate<MultiMeshObjects>();
             var objectNode = prefab.Instantiate<Objects>();
             objectNode.Name = $"{objectIndex}";
 
@@ -560,10 +562,17 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
-        for (var i = 0; i < Objects.Length; i++) {
-            var objectsNode = _objectsContainerNode.GetNode<Objects>($"{i}");
-            objectsNode.UpdateObjectsHeight(zones);
-        }
+        // for (var i = 0; i < Objects.Length; i++) {
+        //     var objectsNode = _objectsContainerNode.GetNode<Objects>($"{i}");
+        //     objectsNode.UpdateObjectsHeight(zones);
+        // }
+    }
+
+    public void UpdateZoneObjects(int objectsIndex, List<ZoneResource> zones) {
+        zones.ForEach(zone => {
+            var objectsNode = _objectsContainerNode.GetNode<MultiMeshObjects>($"{objectsIndex}");
+            objectsNode.PopulateMultiMeshesZone(zone);
+        });
     }
 
     public void UpdateCameraPosition(Camera3D viewportCamera) {
