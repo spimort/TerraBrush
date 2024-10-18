@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddw2p3267xlyt"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ObjectsZone.cs" id="1_5b04q"]
+
+[node name="ObjectsZone" type="Node3D"]
+script = ExtResource("1_5b04q")
+
+[node name="ObjectsContainer" type="Node3D" parent="."]
+unique_name_in_owner = true

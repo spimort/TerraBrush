@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cc7wggylrc708"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/MultiMeshObjects.cs" id="1_oogau"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_c7bev"]
+
+[node name="MultiMeshObjects" type="Node3D"]
+script = ExtResource("1_oogau")
+TestMesh = SubResource("CylinderMesh_c7bev")
