@@ -23,7 +23,7 @@ internal class MultiMeshInstanceInfo {
 }
 
 [Tool]
-public partial class ObjectsOctreeMultiMesh : Node3D {
+public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private Camera3D _camera;
     private StaticBody3D _staticBodyContainer;

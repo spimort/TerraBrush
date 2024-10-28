@@ -7,8 +7,18 @@ using Godot;
 
 namespace TerraBrush;
 
+public interface IObjectsNode {
+    public int ObjectsIndex { get;set; }
+    public ObjectDefinitionResource Definition { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public int ZonesSize { get;set; }
+    public float WaterFactor { get;set; }
+    public bool LoadInThread { get;set; }
+    public int DefaultObjectFrequency { get;set;}
+}
+
 [Tool]
-public partial class Objects : Node3D {
+public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private CancellationTokenSource _objectsCreationCancellationTokenSource;
     private CancellationTokenSource _objectsVisibilityCancellationTokenSource;

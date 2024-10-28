@@ -110,13 +110,14 @@ public static class CustomContentLoader {
             for (var i = 0; i < terraBrush.Objects.Length; i++) {
                 var objectItem = terraBrush.Objects[i];
 
-                if (objectItem.Definition?.ObjectScenes != null) {
+                if (objectItem.Definition?.ObjectScenes?.Length > 0 || objectItem.Definition?.LODMeshes?.Length > 0) {
                     var dockPreviewButton = objectPreviewPrefab.Instantiate<DockPreviewButton>();
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
                     parentNode.AddChild(dockPreviewButton);
 
-                    dockPreviewButton.LoadResourcePreview(objectItem.Definition?.ObjectScenes[0]);
+                    var meshResource = (Resource) (objectItem.Definition?.ObjectScenes?.Length > 0 ? objectItem.Definition?.ObjectScenes[0] : objectItem.Definition?.LODMeshes[0].Meshes[0].Mesh);
+                    dockPreviewButton.LoadResourcePreview(meshResource);
 
                     var currentIndex = i;
                     dockPreviewButton.OnSelect = () => {

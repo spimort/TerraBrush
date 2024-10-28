@@ -444,7 +444,7 @@ public partial class TerraBrush : TerraBrushTool {
         var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
         // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/MultiMeshObjects.tscn", CancellationToken.None);
         // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None);
-        var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/ObjectsOctreeMultiMesh.tscn", CancellationToken.None);
+
         // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/MergedMeshObjects.tscn", CancellationToken.None);
 
         for (var objectIndex = 0; objectIndex < Objects.Length; objectIndex++) {
@@ -453,11 +453,17 @@ public partial class TerraBrush : TerraBrushTool {
                 continue;
             }
 
+            var prefab = objectItem.Definition.Strategy switch {
+                ObjectStrategy.OctreeMultiMeshes => await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/ObjectsOctreeMultiMesh.tscn", CancellationToken.None),
+                ObjectStrategy.PackedScenes => await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None),
+                _ => throw new NotImplementedException()
+            };
+
             // var objectNode = prefab.Instantiate<MultiMeshObjects>();
             // var objectNode = prefab.Instantiate<Objects>();
-            var objectNode = prefab.Instantiate<ObjectsOctreeMultiMesh>();
+            var objectNode = prefab.Instantiate<IObjectsNode>();
             // var objectNode = prefab.Instantiate<MergedMeshObjects>();
-            objectNode.Name = $"{objectIndex}";
+            ((Node3D) objectNode).Name = $"{objectIndex}";
 
             objectNode.ObjectsIndex = objectIndex;
             objectNode.Definition = objectItem.Definition;
@@ -467,7 +473,7 @@ public partial class TerraBrush : TerraBrushTool {
             objectNode.LoadInThread = loadInThread;
             objectNode.DefaultObjectFrequency = DefaultObjectFrequency;
 
-            _objectsContainerNode.AddChild(objectNode);
+            _objectsContainerNode.AddChild((Node3D) objectNode);
         }
 
         TerrainZones.UpdateObjectsTextures();
@@ -573,10 +579,10 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void UpdateZoneObjects(int objectsIndex, List<ZoneResource> zones) {
-        zones.ForEach(zone => {
-            var objectsNode = _objectsContainerNode.GetNode<MultiMeshObjects>($"{objectsIndex}");
-            objectsNode.PopulateMultiMeshesZone(zone);
-        });
+        // zones.ForEach(zone => {
+        //     var objectsNode = _objectsContainerNode.GetNode<MultiMeshObjects>($"{objectsIndex}");
+        //     objectsNode.PopulateMultiMeshesZone(zone);
+        // });
     }
 
     public void UpdateCameraPosition(Camera3D viewportCamera) {
