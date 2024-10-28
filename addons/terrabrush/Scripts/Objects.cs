@@ -21,9 +21,6 @@ public interface IObjectsNode {
 public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private CancellationTokenSource _objectsCreationCancellationTokenSource;
-    private CancellationTokenSource _objectsVisibilityCancellationTokenSource;
-    private PackedScene _objectsZonePackedScene;
-    private PackedScene _objectItemPackedScene;
 
     [Export] public int ObjectsIndex { get;set; }
     [Export] public ObjectDefinitionResource Definition { get;set; }
@@ -41,8 +38,6 @@ public partial class Objects : Node3D, IObjectsNode {
         }
 
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
-        _objectsZonePackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectsZone.tscn");
-        _objectItemPackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectItem.tscn");
 
         UpdateObjects();
     }
@@ -85,11 +80,9 @@ public partial class Objects : Node3D, IObjectsNode {
                 return;
             }
 
-            var objectNode = _objectsZonePackedScene.Instantiate<ObjectsZone>();
+            var objectNode = new Node3D();
             objectNode.Name = $"{zoneIndex}";
             objectNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
-            objectNode.MaximumDistance = Definition.MaximumDistance;
-            objectNode.ZonesSize = ZonesSize;
 
             CallDeferred("add_child", objectNode);
 
@@ -143,17 +136,13 @@ public partial class Objects : Node3D, IObjectsNode {
         }
     }
 
-    private void AddObjectNode(ObjectsZone parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, int packedSceneIndex) {
-        var newNode =  _objectItemPackedScene.Instantiate<ObjectItem>();
+    private void AddObjectNode(Node3D parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, int packedSceneIndex) {
+        var newNode =  Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>();
         newNode.Name = nodeName;
         newNode.Position = nodePosition;
         newNode.RotationDegrees = nodeRotation;
-        newNode.MaximumDistance = Definition.MaximumDistance;
-        newNode.ObjectPackedScene = Definition.ObjectScenes[packedSceneIndex];
 
-        parentNode.AddObject(newNode);
-
-        newNode.AddChild(Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>());
+        parentNode.AddChild(newNode);
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {

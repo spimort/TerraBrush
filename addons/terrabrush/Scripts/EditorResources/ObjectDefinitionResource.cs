@@ -18,7 +18,6 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public PackedScene[] ObjectScenes { get;set; }
     [Export] public ObjectOctreeLODDefinitionResource[] LODList { get;set;}
     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
-    [Export] public float MaximumDistance { get;set; } = 0;
     [Export] public float UpdateDistanceThreshold { get;set; } = 1;
     [Export] public float UpdateTimeFrequency { get;set; } = 1;
 }

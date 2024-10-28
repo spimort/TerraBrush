@@ -8,7 +8,6 @@ namespace TerraBrush;
 
 public class ObjectTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
-    private Dictionary<string, ObjectsZone> _objectsNodeCache = null;
     private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
     private Dictionary<ZoneResource, Image> _waterImagesCache = null;
     private PackedScene _objectItemPackedScene;
@@ -19,7 +18,6 @@ public class ObjectTool : ToolBase {
     public override void BeginPaint() {
         base.BeginPaint();
 
-        _objectsNodeCache = new Dictionary<string, ObjectsZone>();
         _heightmapImagesCache = new Dictionary<ZoneResource, Image>();
         _waterImagesCache = new Dictionary<ZoneResource, Image>();
         _objectsZonePackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectsZone.tscn");
@@ -31,7 +29,6 @@ public class ObjectTool : ToolBase {
     public override void EndPaint() {
         base.EndPaint();
 
-        _objectsNodeCache = null;
         _heightmapImagesCache = null;
         _waterImagesCache = null;
 
