@@ -443,7 +443,9 @@ public partial class TerraBrush : TerraBrushTool {
 
         var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
         // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/MultiMeshObjects.tscn", CancellationToken.None);
-        var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None);
+        // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None);
+        var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/ObjectsOctreeMultiMesh.tscn", CancellationToken.None);
+        // var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/MergedMeshObjects.tscn", CancellationToken.None);
 
         for (var objectIndex = 0; objectIndex < Objects.Length; objectIndex++) {
             var objectItem = Objects[objectIndex];
@@ -452,7 +454,9 @@ public partial class TerraBrush : TerraBrushTool {
             }
 
             // var objectNode = prefab.Instantiate<MultiMeshObjects>();
-            var objectNode = prefab.Instantiate<Objects>();
+            // var objectNode = prefab.Instantiate<Objects>();
+            var objectNode = prefab.Instantiate<ObjectsOctreeMultiMesh>();
+            // var objectNode = prefab.Instantiate<MergedMeshObjects>();
             objectNode.Name = $"{objectIndex}";
 
             objectNode.ObjectsIndex = objectIndex;
