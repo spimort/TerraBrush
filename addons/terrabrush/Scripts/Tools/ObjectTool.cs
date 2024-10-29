@@ -10,8 +10,6 @@ public class ObjectTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
     private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
     private Dictionary<ZoneResource, Image> _waterImagesCache = null;
-    private PackedScene _objectItemPackedScene;
-    private PackedScene _objectsZonePackedScene;
 
     public ObjectTool(TerraBrush terraBrush) : base(terraBrush) {}
 
@@ -20,8 +18,6 @@ public class ObjectTool : ToolBase {
 
         _heightmapImagesCache = new Dictionary<ZoneResource, Image>();
         _waterImagesCache = new Dictionary<ZoneResource, Image>();
-        _objectsZonePackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectsZone.tscn");
-        _objectItemPackedScene = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ObjectItem.tscn");
 
         _sculptedZones = new HashSet<ZoneResource>();
     }
@@ -37,6 +33,9 @@ public class ObjectTool : ToolBase {
         }
 
         _sculptedZones = null;
+
+        var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>($"{_terraBrush.ObjectIndex}");
+        objectsNode.UpdateMeshesFromTool();
     }
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
@@ -58,6 +57,8 @@ public class ObjectTool : ToolBase {
         if (noiseTexture != null) {
             noiseImage = noiseTexture.GetImage();
         }
+
+        var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>($"{_terraBrush.ObjectIndex}");
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             // var zoneIndex = Array.IndexOf(_terraBrush.TerrainZones.Zones, imageZoneInfo.Zone);
@@ -87,20 +88,20 @@ public class ObjectTool : ToolBase {
             //     _objectsNodeCache.Add(objectsAndZoneNodeName, currentObjectsNode);
             // }
 
-            // _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);
-            // if (heightmapImage == null) {
-            //     heightmapImage = imageZoneInfo.Zone.HeightMapTexture.GetImage();
-            //     _heightmapImagesCache.Add(imageZoneInfo.Zone, heightmapImage);
-            // }
+            _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);
+            if (heightmapImage == null) {
+                heightmapImage = imageZoneInfo.Zone.HeightMapTexture.GetImage();
+                _heightmapImagesCache.Add(imageZoneInfo.Zone, heightmapImage);
+            }
 
-            // Image waterImage = null;
-            // if (_terraBrush.WaterDefinition != null) {
-            //     _waterImagesCache.TryGetValue(imageZoneInfo.Zone, out waterImage);
-            //     if (waterImage == null) {
-            //         waterImage = imageZoneInfo.Zone.WaterTexture.GetImage();
-            //         _waterImagesCache.Add(imageZoneInfo.Zone, waterImage);
-            //     }
-            // }
+            Image waterImage = null;
+            if (_terraBrush.WaterDefinition != null) {
+                _waterImagesCache.TryGetValue(imageZoneInfo.Zone, out waterImage);
+                if (waterImage == null) {
+                    waterImage = imageZoneInfo.Zone.WaterTexture.GetImage();
+                    _waterImagesCache.Add(imageZoneInfo.Zone, waterImage);
+                }
+            }
 
             var xPosition = imageZoneInfo.ZoneInfo.ImagePosition.X;
             var yPosition = imageZoneInfo.ZoneInfo.ImagePosition.Y;
@@ -111,6 +112,8 @@ public class ObjectTool : ToolBase {
             if (pixelBrushStrength > 0f) {
                 // var nodeName = $"{xPosition}_{yPosition}";
                 newColor = toolType == TerrainToolType.ObjectAdd ? Colors.Red : Colors.Transparent;
+
+                objectsNode.AddRemoveObjectFromTool(toolType == TerrainToolType.ObjectAdd, xPosition, yPosition, imageZoneInfo.Zone, heightmapImage, waterImage, noiseImage);
 
                 // var existingNode = currentObjectsNode.ObjectsContainer.GetNodeOrNull<Node3D>(nodeName);
                 // if (toolType != TerrainToolType.ObjectAdd || existingNode == null) {

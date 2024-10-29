@@ -227,8 +227,9 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                         y,
                         objectPixel,
                         result => {
+                            var resultPosition = result.ResultPosition + new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
                             var octreeNodeInfo = new OctreeNodeInfo() {
-                                Position = result.ResultPosition + new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize),
+                                Position = resultPosition,
                                 MeshIndex = result.ResultPackedSceneIndex,
                                 MeshRotation = result.ResultRotation
                             };
@@ -257,7 +258,13 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
             return;
         }
 
-        var multiMeshNodes = _multiMeshIntances.ToDictionary(x => x.Key, _ => new Dictionary<int, List<float>>());
+        var multiMeshNodes = _multiMeshIntances.ToDictionary(
+            x => x.Key,
+            x => Enumerable.Range(0, _multiMeshIntances[x.Key].Length).ToDictionary(
+                y => y,
+                _ => new List<float>()
+            )
+        );
 
         var nodes = _octree.GetNearby(_lastUpdatedPosition, _maxDistance);
         var toRemoveNodes = new List<OctreeNodeInfo>();
@@ -429,5 +436,35 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
         var heightmapPixel = heightmapImage.GetPixel(imageX, imageY);
         var waterHeight = waterImage?.GetPixel(imageX, imageY).R ?? 0;
         return heightmapPixel.R - (waterHeight * WaterFactor);
+    }
+
+    public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage) {
+        CalculateObjectPresenceForPixel(
+            heightmapImage,
+            waterImage,
+            noiseImage,
+            x,
+            y,
+            Colors.White,
+            result => {
+                var resultPosition = result.ResultPosition + new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
+                var existingNodes = _octree.GetNearby(resultPosition, 0.1f);
+                if (add && existingNodes.Length == 0) {
+                    var octreeNodeInfo = new OctreeNodeInfo() {
+                        Position = resultPosition,
+                        MeshIndex = result.ResultPackedSceneIndex,
+                        MeshRotation = result.ResultRotation
+                    };
+
+                    _octree.Add(octreeNodeInfo, octreeNodeInfo.Position);
+                } else if (!add && existingNodes.Length == 1) {
+                    _octree.Remove(existingNodes[0]);
+                }
+            }
+        );
+    }
+
+    public void UpdateMeshesFromTool() {
+        UpdateMeshes();
     }
 }

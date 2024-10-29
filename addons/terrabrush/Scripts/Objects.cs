@@ -7,16 +7,6 @@ using Godot;
 
 namespace TerraBrush;
 
-public interface IObjectsNode {
-    public int ObjectsIndex { get;set; }
-    public ObjectDefinitionResource Definition { get;set; }
-    public ZonesResource TerrainZones { get;set; }
-    public int ZonesSize { get;set; }
-    public float WaterFactor { get;set; }
-    public bool LoadInThread { get;set; }
-    public int DefaultObjectFrequency { get;set;}
-}
-
 [Tool]
 public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
@@ -231,5 +221,13 @@ public partial class Objects : Node3D, IObjectsNode {
         var heightmapPixel = heightmapImage.GetPixel(imageX, imageY);
         var waterHeight = waterImage?.GetPixel(imageX, imageY).R ?? 0;
         return heightmapPixel.R - (waterHeight * WaterFactor);
+    }
+
+    public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage) {
+
+    }
+
+    public void UpdateMeshesFromTool() {
+
     }
 }
