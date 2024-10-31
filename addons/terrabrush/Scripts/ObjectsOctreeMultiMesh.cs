@@ -75,7 +75,6 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
         if (_updateTime >= Definition.UpdateTimeFrequency) {
             var currentPosition = _camera.GlobalPosition;
             if (currentPosition.DistanceTo(_lastUpdatedPosition) > Definition.UpdateDistanceThreshold) {
-                GD.Print("Update");
                 UpdateMeshes();
 
                 _lastUpdatedPosition = currentPosition;
