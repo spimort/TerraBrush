@@ -70,11 +70,11 @@ public partial class Objects : Node3D, IObjectsNode {
                 return;
             }
 
-            var objectNode = new Node3D();
-            objectNode.Name = $"{zoneIndex}";
-            objectNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
+            var objectsContainerNode = new Node3D();
+            objectsContainerNode.Name = $"{zoneIndex}";
+            objectsContainerNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
 
-            CallDeferred("add_child", objectNode);
+            CallDeferred("add_child", objectsContainerNode);
 
             var imageTexture = zone.ObjectsTexture[ObjectsIndex];
 
@@ -113,7 +113,7 @@ public partial class Objects : Node3D, IObjectsNode {
 
                             CallDeferred(
                                 nameof(AddObjectNode),
-                                objectNode,
+                                objectsContainerNode,
                                 $"{x}_{y}",
                                 result.ResultPosition,
                                 result.ResultRotation,
@@ -145,7 +145,7 @@ public partial class Objects : Node3D, IObjectsNode {
             var objectsNode = GetNode(nodeName);
 
             if (objectsNode != null) {
-                var noiseTexture = Definition.NoiseTexture != null ? Definition.NoiseTexture : _defaultNoise;
+                var noiseTexture = Definition.NoiseTexture ?? _defaultNoise;
                 Image noiseImage = null;
                 if (noiseTexture != null) {
                     noiseImage = noiseTexture.GetImage();
@@ -224,10 +224,43 @@ public partial class Objects : Node3D, IObjectsNode {
     }
 
     public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage) {
+        var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
+        var containerNode = GetNodeOrNull($"{zoneIndex}");
+        if (containerNode == null) {
+            containerNode = new Node3D() {
+                Name = $"{zoneIndex}",
+                Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize)
+            };
+            AddChild(containerNode);
+        }
 
+        var nodeName = $"{x}_{y}";
+        var existingNode = containerNode.GetNodeOrNull(nodeName);
+        if (add && existingNode == null) {
+            CalculateObjectPresenceForPixel(
+                heightmapImage,
+                waterImage,
+                noiseImage,
+                x,
+                y,
+                Colors.White,
+                result => {
+                    CallDeferred(
+                        nameof(AddObjectNode),
+                        containerNode,
+                        nodeName,
+                        result.ResultPosition,
+                        result.ResultRotation,
+                        result.ResultPackedSceneIndex
+                    );
+                }
+            );
+        } else if (!add && existingNode != null) {
+            existingNode.QueueFree();
+        }
     }
 
     public void UpdateMeshesFromTool() {
-
+        // Nothing to do here, stuff has already been applied
     }
 }

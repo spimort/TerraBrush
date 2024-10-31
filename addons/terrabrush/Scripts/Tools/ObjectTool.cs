@@ -1,7 +1,5 @@
 #if TOOLS
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -28,14 +26,7 @@ public class ObjectTool : ToolBase {
         _heightmapImagesCache = null;
         _waterImagesCache = null;
 
-        if (_terraBrush.ObjectIndex.HasValue) {
-            _terraBrush.UpdateZoneObjects(_terraBrush.ObjectIndex.Value, _sculptedZones.ToList());
-        }
-
         _sculptedZones = null;
-
-        var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>($"{_terraBrush.ObjectIndex}");
-        objectsNode.UpdateMeshesFromTool();
     }
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
@@ -61,33 +52,6 @@ public class ObjectTool : ToolBase {
         var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>($"{_terraBrush.ObjectIndex}");
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
-            // var zoneIndex = Array.IndexOf(_terraBrush.TerrainZones.Zones, imageZoneInfo.Zone);
-            // var objectsAndZoneNodeName = $"{_terraBrush.ObjectIndex.Value}_{zoneIndex}";
-
-            // _objectsNodeCache.TryGetValue(objectsAndZoneNodeName, out ObjectsZone currentObjectsNode);
-            // if (currentObjectsNode == null) {
-            //     var objectsNode = _terraBrush.ObjectsContainerNode.GetNodeOrNull<Node3D>($"{_terraBrush.ObjectIndex.Value}");
-            //     if (objectsNode == null) {
-            //         objectsNode = new Node3D {
-            //             Name = $"{_terraBrush.ObjectIndex.Value}"
-            //         };
-            //         _terraBrush.ObjectsContainerNode.AddChild(objectsNode);
-            //     }
-
-            //     currentObjectsNode = objectsNode.GetNodeOrNull<ObjectsZone>($"{zoneIndex}");
-            //     if (currentObjectsNode == null) {
-            //         currentObjectsNode = _objectsZonePackedScene.Instantiate<ObjectsZone>();
-
-            //         currentObjectsNode.Name = $"{zoneIndex}";
-            //         currentObjectsNode.Position = new Vector3(imageZoneInfo.Zone.ZonePosition.X * _terraBrush.ZonesSize, 0, imageZoneInfo.Zone.ZonePosition.Y * _terraBrush.ZonesSize);
-            //         currentObjectsNode.MaximumDistance = currentObject.Definition.MaximumDistance;
-            //         currentObjectsNode.ZonesSize = _terraBrush.ZonesSize;
-            //         objectsNode.AddChild(currentObjectsNode);
-            //     }
-
-            //     _objectsNodeCache.Add(objectsAndZoneNodeName, currentObjectsNode);
-            // }
-
             _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);
             if (heightmapImage == null) {
                 heightmapImage = imageZoneInfo.Zone.HeightMapTexture.GetImage();
@@ -110,44 +74,16 @@ public class ObjectTool : ToolBase {
             var newColor = currentPixel;
 
             if (pixelBrushStrength > 0f) {
-                // var nodeName = $"{xPosition}_{yPosition}";
                 newColor = toolType == TerrainToolType.ObjectAdd ? Colors.Red : Colors.Transparent;
 
                 objectsNode.AddRemoveObjectFromTool(toolType == TerrainToolType.ObjectAdd, xPosition, yPosition, imageZoneInfo.Zone, heightmapImage, waterImage, noiseImage);
-
-                // var existingNode = currentObjectsNode.ObjectsContainer.GetNodeOrNull<Node3D>(nodeName);
-                // if (toolType != TerrainToolType.ObjectAdd || existingNode == null) {
-                //     var objectNodeItem = currentObjectsNode.GetParent<Objects>();
-                //     objectNodeItem.CalculateObjectPresenceForPixel(
-                //         heightmapImage,
-                //         waterImage,
-                //         noiseImage,
-                //         xPosition,
-                //         yPosition,
-                //         newColor,
-                //         result => {
-                //             var newNode =  _objectItemPackedScene.Instantiate<ObjectItem>();
-                //             newNode.Name = nodeName;
-                //             newNode.Position = result.ResultPosition;
-                //             newNode.RotationDegrees = result.ResultRotation;
-                //             newNode.MaximumDistance = currentObject.Definition.MaximumDistance;
-                //             newNode.ObjectPackedScene = currentObject.Definition.ObjectScenes[result.ResultPackedSceneIndex];
-
-                //             currentObjectsNode.AddObject(newNode);
-
-                //             newNode.AddChild(newNode.ObjectPackedScene.Instantiate());
-                //         },
-                //         () => {
-                //             existingNode?.QueueFree();
-                //         }
-                //     );
-                // }
-
                 imageZoneInfo.Image.SetPixel(xPosition, yPosition, newColor);
 
                 _sculptedZones.Add(imageZoneInfo.Zone);
             }
         });
+
+        objectsNode.UpdateMeshesFromTool();
     }
 }
 #endif

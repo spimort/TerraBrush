@@ -243,12 +243,16 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     }
 
     private async void UpdateMeshes() {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource = new CancellationTokenSource();
+        if (LoadInThread) {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
 
-        await Task.Factory.StartNew(() => {
-            UpdateMeshesAsync(_cancellationTokenSource.Token);
-        });
+            await Task.Factory.StartNew(() => {
+                UpdateMeshesAsync(_cancellationTokenSource.Token);
+            });
+        } else {
+            UpdateMeshesAsync(CancellationToken.None);
+        }
     }
 
     private void UpdateMeshesAsync(CancellationToken cancellationToken) {
@@ -465,6 +469,11 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     }
 
     public void UpdateMeshesFromTool() {
-        UpdateMeshes();
+        UpdateMeshesAsync(CancellationToken.None);
+    }
+
+    public async void UpdateObjectsHeight(List<ZoneResource> zones) {
+        await InitializeOctree();
+        UpdateMeshesAsync(CancellationToken.None);
     }
 }

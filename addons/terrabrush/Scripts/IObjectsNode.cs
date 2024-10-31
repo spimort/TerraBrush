@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace TerraBrush;
@@ -13,4 +14,5 @@ public interface IObjectsNode {
 
     public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage);
     public void UpdateMeshesFromTool();
+    public void UpdateObjectsHeight(List<ZoneResource> zones);
 }

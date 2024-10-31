@@ -564,17 +564,10 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
-        // for (var i = 0; i < Objects.Length; i++) {
-        //     var objectsNode = _objectsContainerNode.GetNode<Objects>($"{i}");
-        //     objectsNode.UpdateObjectsHeight(zones);
-        // }
-    }
-
-    public void UpdateZoneObjects(int objectsIndex, List<ZoneResource> zones) {
-        // zones.ForEach(zone => {
-        //     var objectsNode = _objectsContainerNode.GetNode<MultiMeshObjects>($"{objectsIndex}");
-        //     objectsNode.PopulateMultiMeshesZone(zone);
-        // });
+        for (var i = 0; i < Objects.Length; i++) {
+            var objectsNode = _objectsContainerNode.GetNode<IObjectsNode>($"{i}");
+            objectsNode.UpdateObjectsHeight(zones);
+        }
     }
 
     public void UpdateCameraPosition(Camera3D viewportCamera) {
