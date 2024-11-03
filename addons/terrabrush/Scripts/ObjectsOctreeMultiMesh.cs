@@ -24,6 +24,8 @@ internal class MultiMeshInstanceInfo {
 
 [Tool]
 public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
+    private const int DecimateFactor = 5;
+
     private Texture2D _defaultNoise;
     private Camera3D _camera;
     private StaticBody3D _staticBodyContainer;
@@ -110,17 +112,15 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     }
 
     private void InitializeSortedLODs() {
-        if (Definition.ObjectScenes?.Length > 0) {
+        if (Definition.LODList?.Length > 0) {
+            _sortedLODDefinitions = Definition.LODList.ToList().OrderBy(x => x.MaxDistance).ToArray();
+        } else {
             _sortedLODDefinitions = new[] {
                 new ObjectOctreeLODDefinitionResource() {
                     MaxDistance = ZonesSize,
                     AddCollision = true
                 }
             };
-        } else if (Definition.LODMeshes?.Length > 0) {
-            _sortedLODDefinitions = Definition.LODList.ToList().OrderBy(x => x.MaxDistance).ToArray();
-        } else {
-            throw new Exception("You must define either the ObjectScenes or the LODMeshes");
         }
     }
 
@@ -138,27 +138,77 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
                 var meshInstance = GetMeshForSceneNode(scene);
                 if (meshInstance != null) {
-                    var multiMeshInstance = new MultiMeshInstance3D() {
-                        Multimesh = new MultiMesh() {
-                            TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
-                            Mesh = meshInstance.Mesh
-                        },
-                        MaterialOverride = meshInstance.MaterialOverride
-                    };
-
-                    AddChild(multiMeshInstance);
-
-                    _multiMeshIntances ??= new();
-                    _multiMeshIntances.Add(i, new[] {
-                        new MultiMeshInstanceInfo {
-                            LODMeshDefinition = new ObjectOctreeLODMeshDefinitionResource {
-                                Mesh = meshInstance.Mesh,
-                                MaterialOverride = meshInstance.MaterialOverride,
-                                Scale = meshInstance.Scale
+                    if ((Definition.LODList?.Length).GetValueOrDefault() == 0) {
+                        var multiMeshInstance = new MultiMeshInstance3D() {
+                            Multimesh = new MultiMesh() {
+                                TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
+                                Mesh = meshInstance.Mesh
                             },
-                            MultiMeshInstance = multiMeshInstance
+                            MaterialOverride = meshInstance.MaterialOverride
+                        };
+
+                        AddChild(multiMeshInstance);
+
+                        _multiMeshIntances ??= new();
+                        _multiMeshIntances.Add(i, new[] {
+                            new MultiMeshInstanceInfo {
+                                LODMeshDefinition = new ObjectOctreeLODMeshDefinitionResource {
+                                    Mesh = meshInstance.Mesh,
+                                    MaterialOverride = meshInstance.MaterialOverride,
+                                    Scale = meshInstance.Scale
+                                },
+                                MultiMeshInstance = multiMeshInstance
+                            }
+                        });
+                    } else {
+                        _multiMeshIntances ??= new();
+                        var lodMultiMeshInstances = new List<MultiMeshInstanceInfo>();
+                        var minimumSurfaceVerticesCount = 0;
+                        for (int surfaceIndex = 0; surfaceIndex < meshInstance.Mesh.GetSurfaceCount(); surfaceIndex++) {
+                            var surfaceArrays = meshInstance.Mesh.SurfaceGetArrays(surfaceIndex);
+                            var surfaceVerticesCount = ((Godot.Collections.Array) surfaceArrays[(int) Mesh.ArrayType.Vertex]).Count;
+
+                            if (minimumSurfaceVerticesCount == 0 || surfaceVerticesCount < minimumSurfaceVerticesCount) {
+                                minimumSurfaceVerticesCount = surfaceVerticesCount;
+                            }
                         }
-                    });
+
+                        for (var lodIndex = 0; lodIndex < Definition.LODList.Length; lodIndex++) {
+                            var lodDefinition = Definition.LODList[lodIndex];
+
+                            var resultLodMesh = meshInstance.Mesh;
+                            if (lodIndex != 0) {
+                                var targetVertices = lodDefinition.AutomaticLODTargetVertices;
+                                if (targetVertices <= 0) {
+                                    targetVertices =  Math.Max(3, minimumSurfaceVerticesCount / (lodIndex * DecimateFactor));
+                                }
+                                resultLodMesh = qem.QEMAlgorithm.GetGodotLODMesh(resultLodMesh, targetVertices);
+                            }
+
+                            var lodMultiMeshInstance = new MultiMeshInstance3D() {
+                                Multimesh = new MultiMesh() {
+                                    TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
+                                    Mesh = resultLodMesh
+                                },
+                                MaterialOverride = meshInstance.MaterialOverride
+                            };
+
+                            AddChild(lodMultiMeshInstance);
+
+                            var lodMultiMeshInfo = new MultiMeshInstanceInfo {
+                                LODMeshDefinition = new ObjectOctreeLODMeshDefinitionResource {
+                                    Mesh = resultLodMesh,
+                                    MaterialOverride = meshInstance.MaterialOverride,
+                                    Scale = meshInstance.Scale
+                                },
+                                MultiMeshInstance = lodMultiMeshInstance
+                            };
+
+                            lodMultiMeshInstances.Add(lodMultiMeshInfo);
+                        }
+
+                        _multiMeshIntances.Add(i, lodMultiMeshInstances.ToArray());
+                    }
                 }
             }
         } else if (Definition.LODMeshes?.Length > 0) {

@@ -10,7 +10,7 @@ public enum ObjectStrategy {
 [Tool]
 [GlobalClass]
 public partial class ObjectDefinitionResource : Resource {
-    [Export] public ObjectStrategy Strategy { get;set; } = ObjectStrategy.OctreeMultiMeshes;
+    [Export] public ObjectStrategy Strategy { get;set; } = ObjectStrategy.PackedScenes;
     [Export] public int ObjectFrequency { get;set; } = -1;
     [Export] public float RandomRange { get;set; } = 1;
     [Export] public Texture2D NoiseTexture { get;set; }
