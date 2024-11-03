@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -10,6 +12,16 @@ public enum ObjectStrategy {
 [Tool]
 [GlobalClass]
 public partial class ObjectDefinitionResource : Resource {
+    private static readonly List<string> _packedScenesProperties = new List<string> {
+    };
+
+    private static readonly List<string> _octreeMultiMeshesProperties = new List<string> {
+        nameof(LODList),
+        nameof(LODMeshes),
+        nameof(UpdateDistanceThreshold),
+        nameof(UpdateTimeFrequency),
+    };
+
     [Export] public ObjectStrategy Strategy { get;set; } = ObjectStrategy.PackedScenes;
     [Export] public int ObjectFrequency { get;set; } = -1;
     [Export] public float RandomRange { get;set; } = 1;
@@ -20,4 +32,22 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
     [Export] public float UpdateDistanceThreshold { get;set; } = 1;
     [Export] public float UpdateTimeFrequency { get;set; } = 1;
+
+    public override void _ValidateProperty(Dictionary property) {
+        base._ValidateProperty(property);
+
+        if (Strategy == ObjectStrategy.PackedScenes) {
+            if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
+                property["usage"] = (long) PropertyUsageFlags.NoEditor;
+            } else if (_packedScenesProperties.Contains((string) property["name"])) {
+                property["usage"] = (long) PropertyUsageFlags.Default;
+            }
+        } else if (Strategy == ObjectStrategy.OctreeMultiMeshes) {
+            if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
+                property["usage"] = (long) PropertyUsageFlags.Default;
+            } else if (_packedScenesProperties.Contains((string) property["name"])) {
+                property["usage"] = (long) PropertyUsageFlags.NoEditor;
+            }
+        }
+    }
 }
