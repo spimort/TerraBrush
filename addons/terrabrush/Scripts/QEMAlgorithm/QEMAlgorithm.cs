@@ -304,7 +304,7 @@ public static class QEMAlgorithm {
         }
     }
 
-    public static Godot.Mesh GetGodotLODMesh(Godot.Mesh originalMesh, int targetVertices) {
+    public static Godot.Mesh GetGodotLODMesh(Godot.Mesh originalMesh, int targetVertices, Godot.MeshInstance3D meshInstance = null) {
         var surfaceTool = new Godot.SurfaceTool();
 
         Godot.ArrayMesh resultMesh = null;
@@ -325,7 +325,7 @@ public static class QEMAlgorithm {
             }
 
             surfaceTool.GenerateNormals();
-            surfaceTool.SetMaterial(originalMesh.SurfaceGetMaterial(i));
+            surfaceTool.SetMaterial(meshInstance?.GetSurfaceOverrideMaterial(i) ?? originalMesh.SurfaceGetMaterial(i));
 
             var commitMesh = surfaceTool.Commit(resultMesh);
             resultMesh ??= commitMesh;

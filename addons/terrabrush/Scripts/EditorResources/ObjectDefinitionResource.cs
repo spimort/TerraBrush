@@ -22,7 +22,17 @@ public partial class ObjectDefinitionResource : Resource {
         nameof(UpdateTimeFrequency),
     };
 
-    [Export] public ObjectStrategy Strategy { get;set; } = ObjectStrategy.PackedScenes;
+    private ObjectStrategy _strategy = ObjectStrategy.PackedScenes;
+
+    [Export] public ObjectStrategy Strategy {
+        get {
+            return _strategy;
+        }
+        set {
+            _strategy = value;
+            NotifyPropertyListChanged();
+        }
+    }
     [Export] public int ObjectFrequency { get;set; } = -1;
     [Export] public float RandomRange { get;set; } = 1;
     [Export] public Texture2D NoiseTexture { get;set; }

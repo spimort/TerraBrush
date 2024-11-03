@@ -182,7 +182,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                                 if (targetVertices <= 0) {
                                     targetVertices =  Math.Max(3, minimumSurfaceVerticesCount / (lodIndex * DecimateFactor));
                                 }
-                                resultLodMesh = qem.QEMAlgorithm.GetGodotLODMesh(resultLodMesh, targetVertices);
+                                resultLodMesh = qem.QEMAlgorithm.GetGodotLODMesh(resultLodMesh, targetVertices, meshInstance);
                             }
 
                             var lodMultiMeshInstance = new MultiMeshInstance3D() {
