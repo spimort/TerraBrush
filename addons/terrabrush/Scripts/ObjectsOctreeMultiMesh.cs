@@ -36,7 +36,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private ObjectOctreeLODDefinitionResource[] _sortedLODDefinitions;
     private Dictionary<int, Shape3D> _collisionShapes;
     private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
-    private HashSet<OctreeNodeInfo> _actualNodes = new();
+    private HashSet<OctreeNodeInfo> _actualNodesWithCollision = new();
     private CancellationTokenSource _cancellationTokenSource;
     private bool _initialized = false;
 
@@ -125,7 +125,35 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     }
 
     private void InitializeMeshesAndCollision() {
-        if (Definition.ObjectScenes?.Length > 0) {
+        if (Definition.LODMeshes?.Length > 0) {
+            _multiMeshIntances = new();
+
+            for (var i = 0; i < Definition.LODMeshes.Length; i++) {
+                var lodMesh = Definition.LODMeshes[i];
+                var multiMeshInstances = lodMesh.Meshes.Select(x => {
+                    var multiMeshInstance = new MultiMeshInstance3D() {
+                        Multimesh = new MultiMesh() {
+                            TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
+                            Mesh = x.Mesh
+                        },
+                        MaterialOverride = x.MaterialOverride
+                    };
+
+                    AddChild(multiMeshInstance);
+
+                    return new MultiMeshInstanceInfo {
+                        LODMeshDefinition = x,
+                        MultiMeshInstance = multiMeshInstance
+                    };
+                });
+                _multiMeshIntances.Add(i, multiMeshInstances.ToArray());
+
+                if (lodMesh.CollisionShape != null) {
+                    _collisionShapes ??= new();
+                    _collisionShapes.Add(i, lodMesh.CollisionShape);
+                }
+            }
+        } else if (Definition.ObjectScenes?.Length > 0) {
             for (var i = 0; i < Definition.ObjectScenes.Length; i++) {
                 var packedScene = Definition.ObjectScenes[i];
                 var scene = packedScene.Instantiate<Node3D>();
@@ -209,34 +237,6 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
                         _multiMeshIntances.Add(i, lodMultiMeshInstances.ToArray());
                     }
-                }
-            }
-        } else if (Definition.LODMeshes?.Length > 0) {
-            _multiMeshIntances = new();
-
-            for (var i = 0; i < Definition.LODMeshes.Length; i++) {
-                var lodMesh = Definition.LODMeshes[i];
-                var multiMeshInstances = lodMesh.Meshes.Select(x => {
-                    var multiMeshInstance = new MultiMeshInstance3D() {
-                        Multimesh = new MultiMesh() {
-                            TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
-                            Mesh = x.Mesh
-                        },
-                        MaterialOverride = x.MaterialOverride
-                    };
-
-                    AddChild(multiMeshInstance);
-
-                    return new MultiMeshInstanceInfo {
-                        LODMeshDefinition = x,
-                        MultiMeshInstance = multiMeshInstance
-                    };
-                });
-                _multiMeshIntances.Add(i, multiMeshInstances.ToArray());
-
-                if (lodMesh.CollisionShape != null) {
-                    _collisionShapes ??= new();
-                    _collisionShapes.Add(i, lodMesh.CollisionShape);
                 }
             }
         } else {
@@ -355,18 +355,34 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                     if (cancellationToken.IsCancellationRequested) return;
                     var shape = _collisionShapes[nodeInfo.MeshIndex];
 
-                    nodeInfo.CollisionShape = new CollisionShape3D {
-                        Shape = shape,
-                        Position = nodeInfo.Position
-                    };
-                    _staticBodyContainer.CallDeferred("add_child", nodeInfo.CollisionShape);
+                    if (nodeInfo.CollisionShape == null) {
+                        nodeInfo.CollisionShape = new CollisionShape3D {
+                            Shape = shape,
+                            Position = nodeInfo.Position
+                        };
+                        _staticBodyContainer.CallDeferred("add_child", nodeInfo.CollisionShape);
+                    }
 
-                    _actualNodes.Add(nodeInfo);
+                    _actualNodesWithCollision.Add(nodeInfo);
                 }
 
                 if (!lodDefinition.AddCollision) {
                     toRemoveNodes.Add(nodeInfo);
                 }
+            }
+        }
+
+        for (var i = _actualNodesWithCollision.Count - 1; i >= 0; i--) {
+            if (cancellationToken.IsCancellationRequested) return;
+
+            var actualNode = _actualNodesWithCollision.ElementAt(i);
+            if (!nodes.Contains(actualNode) || toRemoveNodes.Contains(actualNode)) {
+                if (cancellationToken.IsCancellationRequested) return;
+
+                actualNode.CollisionShape?.CallDeferred("queue_free");
+                actualNode.CollisionShape = null;
+
+                _actualNodesWithCollision.Remove(actualNode);
             }
         }
 
@@ -385,20 +401,6 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                     multiMeshInstance.Multimesh.CallDeferred("set_instance_count", multiMeshNodeBuffer.Count / 12);
                     multiMeshInstance.Multimesh.CallDeferred("set_buffer", multiMeshNodeBuffer.ToArray());
                 }
-            }
-        }
-
-        for (var i = _actualNodes.Count - 1; i >= 0; i--) {
-            if (cancellationToken.IsCancellationRequested) return;
-
-            var actualNode = _actualNodes.ElementAt(i);
-            if (!nodes.Contains(actualNode) || toRemoveNodes.Contains(actualNode)) {
-                if (cancellationToken.IsCancellationRequested) return;
-
-                actualNode.CollisionShape?.CallDeferred("queue_free");
-                actualNode.CollisionShape = null;
-
-                _actualNodes.Remove(actualNode);
             }
         }
     }
