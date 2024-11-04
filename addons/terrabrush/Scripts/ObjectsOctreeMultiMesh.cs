@@ -22,6 +22,11 @@ internal class MultiMeshInstanceInfo {
     public MultiMeshInstance3D MultiMeshInstance { get;set; }
 }
 
+internal class CollisionShapeInfoInfo {
+    public Vector3 Offset { get;set; } = Vector3.Zero;
+    public Shape3D Shape { get;set; }
+}
+
 [Tool]
 public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private const int DecimateFactor = 5;
@@ -34,7 +39,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private PointOctree<OctreeNodeInfo> _octree;
     private float _maxDistance;
     private ObjectOctreeLODDefinitionResource[] _sortedLODDefinitions;
-    private Dictionary<int, Shape3D> _collisionShapes;
+    private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
     private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
     private HashSet<OctreeNodeInfo> _actualNodesWithCollision = new();
     private CancellationTokenSource _cancellationTokenSource;
@@ -150,7 +155,9 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
                 if (lodMesh.CollisionShape != null) {
                     _collisionShapes ??= new();
-                    _collisionShapes.Add(i, lodMesh.CollisionShape);
+                    _collisionShapes.Add(i, new CollisionShapeInfoInfo {
+                        Shape = lodMesh.CollisionShape
+                    });
                 }
             }
         } else if (Definition.ObjectScenes?.Length > 0) {
@@ -161,7 +168,10 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                 var collisionShape = GetCollisionForSceneNode(scene);
                 if (collisionShape != null) {
                     _collisionShapes ??= new();
-                    _collisionShapes.Add(i, collisionShape);
+                    _collisionShapes.Add(i, new CollisionShapeInfoInfo {
+                        Shape = collisionShape.Shape,
+                        Offset = collisionShape.Position
+                    });
                 }
 
                 var meshInstance = GetMeshForSceneNode(scene);
@@ -353,12 +363,13 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
                 if (lodDefinition.AddCollision && (_collisionShapes?.ContainsKey(nodeInfo.MeshIndex)).GetValueOrDefault()) {
                     if (cancellationToken.IsCancellationRequested) return;
-                    var shape = _collisionShapes[nodeInfo.MeshIndex];
+                    var shapeInfo = _collisionShapes[nodeInfo.MeshIndex];
 
                     if (nodeInfo.CollisionShape == null) {
                         nodeInfo.CollisionShape = new CollisionShape3D {
-                            Shape = shape,
-                            Position = nodeInfo.Position
+                            Shape = shapeInfo.Shape,
+                            Position = nodeInfo.Position + shapeInfo.Offset,
+                            Scale = lodMeshDefinition.Scale
                         };
                         _staticBodyContainer.CallDeferred("add_child", nodeInfo.CollisionShape);
                     }
@@ -421,9 +432,9 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
         return null;
     }
 
-    private Shape3D GetCollisionForSceneNode(Node node) {
+    private CollisionShape3D GetCollisionForSceneNode(Node node) {
         if (node is CollisionShape3D collisionShape) {
-            return collisionShape.Shape;
+            return collisionShape;
         }
 
         foreach (var childNode in node.GetChildren()) {

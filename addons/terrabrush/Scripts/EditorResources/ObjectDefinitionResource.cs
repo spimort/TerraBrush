@@ -41,7 +41,7 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public ObjectOctreeLODDefinitionResource[] LODList { get;set;}
     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
     [Export] public float UpdateDistanceThreshold { get;set; } = 1;
-    [Export] public float UpdateTimeFrequency { get;set; } = 1;
+    [Export] public float UpdateTimeFrequency { get;set; } = 0.1f;
 
     public override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
