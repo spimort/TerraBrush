@@ -167,6 +167,11 @@ public partial class Objects : Node3D, IObjectsNode {
         }
     }
 
+    public void UpdateMeshesFromTool() {
+        // Nothing to do here, stuff has already been applied
+    }
+
+    // TODO : Refactor this part so it shares the same code as the other strategy
     public void CalculateObjectPresenceForPixel(Image heightmapImage, Image waterImage, Image noiseImage, int x, int y, Color pixelValue, Action<(Vector3 ResultPosition, Vector3 ResultRotation, int ResultPackedSceneIndex)> objectPresentCallback, Action objectNotPresentCallback = null) {
         if (pixelValue.A > 0.0f) {
             var objectFrequency = Definition.ObjectFrequency < 1 ? DefaultObjectFrequency : Definition.ObjectFrequency;
@@ -258,9 +263,5 @@ public partial class Objects : Node3D, IObjectsNode {
         } else if (!add && existingNode != null) {
             existingNode.QueueFree();
         }
-    }
-
-    public void UpdateMeshesFromTool() {
-        // Nothing to do here, stuff has already been applied
     }
 }
