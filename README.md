@@ -182,11 +182,17 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Object Loading Strategy|Drives how the objects are being loaded (in a thread or not). The default value is ThreadedInEditorOnly.|
 |Objects|An array of ObjectResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |ObjectResource[x].Definition|The definition of the object. Create a **ObjectDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
+|ObjectResource[x].Definition.Strategy|This option lets you choose between instancing packed scenes or using multimeshes for the objects.|
 |ObjectResource[x].Definition.ObjectFrequency|This option overrides the **Default Object Frequency** property if a value higher than -1 is set. This option is to define how often the objects will be placed on the terrain. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
 |ObjectResource[x].Definition.RandomRange|The range from which the random placement will be added from the original grid position.|
 |ObjectResource[x].Definition.NoiseTexture|This texture makes sure that the object placement is not too straight. If not specified, the default noise texture will be used.|
 |ObjectResource[x].Definition.RandomYRotation|This allows the objects to be rotated randomly on the Y axis.|
 |ObjectResource[x].Definition.ObjectScenes|A list of packed scenes. A random one will be selected while painting.|
+|ObjectResource[x].Definition.LODList|**(MultiMeshes only)** The list of LOD for the objects.|
+|ObjectResource[x].Definition.LODMeshes|**(MultiMeshes only)** The list of meshes used with the LODList.|
+|ObjectResource[x].Definition.UpdateDistanceThreshold|**(MultiMeshes only)** This sets the movement threshold before we need to check if the objects are changing LOD.|
+|ObjectResource[x].Definition.UpdateTimeFrequency|**(MultiMeshes only)** This sets how often we check if the movement threshold has been reached.|
+|ObjectResource[x].Definition.VisualInstanceLayers|**(MultiMeshes only)** The visual layers used with the MultiMeshes.|
 |ObjectResource[x].Hide|Hide the whole layer of objects. This is useful when you want to see something on the terrain and the objects block the view.|
 |**Water**||
 |Water Definition|The definition of water. Create a **WaterResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
