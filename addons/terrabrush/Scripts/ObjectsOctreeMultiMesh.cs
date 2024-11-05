@@ -141,7 +141,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                             TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
                             Mesh = x.Mesh
                         },
-                        MaterialOverride = x.MaterialOverride
+                        MaterialOverride = x.MaterialOverride,
+                        Layers = (uint) Definition.VisualInstanceLayers
                     };
 
                     AddChild(multiMeshInstance);
@@ -182,7 +183,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                                 TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
                                 Mesh = meshInstance.Mesh
                             },
-                            MaterialOverride = meshInstance.MaterialOverride
+                            MaterialOverride = meshInstance.MaterialOverride,
+                            Layers = (uint) Definition.VisualInstanceLayers
                         };
 
                         AddChild(multiMeshInstance);
@@ -228,7 +230,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                                     TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
                                     Mesh = resultLodMesh
                                 },
-                                MaterialOverride = meshInstance.MaterialOverride
+                                MaterialOverride = meshInstance.MaterialOverride,
+                                Layers = (uint) Definition.VisualInstanceLayers
                             };
 
                             AddChild(lodMultiMeshInstance);

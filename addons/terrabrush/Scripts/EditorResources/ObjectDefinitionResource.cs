@@ -20,6 +20,7 @@ public partial class ObjectDefinitionResource : Resource {
         nameof(LODMeshes),
         nameof(UpdateDistanceThreshold),
         nameof(UpdateTimeFrequency),
+        nameof(VisualInstanceLayers),
     };
 
     private ObjectStrategy _strategy = ObjectStrategy.PackedScenes;
@@ -42,6 +43,7 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
     [Export] public float UpdateDistanceThreshold { get;set; } = 1;
     [Export] public float UpdateTimeFrequency { get;set; } = 0.1f;
+    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
 
     public override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
