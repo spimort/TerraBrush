@@ -337,7 +337,9 @@ public partial class Plugin : EditorPlugin {
 
     private void RemoveDock() {
 		if (_terrainControlDock != null) {
-			_terrainControlDock.QueueFree();
+            if (IsInstanceValid(_terrainControlDock)) {
+                _terrainControlDock.QueueFree();
+            }
             _terrainControlDock = null;
 		}
 
