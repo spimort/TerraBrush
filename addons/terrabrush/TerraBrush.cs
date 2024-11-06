@@ -34,7 +34,6 @@ public partial class TerraBrush : TerraBrushTool {
     private Dictionary<ImageTexture, Image> _imageTexturesCache = new();
     private Texture2D _defaultNoise;
     private string _dataPath;
-    private CancellationTokenSource _objectsCreationCancellationTokenSource;
 
     public Terrain Terrain => _terrain;
     public Water Water => _waterNode;
@@ -419,146 +418,57 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public async Task CreateObjects() {
-        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
-
-        var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
-
-        if (loadInThread) {
-            _objectsCreationCancellationTokenSource?.Cancel();
-            _objectsCreationCancellationTokenSource = new CancellationTokenSource();
-
-            await Task.Factory.StartNew(async () => {
-                await CreateObjectsAsync(_objectsCreationCancellationTokenSource.Token);
-            }, _objectsCreationCancellationTokenSource.Token);
-        } else {
-            await CreateObjectsAsync(CancellationToken.None);
-        }
-    }
-
-    private async Task CreateObjectsAsync(CancellationToken cancellationToken) {
         if (Objects == null || Objects.Length == 0) {
             return;
         }
 
+        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
         if (_objectsContainerNode == null) {
             _objectsContainerNode = new Node3D();
-            CallDeferred("add_child", _objectsContainerNode);
+            AddChild(_objectsContainerNode);
         }
 
-        if (cancellationToken.IsCancellationRequested) {
-            return;
-        }
-
-        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
-            if (cancellationToken.IsCancellationRequested) {
-                return;
-            }
-
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Length; zoneIndex++) {
             var zone = TerrainZones.Zones[zoneIndex];
-
-            var heightmapImage = zone.HeightMapTexture.GetImage();
-            var waterImage = zone.WaterTexture?.GetImage();
-
-            var newList = new List<ImageTexture>();
-            for (var objectIndex = 0; objectIndex < Objects.Count(); objectIndex++) {
-                if (cancellationToken.IsCancellationRequested) {
-                    return;
-                }
-
-                ImageTexture imageTexture = null;
+            var newList = Objects.Select((objectItem, objectIndex) => {
                 if (zone.ObjectsTexture?.Length > objectIndex) {
-                    imageTexture = zone.ObjectsTexture[objectIndex];
+                    return zone.ObjectsTexture[objectIndex];
                 } else {
-                    imageTexture = ZoneUtils.CreateObjectImage(ZonesSize, zone.ZonePosition, objectIndex, DataPath);
+                    return  ZoneUtils.CreateObjectImage(ZonesSize, zone.ZonePosition, objectIndex, DataPath);
                 }
-
-                newList.Add(imageTexture);
-
-                var objectItem = Objects[objectIndex];
-
-                if (objectItem.Definition != null) {
-                    var noiseTexture = objectItem.Definition?.NoiseTexture != null ? await Utils.WaitForTextureReady(objectItem.Definition.NoiseTexture) : _defaultNoise;
-                    Image noiseImage = null;
-                    if (noiseTexture != null) {
-                        noiseImage = new Image();
-                        noiseImage.CopyFrom(noiseTexture.GetImage());
-                    }
-
-                    var objectNode = new Node3D();
-                    objectNode.Name = $"{zoneIndex}_{objectIndex}";
-                    objectNode.Visible = !objectItem.Hide;
-                    objectNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
-
-                    _objectsContainerNode.CallDeferred("add_child", objectNode);
-
-                    // Load all the objects from the image
-                    var objectsImage = imageTexture.GetImage();
-
-                    for (var x = 0; x < objectsImage.GetWidth(); x++) {
-                        if (cancellationToken.IsCancellationRequested) {
-                            return;
-                        }
-
-                        for (var y = 0; y < objectsImage.GetHeight(); y++) {
-                            if (cancellationToken.IsCancellationRequested) {
-                                return;
-                            }
-
-                            var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, objectItem.Definition.ObjectScenes.Count() - 1);
-
-                            var objectPixel = objectsImage.GetPixel(x, y);
-
-                            if (objectPixel.A > 0.0f) {
-                                var resultPosition = new Vector3(x, 0, y);
-                                if (noiseImage != null) {
-                                    var noisePixel = noiseImage.GetPixel(x, y).R;
-                                    var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
-                                    var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -objectItem.Definition.RandomRange, objectItem.Definition.RandomRange);
-                                    resultPosition += new Vector3(randomValueX, 0, randomValueZ);
-                                }
-
-                                var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                                if (resultImagePosition.X >= 0 && resultImagePosition.X < ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < ZonesSize) {
-                                    var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-                                    // Check for hole
-                                    if (heightmapPixel.G == 0.0) {
-                                        var waterHeight = waterImage?.GetPixel(resultImagePosition.X, resultImagePosition.Y).R ?? 0;
-                                        resultPosition -= new Vector3(ZonesSize / 2, -((heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0))), ZonesSize / 2);
-
-                                        if (cancellationToken.IsCancellationRequested) {
-                                            return;
-                                        }
-
-                                        CallDeferred(
-                                            nameof(AddObjectNode),
-                                            objectItem.Definition.ObjectScenes[randomItemIndex],
-                                            objectNode,
-                                            $"{x}_{y}",
-                                            resultPosition,
-                                            objectItem.Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            });
 
             zone.ObjectsTexture = newList.ToArray();
         }
 
+        var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
+        for (var objectIndex = 0; objectIndex < Objects.Length; objectIndex++) {
+            var objectItem = Objects[objectIndex];
+            if (objectItem.Hide) {
+                continue;
+            }
+
+            var prefab = objectItem.Definition.Strategy switch {
+                ObjectStrategy.OctreeMultiMeshes => await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/ObjectsOctreeMultiMesh.tscn", CancellationToken.None),
+                ObjectStrategy.PackedScenes => await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Objects.tscn", CancellationToken.None),
+                _ => throw new NotImplementedException()
+            };
+
+            var objectNode = prefab.Instantiate<IObjectsNode>();
+            ((Node3D) objectNode).Name = $"{objectIndex}";
+
+            objectNode.ObjectsIndex = objectIndex;
+            objectNode.Definition = objectItem.Definition;
+            objectNode.TerrainZones = TerrainZones;
+            objectNode.ZonesSize = ZonesSize;
+            objectNode.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
+            objectNode.LoadInThread = loadInThread;
+            objectNode.DefaultObjectFrequency = DefaultObjectFrequency;
+
+            _objectsContainerNode.AddChild((Node3D) objectNode);
+        }
+
         TerrainZones.UpdateObjectsTextures();
-    }
-
-    private void AddObjectNode(PackedScene packedScene, Node parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation) {
-        var newNode = packedScene.Instantiate<Node3D>();
-        newNode.Name = nodeName;
-        newNode.Position = nodePosition;
-
-        newNode.RotationDegrees = nodeRotation;
-
-        parentNode.AddChild(newNode);
     }
 
     private async Task CreateWater() {
@@ -654,50 +564,9 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
-        if (Objects == null || Objects.Length == 0) {
-            return;
-        }
-
-        foreach (var zone in zones) {
-            var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
-            var heightmapImage = zone.HeightMapTexture.GetImage();
-            var waterImage = zone.WaterTexture?.GetImage();
-
-            for (var i = 0; i < Objects.Length; i++) {
-                var objectsDefinition = Objects[i].Definition;
-                var nodeName = $"{zoneIndex}_{i}";
-                var objectsNode = _objectsContainerNode.GetNode(nodeName);
-
-                if (objectsNode != null) {
-                    var noiseTexture = objectsDefinition.NoiseTexture != null ? objectsDefinition.NoiseTexture : _defaultNoise;
-                    Image noiseImage = null;
-                    if (noiseTexture != null) {
-                        noiseImage = noiseTexture.GetImage();
-                    }
-
-                    foreach (Node3D objectNode in objectsNode.GetChildren()) {
-                        var objectNodeName = objectNode.Name;
-                        var positions = objectNodeName.ToString().Split("_");
-                        var xPosition = int.Parse(positions[0]);
-                        var yPosition = int.Parse(positions[1]);
-
-                        var resultPosition = new Vector3(xPosition, 0, yPosition);
-                        if (noiseImage != null) {
-                            var noisePixel = noiseImage.GetPixel(xPosition, yPosition).R;
-                            var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -objectsDefinition.RandomRange, objectsDefinition.RandomRange);
-                            var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -objectsDefinition.RandomRange, objectsDefinition.RandomRange);
-                            resultPosition += new Vector3(randomValueX, 0, randomValueZ);
-                        }
-
-                        var resultImagePosition = new Vector2I((int) Math.Round(resultPosition.X), (int) Math.Round(resultPosition.Z));
-                        if (resultImagePosition.X >= 0 && resultImagePosition.X < ZonesSize && resultImagePosition.Y >= 0 && resultImagePosition.Y < ZonesSize) {
-                            var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
-                            var waterHeight = waterImage?.GetPixel(xPosition, yPosition).R ?? 0;
-                            objectNode.Position = new Vector3(objectNode.Position.X, (heightmapPixel.R * HeightMapFactor) - (waterHeight * (WaterDefinition?.WaterFactor ?? 0)), objectNode.Position.Z);
-                        }
-                    }
-                }
-            }
+        for (var i = 0; i < Objects.Length; i++) {
+            var objectsNode = _objectsContainerNode.GetNode<IObjectsNode>($"{i}");
+            objectsNode.UpdateObjectsHeight(zones);
         }
     }
 

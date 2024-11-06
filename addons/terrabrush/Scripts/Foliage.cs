@@ -61,7 +61,7 @@ public partial class Foliage : Node3D {
 
     public override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
-            var position = this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
+            var position = GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
 
             UpdateFoliagePosition(position);
         }
@@ -101,18 +101,9 @@ public partial class Foliage : Node3D {
                 InstanceCount = numberOfPoints,
                 Buffer = Enumerable.Range(0, numberOfPoints).Select(_ => {
                     return new float[] {
-                        1f,
-                        0f,
-                        0f,
-                        0f,
-                        0f,
-                        1f,
-                        0f,
-                        0f,
-                        0f,
-                        0f,
-                        1f,
-                        0f
+                        1f, 0f, 0f, 0f,
+                        0f, 1f, 0f, 0f,
+                        0f, 0f, 1f, 0f
                     };
                 }).SelectMany(x => x).ToArray()
             };
