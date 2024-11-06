@@ -564,7 +564,7 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
-        for (var i = 0; i < Objects.Length; i++) {
+        for (var i = 0; i < Objects?.Length; i++) {
             var objectsNode = _objectsContainerNode.GetNode<IObjectsNode>($"{i}");
             objectsNode.UpdateObjectsHeight(zones);
         }
