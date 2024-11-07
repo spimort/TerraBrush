@@ -1,5 +1,6 @@
 // The position of the camera
 uniform vec3 GlobalPosition;
+uniform vec3 OffsetPosition;
 
 uniform float InitialCellWidth = 1.0;
 uniform int LODRowsPerLevel = 10;
@@ -211,6 +212,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 	}
 
 	vec3 particlePosition = vec3(clipMapXPosition * cellWidth, 0, clipMapYPosition * cellWidth);
+	particlePosition -= OffsetPosition;
 
 	// Apply the global position on top of the clipmap
 	particlePosition.x += roundEven(GlobalPosition.x);
