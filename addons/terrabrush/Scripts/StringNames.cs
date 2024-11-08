@@ -74,4 +74,5 @@ internal static class StringNames {
     public static readonly StringName NumberOfTexturesToApplyOn = "NumberOfTexturesToApplyOn";
     public static readonly StringName AlbedoAlphaChannelUsage = "AlbedoAlphaChannelUsage";
     public static readonly StringName NormalAlphaChannelUsage = "NormalAlphaChannelUsage";
+    public static readonly StringName OffsetPosition = "OffsetPosition";
 }

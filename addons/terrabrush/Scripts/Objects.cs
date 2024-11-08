@@ -142,7 +142,7 @@ public partial class Objects : Node3D, IObjectsNode {
             var waterImage = zone.WaterTexture?.GetImage();
 
             var nodeName = $"{zoneIndex}";
-            var objectsNode = GetNode(nodeName);
+            var objectsNode = GetNodeOrNull(nodeName);
 
             if (objectsNode != null) {
                 var noiseTexture = Definition.NoiseTexture ?? _defaultNoise;

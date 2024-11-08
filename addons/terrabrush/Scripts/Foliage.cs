@@ -57,6 +57,9 @@ public partial class Foliage : Node3D {
 
         UpdateFoliage();
         UpdateAABB();
+        UpdateShaderOffsetPosition();
+
+        SetNotifyTransform(true);
     }
 
     public override void _Process(double delta) {
@@ -64,6 +67,14 @@ public partial class Foliage : Node3D {
             var position = GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
 
             UpdateFoliagePosition(position);
+        }
+    }
+
+    public override void _Notification(int what) {
+        base._Notification(what);
+
+        if (what == NotificationTransformChanged) {
+            UpdateShaderOffsetPosition();
         }
     }
 
@@ -232,5 +243,9 @@ public partial class Foliage : Node3D {
         } else {
             _particles.CustomAabb = aabb;
         }
+    }
+
+    private void UpdateShaderOffsetPosition() {
+        _foliageShader.SetShaderParameter(StringNames.OffsetPosition, GlobalPosition);
     }
 }

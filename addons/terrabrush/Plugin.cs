@@ -122,7 +122,7 @@ public partial class Plugin : EditorPlugin {
                 _brushDecal.Position = new Vector3(meshPosition.X, 0, meshPosition.Z);
             }
 
-            _mouseHitPosition = meshPosition;
+            _mouseHitPosition = meshPosition - _currentTerraBrushNode.GlobalPosition;
         }
 
         if (@event is InputEventKey inputEvent) {
@@ -298,7 +298,7 @@ public partial class Plugin : EditorPlugin {
         var heightmapsCache = new Dictionary<ImageTexture, Image>();
 
         for (var i = 0; i < 20000; i++) {
-            var position = from + (direction * i * 0.1f);
+            var position = from + (direction * i * 0.1f) - _currentTerraBrushNode.GlobalPosition;
 
             var zoneInfo = ZoneUtils.GetPixelToZoneInfo(position.X + (_currentTerraBrushNode.ZonesSize / 2), position.Z + (_currentTerraBrushNode.ZonesSize / 2), _currentTerraBrushNode.ZonesSize);
             var zone = _currentTerraBrushNode?.TerrainZones?.GetZoneForZoneInfo(zoneInfo);
@@ -312,7 +312,7 @@ public partial class Plugin : EditorPlugin {
                 var zoneHeight = heightMapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
 
                 if (zoneHeight >= position.Y) {
-                    return new Vector3(position.X, zoneHeight, position.Z);
+                    return new Vector3(position.X, zoneHeight, position.Z) + _currentTerraBrushNode.GlobalPosition;
                 }
             }
 

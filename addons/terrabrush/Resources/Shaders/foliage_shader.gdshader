@@ -3,6 +3,7 @@ shader_type particles;
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 
 uniform vec3 GlobalPosition;
+uniform vec3 OffsetPosition;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
 uniform sampler2D NoiseTexture : hint_default_transparent, repeat_disable;
 
@@ -75,14 +76,16 @@ float remap(float value, float from1, float to1, float from2, float to2) {
 }
 
 void start() {
+	vec3 globalPosition = GlobalPosition - OffsetPosition;
+	
 	float xPosition = roundEven(floor(float(int(INDEX) / MaximumDistance)) - (float(MaximumDistance / 2)));
 	float yPosition = roundEven(float(int(INDEX) % MaximumDistance) - (float(MaximumDistance / 2)));
 
-	xPosition += roundEven(GlobalPosition.x);
-	yPosition += roundEven(GlobalPosition.z);
+	xPosition += roundEven(globalPosition.x);
+	yPosition += roundEven(globalPosition.z);
 
 	// Fetch the zoneUV with the "Grid" position of the foliage.
-	vec3 worldVertex = vec3(xPosition, 0, yPosition);
+	vec3 worldVertex = vec3(xPosition, 0, yPosition) - OffsetPosition;
 	vec3 zoneUV = calculateZoneUV(worldVertex);
 
 	// Calculate the noise/random value with the zoneUV;
@@ -104,7 +107,7 @@ void start() {
 			vec4 foliagePosition = texture(FoliageTextures, zoneUV);
 			bool foliagePresence = foliagePosition.x > 0.0;
 
-			float particleDistance = length(vec2(xPosition, yPosition) - GlobalPosition.xz);
+			float particleDistance = length(vec2(xPosition, yPosition) - globalPosition.xz);
 			// From center means that we need to divide the max distance by 2.0
 			float maxDistanceFromCenter = float(MaximumDistance) / 2.0;
 			if (foliagePresence && particleDistance <= maxDistanceFromCenter) {

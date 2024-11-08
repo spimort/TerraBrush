@@ -1,5 +1,6 @@
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform float InitialCellWidth = 1.0;
+uniform vec3 OffsetPosition;
 
 #include "zones_shader_include.gdshaderinc"
 
@@ -80,7 +81,7 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 }
 
 void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
-	worldVertex = vertex + modelMatrix[3].xyz;
+	worldVertex = vertex + modelMatrix[3].xyz - OffsetPosition;
 	
 	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));
 }

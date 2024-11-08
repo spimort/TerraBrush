@@ -7,6 +7,8 @@ namespace TerraBrush;
 
 [Tool]
 public partial class Clipmap : Node3D {
+    private ShaderMaterial _clipmapShader;
+
     [NodePath] private MeshInstance3D _clipmapMesh;
 
     [Export] public int ZonesSize { get;set; }
@@ -21,12 +23,22 @@ public partial class Clipmap : Node3D {
     public override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
+
+        SetNotifyTransform(true);
     }
 
     public override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
             var cameraPosition = this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
             UpdateClipmapMeshPosition(cameraPosition);
+        }
+    }
+
+    public override void _Notification(int what) {
+        base._Notification(what);
+
+        if (what == NotificationTransformChanged) {
+            UpdateShaderOffsetPosition();
         }
     }
 
@@ -54,7 +66,7 @@ public partial class Clipmap : Node3D {
             zPosition -= InitialCellWidth / 2.0f;
         }
 
-        var newPosition = new Vector3(xPosition, 0, zPosition);
+        var newPosition = new Vector3(xPosition, GlobalPosition.Y, zPosition);
         if (newPosition.DistanceTo(_clipmapMesh.GlobalPosition) > maxCellWidth) {
             _clipmapMesh.GlobalPosition = newPosition;
         }
@@ -69,6 +81,7 @@ public partial class Clipmap : Node3D {
         if (clipmapShader == null) {
             clipmapShader = ResourceLoader.Load<ShaderMaterial>("res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader");
         }
+        _clipmapShader = clipmapShader;
         _clipmapMesh.MaterialOverride = clipmapShader;
 
         var vertices = new List<Vector3>();
@@ -104,6 +117,7 @@ public partial class Clipmap : Node3D {
         clipmapShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
         clipmapShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Length);
 		clipmapShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
+        UpdateShaderOffsetPosition();
     }
 
     private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {
@@ -203,5 +217,9 @@ public partial class Clipmap : Node3D {
         var aabbXPoint = -(aabbXSize / 2);
         var aabbYPoint = -(aabbYSize / 2);
         ((ArrayMesh) _clipmapMesh.Mesh).CustomAabb = new Aabb(new Vector3(aabbXPoint, Math.Max(aabbXPoint, aabbYPoint), aabbYPoint), new Vector3(aabbXSize, Math.Max(aabbXSize, aabbYSize), aabbYSize));
+    }
+
+    private void UpdateShaderOffsetPosition() {
+        _clipmapShader.SetShaderParameter(StringNames.OffsetPosition, GlobalPosition);
     }
 }
