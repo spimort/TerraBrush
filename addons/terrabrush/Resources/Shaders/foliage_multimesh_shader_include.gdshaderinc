@@ -205,7 +205,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 			}
 		} else {
 			// Disable instance
-			vertex.y = 0.0; // Scale down the mesh so it "vanish"
+			vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 		}
 
 		cellWidth = pow(float(2), float(currentLODLevel - 1)) * InitialCellWidth;
@@ -239,7 +239,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 
 	if (zoneUV.z < 0.0) {
 		// Disable instance
-		vertex.y = 0.0; // Scale down the mesh so it "vanish"
+		vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 	} else {
 		vec4 foliagePosition = texture(FoliageTextures, zoneUV);
 		bool foliagePresence = false;
@@ -261,7 +261,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 			vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);
 			if (heightMapPosition.g > 0.0) {
 				// Disable instance
-				vertex.y = 0.0; // Scale down the mesh so it "vanish"
+				vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 			} else {
 				float height = heightMapPosition.x;
 
@@ -312,7 +312,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 			}
 		} else {
 			// Disable instance
-			vertex.y = 0.0; // Scale down the mesh so it "vanish"
+			vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 		}
 	}
 }
