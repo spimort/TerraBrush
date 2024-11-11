@@ -82,7 +82,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
         _updateTime += (float) delta;
         if (_updateTime >= Definition.UpdateTimeFrequency) {
-            var currentPosition = _camera.GlobalPosition;
+            var currentPosition = ToLocal(_camera.GlobalPosition);
             if (currentPosition.DistanceTo(_lastUpdatedPosition) > Definition.UpdateDistanceThreshold) {
                 UpdateMeshes();
 
