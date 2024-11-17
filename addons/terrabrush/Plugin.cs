@@ -423,7 +423,7 @@ public partial class Plugin : EditorPlugin {
         _toolInfo?.QueueFree();
         _toolInfo = null;
 
-        _currentTerraBrushNode.SetMeta("_edit_lock_", false);
+        _currentTerraBrushNode?.SetMeta("_edit_lock_", false);
 
         _currentTerraBrushNode = null;
     }

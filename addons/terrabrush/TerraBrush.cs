@@ -62,7 +62,7 @@ public partial class TerraBrush : TerraBrushTool {
     public bool CollisionOnly { get;set; }
 
     [Export(PropertyHint.Dir)]
-    public string DataPath {
+    public override string DataPath {
         get {
             return _dataPath;
         } set{
@@ -161,7 +161,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     [ExportGroup("Zones")]
     [Export]
-    public ZonesResource TerrainZones { get;set; }
+    public override ZonesResource TerrainZones { get;set; }
 
     public async override void _Ready() {
         base._Ready();

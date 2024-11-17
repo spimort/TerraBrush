@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Godot;
 
 namespace TerraBrush;
@@ -82,6 +83,7 @@ public partial class TerraBrushTool : Node3D {
         } set {}
     }
 
+    [ExportGroup("Lock | Unlock")]
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnLockTerrain)}")]
     public bool LockAllTerrain {
         get {
@@ -89,8 +91,17 @@ public partial class TerraBrushTool : Node3D {
         } set {}
     }
 
+    [ExportGroup("Lock | Unlock")]
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUnlockTerrain)}")]
     public bool UnlockAllTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    [ExportGroup("Import | Export")]
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnImportTerrain)}")]
+    public bool ImportTerrain {
         get {
             return false;
         } set {}
@@ -169,10 +180,20 @@ public partial class TerraBrushTool : Node3D {
         _selectedSetAngle = value;
         _selectedSetAngleInitialPoint = initialPoint;
     }
+
+    public async Task OnImportTerrain() {
+        var settings = await DialogUtils.ShowImportDialog(GetParent());
+        if (settings != null) {
+            ImporterEngine.ImportTerrain(this, settings);
+            OnUpdateTerrainSettings();
+        }
+    }
 #endif
 
 #region  " Virtual overrides "
     public virtual int ZonesSize { get;set; }
+    public virtual string DataPath { get;set; }
+    public virtual ZonesResource TerrainZones { get;set; }
     public virtual void OnCreateTerrain() {}
     public virtual void OnUpdateTerrainSettings() {}
     public virtual void OnRemoveTerrain() {}
