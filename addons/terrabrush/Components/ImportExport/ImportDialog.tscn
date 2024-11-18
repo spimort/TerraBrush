@@ -50,54 +50,77 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 10
 
-[node name="HeightmapRow" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+[node name="HeightmapRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
 unique_name_in_owner = true
 layout_mode = 2
 ImageTypeName = "Heightmap"
 
-[node name="CustomMinMaxHeightCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="SplatmapsContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
-text = "Custom min/max height"
+theme_override_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="FoliagesContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ObjectsContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WaterRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+ImageTypeName = "Water"
+
+[node name="SnowRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+ImageTypeName = "Snow"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Min Height"
+text = "Heightmap Scale"
 
-[node name="MinHeightSpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="HeightmapScaleSpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = -100000.0
 max_value = 100000.0
 step = 0.01
-editable = false
+value = 1.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Max Height"
-
-[node name="MaxHeightSpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/HBoxContainer2"]
+[node name="UseGreenChannelForHolesCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = -100000.0
-max_value = 100000.0
-step = 0.01
-editable = false
+text = "Use green channel for holes"
 
 [node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -150,7 +173,7 @@ own_world_3d = true
 world_3d = SubResource("World3D_05jqj")
 handle_input_locally = false
 gui_disable_input = true
-size = Vector2i(348, 500)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="Camera3D" type="Camera3D" parent="HBoxContainer/PanelContainer/SubViewportContainer/SubViewport"]

@@ -43,7 +43,7 @@ public partial class ImportImageRow : PanelContainer {
             if (e is InputEventMouseButton mouseEvent && !e.IsEcho() && !_isSelectorOpen) {
                 if (mouseEvent.ButtonIndex == MouseButton.Left) {
                     _isSelectorOpen = true;
-                    var file = await DialogUtils.ShowFileDialog(this, filters: new [] {"*.png, *.jpg, *.jpeg, *.bmp, *.exr ; Supported Images"}, transient: true);
+                    var file = await DialogUtils.ShowFileDialog(this, filters: new [] {"*.png, *.jpg, *.jpeg, *.bmp, *.exr ; Supported Images", "*res, *.tres ; Resources"}, transient: true);
                     _isSelectorOpen = false;
 
                     if (file != null) {

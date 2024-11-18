@@ -9,8 +9,12 @@ namespace TerraBrush;
 public partial class ImporterSettings : GodotObject {
     public Texture2D Heightmap { get;set; }
     public bool UseGreenChannelForHoles { get;set;}
-    public float? MinHeight { get;set; }
-    public float? MaxHeight { get;set; }
+    public float HeightmapScale { get;set; }
+    public Texture2D[] Splatmaps { get;set;}
+    public Texture2D[] Foliages { get;set;}
+    public Texture2D[] Objects { get;set;}
+    public Texture2D Water { get;set;}
+    public Texture2D Snow { get;set;}
 }
 
 public static class ImporterEngine {
@@ -22,6 +26,7 @@ public static class ImporterEngine {
         terrabrush.TerrainZones??= new ZonesResource();
         terrabrush.TerrainZones.Zones??= new ZoneResource[] {};
 
+        // Heightmap
         if (settings.Heightmap != null) {
             var resultImages = GenerateImageTextureForZones(
                 terrabrush,
@@ -30,16 +35,133 @@ public static class ImporterEngine {
                     return ZoneUtils.CreateHeightmapImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
-                    var resultHeight = pixel.R;
-                    if (settings.MinHeight != null || settings.MaxHeight != null) {
-                        resultHeight = Mathf.Remap(pixel.R, 0f, 1f, settings.MinHeight.GetValueOrDefault(), settings.MaxHeight.GetValueOrDefault());
-                    }
-                    image.SetPixel(x, y, new Color(resultHeight, 0, 0, 1));
+                    var resultHeight = pixel.R * settings.HeightmapScale;
+                    image.SetPixel(x, y, new Color(resultHeight, settings.UseGreenChannelForHoles ? pixel.G : 0, 0, 1));
                 }
             );
 
             foreach (var resultImage in resultImages) {
                 GetZoneForImageInfo(terrabrush, resultImage).HeightMapTexture = resultImage.ImageTexture;
+            }
+        }
+
+        // Splatmaps
+        if (settings.Splatmaps?.Length > 0) {
+            for (var i = 0; i < settings.Splatmaps.Length; i++) {
+                var splatmap = settings.Splatmaps[i];
+
+                var resultImages = GenerateImageTextureForZones(
+                    terrabrush,
+                    splatmap.GetImage(),
+                    (zoneX, zoneY) => {
+                        return ZoneUtils.CreateSplatmapImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), i, terrabrush.DataPath);
+                    },
+                    (x, y, pixel, image) => {
+                        image.SetPixel(x, y, pixel);
+                    }
+                );
+
+                foreach (var resultImage in resultImages) {
+                    var zone = GetZoneForImageInfo(terrabrush, resultImage);
+                    zone.SplatmapsTexture ??= new ImageTexture [] {};
+                    if (zone.SplatmapsTexture.Length < i + 1) {
+                        zone.SplatmapsTexture = zone.SplatmapsTexture.Append(resultImage.ImageTexture).ToArray();
+                    } else {
+                        zone.SplatmapsTexture[i] = resultImage.ImageTexture;
+                    }
+                }
+            }
+        }
+
+        // Foliages
+        if (settings.Foliages?.Length > 0) {
+            for (var i = 0; i < settings.Foliages.Length; i++) {
+                var foliage = settings.Foliages[i];
+
+                var resultImages = GenerateImageTextureForZones(
+                    terrabrush,
+                    foliage.GetImage(),
+                    (zoneX, zoneY) => {
+                        return ZoneUtils.CreateFoliageImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), i, terrabrush.DataPath);
+                    },
+                    (x, y, pixel, image) => {
+                        image.SetPixel(x, y, pixel);
+                    }
+                );
+
+                foreach (var resultImage in resultImages) {
+                    var zone = GetZoneForImageInfo(terrabrush, resultImage);
+                    zone.FoliagesTexture ??= new ImageTexture [] {};
+                    if (zone.FoliagesTexture.Length < i + 1) {
+                        zone.FoliagesTexture = zone.FoliagesTexture.Append(resultImage.ImageTexture).ToArray();
+                    } else {
+                        zone.FoliagesTexture[i] = resultImage.ImageTexture;
+                    }
+                }
+            }
+        }
+
+        // Objects
+        if (settings.Objects?.Length > 0) {
+            for (var i = 0; i < settings.Objects.Length; i++) {
+                var objectItem = settings.Objects[i];
+
+                var resultImages = GenerateImageTextureForZones(
+                    terrabrush,
+                    objectItem.GetImage(),
+                    (zoneX, zoneY) => {
+                        return ZoneUtils.CreateObjectImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), i, terrabrush.DataPath);
+                    },
+                    (x, y, pixel, image) => {
+                        image.SetPixel(x, y, pixel);
+                    }
+                );
+
+                foreach (var resultImage in resultImages) {
+                    var zone = GetZoneForImageInfo(terrabrush, resultImage);
+                    zone.ObjectsTexture ??= new ImageTexture [] {};
+                    if (zone.ObjectsTexture.Length < i + 1) {
+                        zone.ObjectsTexture = zone.ObjectsTexture.Append(resultImage.ImageTexture).ToArray();
+                    } else {
+                        zone.ObjectsTexture[i] = resultImage.ImageTexture;
+                    }
+                }
+            }
+        }
+
+        // Water
+        if (settings.Water != null) {
+            var resultImages = GenerateImageTextureForZones(
+                terrabrush,
+                settings.Water.GetImage(),
+                (zoneX, zoneY) => {
+                    return ZoneUtils.CreateWaterImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                },
+                (x, y, pixel, image) => {
+                    image.SetPixel(x, y, pixel);
+                }
+            );
+
+            foreach (var resultImage in resultImages) {
+                GetZoneForImageInfo(terrabrush, resultImage).WaterTexture = resultImage.ImageTexture;
+            }
+        }
+
+        // Snow
+        if (settings.Snow != null) {
+            var resultImages = GenerateImageTextureForZones(
+                terrabrush,
+                settings.Snow.GetImage(),
+                (zoneX, zoneY) => {
+                    return ZoneUtils.CreateSnowImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                },
+                (x, y, pixel, image) => {
+                    image.SetPixel(x, y, pixel);
+                }
+            );
+
+            foreach (var resultImage in resultImages) {
+                GetZoneForImageInfo(terrabrush, resultImage).SnowTexture = resultImage.ImageTexture;
             }
         }
     }

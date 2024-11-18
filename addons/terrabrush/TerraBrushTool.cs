@@ -182,7 +182,7 @@ public partial class TerraBrushTool : Node3D {
     }
 
     public async Task OnImportTerrain() {
-        var settings = await DialogUtils.ShowImportDialog(GetParent());
+        var settings = await DialogUtils.ShowImportDialog(GetParent(), this);
         if (settings != null) {
             ImporterEngine.ImportTerrain(this, settings);
             OnUpdateTerrainSettings();
@@ -194,6 +194,11 @@ public partial class TerraBrushTool : Node3D {
     public virtual int ZonesSize { get;set; }
     public virtual string DataPath { get;set; }
     public virtual ZonesResource TerrainZones { get;set; }
+    public virtual TextureSetsResource TextureSets { get;set; }
+    public virtual FoliageResource[] Foliages { get;set; }
+    public virtual ObjectResource[] Objects { get;set; }
+    public virtual WaterResource WaterDefinition { get;set; }
+    public virtual SnowResource SnowDefinition { get;set; }
     public virtual void OnCreateTerrain() {}
     public virtual void OnUpdateTerrainSettings() {}
     public virtual void OnRemoveTerrain() {}
