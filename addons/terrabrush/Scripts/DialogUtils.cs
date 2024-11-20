@@ -17,20 +17,25 @@ public static class DialogUtils {
             Transient = transient
         };
 
-        fileDialog.FileSelected += file => {
-			fileDialog.QueueFree();
-			completionSource.TrySetResult(file);
-		};
+        fileDialog.Connect("file_selected", Callable.From((string file) => {
+            fileDialog.QueueFree();
+            completionSource.TrySetResult(file);
+        }));
 
-        fileDialog.Canceled += () => {
-	        fileDialog.QueueFree();
-			completionSource.TrySetResult(null);
-        };
+        fileDialog.Connect("dir_selected", Callable.From((string dir) => {
+            fileDialog.QueueFree();
+            completionSource.TrySetResult(dir);
+        }));
 
-		fileDialog.CloseRequested += () => {
+        fileDialog.Connect("canceled", Callable.From(() => {
+            fileDialog.QueueFree();
+            completionSource.TrySetResult(null);
+        }));
+
+		fileDialog.Connect("close_requested", Callable.From(() => {
 			fileDialog.QueueFree();
 			completionSource.TrySetResult(null);
-		};
+		}));
 
 		sourceNode.AddChild(fileDialog);
 		fileDialog.PopupCentered(new Vector2I(800, 600));

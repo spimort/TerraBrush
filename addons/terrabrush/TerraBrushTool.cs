@@ -107,6 +107,14 @@ public partial class TerraBrushTool : Node3D {
         } set {}
     }
 
+    [ExportGroup("Import | Export")]
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnExportTerrain)}")]
+    public bool ExportTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
     public override void _Ready() {
         base._Ready();
 
@@ -187,6 +195,15 @@ public partial class TerraBrushTool : Node3D {
             ImporterEngine.ImportTerrain(this, settings);
             OnUpdateTerrainSettings();
         }
+    }
+
+    public async Task OnExportTerrain() {
+        var folder = await DialogUtils.ShowFileDialog(GetTree().Root, fileMode: EditorFileDialog.FileModeEnum.OpenDir);
+        if (string.IsNullOrWhiteSpace(folder)) {
+            return;
+        }
+
+        ExporterEngine.ExportTerrain(this, folder);
     }
 #endif
 
