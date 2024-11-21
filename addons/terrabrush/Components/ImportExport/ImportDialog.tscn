@@ -1,7 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bdwp2ci6wb66i"]
+[gd_scene load_steps=9 format=3 uid="uid://bdwp2ci6wb66i"]
 
 [ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportDialog.cs" id="1_cymwf"]
 [ext_resource type="PackedScene" uid="uid://brgfdwv5cmbfy" path="res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn" id="1_i0uwh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lbm12"]
+font_color = Color(0.99921, 0.753522, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbmen"]
 bg_color = Color(0.103744, 0.103744, 0.103743, 1)
@@ -25,7 +28,7 @@ environment = SubResource("Environment_6j4e4")
 [node name="ImportDialog" type="Window"]
 title = "Import Terrain"
 initial_position = 2
-size = Vector2i(700, 500)
+size = Vector2i(800, 600)
 exclusive = true
 script = ExtResource("1_cymwf")
 
@@ -98,6 +101,14 @@ visible = false
 layout_mode = 2
 ImageTypeName = "Snow"
 
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="UseGreenChannelForHolesCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use green channel for holes"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -114,13 +125,13 @@ max_value = 100000.0
 step = 0.01
 value = 1.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-
-[node name="UseGreenChannelForHolesCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Use green channel for holes"
+text = "Adjust the heightmap scale (default is 1). A scale of 100 will set the highest point of the terrain to 100 if the heightmap's highest point is 1. Use an EXR file for more precision."
+label_settings = SubResource("LabelSettings_lbm12")
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
