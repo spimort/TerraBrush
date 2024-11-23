@@ -262,6 +262,7 @@ public partial class TerraBrush : TerraBrushTool {
 
             CreateSplatmaps(zone);
         }
+        TerrainZones.UpdateSplatmapsTextures();
 
         if (Engine.IsEditorHint()) {
             TerrainZones.UpdateLockTexture();
@@ -361,8 +362,6 @@ public partial class TerraBrush : TerraBrushTool {
 
             zone.SplatmapsTexture = newList.ToArray();
         }
-
-        TerrainZones.UpdateSplatmapsTextures();
     }
 
     private async Task CreateFoliages() {
