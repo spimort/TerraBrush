@@ -51,7 +51,7 @@ public partial class ImportImageRow : PanelContainer {
                         _textureButton.TextureNormal = imageResource;
                         ImageTexture = imageResource;
                     }
-                } else {
+                } else if (mouseEvent.ButtonIndex == MouseButton.Right) {
                     ImageTexture = null;
                     _textureButton.TextureNormal = _originalNormalTexture;
                 }
