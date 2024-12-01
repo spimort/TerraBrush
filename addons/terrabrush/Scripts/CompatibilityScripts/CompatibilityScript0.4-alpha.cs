@@ -1,3 +1,4 @@
+#if TOOLS
 using System.Linq;
 using Godot;
 
@@ -7,16 +8,16 @@ public static class CompatibilityScript_0_4_Alpha {
     public static async void Convert(TerraBrush terraBrush) {
         var hasWrongHeightmapFormat = terraBrush.TerrainZones?.Zones?.Any(x => x.HeightMapTexture.GetFormat() == Image.Format.Rf);
 		if (!hasWrongHeightmapFormat.GetValueOrDefault()) return;
-		
+
 		var result = await DialogUtils.ShowConfirmDialog(terraBrush, "Convert", "Heightmaps has been created before the hole feature was a thing, which means that they are in the wrong format.\nThey must be converted in order for the hole feature to work.\nDo you want to convert them?");
 		if (!result) return;
-		
+
 		GD.Print("Starting heightmaps conversion...");
 
 		if (terraBrush.TerrainZones?.Zones != null) {
 			foreach (var zone in terraBrush.TerrainZones.Zones) {
 				if (zone.HeightMapTexture.GetFormat() != Image.Format.Rf) continue;
-				
+
 				var image = zone.HeightMapTexture.GetImage();
 				var newImage = GodotAgnostic.ImageCreateEmpty(image.GetWidth(), image.GetHeight(), image.HasMipmaps(),
 					Image.Format.Rgf);
@@ -36,3 +37,4 @@ public static class CompatibilityScript_0_4_Alpha {
 		GD.Print("Conversion done!");
 	}
 }
+#endif

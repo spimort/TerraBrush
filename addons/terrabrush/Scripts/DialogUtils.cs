@@ -1,3 +1,4 @@
+#if TOOLS
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -123,3 +124,4 @@ public static class DialogUtils {
 		return completionSource.Task;
 	}
 }
+#endif
