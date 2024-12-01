@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Godot;
 
 namespace TerraBrush;
@@ -82,6 +83,7 @@ public partial class TerraBrushTool : Node3D {
         } set {}
     }
 
+    [ExportGroup("Lock | Unlock")]
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnLockTerrain)}")]
     public bool LockAllTerrain {
         get {
@@ -89,8 +91,25 @@ public partial class TerraBrushTool : Node3D {
         } set {}
     }
 
+    [ExportGroup("Lock | Unlock")]
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUnlockTerrain)}")]
     public bool UnlockAllTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    [ExportGroup("Import | Export")]
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnImportTerrain)}")]
+    public bool ImportTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    [ExportGroup("Import | Export")]
+    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnExportTerrain)}")]
+    public bool ExportTerrain {
         get {
             return false;
         } set {}
@@ -169,10 +188,34 @@ public partial class TerraBrushTool : Node3D {
         _selectedSetAngle = value;
         _selectedSetAngleInitialPoint = initialPoint;
     }
+
+    public async Task OnImportTerrain() {
+        var settings = await DialogUtils.ShowImportDialog(GetParent(), this);
+        if (settings != null) {
+            ImporterEngine.ImportTerrain(this, settings);
+            OnUpdateTerrainSettings();
+        }
+    }
+
+    public async Task OnExportTerrain() {
+        var folder = await DialogUtils.ShowFileDialog(GetTree().Root, fileMode: EditorFileDialog.FileModeEnum.OpenDir);
+        if (string.IsNullOrWhiteSpace(folder)) {
+            return;
+        }
+
+        ExporterEngine.ExportTerrain(this, folder);
+    }
 #endif
 
 #region  " Virtual overrides "
     public virtual int ZonesSize { get;set; }
+    public virtual string DataPath { get;set; }
+    public virtual ZonesResource TerrainZones { get;set; }
+    public virtual TextureSetsResource TextureSets { get;set; }
+    public virtual FoliageResource[] Foliages { get;set; }
+    public virtual ObjectResource[] Objects { get;set; }
+    public virtual WaterResource WaterDefinition { get;set; }
+    public virtual SnowResource SnowDefinition { get;set; }
     public virtual void OnCreateTerrain() {}
     public virtual void OnUpdateTerrainSettings() {}
     public virtual void OnRemoveTerrain() {}

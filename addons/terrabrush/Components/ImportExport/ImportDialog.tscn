@@ -1,0 +1,196 @@
+[gd_scene load_steps=9 format=3 uid="uid://bdwp2ci6wb66i"]
+
+[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportDialog.cs" id="1_cymwf"]
+[ext_resource type="PackedScene" uid="uid://brgfdwv5cmbfy" path="res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn" id="1_i0uwh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lbm12"]
+font_color = Color(0.99921, 0.753522, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbmen"]
+bg_color = Color(0.103744, 0.103744, 0.103743, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xdqy4"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_4afe2"]
+sky_material = SubResource("ProceduralSkyMaterial_xdqy4")
+
+[sub_resource type="Environment" id="Environment_6j4e4"]
+background_mode = 2
+sky = SubResource("Sky_4afe2")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="World3D" id="World3D_05jqj"]
+environment = SubResource("Environment_6j4e4")
+
+[node name="ImportDialog" type="Window"]
+title = "Import Terrain"
+initial_position = 2
+size = Vector2i(800, 600)
+exclusive = true
+script = ExtResource("1_cymwf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="HeightmapRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+layout_mode = 2
+ImageTypeName = "Heightmap"
+
+[node name="SplatmapsContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FoliagesContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ObjectsContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WaterRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+ImageTypeName = "Water"
+
+[node name="SnowRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+ImageTypeName = "Snow"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="UseGreenChannelForHolesCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use green channel for holes"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Heightmap Scale"
+
+[node name="HeightmapScaleSpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -100000.0
+max_value = 100000.0
+step = 0.01
+value = 1.0
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+text = "Adjust the heightmap scale (default is 1). A scale of 100 will set the highest point of the terrain to 100 if the heightmap's highest point is 1. Use an EXR file for more precision."
+label_settings = SubResource("LabelSettings_lbm12")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PreviewButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   Preview   "
+
+[node name="OkButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   OK   "
+
+[node name="CancelButton" type="Button" parent="HBoxContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   Cancel   "
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_fbmen")
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Preview"
+horizontal_alignment = 1
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer/PanelContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/PanelContainer/SubViewportContainer"]
+unique_name_in_owner = true
+own_world_3d = true
+world_3d = SubResource("World3D_05jqj")
+handle_input_locally = false
+gui_disable_input = true
+size = Vector2i(2, 2)
+render_target_update_mode = 0
+
+[node name="Camera3D" type="Camera3D" parent="HBoxContainer/PanelContainer/SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.660685, 0.476448, -0.58008, 0, 0.772756, 0.634703, 0.750663, 0.419339, -0.510548, -204.624, 630.456, -196.121)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HBoxContainer/PanelContainer/SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true

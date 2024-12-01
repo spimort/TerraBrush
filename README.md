@@ -87,6 +87,7 @@ The demo scene has been updated to Godot 4.3 which makes it break with older ver
 * **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 * **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
 * **Paint locked areas** - Areas on the terrain can be locked so you don't modify completed parts
+* **Import and Export** - Import and export terrain from/to various images.
 
 ## How To Use
 
@@ -132,6 +133,8 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
 |Lock all terrain|Lock all parts of the current Terrain.|
 |Unlock all terrain|Unlock all parts of the current Terrain.|
+|Import Terrain|Import terrain components from various images.|
+|Export Terrain|Export all components of the terrain to images.|
 |**LOD**||
 |LOD Levels|The number of levels the clipmap will be made of. The default value is 5.|
 |LOD Rows Per Level|The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 101.|

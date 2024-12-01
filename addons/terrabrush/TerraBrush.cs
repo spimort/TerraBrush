@@ -62,7 +62,7 @@ public partial class TerraBrush : TerraBrushTool {
     public bool CollisionOnly { get;set; }
 
     [Export(PropertyHint.Dir)]
-    public string DataPath {
+    public override string DataPath {
         get {
             return _dataPath;
         } set{
@@ -115,7 +115,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     [ExportGroup("Textures")]
     [Export]
-    public TextureSetsResource TextureSets { get;set;}
+    public override TextureSetsResource TextureSets { get;set; }
 
     [Export]
     public int TextureDetail { get;set; } = 20;
@@ -137,7 +137,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     [ExportGroup("Foliage")]
     [Export]
-    public FoliageResource[] Foliages { get;set; }
+    public override FoliageResource[] Foliages { get;set; }
 
     [ExportGroup("Objects")]
     [Export]
@@ -147,28 +147,30 @@ public partial class TerraBrush : TerraBrushTool {
     public ObjectLoadingStrategy ObjectLoadingStrategy { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
 
     [Export]
-    public ObjectResource[] Objects { get;set; }
+    public override ObjectResource[] Objects { get;set; }
 
     [ExportGroup("Water")]
 
     [Export]
-    public WaterResource WaterDefinition { get;set; }
+    public override WaterResource WaterDefinition { get;set; }
 
     [ExportGroup("Snow")]
 
     [Export]
-    public SnowResource SnowDefinition { get;set; }
+    public override SnowResource SnowDefinition { get;set; }
 
     [ExportGroup("Zones")]
     [Export]
-    public ZonesResource TerrainZones { get;set; }
+    public override ZonesResource TerrainZones { get;set; }
 
     public async override void _Ready() {
         base._Ready();
 
+#if TOOLS
         if (Engine.IsEditorHint()) {
             CompatibilityScript_0_4_Alpha.Convert(this);
         }
+#endif
 
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
@@ -262,6 +264,7 @@ public partial class TerraBrush : TerraBrushTool {
 
             CreateSplatmaps(zone);
         }
+        TerrainZones.UpdateSplatmapsTextures();
 
         if (Engine.IsEditorHint()) {
             TerrainZones.UpdateLockTexture();
@@ -361,8 +364,6 @@ public partial class TerraBrush : TerraBrushTool {
 
             zone.SplatmapsTexture = newList.ToArray();
         }
-
-        TerrainZones.UpdateSplatmapsTextures();
     }
 
     private async Task CreateFoliages() {
