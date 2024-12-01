@@ -7,8 +7,8 @@ using static Godot.EditorFileDialog;
 namespace TerraBrush;
 
 public static class DialogUtils {
-	public static Task<string> ShowFileDialog(Node sourceNode, AccessEnum access = AccessEnum.Filesystem, FileModeEnum fileMode = FileModeEnum.OpenFile, string[] filters = null, bool transient = false) {
-		var completionSource = new TaskCompletionSource<string>();
+    public static Task<string> ShowFileDialog(Node sourceNode, AccessEnum access = AccessEnum.Filesystem, FileModeEnum fileMode = FileModeEnum.OpenFile, string[] filters = null, bool transient = false) {
+        var completionSource = new TaskCompletionSource<string>();
         var fileDialog = new EditorFileDialog {
             Access = access,
             FileMode = fileMode,
