@@ -118,7 +118,7 @@ public abstract class ToolBase {
     }
 
     protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false) {
-        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize);
+        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize, _terraBrush.Resolution);
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {

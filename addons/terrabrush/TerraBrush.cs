@@ -21,6 +21,7 @@ public partial class TerraBrush : TerraBrushTool {
 	public delegate void TerrainLoadedEventHandler();
 
     private int _zonesSize = 256;
+    private float _resolution = 1;
     private ShaderMaterial _customShader;
     private Terrain _terrain;
     private TextureSetResource[] _texturesSet;
@@ -54,6 +55,19 @@ public partial class TerraBrush : TerraBrushTool {
                 _zonesSize = value;
             } else if (value != _zonesSize) {
                 OS.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
+            }
+        }
+    }
+
+    [Export]
+    public override float Resolution {
+        get {
+            return _resolution;
+        } set {
+            if (_terrain == null) {
+                _resolution = value;
+            } else if (value != _resolution) {
+                OS.Alert("The Resolution property cannot change once the terrain has been created. Make sure you remove the terrain before changing the Resolution.");
             }
         }
     }
@@ -210,7 +224,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainZones = new ZonesResource() {
             Zones = new ZoneResource[] {
                 new ZoneResource() {
-                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, new Vector2I(0, 0), DataPath)
+                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, Resolution, new Vector2I(0, 0), DataPath)
                 }
             }
         };
@@ -259,7 +273,7 @@ public partial class TerraBrush : TerraBrushTool {
             var zone = TerrainZones.Zones[i];
 
             if (zone.HeightMapTexture == null) {
-                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, zone.ZonePosition, DataPath);
+                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
             }
 
             CreateSplatmaps(zone);
@@ -611,7 +625,7 @@ public partial class TerraBrush : TerraBrushTool {
             y -= LODInitialCellWidth / 2.0f;
         }
 
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize, Resolution);
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {

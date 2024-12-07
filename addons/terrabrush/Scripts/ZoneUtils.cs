@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace TerraBrush;
@@ -19,8 +20,9 @@ public static class ZoneUtils {
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), "");
     }
 
-    public static ImageTexture CreateHeightmapImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgf);
+    public static ImageTexture CreateHeightmapImage(int zoneSize, float resolution, Vector2I zonePosition, string dataPath) {
+        var imageSize = GetImageSizeForResolution(zoneSize, resolution);
+        var image = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rgf);
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
@@ -77,7 +79,7 @@ public static class ZoneUtils {
         return imageTexture;
     }
 
-    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize) {
+    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize, float? resolution = null) {
         if (zonesSize % 2 == 0) {
             x -= 0.5f;
             y -= 0.5f;
@@ -90,6 +92,13 @@ public static class ZoneUtils {
         var zoneBrushXPosition = Mathf.RoundToInt(((x / (zonesSize - 1)) - zoneXPosition) * (zonesSize - 1));
         var zoneBrushYPosition = Mathf.RoundToInt(((y / (zonesSize - 1)) - zoneYPosition) * (zonesSize - 1));
 
+        if (resolution != null && resolution.Value != 1.0f) {
+            var imageSize = GetImageSizeForResolution(zonesSize, resolution.Value);
+
+            zoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
+            zoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
+        }
+
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
         var zoneKey = (zonePosition.X << 8) + zonePosition.Y;
 
@@ -100,13 +109,20 @@ public static class ZoneUtils {
         };
     }
 
-    public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize) {
+    public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize, float resolution) {
         var pixelPosition = new Vector2(startingZone.ImagePosition.X + offset.X, startingZone.ImagePosition.Y + offset.Y);
         var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / zonesSize);
         var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / zonesSize);
 
         var zoneBrushXPosition = Mathf.RoundToInt(((pixelPosition.X / zonesSize) - zoneXPosition) * zonesSize);
         var zoneBrushYPosition = Mathf.RoundToInt(((pixelPosition.Y / zonesSize) - zoneYPosition) * zonesSize);
+
+        if (resolution != 1.0f) {
+            var imageSize = GetImageSizeForResolution(zonesSize, resolution);
+
+            zoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
+            zoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
+        }
 
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
         var absoluteZonePosition = new Vector2I(startingZone.ZonePosition.X + zoneXPosition, startingZone.ZonePosition.Y + zoneYPosition);
@@ -117,6 +133,10 @@ public static class ZoneUtils {
             ZonePosition = absoluteZonePosition,
             ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
         };
+    }
+
+    private static int GetImageSizeForResolution(int zoneSize, float resolution) {
+        return Mathf.CeilToInt(zoneSize / resolution);
     }
 }
 
