@@ -98,7 +98,7 @@ public abstract class ToolBase {
 
         var startingX = imagePosition.X - (brushSize / 2);
         var startingY = imagePosition.Y - (brushSize / 2);
-        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize);
+        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, _terraBrush.Resolution);
 
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {

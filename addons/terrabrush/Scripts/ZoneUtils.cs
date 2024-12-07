@@ -79,7 +79,7 @@ public static class ZoneUtils {
         return imageTexture;
     }
 
-    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize, float? resolution = null) {
+    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize, float resolution) {
         if (zonesSize % 2 == 0) {
             x -= 0.5f;
             y -= 0.5f;
@@ -92,11 +92,14 @@ public static class ZoneUtils {
         var zoneBrushXPosition = Mathf.RoundToInt(((x / (zonesSize - 1)) - zoneXPosition) * (zonesSize - 1));
         var zoneBrushYPosition = Mathf.RoundToInt(((y / (zonesSize - 1)) - zoneYPosition) * (zonesSize - 1));
 
-        if (resolution != null && resolution.Value != 1.0f) {
-            var imageSize = GetImageSizeForResolution(zonesSize, resolution.Value);
+        var resolutionZoneBrushXPosition = zoneBrushXPosition;
+        var resolutionZoneBrushYPosition = zoneBrushYPosition;
 
-            zoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
-            zoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
+        if (resolution != 1.0f) {
+            var imageSize = GetImageSizeForResolution(zonesSize, resolution);
+
+            resolutionZoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
+            resolutionZoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
         }
 
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
@@ -105,23 +108,27 @@ public static class ZoneUtils {
         return new ZoneInfo() {
             ZoneKey = zoneKey,
             ZonePosition = zonePosition,
-            ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition),
+            FullScaleImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
         };
     }
 
     public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize, float resolution) {
-        var pixelPosition = new Vector2(startingZone.ImagePosition.X + offset.X, startingZone.ImagePosition.Y + offset.Y);
+        var pixelPosition = new Vector2(startingZone.FullScaleImagePosition.X + offset.X, startingZone.FullScaleImagePosition.Y + offset.Y);
         var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / zonesSize);
         var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / zonesSize);
 
         var zoneBrushXPosition = Mathf.RoundToInt(((pixelPosition.X / zonesSize) - zoneXPosition) * zonesSize);
         var zoneBrushYPosition = Mathf.RoundToInt(((pixelPosition.Y / zonesSize) - zoneYPosition) * zonesSize);
 
+        var resolutionZoneBrushXPosition = zoneBrushXPosition;
+        var resolutionZoneBrushYPosition = zoneBrushYPosition;
+
         if (resolution != 1.0f) {
             var imageSize = GetImageSizeForResolution(zonesSize, resolution);
 
-            zoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
-            zoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(zoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
+            resolutionZoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
+            resolutionZoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
         }
 
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
@@ -131,7 +138,8 @@ public static class ZoneUtils {
         return new ZoneInfo() {
             ZoneKey = zoneKey,
             ZonePosition = absoluteZonePosition,
-            ImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition),
+            FullScaleImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
         };
     }
 
@@ -144,4 +152,5 @@ public class ZoneInfo {
     public int ZoneKey { get;set; }
     public Vector2I ZonePosition { get;set; }
     public Vector2I ImagePosition { get;set; }
+    public Vector2I FullScaleImagePosition { get;set; }
 }
