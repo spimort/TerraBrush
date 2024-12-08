@@ -21,7 +21,7 @@ public partial class TerraBrush : TerraBrushTool {
 	public delegate void TerrainLoadedEventHandler();
 
     private int _zonesSize = 256;
-    private float _resolution = 1;
+    private int _resolution = 1;
     private ShaderMaterial _customShader;
     private Terrain _terrain;
     private TextureSetResource[] _texturesSet;
@@ -60,7 +60,7 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     [Export]
-    public override float Resolution {
+    public override int Resolution {
         get {
             return _resolution;
         } set {
@@ -301,6 +301,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.CollisionLayers = CollisionLayers;
         _terrain.CollisionMask = CollisionMask;
         _terrain.ZonesSize = ZonesSize;
+        _terrain.Resolution = Resolution;
         _terrain.TerrainZones = TerrainZones;
         _terrain.HeightMapFactor = HeightMapFactor;
         _terrain.TextureDetail = TextureDetail;

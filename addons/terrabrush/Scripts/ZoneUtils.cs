@@ -79,7 +79,7 @@ public static class ZoneUtils {
         return imageTexture;
     }
 
-    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize, float resolution) {
+    public static ZoneInfo GetPixelToZoneInfo(float x, float y, int zonesSize, int resolution) {
         if (zonesSize % 2 == 0) {
             x -= 0.5f;
             y -= 0.5f;
@@ -95,7 +95,7 @@ public static class ZoneUtils {
         var resolutionZoneBrushXPosition = zoneBrushXPosition;
         var resolutionZoneBrushYPosition = zoneBrushYPosition;
 
-        if (resolution != 1.0f) {
+        if (resolution != 1) {
             var imageSize = GetImageSizeForResolution(zonesSize, resolution);
 
             resolutionZoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
@@ -113,7 +113,7 @@ public static class ZoneUtils {
         };
     }
 
-    public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize, float resolution) {
+    public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize, int resolution) {
         var pixelPosition = new Vector2(startingZone.FullScaleImagePosition.X + offset.X, startingZone.FullScaleImagePosition.Y + offset.Y);
         var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / zonesSize);
         var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / zonesSize);
@@ -124,7 +124,7 @@ public static class ZoneUtils {
         var resolutionZoneBrushXPosition = zoneBrushXPosition;
         var resolutionZoneBrushYPosition = zoneBrushYPosition;
 
-        if (resolution != 1.0f) {
+        if (resolution != 1) {
             var imageSize = GetImageSizeForResolution(zonesSize, resolution);
 
             resolutionZoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
@@ -143,7 +143,7 @@ public static class ZoneUtils {
         };
     }
 
-    private static int GetImageSizeForResolution(int zoneSize, float resolution) {
+    public static int GetImageSizeForResolution(int zoneSize, float resolution) {
         return Mathf.CeilToInt(zoneSize / resolution);
     }
 }
