@@ -24,6 +24,7 @@ public partial class Terrain : Node3D {
     [NodePath] private StaticBody3D _terrainCollider;
 
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public ShaderMaterial CustomShader { get;set; }
@@ -200,8 +201,11 @@ public partial class Terrain : Node3D {
 
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
-        heightMapShape3D.MapWidth = ZonesSize;
-        heightMapShape3D.MapDepth = ZonesSize;
+
+        var size = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+        heightMapShape3D.MapWidth = size;
+        heightMapShape3D.MapDepth = size;
+        collisionShape.Scale = new Vector3(Resolution, 1.0f, Resolution);
 
         return heightMapShape3D;
     }
