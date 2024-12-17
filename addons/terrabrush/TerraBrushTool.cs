@@ -209,6 +209,7 @@ public partial class TerraBrushTool : Node3D {
 
 #region  " Virtual overrides "
     public virtual int ZonesSize { get;set; }
+    public virtual int Resolution { get;set; }
     public virtual string DataPath { get;set; }
     public virtual ZonesResource TerrainZones { get;set; }
     public virtual TextureSetsResource TextureSets { get;set; }

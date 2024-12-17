@@ -17,7 +17,7 @@ public partial class ZoneResource : Resource {
     [Export] public ImageTexture SnowTexture { get;set; }
 
     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
-        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
 
         var numberOfSplatmaps = Mathf.CeilToInt((terraBrush.TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
         var splatmaps = new List<ImageTexture>();
