@@ -1,5 +1,7 @@
 #if TOOLS
 using Godot;
+using System.IO;
+using System.Linq;
 
 namespace TerraBrush;
 
@@ -123,6 +125,19 @@ public partial class TerrainControlDock : Control {
             SetSelectedTextureIndex(index);
         });
 
+        var textureSets = TerraBrush?.TextureSets?.TextureSets;
+        if (textureSets != null) {
+            foreach (var texturePreview in _texturesContainer.GetChildren().OfType<DockPreviewButton>()) {
+                int index = texturePreview.GetIndex();
+                if (index < 0 || index >= textureSets.Length) {
+                    continue;
+                }
+
+                var textureSet = textureSets[index];
+                texturePreview.TooltipText = textureSet.Name ?? $"Texture {index + 1}";
+            }
+        }
+
         if (_texturesContainer.GetChildCount() > 0 && _selectedTextureIndex == null) {
             _selectedTextureIndex = 0;
         }
@@ -151,6 +166,27 @@ public partial class TerrainControlDock : Control {
         CustomContentLoader.AddFoliagesPreviewToParent(TerraBrush, _foliagesContainer, index => {
             SetSelectedFoliageIndex(index);
         });
+
+        var foliages = TerraBrush?.Foliages;
+        if (foliages != null) {
+
+            foreach (var foliagePreview in _foliagesContainer.GetChildren().OfType<DockPreviewButton>()) {
+                int index = foliagePreview.GetIndex();
+                if (index < 0 || index >= foliages.Length) {
+                    continue;
+                }
+
+                var foliage = foliages[index];
+                string tooltipText = $"Foliage {index + 1}";
+
+                var meshPath = foliage?.Definition?.Mesh?.ResourcePath;
+                if (!string.IsNullOrEmpty(meshPath)) {
+                    tooltipText = Path.GetFileName(meshPath);
+                }
+
+                foliagePreview.TooltipText = tooltipText;
+            }
+        }
 
         if (TerraBrush.Foliages?.Length > 0 && _selectedFoliageIndex == null) {
             _selectedFoliageIndex = 0;
@@ -181,6 +217,34 @@ public partial class TerrainControlDock : Control {
         CustomContentLoader.AddObjectsPreviewToParent(TerraBrush, _objectsContainer, index => {
             SetSelectedObjectIndex(index);
         });
+
+        var objects = TerraBrush?.Objects;
+        if (objects != null) {
+            foreach (var objectPreview in _objectsContainer.GetChildren().OfType<DockPreviewButton>()) {
+                int index = objectPreview.GetIndex();
+                if (index < 0 || index >= objects.Length) {
+                    continue;
+                }
+
+                var objectItem = objects[index];
+                string tooltipText = $"Object {index + 1}";
+
+                var packedScenes = objectItem?.Definition?.ObjectScenes;
+                if (packedScenes?.Length > 0) {
+                    var sceneNames = packedScenes
+                        .Where(scene => scene != null)
+                        .Select(scene => Path.GetFileName(scene.ResourcePath))
+                        .Where(name => !string.IsNullOrEmpty(name));
+
+                    var joinedNames = string.Join(", ", sceneNames);
+                    if (!string.IsNullOrEmpty(joinedNames)) {
+                        tooltipText = joinedNames;
+                    }
+                }
+
+                objectPreview.TooltipText = tooltipText;
+            }
+        }
 
         if (TerraBrush.Objects?.Length > 0 && _selectedObjectIndex == null) {
             _selectedObjectIndex = 0;
