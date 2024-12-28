@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Godot;
 
 namespace TerraBrush;
@@ -62,9 +63,13 @@ public static class CustomContentLoader {
                 var dockPreviewButton = texturePreviewPrefab.Instantiate<DockPreviewButton>();
                 dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                 dockPreviewButton.Margin = 10;
+                dockPreviewButton.SetTextureImage(textureSet.AlbedoTexture);
+                dockPreviewButton.TooltipText = !string.IsNullOrEmpty(textureSet.Name)
+                                                ? textureSet.Name
+                                                : $"Texture {i + 1}";
+
                 parentNode.AddChild(dockPreviewButton);
 
-                dockPreviewButton.SetTextureImage(textureSet.AlbedoTexture);
 
                 var currentIndex = i;
                 dockPreviewButton.OnSelect = () => {
@@ -84,7 +89,6 @@ public static class CustomContentLoader {
                     var dockPreviewButton = foliagePreviewPrefab.Instantiate<DockPreviewButton>();
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
-                    parentNode.AddChild(dockPreviewButton);
 
                     if (foliage.Definition?.MeshMaterial == null && foliage.Definition?.AlbedoTextures?.Length == 0 && foliage.Definition.Mesh != null) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.Mesh);
@@ -93,6 +97,12 @@ public static class CustomContentLoader {
                     } else if (foliage.Definition?.AlbedoTextures?.Length > 0) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.AlbedoTextures[0]);
                     }
+
+                    dockPreviewButton.TooltipText = !string.IsNullOrEmpty(foliage.Definition?.Mesh?.ResourcePath)
+                                                    ? Path.GetFileName(foliage.Definition.Mesh.ResourcePath)
+                                                    : $"Foliage {i + 1}";
+
+                    parentNode.AddChild(dockPreviewButton);
 
                     var currentIndex = i;
                     dockPreviewButton.OnSelect = () => {
@@ -114,10 +124,26 @@ public static class CustomContentLoader {
                     var dockPreviewButton = objectPreviewPrefab.Instantiate<DockPreviewButton>();
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
-                    parentNode.AddChild(dockPreviewButton);
 
                     var meshResource = (Resource) (objectItem.Definition?.ObjectScenes?.Length > 0 ? objectItem.Definition?.ObjectScenes[0] : objectItem.Definition?.LODMeshes[0].Meshes[0].Mesh);
                     dockPreviewButton.LoadResourcePreview(meshResource);
+
+                    var packedScenes = objectItem.Definition?.ObjectScenes;
+                    var tooltipText = $"Object {i + 1}";
+                    if (packedScenes?.Length > 0) {
+                        var sceneNames = packedScenes
+                            .Where(scene => scene != null)
+                            .Select(scene => Path.GetFileName(scene.ResourcePath))
+                            .Where(name => !string.IsNullOrEmpty(name));
+                        var joinedNames = string.Join(", ", sceneNames);
+                        if (!string.IsNullOrEmpty(joinedNames)) {
+                            tooltipText = joinedNames;
+                        }
+                    }
+
+                    dockPreviewButton.TooltipText = tooltipText;
+
+                    parentNode.AddChild(dockPreviewButton);
 
                     var currentIndex = i;
                     dockPreviewButton.OnSelect = () => {
