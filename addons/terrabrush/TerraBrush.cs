@@ -52,7 +52,14 @@ public partial class TerraBrush : TerraBrushTool {
             return _zonesSize;
         } set {
             if (_terrain == null) {
+                if (Resolution != 1 && !Utils.IsPowerOfTwo(value - 1)) {
+                    OS.Alert("When the resolution is not 1, it must be a (power of 2) + 1 (ex. 257).");
+                    return;
+                }
+
                 _zonesSize = value;
+
+                UpdateConfigurationWarnings();
             } else if (value != _zonesSize) {
                 OS.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
             }
@@ -65,7 +72,19 @@ public partial class TerraBrush : TerraBrushTool {
             return _resolution;
         } set {
             if (_terrain == null) {
+                if (value < 1) {
+                    OS.Alert("The minimum value for the resolution is 1.");
+                    return;
+                }
+
+                if (value > 1 && !Utils.IsPowerOfTwo(value)){
+                    OS.Alert("When the resolution is not 1, it must be a power of 2.");
+                    return;
+                }
+
                 _resolution = value;
+
+                UpdateConfigurationWarnings();
             } else if (value != _resolution) {
                 OS.Alert("The Resolution property cannot change once the terrain has been created. Make sure you remove the terrain before changing the Resolution.");
             }
@@ -207,10 +226,30 @@ public partial class TerraBrush : TerraBrushTool {
             warnings.Add($"{nameof(DataPath)} is required");
         }
 
+        if (Resolution != 1) {
+            if (!Utils.IsPowerOfTwo(Resolution)) {
+                warnings.Add($"{nameof(Resolution)} must be a power of 2");
+            }
+
+            if (!Utils.IsPowerOfTwo(ZonesSize - 1)) {
+                warnings.Add($"{nameof(ZonesSize)} must be a (power of 2) + 1");
+            }
+        }
+
         return warnings.ToArray();
     }
 
     public override async void OnCreateTerrain() {
+        if (Resolution != 1) {
+            if (!Utils.IsPowerOfTwo(Resolution)) {
+                return;
+            }
+
+            if (!Utils.IsPowerOfTwo(ZonesSize - 1)) {
+                return;
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(DataPath)) {
             return;
         }

@@ -91,4 +91,8 @@ public static class Utils {
 
         return asyncEvent.Task;
     }
+
+    public static bool IsPowerOfTwo(int x) {
+        return (x != 0) && ((x & (x - 1)) == 0);
+    }
 }
