@@ -115,7 +115,15 @@ public partial class Terrain : Node3D {
     	Clipmap.Shader.SetShaderParameter(StringNames.WaterFactor, WaterFactor);
     }
 
-	private void UpdateCollisionShape() {
+    private void UpdateCollisionShape() {
+        if (Resolution == 1) {
+            UpdateCollisionShapeDefaultResolution();
+        } else {
+            UpdateCollisionShapeWithResolution();
+        }
+    }
+
+    private void UpdateCollisionShapeDefaultResolution() {
         if (CreateCollisionInThread) {
             _collisionCancellationSource?.Cancel();
             _collisionCancellationSource = new CancellationTokenSource();
@@ -134,177 +142,41 @@ public partial class Terrain : Node3D {
             shapes.Add(heightMapShape3D);
         }
 
-        // The calculation for the resolution is painful but it works for now ☠️...
-        // TODO : Make it a simpler process...
         var updateAction = () => {
             var imagesCache = new Dictionary<ZoneResource, CollisionZoneImages>();
 
             for (var i = 0; i < TerrainZones.Zones.Length; i++) {
                 var zone = TerrainZones.Zones[i];
                 var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
-                var rightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
-                var topLeftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
-                var topRightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
                 var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
-                var bottomNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
-                var bottomLeftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
-                var bottomRightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
 
                 var heightMapImage = zone.HeightMapTexture.GetImage();
                 var waterImage = zone.WaterTexture?.GetImage();
-
-                var imageWidth = heightMapImage.GetWidth();
-                var imageHeight = heightMapImage.GetHeight();
 
                 if (token.IsCancellationRequested) {
                     return;
                 }
 
                 var terrainData = new List<float>();
-
-                // Add one extra line for non 1 resolution
-                if (Resolution != 1 && zone.ZonePosition.Y % 2 != 0) {
-                    if (zone.ZonePosition.X % 2 != 0) {
-                        if (topLeftNeighbourZone != null) {
-                            var extraPixelHeight = GetHeightForZone(topLeftNeighbourZone, imageWidth - 1, imageHeight - 1, imagesCache);
-                            terrainData.Add(extraPixelHeight);
-                        } else {
-                            terrainData.Add(GetHeightForZone(zone, 0, 0, imagesCache));
-                        }
-                    }
-
-                    for (var x = 0; x < imageWidth; x++) {
-                        if (topNeighbourZone != null) {
-                            if (zone.ZonePosition.X % 2 != 0) {
-                                if (x < imageWidth - 1 && topNeighbourZone != null) {
-                                    var averagePixelHeight = (GetHeightForZone(topNeighbourZone, x, imageWidth - 1, imagesCache) + GetHeightForZone(topNeighbourZone, x + 1, imageWidth - 1, imagesCache)) / 2.0f;
-                                    terrainData.Add(averagePixelHeight);
-                                } else if (topRightNeighbourZone != null) {
-                                    terrainData.Add(GetHeightForZone(topRightNeighbourZone, 0, imageWidth - 1, imagesCache));
-                                } else if (topNeighbourZone != null) {
-                                    terrainData.Add(GetHeightForZone(topNeighbourZone, x, imageWidth - 1, imagesCache));
-                                } else {
-                                    terrainData.Add(GetHeightForZone(zone, x, imageWidth - 1, imagesCache));
-                                }
-                            } else {
-                                var extraPixelHeight = GetHeightForZone(topNeighbourZone, x, imageHeight - 1, imagesCache);
-                                terrainData.Add(extraPixelHeight);
-                            }
-                        } else {
-                            terrainData.Add(GetHeightForZone(zone, x, 0, imagesCache));
-                        }
-                    }
-                }
-
-                for (var y = 0; y < imageHeight; y++) {
-                    for (var x = 0; x < imageWidth; x++) {
+                for (var y = 0; y < heightMapImage.GetHeight(); y++) {
+                    for (var x = 0; x < heightMapImage.GetWidth(); x++) {
                         if (token.IsCancellationRequested) {
                             return;
                         }
 
-                        if (Resolution == 1) {
-                            var currentZone = zone;
-                            var lookupX = x;
-                            var lookupY = y;
-
-                            if (x == 0 && leftNeighbourZone != null) {
-                                currentZone = leftNeighbourZone;
-                                lookupX = imageWidth - 1;
-                            } else if (y == 0 && topNeighbourZone != null) {
-                                currentZone = topNeighbourZone;
-                                lookupY = imageHeight - 1;
-                            }
-
-                            var pixelHeight = GetHeightForZone(currentZone, lookupX, lookupY, imagesCache);
-                            terrainData.Add(pixelHeight);
-                        } else if (zone.ZonePosition.X % 2 != 0 && zone.ZonePosition.Y % 2 != 0) { // Support for multizone when the resolution is not 1
-                            if (x == 0) {
-                                if (y < imageHeight - 1) {
-                                    if (leftNeighbourZone != null) {
-                                        var averagePixelHeight = (GetHeightForZone(leftNeighbourZone, imageWidth - 1, y, imagesCache) + GetHeightForZone(leftNeighbourZone, imageWidth - 1, y + 1, imagesCache)) / 2.0f;
-                                        terrainData.Add(averagePixelHeight);
-                                    } else {
-                                        var averagePixelHeight = (GetHeightForZone(zone, x, y, imagesCache) + GetHeightForZone(zone, x, y + 1, imagesCache)) / 2.0f;
-                                        terrainData.Add(averagePixelHeight);
-                                    }
-                                } else if (y == imageHeight - 1 && bottomLeftNeighbourZone != null) {
-                                    terrainData.Add(GetHeightForZone(bottomLeftNeighbourZone, imageWidth - 1, 0, imagesCache));
-                                } else if (leftNeighbourZone != null && bottomNeighbourZone != null) {
-                                    var averageForPixel = (GetHeightForZone(leftNeighbourZone, imageWidth - 1, imageHeight - 1, imagesCache) + GetHeightForZone(bottomNeighbourZone, 0, 0, imagesCache)) / 2.0f;
-                                    terrainData.Add(averageForPixel);
-                                } else {
-                                    terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                                }
-                            }
-
-                            if (x == imageWidth - 1) {
-                                if (y < imageHeight - 1) {
-                                    if (rightNeighbourZone != null) {
-                                        var averagePixelHeight = (GetHeightForZone(rightNeighbourZone, 0, y, imagesCache) + GetHeightForZone(rightNeighbourZone, 0, y + 1, imagesCache)) / 2.0f;
-                                        terrainData.Add(averagePixelHeight);
-                                    } else {
-                                        var averagePixelHeight = (GetHeightForZone(zone, x, y, imagesCache) + GetHeightForZone(zone, x, y + 1, imagesCache)) / 2.0f;
-                                        terrainData.Add(averagePixelHeight);
-                                    }
-                                } else if (y == imageHeight - 1 && bottomRightNeighbourZone != null) {
-                                    terrainData.Add(GetHeightForZone(bottomRightNeighbourZone, 0, 0, imagesCache));
-                                } else if (rightNeighbourZone != null && bottomNeighbourZone != null) {
-                                    var averageForPixel = (GetHeightForZone(rightNeighbourZone, 0, imageHeight - 1, imagesCache) + GetHeightForZone(bottomNeighbourZone, imageWidth - 1, 0, imagesCache)) / 2.0f;
-                                    terrainData.Add(averageForPixel);
-                                } else {
-                                    terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                                }
-                            } else if (y < imageHeight - 1) {
-                                var averageForPixel = (
-                                    GetHeightForZone(zone, x, y, imagesCache) +
-                                    GetHeightForZone(zone, x + 1, y, imagesCache) +
-                                    GetHeightForZone(zone, x, y + 1, imagesCache) +
-                                    GetHeightForZone(zone, x + 1, y + 1, imagesCache)
-                                ) / 4.0f;
-
-                                terrainData.Add(averageForPixel);
-                            } else if (y == imageHeight - 1) {
-                                if (bottomNeighbourZone != null) {
-                                    var averagePixelHeight = (GetHeightForZone(bottomNeighbourZone, x, 0, imagesCache) + GetHeightForZone(bottomNeighbourZone, x + 1, 0, imagesCache)) / 2.0f;
-                                    terrainData.Add(averagePixelHeight);
-                                } else {
-                                    var averagePixelHeight = (GetHeightForZone(zone, x, y, imagesCache) + GetHeightForZone(zone, x + 1, y, imagesCache)) / 2.0f;
-                                    terrainData.Add(averagePixelHeight);
-                                }
-                            } else {
-                                terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                            }
-                        } else if (zone.ZonePosition.X % 2 != 0) { // Support for multizone when the resolution is not 1
-                            // Add it twice since we have one extra column when the resolution is not 1 on odd zones
-                            if (x == 0) {
-                                if (leftNeighbourZone != null) {
-                                    var extraPixelHeight = GetHeightForZone(leftNeighbourZone, imageWidth - 1, y, imagesCache);
-                                    terrainData.Add(extraPixelHeight);
-                                } else {
-                                    terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                                }
-                            }
-
-                            if (x < heightMapImage.GetWidth() - 1) {
-                                var averagePixelHeight = (GetHeightForZone(zone, x, y, imagesCache) + GetHeightForZone(zone, x + 1, y, imagesCache)) / 2.0f;
-                                terrainData.Add(averagePixelHeight);
-                            } else if (rightNeighbourZone != null) {
-                                terrainData.Add(GetHeightForZone(rightNeighbourZone, 0, y, imagesCache));
-                            } else {
-                                terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                            }
-                        } else if (zone.ZonePosition.Y % 2 != 0) {  // Support for multizone when the resolution is not 1
-                            if (y < imageHeight - 1) {
-                                var averagePixelHeight = (GetHeightForZone(zone, x, y, imagesCache) + GetHeightForZone(zone, x, y + 1, imagesCache)) / 2.0f;
-                                terrainData.Add(averagePixelHeight);
-                            } else if (bottomNeighbourZone != null) {
-                                terrainData.Add(GetHeightForZone(bottomNeighbourZone, x, 0, imagesCache));
-                            } else {
-                                terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
-                            }
-                        } else {
-                            terrainData.Add(GetHeightForZone(zone, x, y, imagesCache));
+                        var currentZone = zone;
+                        var lookupX = x;
+                        var lookupY = y;
+                        if (x == 0 && leftNeighbourZone != null) {
+                            currentZone = leftNeighbourZone;
+                            lookupX = heightMapImage.GetWidth() - 1;
+                        } else if (y == 0 && topNeighbourZone != null) {
+                            currentZone = topNeighbourZone;
+                            lookupY = heightMapImage.GetHeight() - 1;
                         }
+
+                        var pixelHeight = GetHeightForZone(currentZone, lookupX, lookupY, imagesCache);
+                        terrainData.Add(pixelHeight);
                     }
                 }
 
@@ -323,12 +195,99 @@ public partial class Terrain : Node3D {
         } else {
             updateAction();
         }
-	}
+    }
+
+    private void UpdateCollisionShapeWithResolution() {
+        if (CreateCollisionInThread) {
+            _collisionCancellationSource?.Cancel();
+            _collisionCancellationSource = new CancellationTokenSource();
+        }
+
+        var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
+
+        foreach (var oldShape in _terrainCollider.GetChildren()) {
+            oldShape.QueueFree();
+        }
+
+        var maxX = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.X));
+        var maxY = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.Y));
+
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+
+        var heightmapShape = new HeightMapShape3D();
+        heightmapShape.MapWidth = resolutionZoneSize * ((maxX * 2) + 1);
+        heightmapShape.MapDepth = resolutionZoneSize * ((maxY * 2) + 1);
+
+        var collisionShape = new CollisionShape3D();
+        collisionShape.Shape = heightmapShape;
+        collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
+        _terrainCollider.AddChild(collisionShape);
+        collisionShape.Owner = this;
+
+        var updateAction = () => {
+            var mapData = new List<float>();
+            var offset = 0f;
+            if (ZonesSize % 2 == 0) {
+                offset = 0.5f;
+            }
+
+            var zonesPositionCache = new Dictionary<int, ZoneResource>();
+            var heightmapImagesCache = new Dictionary<ZoneResource, Image>();
+            for (var y = 0; y < heightmapShape.MapDepth; y++) {
+                for (var x = 0; x < heightmapShape.MapWidth; x++) {
+                    var xPosition = (x - Mathf.FloorToInt((heightmapShape.MapWidth - 1) / 2) - offset) * Resolution;
+                    var yPosition = (y - Mathf.FloorToInt((heightmapShape.MapDepth - 1) / 2) - offset) * Resolution;
+
+                    var height = GetHeightForPosition(xPosition, yPosition, zonesPositionCache, heightmapImagesCache, out var zone);
+                    mapData.Add(height);
+                }
+            }
+
+            CallDeferred(nameof(AssignCollisionData), heightmapShape, mapData.ToArray());
+        };
+
+        if (CreateCollisionInThread) {
+            Task.Factory.StartNew(() => {
+                updateAction();
+            }, token);
+        } else {
+            updateAction();
+        }
+    }
+
+    private float GetHeightForPosition(float xPosition, float yPosition, Dictionary<int, ZoneResource> zonesPositionCache, Dictionary<ZoneResource, Image> heightmapImagesCache, out ZoneResource zone) {
+        var meshToImagePosition = new Vector3(xPosition, 0, yPosition) + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
+        var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
+
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, ZonesSize, Resolution);
+        zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out zone);
+        if (zone == null) {
+            zone = TerrainZones?.GetZoneForZoneInfo(zoneInfo);
+
+            if (zone != null) {
+                zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
+            }
+        }
+
+        if (zone == null) {
+            return HoleValue;
+        } else {
+            heightmapImagesCache.TryGetValue(zone, out Image heightmapImage);
+            if (heightmapImage == null) {
+                var heightmapTexture = zone.HeightMapTexture;
+                heightmapImage = heightmapTexture.GetImage();
+                heightmapImagesCache.Add(zone, heightmapImage);
+            }
+
+            return heightmapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+        }
+    }
 
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
         shape.MapData = data;
     }
 
+    // This is only called when using the "1 resolution"
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
         var collisionShape = new CollisionShape3D();
         _terrainCollider.AddChild(collisionShape);
@@ -338,26 +297,8 @@ public partial class Terrain : Node3D {
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
 
-        var size = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
-
-        heightMapShape3D.MapWidth = size;
-        heightMapShape3D.MapDepth = size;
-
-        // Add one extra row/col if the resolution is not 1
-        if (Resolution != 1) {
-            collisionShape.Scale = new Vector3(Resolution, 1.0f, Resolution);
-
-            var offsetPosition = Vector3.Zero;
-            if (zone.ZonePosition.X % 2 != 0) {
-                heightMapShape3D.MapWidth += 1;
-            }
-
-            if (zone.ZonePosition.Y % 2 != 0) {
-                heightMapShape3D.MapDepth += 1;
-            }
-
-            collisionShape.Position += offsetPosition;
-        }
+        heightMapShape3D.MapWidth = ZonesSize;
+        heightMapShape3D.MapDepth = ZonesSize;
 
         return heightMapShape3D;
     }
