@@ -287,8 +287,11 @@ public partial class Terrain : Node3D {
         shape.MapData = data;
     }
 
-    // This is only called when using the "1 resolution"
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
+        if (Resolution != 1) {
+            return null;
+        }
+
         var collisionShape = new CollisionShape3D();
         _terrainCollider.AddChild(collisionShape);
 

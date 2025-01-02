@@ -100,17 +100,29 @@ public abstract class ToolBase {
         var startingY = imagePosition.Y - (brushSize / 2);
         var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, _terraBrush.Resolution);
 
+        var pointsCache = new HashSet<int>();
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
                 var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y, ignoreLockedZone);
-                if (imageZoneInfo != null) {
-                    var brushPixelValue = brushImage.GetPixel(x, y);
-                    var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
 
-                    onBrushPixel(
-                        imageZoneInfo,
-                        brushPixelStrength
-                    );
+                if (imageZoneInfo != null) {
+                    var zoneKey = imageZoneInfo.ZoneInfo.ZoneKey;
+                    var zoneImagePosition = imageZoneInfo.ZoneInfo?.ImagePosition ?? new Vector2I(0, 0);
+                    var positionKey = (zoneImagePosition.X << 8) + zoneImagePosition.Y;
+                    // Create a cache key with the zone and the position
+                    var zonePositionKey = (zoneKey << 8) + positionKey;
+
+                    if (!pointsCache.Contains(zonePositionKey)) {
+                        pointsCache.Add(zonePositionKey);
+
+                        var brushPixelValue = brushImage.GetPixel(x, y);
+                        var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
+
+                        onBrushPixel(
+                            imageZoneInfo,
+                            brushPixelStrength
+                        );
+                    }
                 }
             }
         }
