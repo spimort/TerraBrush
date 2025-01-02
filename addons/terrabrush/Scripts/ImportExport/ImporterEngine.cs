@@ -32,7 +32,7 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Heightmap.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateHeightmapImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateHeightmapImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     var resultHeight = pixel.R * settings.HeightmapScale;

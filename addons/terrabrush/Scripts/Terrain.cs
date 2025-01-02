@@ -24,6 +24,7 @@ public partial class Terrain : Node3D {
     [NodePath] private StaticBody3D _terrainCollider;
 
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public ShaderMaterial CustomShader { get;set; }
@@ -114,7 +115,15 @@ public partial class Terrain : Node3D {
     	Clipmap.Shader.SetShaderParameter(StringNames.WaterFactor, WaterFactor);
     }
 
-	private void UpdateCollisionShape() {
+    private void UpdateCollisionShape() {
+        if (Resolution == 1) {
+            UpdateCollisionShapeDefaultResolution();
+        } else {
+            UpdateCollisionShapeWithResolution();
+        }
+    }
+
+    private void UpdateCollisionShapeDefaultResolution() {
         if (CreateCollisionInThread) {
             _collisionCancellationSource?.Cancel();
             _collisionCancellationSource = new CancellationTokenSource();
@@ -186,12 +195,99 @@ public partial class Terrain : Node3D {
         } else {
             updateAction();
         }
-	}
+    }
+
+    private void UpdateCollisionShapeWithResolution() {
+        if (CreateCollisionInThread) {
+            _collisionCancellationSource?.Cancel();
+            _collisionCancellationSource = new CancellationTokenSource();
+        }
+
+        var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
+
+        foreach (var oldShape in _terrainCollider.GetChildren()) {
+            oldShape.QueueFree();
+        }
+
+        var maxX = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.X));
+        var maxY = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.Y));
+
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+
+        var heightmapShape = new HeightMapShape3D();
+        heightmapShape.MapWidth = resolutionZoneSize * ((maxX * 2) + 1);
+        heightmapShape.MapDepth = resolutionZoneSize * ((maxY * 2) + 1);
+
+        var collisionShape = new CollisionShape3D();
+        collisionShape.Shape = heightmapShape;
+        collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
+        _terrainCollider.AddChild(collisionShape);
+        collisionShape.Owner = this;
+
+        var updateAction = () => {
+            var mapData = new List<float>();
+            var offset = 0f;
+            if (ZonesSize % 2 == 0) {
+                offset = 0.5f;
+            }
+
+            var zonesPositionCache = new Dictionary<int, ZoneResource>();
+            var heightmapImagesCache = new Dictionary<ZoneResource, Image>();
+            for (var y = 0; y < heightmapShape.MapDepth; y++) {
+                for (var x = 0; x < heightmapShape.MapWidth; x++) {
+                    var xPosition = (x - Mathf.FloorToInt((heightmapShape.MapWidth - 1) / 2) - offset) * Resolution;
+                    var yPosition = (y - Mathf.FloorToInt((heightmapShape.MapDepth - 1) / 2) - offset) * Resolution;
+
+                    var height = GetHeightForPosition(xPosition, yPosition, zonesPositionCache, heightmapImagesCache, out var zone);
+                    mapData.Add(height);
+                }
+            }
+
+            CallDeferred(nameof(AssignCollisionData), heightmapShape, mapData.ToArray());
+        };
+
+        if (CreateCollisionInThread) {
+            Task.Factory.StartNew(() => {
+                updateAction();
+            }, token);
+        } else {
+            updateAction();
+        }
+    }
+
+    private float GetHeightForPosition(float xPosition, float yPosition, Dictionary<int, ZoneResource> zonesPositionCache, Dictionary<ZoneResource, Image> heightmapImagesCache, out ZoneResource zone) {
+        var meshToImagePosition = new Vector3(xPosition, 0, yPosition) + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
+        var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
+
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, ZonesSize, Resolution);
+        zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out zone);
+        if (zone == null) {
+            zone = TerrainZones?.GetZoneForZoneInfo(zoneInfo);
+
+            if (zone != null) {
+                zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
+            }
+        }
+
+        if (zone == null) {
+            return HoleValue;
+        } else {
+            heightmapImagesCache.TryGetValue(zone, out Image heightmapImage);
+            if (heightmapImage == null) {
+                var heightmapTexture = zone.HeightMapTexture;
+                heightmapImage = heightmapTexture.GetImage();
+                heightmapImagesCache.Add(zone, heightmapImage);
+            }
+
+            return heightmapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+        }
+    }
 
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
         shape.MapData = data;
     }
 
+    // This is only called when using the "1 resolution"
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
         var collisionShape = new CollisionShape3D();
         _terrainCollider.AddChild(collisionShape);
@@ -200,6 +296,7 @@ public partial class Terrain : Node3D {
 
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
+
         heightMapShape3D.MapWidth = ZonesSize;
         heightMapShape3D.MapDepth = ZonesSize;
 
