@@ -234,6 +234,10 @@ public partial class TerraBrush : TerraBrushTool {
             if (!Utils.IsPowerOfTwo(ZonesSize - 1)) {
                 warnings.Add($"{nameof(ZonesSize)} must be a (power of 2) + 1");
             }
+
+            if (LODInitialCellWidth != Resolution) {
+                warnings.Add($"{nameof(LODInitialCellWidth)} should be equals to {nameof(Resolution)} for better result");
+            }
         }
 
         return warnings.ToArray();

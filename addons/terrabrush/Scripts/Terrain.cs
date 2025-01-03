@@ -222,7 +222,6 @@ public partial class Terrain : Node3D {
         collisionShape.Shape = heightmapShape;
         collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
         _terrainCollider.AddChild(collisionShape);
-        collisionShape.Owner = this;
 
         var updateAction = () => {
             var mapData = new List<float>();
