@@ -14,6 +14,8 @@ public class SetAngleTool : ToolBase {
     private Vector3? _setAngleInitialPoint = null;
     private Node3D _initialPointMesh = null;
 
+    protected override bool ApplyResolution => true;
+
     public SetAngleTool(TerraBrush terraBrush) : base(terraBrush) {
         ClearInitialPointMesh();
 

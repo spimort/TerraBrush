@@ -19,6 +19,8 @@ public abstract class ToolBase {
     protected TerraBrush _terraBrush;
     private List<ImageTexture> _modifiedUndoTextures;
 
+    protected virtual bool ApplyResolution => false;
+
     protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength);
 
     public ToolBase(TerraBrush terraBrush) {
@@ -98,7 +100,7 @@ public abstract class ToolBase {
 
         var startingX = imagePosition.X - (brushSize / 2);
         var startingY = imagePosition.Y - (brushSize / 2);
-        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, _terraBrush.Resolution);
+        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, GetResolution());
 
         var pointsCache = new HashSet<int>();
         for (var x = 0; x < brushSize; x++) {
@@ -130,7 +132,7 @@ public abstract class ToolBase {
     }
 
     protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false) {
-        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize, _terraBrush.Resolution);
+        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize, GetResolution());
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {
@@ -211,6 +213,14 @@ public abstract class ToolBase {
         image.SetData(imageTexture.GetWidth(), imageTexture.GetHeight(), imageTexture.GetImage().HasMipmaps(), imageTexture.GetFormat(), imageTexture.GetImage().GetData());
 
         return image;
+    }
+
+    private int GetResolution() {
+        if (ApplyResolution) {
+            return _terraBrush.Resolution;
+        }
+
+        return 1;
     }
 
     public class ImageZoneInfo {

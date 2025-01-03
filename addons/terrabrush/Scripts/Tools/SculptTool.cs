@@ -10,6 +10,8 @@ public class SculptTool : ToolBase {
     private int _sculptingMultiplier = 1;
     private HashSet<ZoneResource> _sculptedZones;
 
+    protected override bool ApplyResolution => true;
+
     public SculptTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     public override void BeginPaint() {

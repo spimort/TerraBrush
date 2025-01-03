@@ -39,11 +39,11 @@ public partial class ZoneResource : Resource {
         }
 
         if (terraBrush.WaterDefinition != null) {
-            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
         }
 
         if (terraBrush.SnowDefinition != null) {
-            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
         }
     }
 }

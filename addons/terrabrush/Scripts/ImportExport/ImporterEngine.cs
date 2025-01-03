@@ -135,7 +135,7 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Water.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateWaterImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateWaterImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);
@@ -153,7 +153,7 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Snow.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateSnowImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateSnowImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);

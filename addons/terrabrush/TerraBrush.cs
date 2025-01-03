@@ -538,7 +538,7 @@ public partial class TerraBrush : TerraBrushTool {
         for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(ZonesSize, zone.ZonePosition, DataPath);
+            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
         }
 
         TerrainZones.UpdateWaterTextures();
@@ -553,6 +553,7 @@ public partial class TerraBrush : TerraBrushTool {
 
             _waterNode.TerrainZones = TerrainZones;
             _waterNode.ZonesSize = ZonesSize;
+            _waterNode.Resolution = Resolution;
             _waterNode.WaterFactor = WaterDefinition.WaterFactor;
             _waterNode.WaterInnerOffset = WaterDefinition.WaterInnerOffset;
             _waterNode.HeightMapFactor = HeightMapFactor;
@@ -594,7 +595,7 @@ public partial class TerraBrush : TerraBrushTool {
         for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, zone.ZonePosition, DataPath);
+            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
         }
 
         _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
@@ -610,6 +611,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         _snowNode.TerrainZones = TerrainZones;
         _snowNode.ZonesSize = ZonesSize;
+        _snowNode.Resolution = Resolution;
         _snowNode.SnowDefinition = SnowDefinition;
         _snowNode.LODLevels = LODLevels;
         _snowNode.LODRowsPerLevel = LODRowsPerLevel;

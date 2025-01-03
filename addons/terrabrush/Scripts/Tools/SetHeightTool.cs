@@ -10,6 +10,8 @@ public class SetHeightTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
     private float _setHeightValue = 0;
 
+    protected override bool ApplyResolution => true;
+
     public SetHeightTool(TerraBrush terraBrush) : base(terraBrush) {
         _setHeightValue = terraBrush.SelectedSetHeight;
     }

@@ -48,15 +48,17 @@ public static class ZoneUtils {
         return GetImageTextureResource(image, string.Format(ObjectFileName, zonePosition.X, zonePosition.Y, objectIndex), dataPath);
     }
 
-    public static ImageTexture CreateWaterImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var waterImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
+    public static ImageTexture CreateWaterImage(int zoneSize, float resolution, Vector2I zonePosition, string dataPath) {
+        var imageSize = GetImageSizeForResolution(zoneSize, resolution);
+        var waterImage = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rgba8);
         waterImage.Fill(new Color(0, 0.5f, 0.5f, 1));
 
         return GetImageTextureResource(waterImage, string.Format(WaterFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
-    public static ImageTexture CreateSnowImage(int zoneSize, Vector2I zonePosition, string dataPath) {
-        var snowImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
+    public static ImageTexture CreateSnowImage(int zoneSize, float resolution, Vector2I zonePosition, string dataPath) {
+        var imageSize = GetImageSizeForResolution(zoneSize, resolution);
+        var snowImage = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rgba8);
         return GetImageTextureResource(snowImage, string.Format(SnowFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 

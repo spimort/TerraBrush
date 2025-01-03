@@ -9,6 +9,8 @@ namespace TerraBrush;
 public class HoleTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
 
+    protected override bool ApplyResolution => true;
+
     public HoleTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {

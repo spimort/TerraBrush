@@ -116,6 +116,8 @@ public partial class Terrain : Node3D {
     }
 
     private void UpdateCollisionShape() {
+        // Both system works differently, at least for now.
+        // Making the default collision system work with the resolution stuff was really complicated so I decided to take a different approach.
         if (Resolution == 1) {
             UpdateCollisionShapeDefaultResolution();
         } else {
@@ -222,6 +224,7 @@ public partial class Terrain : Node3D {
         collisionShape.Shape = heightmapShape;
         collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
         _terrainCollider.AddChild(collisionShape);
+        collisionShape.Owner = this;
 
         var updateAction = () => {
             var mapData = new List<float>();
@@ -232,12 +235,13 @@ public partial class Terrain : Node3D {
 
             var zonesPositionCache = new Dictionary<int, ZoneResource>();
             var heightmapImagesCache = new Dictionary<ZoneResource, Image>();
+            var waterImagesCache = new Dictionary<ZoneResource, Image>();
             for (var y = 0; y < heightmapShape.MapDepth; y++) {
                 for (var x = 0; x < heightmapShape.MapWidth; x++) {
                     var xPosition = (x - Mathf.FloorToInt((heightmapShape.MapWidth - 1) / 2) - offset) * Resolution;
                     var yPosition = (y - Mathf.FloorToInt((heightmapShape.MapDepth - 1) / 2) - offset) * Resolution;
 
-                    var height = GetHeightForPosition(xPosition, yPosition, zonesPositionCache, heightmapImagesCache, out var zone);
+                    var height = GetHeightForPosition(xPosition, yPosition, zonesPositionCache, heightmapImagesCache, waterImagesCache, out var zone);
                     mapData.Add(height);
                 }
             }
@@ -254,7 +258,7 @@ public partial class Terrain : Node3D {
         }
     }
 
-    private float GetHeightForPosition(float xPosition, float yPosition, Dictionary<int, ZoneResource> zonesPositionCache, Dictionary<ZoneResource, Image> heightmapImagesCache, out ZoneResource zone) {
+    private float GetHeightForPosition(float xPosition, float yPosition, Dictionary<int, ZoneResource> zonesPositionCache, Dictionary<ZoneResource, Image> heightmapImagesCache, Dictionary<ZoneResource, Image> waterImagesCache, out ZoneResource zone) {
         var meshToImagePosition = new Vector3(xPosition, 0, yPosition) + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
         var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
 
@@ -278,7 +282,24 @@ public partial class Terrain : Node3D {
                 heightmapImagesCache.Add(zone, heightmapImage);
             }
 
-            return heightmapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+            var heightPixel = heightmapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+            if (heightPixel.G > 0.0f) {
+                return HoleValue;
+            }
+
+            var waterOffset = 0f;
+            if (zone.WaterTexture != null) {
+                waterImagesCache.TryGetValue(zone, out Image waterImage);
+                if (waterImage == null) {
+                    var waterTexture = zone.WaterTexture;
+                    waterImage = waterTexture.GetImage();
+                    waterImagesCache.Add(zone, waterImage);
+                }
+
+                waterOffset = waterImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R * WaterFactor;
+            }
+
+            return heightPixel.R - waterOffset;
         }
     }
 

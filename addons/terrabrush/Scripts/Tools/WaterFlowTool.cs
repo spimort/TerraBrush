@@ -7,6 +7,8 @@ public class WaterFlowTool : ToolBase {
     private Vector2 _previousWaterMousePosition = Vector2.Zero;
     private Vector2 _previousWaterMouseDirection = Vector2.Zero;
 
+    protected override bool ApplyResolution => true;
+
     public WaterFlowTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
