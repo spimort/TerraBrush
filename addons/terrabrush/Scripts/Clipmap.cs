@@ -114,6 +114,7 @@ public partial class Clipmap : Node3D {
         UpdateAABB();
 
         clipmapShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
+        clipmapShader.SetShaderParameter(StringNames.InitialCellWidth, InitialCellWidth);
         clipmapShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
         clipmapShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Length);
 		clipmapShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
