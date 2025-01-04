@@ -12,6 +12,7 @@ public partial class Clipmap : Node3D {
     [NodePath] private MeshInstance3D _clipmapMesh;
 
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public int Levels { get;set; } = 8;
     [Export] public int RowsPerLevel { get;set; } = 21;
@@ -116,6 +117,7 @@ public partial class Clipmap : Node3D {
         clipmapShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
         clipmapShader.SetShaderParameter(StringNames.InitialCellWidth, InitialCellWidth);
         clipmapShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
+        clipmapShader.SetShaderParameter(StringNames.Resolution, (float) Resolution);
         clipmapShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Length);
 		clipmapShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
         UpdateShaderOffsetPosition();

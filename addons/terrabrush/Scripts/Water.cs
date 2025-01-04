@@ -99,6 +99,7 @@ public partial class Water : Node3D {
 
         _clipmap.ClipmapMesh.Layers = (uint) VisualInstanceLayers;
         _clipmap.ZonesSize = ZonesSize;
+        _clipmap.Resolution = Resolution;
         _clipmap.TerrainZones = TerrainZones;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;

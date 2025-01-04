@@ -79,6 +79,7 @@ public partial class Terrain : Node3D {
             _clipmap.ClipmapMesh.Visible = false;
         } else {
             _clipmap.ZonesSize = ZonesSize;
+            _clipmap.Resolution = Resolution;
             _clipmap.TerrainZones = TerrainZones;
             _clipmap.Levels = LODLevels;
             _clipmap.RowsPerLevel = LODRowsPerLevel;
@@ -116,16 +117,6 @@ public partial class Terrain : Node3D {
     }
 
     private void UpdateCollisionShape() {
-        // Both system works differently, at least for now.
-        // Making the default collision system work with the resolution stuff was really complicated so I decided to take a different approach.
-        if (Resolution == 1) {
-            UpdateCollisionShapeDefaultResolution();
-        } else {
-            UpdateCollisionShapeWithResolution();
-        }
-    }
-
-    private void UpdateCollisionShapeDefaultResolution() {
         if (CreateCollisionInThread) {
             _collisionCancellationSource?.Cancel();
             _collisionCancellationSource = new CancellationTokenSource();
@@ -151,6 +142,10 @@ public partial class Terrain : Node3D {
                 var zone = TerrainZones.Zones[i];
                 var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
                 var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
+                var rightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
+                var bottomNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
+                var bottomRightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
+
 
                 var heightMapImage = zone.HeightMapTexture.GetImage();
                 var waterImage = zone.WaterTexture?.GetImage();
@@ -169,12 +164,29 @@ public partial class Terrain : Node3D {
                         var currentZone = zone;
                         var lookupX = x;
                         var lookupY = y;
-                        if (x == 0 && leftNeighbourZone != null) {
-                            currentZone = leftNeighbourZone;
-                            lookupX = heightMapImage.GetWidth() - 1;
-                        } else if (y == 0 && topNeighbourZone != null) {
-                            currentZone = topNeighbourZone;
-                            lookupY = heightMapImage.GetHeight() - 1;
+                        // For some reason, when not having the resolution to 1, the shader does not take the height from the left/top zone.
+                        // Instead, it takes it from bottom right.
+                        // Not quite sure why but good enough for now.
+                        if (Resolution == 1) {
+                            if (x == 0 && leftNeighbourZone != null) {
+                                currentZone = leftNeighbourZone;
+                                lookupX = heightMapImage.GetWidth() - 1;
+                            } else if (y == 0 && topNeighbourZone != null) {
+                                currentZone = topNeighbourZone;
+                                lookupY = heightMapImage.GetHeight() - 1;
+                            }
+                        } else {
+                            if (x == heightMapImage.GetWidth() - 1 && y == heightMapImage.GetHeight() - 1 && bottomRightNeighbourZone != null) {
+                                currentZone = bottomRightNeighbourZone;
+                                lookupX = 0;
+                                lookupY = 0;
+                            } else if (x == heightMapImage.GetWidth() - 1 && rightNeighbourZone != null) {
+                                currentZone = rightNeighbourZone;
+                                lookupX = 0;
+                            } else if (y == heightMapImage.GetHeight() - 1 && bottomNeighbourZone != null) {
+                                currentZone = bottomNeighbourZone;
+                                lookupY = 0;
+                            }
                         }
 
                         var pixelHeight = GetHeightForZone(currentZone, lookupX, lookupY, imagesCache);
@@ -199,129 +211,25 @@ public partial class Terrain : Node3D {
         }
     }
 
-    private void UpdateCollisionShapeWithResolution() {
-        if (CreateCollisionInThread) {
-            _collisionCancellationSource?.Cancel();
-            _collisionCancellationSource = new CancellationTokenSource();
-        }
-
-        var token = CreateCollisionInThread ? _collisionCancellationSource.Token : CancellationToken.None;
-
-        foreach (var oldShape in _terrainCollider.GetChildren()) {
-            oldShape.QueueFree();
-        }
-
-        var maxX = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.X));
-        var maxY = TerrainZones.Zones.Max(zone => Math.Abs(zone.ZonePosition.Y));
-
-        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
-
-        var heightmapShape = new HeightMapShape3D();
-        heightmapShape.MapWidth = resolutionZoneSize * ((maxX * 2) + 1);
-        heightmapShape.MapDepth = resolutionZoneSize * ((maxY * 2) + 1);
-
-        var collisionShape = new CollisionShape3D();
-        collisionShape.Shape = heightmapShape;
-        collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
-        _terrainCollider.AddChild(collisionShape);
-        collisionShape.Owner = this;
-
-        var updateAction = () => {
-            var mapData = new List<float>();
-            var offset = 0f;
-            if (ZonesSize % 2 == 0) {
-                offset = 0.5f;
-            }
-
-            var zonesPositionCache = new Dictionary<int, ZoneResource>();
-            var heightmapImagesCache = new Dictionary<ZoneResource, Image>();
-            var waterImagesCache = new Dictionary<ZoneResource, Image>();
-            for (var y = 0; y < heightmapShape.MapDepth; y++) {
-                for (var x = 0; x < heightmapShape.MapWidth; x++) {
-                    var xPosition = (x - Mathf.FloorToInt((heightmapShape.MapWidth - 1) / 2) - offset) * Resolution;
-                    var yPosition = (y - Mathf.FloorToInt((heightmapShape.MapDepth - 1) / 2) - offset) * Resolution;
-
-                    var height = GetHeightForPosition(xPosition, yPosition, zonesPositionCache, heightmapImagesCache, waterImagesCache, out var zone);
-                    mapData.Add(height);
-                }
-            }
-
-            CallDeferred(nameof(AssignCollisionData), heightmapShape, mapData.ToArray());
-        };
-
-        if (CreateCollisionInThread) {
-            Task.Factory.StartNew(() => {
-                updateAction();
-            }, token);
-        } else {
-            updateAction();
-        }
-    }
-
-    private float GetHeightForPosition(float xPosition, float yPosition, Dictionary<int, ZoneResource> zonesPositionCache, Dictionary<ZoneResource, Image> heightmapImagesCache, Dictionary<ZoneResource, Image> waterImagesCache, out ZoneResource zone) {
-        var meshToImagePosition = new Vector3(xPosition, 0, yPosition) + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
-        var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
-
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, ZonesSize, Resolution);
-        zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out zone);
-        if (zone == null) {
-            zone = TerrainZones?.GetZoneForZoneInfo(zoneInfo);
-
-            if (zone != null) {
-                zonesPositionCache.Add(zoneInfo.ZoneKey, zone);
-            }
-        }
-
-        if (zone == null) {
-            return HoleValue;
-        } else {
-            heightmapImagesCache.TryGetValue(zone, out Image heightmapImage);
-            if (heightmapImage == null) {
-                var heightmapTexture = zone.HeightMapTexture;
-                heightmapImage = heightmapTexture.GetImage();
-                heightmapImagesCache.Add(zone, heightmapImage);
-            }
-
-            var heightPixel = heightmapImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
-            if (heightPixel.G > 0.0f) {
-                return HoleValue;
-            }
-
-            var waterOffset = 0f;
-            if (zone.WaterTexture != null) {
-                waterImagesCache.TryGetValue(zone, out Image waterImage);
-                if (waterImage == null) {
-                    var waterTexture = zone.WaterTexture;
-                    waterImage = waterTexture.GetImage();
-                    waterImagesCache.Add(zone, waterImage);
-                }
-
-                waterOffset = waterImage.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R * WaterFactor;
-            }
-
-            return heightPixel.R - waterOffset;
-        }
-    }
-
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
         shape.MapData = data;
     }
 
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
-        if (Resolution != 1) {
-            return null;
-        }
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
 
         var collisionShape = new CollisionShape3D();
         _terrainCollider.AddChild(collisionShape);
 
         collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
+        collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
+        collisionShape.Owner = this;
 
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
 
-        heightMapShape3D.MapWidth = ZonesSize;
-        heightMapShape3D.MapDepth = ZonesSize;
+        heightMapShape3D.MapWidth = resolutionZoneSize;
+        heightMapShape3D.MapDepth = resolutionZoneSize;
 
         return heightMapShape3D;
     }

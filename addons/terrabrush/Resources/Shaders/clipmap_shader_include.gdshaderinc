@@ -1,4 +1,4 @@
-uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable, filter_nearest_mipmap;
+uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform float InitialCellWidth = 1.0;
 uniform vec3 OffsetPosition;
 
