@@ -465,6 +465,7 @@ public partial class TerraBrush : TerraBrushTool {
 
                 newFoliage.FoliageIndex = i;
                 newFoliage.ZonesSize = ZonesSize;
+                newFoliage.Resolution = Resolution;
                 newFoliage.TerrainZones = TerrainZones;
                 newFoliage.TextureSets = TextureSets;
                 newFoliage.TextureDetail = TextureDetail;
