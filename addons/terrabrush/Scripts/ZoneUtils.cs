@@ -116,22 +116,17 @@ public static class ZoneUtils {
     }
 
     public static ZoneInfo GetZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2I offset, int zonesSize, int resolution) {
-        var pixelPosition = new Vector2(startingZone.FullScaleImagePosition.X + offset.X, startingZone.FullScaleImagePosition.Y + offset.Y);
-        var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / zonesSize);
-        var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / zonesSize);
+        var resolutionSize = GetImageSizeForResolution(zonesSize, resolution);
 
-        var zoneBrushXPosition = Mathf.RoundToInt(((pixelPosition.X / zonesSize) - zoneXPosition) * zonesSize);
-        var zoneBrushYPosition = Mathf.RoundToInt(((pixelPosition.Y / zonesSize) - zoneYPosition) * zonesSize);
+        var pixelPosition = new Vector2(startingZone.ImagePosition.X + offset.X, startingZone.ImagePosition.Y + offset.Y);
+        var zoneXPosition = Mathf.FloorToInt(pixelPosition.X / resolutionSize);
+        var zoneYPosition = Mathf.FloorToInt(pixelPosition.Y / resolutionSize);
+
+        var zoneBrushXPosition = Mathf.RoundToInt(((pixelPosition.X / resolutionSize) - zoneXPosition) * resolutionSize);
+        var zoneBrushYPosition = Mathf.RoundToInt(((pixelPosition.Y / resolutionSize) - zoneYPosition) * resolutionSize);
 
         var resolutionZoneBrushXPosition = zoneBrushXPosition;
         var resolutionZoneBrushYPosition = zoneBrushYPosition;
-
-        if (resolution != 1) {
-            var imageSize = GetImageSizeForResolution(zonesSize, resolution);
-
-            resolutionZoneBrushXPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushXPosition, 0, zonesSize - 1, 0, imageSize - 1));
-            resolutionZoneBrushYPosition = Mathf.RoundToInt(Mathf.Remap(resolutionZoneBrushYPosition, 0, zonesSize - 1, 0, imageSize - 1));
-        }
 
         // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
         var absoluteZonePosition = new Vector2I(startingZone.ZonePosition.X + zoneXPosition, startingZone.ZonePosition.Y + zoneYPosition);
