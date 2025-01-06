@@ -110,8 +110,7 @@ public static class ZoneUtils {
         return new ZoneInfo() {
             ZoneKey = zoneKey,
             ZonePosition = zonePosition,
-            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition),
-            FullScaleImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition)
         };
     }
 
@@ -135,8 +134,7 @@ public static class ZoneUtils {
         return new ZoneInfo() {
             ZoneKey = zoneKey,
             ZonePosition = absoluteZonePosition,
-            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition),
-            FullScaleImagePosition = new Vector2I(zoneBrushXPosition, zoneBrushYPosition)
+            ImagePosition = new Vector2I(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition)
         };
     }
 
@@ -149,5 +147,4 @@ public class ZoneInfo {
     public int ZoneKey { get;set; }
     public Vector2I ZonePosition { get;set; }
     public Vector2I ImagePosition { get;set; }
-    public Vector2I FullScaleImagePosition { get;set; }
 }

@@ -112,7 +112,7 @@ public class SetAngleTool : ToolBase {
         }
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
-            var absolutePosition = imageZoneInfo.ZoneInfo.ImagePosition + (imageZoneInfo.ZoneInfo.ZonePosition * (_terraBrush.ZonesSize - 1));
+            var absolutePosition = (imageZoneInfo.ZoneInfo.ImagePosition * _terraBrush.Resolution) + (imageZoneInfo.ZoneInfo.ZonePosition * (_terraBrush.ZonesSize - 1));
             var distanceToStartingPoint = new Vector2(_setAngleInitialPoint.Value.X, _setAngleInitialPoint.Value.Z).DistanceTo(absolutePosition);
             var angleHeight = (float) (distanceToStartingPoint * Mathf.Tan(Mathf.DegToRad(_setAngleValue))) + _setAngleInitialPoint.Value.Y;
 
