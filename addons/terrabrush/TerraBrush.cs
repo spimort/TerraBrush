@@ -521,6 +521,7 @@ public partial class TerraBrush : TerraBrushTool {
             objectNode.Definition = objectItem.Definition;
             objectNode.TerrainZones = TerrainZones;
             objectNode.ZonesSize = ZonesSize;
+            objectNode.Resolution = Resolution;
             objectNode.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
             objectNode.LoadInThread = loadInThread;
             objectNode.DefaultObjectFrequency = DefaultObjectFrequency;

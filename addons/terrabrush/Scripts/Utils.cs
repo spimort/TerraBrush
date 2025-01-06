@@ -95,4 +95,24 @@ public static class Utils {
     public static bool IsPowerOfTwo(int x) {
         return (x != 0) && ((x & (x - 1)) == 0);
     }
+
+    public static Color GetPixelLinear(Image image, float x, float y) {
+        int x0 = Mathf.Max(0, Mathf.FloorToInt(x));
+        int x1 = Mathf.Min(x0 + 1, image.GetWidth() - 1);
+        int y0 = Mathf.Max(0, Mathf.FloorToInt(y));
+        int y1 = Mathf.Min(y0 + 1, image.GetHeight() - 1);
+
+        float uRatio = x - x0;
+        float vRatio = y - y0;
+        float uOpposite = 1 - uRatio;
+        float vOpposite = 1 - vRatio;
+
+        var result =
+            image.GetPixel(x0, y0) * uOpposite * vOpposite +
+            image.GetPixel(x1, y0) * uRatio * vOpposite +
+            image.GetPixel(x0, y1) * uOpposite * vRatio +
+            image.GetPixel(x1, y1) * uRatio * vRatio;
+
+        return result;
+    }
 }

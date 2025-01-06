@@ -16,6 +16,7 @@ public partial class Objects : Node3D, IObjectsNode {
     [Export] public ObjectDefinitionResource Definition { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public float WaterFactor { get;set; }
     [Export] public bool LoadInThread { get;set; }
     [Export] public int DefaultObjectFrequency { get;set;}
@@ -136,6 +137,8 @@ public partial class Objects : Node3D, IObjectsNode {
     }
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+
         foreach (var zone in zones) {
             var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
             var heightmapImage = zone.HeightMapTexture.GetImage();
@@ -158,9 +161,9 @@ public partial class Objects : Node3D, IObjectsNode {
                     var yPosition = int.Parse(positions[1]);
 
                     var resultPosition = GetPositionWithNoise(noiseImage, xPosition, yPosition);
-                    var resultImagePosition = GetImagePosition(resultPosition.X, resultPosition.Z);
-                    if (IsImagePositionInRange(resultImagePosition.X, resultImagePosition.Y)) {
-                        objectNode.Position = new Vector3(objectNode.Position.X, GetObjectHeight(heightmapImage, waterImage, resultImagePosition.X, resultImagePosition.Y), objectNode.Position.Z);
+                    if (IsImagePositionInRange(resultPosition.X, resultPosition.Y)) {
+                        var heightImagePosition = GetHeightPositionForResolution(new Vector2(resultPosition.X, resultPosition.Z), resolutionZoneSize);
+                        objectNode.Position = new Vector3(objectNode.Position.X, GetObjectHeight(heightmapImage, waterImage, heightImagePosition.X, heightImagePosition.Y), objectNode.Position.Z);
                     }
                 }
             }
@@ -180,13 +183,14 @@ public partial class Objects : Node3D, IObjectsNode {
             }
 
             var resultPosition = GetPositionWithNoise(noiseImage, x, y);
-            var resultImagePosition = GetImagePosition(resultPosition.X, resultPosition.Z);
-            if (IsImagePositionInRange(resultImagePosition.X, resultImagePosition.Y)) {
-                var heightmapPixel = heightmapImage.GetPixel(resultImagePosition.X, resultImagePosition.Y);
+            if (IsImagePositionInRange(resultPosition.X, resultPosition.Y)) {
+                var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+                var heightImagePosition = GetHeightPositionForResolution(new Vector2(resultPosition.X, resultPosition.Z), resolutionZoneSize);
+                var heightmapPixel = Utils.GetPixelLinear(heightmapImage, heightImagePosition.X, heightImagePosition.Y);
                 // Check for hole
                 if (heightmapPixel.G == 0.0) {
                     var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, Definition.ObjectScenes.Count() - 1);
-                    resultPosition -= new Vector3(ZonesSize / 2, -GetObjectHeight(heightmapImage, waterImage, resultImagePosition.X, resultImagePosition.Y), ZonesSize / 2);
+                    resultPosition -= new Vector3(ZonesSize / 2, -GetObjectHeight(heightmapImage, waterImage, heightImagePosition.X, heightImagePosition.Y), ZonesSize / 2);
 
                     objectPresentCallback(
                         (
@@ -214,17 +218,13 @@ public partial class Objects : Node3D, IObjectsNode {
         return resultPosition;
     }
 
-    private Vector2I GetImagePosition(float x, float y) {
-        return new Vector2I((int) Math.Round(x), (int) Math.Round(y));
+    private bool IsImagePositionInRange(float x, float y) {
+        return x >= 0.0 && x < ZonesSize && y >= 0.0 && y < ZonesSize;
     }
 
-    private bool IsImagePositionInRange(int x, int y) {
-        return x >= 0 && x < ZonesSize && y >= 0 && y < ZonesSize;
-    }
-
-    private float GetObjectHeight(Image heightmapImage, Image waterImage, int imageX, int imageY) {
-        var heightmapPixel = heightmapImage.GetPixel(imageX, imageY);
-        var waterHeight = waterImage?.GetPixel(imageX, imageY).R ?? 0;
+    private float GetObjectHeight(Image heightmapImage, Image waterImage, float imageX, float imageY) {
+        var heightmapPixel = Utils.GetPixelLinear(heightmapImage, imageX, imageY);
+        var waterHeight = waterImage == null ? 0f : Utils.GetPixelLinear(waterImage, imageX, imageY).R;
         return heightmapPixel.R - (waterHeight * WaterFactor);
     }
 
@@ -263,5 +263,16 @@ public partial class Objects : Node3D, IObjectsNode {
         } else if (!add && existingNode != null) {
             existingNode.QueueFree();
         }
+    }
+
+    private Vector2 GetHeightPositionForResolution(Vector2 position, int resolutionZoneSize) {
+        if (Resolution != 1) {
+            return new Vector2(
+                Mathf.Remap(position.X, 0, ZonesSize - 1, 0, resolutionZoneSize - 1),
+                Mathf.Remap(position.Y, 0, ZonesSize - 1, 0, resolutionZoneSize - 1)
+            );
+        }
+
+        return position;
     }
 }
