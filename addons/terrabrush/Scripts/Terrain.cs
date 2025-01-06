@@ -146,7 +146,6 @@ public partial class Terrain : Node3D {
                 var bottomNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
                 var bottomRightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
 
-
                 var heightMapImage = zone.HeightMapTexture.GetImage();
                 var waterImage = zone.WaterTexture?.GetImage();
 
@@ -164,10 +163,7 @@ public partial class Terrain : Node3D {
                         var currentZone = zone;
                         var lookupX = x;
                         var lookupY = y;
-                        // For some reason, when not having the resolution to 1, the shader does not take the height from the left/top zone.
-                        // Instead, it takes it from bottom right.
-                        // Not quite sure why but good enough for now.
-                        if (Resolution == 1) {
+                        if (ZonesSize % 2 == 0) {
                             if (x == 0 && leftNeighbourZone != null) {
                                 currentZone = leftNeighbourZone;
                                 lookupX = heightMapImage.GetWidth() - 1;
