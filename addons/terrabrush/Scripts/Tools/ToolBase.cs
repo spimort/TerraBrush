@@ -148,8 +148,19 @@ public abstract class ToolBase {
 
         if (zone != null) {
             (bool locked, float lockedStrength) lockInfo = (false, 0.0f);
-            if (!ignoreLockedZone) {
-                lockInfo = IsZonePixelLocked(zone, zoneInfo);
+            if (!ignoreLockedZone && zone.LockTexture != null) {
+                var lockZoneInfo = zoneInfo;
+                if (_terraBrush.Resolution != 1 && ApplyResolution) {
+                    lockZoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(
+                        new ZoneInfo() {
+                            ImagePosition = startingZoneInfo.ImagePosition * _terraBrush.Resolution
+                        },
+                        new Vector2I(offsetX * _terraBrush.Resolution, offsetY * _terraBrush.Resolution),
+                        _terraBrush.ZonesSize,
+                        1
+                    );
+                }
+                lockInfo = IsZonePixelLocked(zone, lockZoneInfo);
             }
 
             if (!lockInfo.locked) {
@@ -179,10 +190,6 @@ public abstract class ToolBase {
     }
 
     private (bool locked, float lockedStrength) IsZonePixelLocked(ZoneResource zone, ZoneInfo zoneInfo) {
-        if (zone.LockTexture == null) {
-            return (false, 0.0f);
-        }
-
         var image = zone.LockTexture.GetImage();
         var pixel = image.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
         return (pixel.R == 1.0, pixel.R);
