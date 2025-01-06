@@ -131,7 +131,11 @@ void calculateHeightmapFragment(
 		int textureDetail = TexturesDetail[i];
 		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
 		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
-		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(i/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		vec3 textureZoneUV = zoneUV;
+		if (Resolution > 1.0) {
+			textureZoneUV = calculateZoneUVResolution(worldVertex, false);
+		}
+		vec3 splatmapUV = vec3(textureZoneUV.x, textureZoneUV.y, floor(float(i/4)) + (textureZoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
 
 		vec4 currentTexture = vec4(0);
 		vec4 currentNormal = vec4(0);

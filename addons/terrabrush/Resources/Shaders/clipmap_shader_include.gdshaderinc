@@ -7,7 +7,7 @@ uniform vec3 OffsetPosition;
 float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2 offset) {
 	vec3 offsetWorldVertex = worldVertex + vec3(offset.x, 0.0, offset.y);
 	ivec2 zonesMapPosition = ivec2(0);
-	vec3 zoneUV = calculateZoneUVWithZoneInfo(offsetWorldVertex, zonesMapPosition);
+	vec3 zoneUV = calculateZoneUVWithZoneInfo(offsetWorldVertex, true, zonesMapPosition);
 	float height = vertex.y;
 
 	if (zoneUV.z >= 0.0) {

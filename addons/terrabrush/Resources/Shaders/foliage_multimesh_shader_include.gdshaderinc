@@ -86,7 +86,7 @@ bool calculateTexturePresence(vec3 zoneUV) {
 	for (int i = 0; i < NumberOfTexturesToApplyOn; i++) {
 		int textureIndex = ApplyOnTextureIndexes[i];
 		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(textureIndex/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
-		
+
 		int channelIndex = textureIndex % 4;
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 		float channelValue = currentSplatmap[channelIndex];
@@ -222,10 +222,10 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 
 	// Fetch the zoneUV with the "Grid" position of the foliage.
 	vec3 worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
-	vec3 zoneUV = calculateZoneUV(worldVertex);
+	vec3 foliageZoneUV = calculateZoneUVResolution(worldVertex, false);
 
 	// Calculate the noise/random value with the zoneUV;
-	vec4 noiseTextureValue = texture(NoiseTexture, zoneUV.xy);
+	vec4 noiseTextureValue = texture(NoiseTexture, foliageZoneUV.xy);
 	vec3 noiseRandom = hash_noise_range(noiseTextureValue.rgb);
 	float noiseRandomXValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.x);
 	float noiseRandomZValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.z);
@@ -235,37 +235,41 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 
 	// Update the zoneUV so it fits the new position of the foliage, with the random value
 	worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
-	zoneUV = calculateZoneUV(worldVertex);
+	foliageZoneUV = calculateZoneUVResolution(worldVertex, false);
 
-	if (zoneUV.z < 0.0) {
+	if (foliageZoneUV.z < 0.0) {
 		// Disable instance
 		vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 	} else {
-		vec4 foliagePosition = texture(FoliageTextures, zoneUV);
+		vec4 foliagePosition = texture(FoliageTextures, foliageZoneUV);
 		bool foliagePresence = false;
 		bool presenceByTexture = false;
 		if (NumberOfTexturesToApplyOn > 0) {
-			foliagePresence = calculateTexturePresence(zoneUV);
-			
+			foliagePresence = calculateTexturePresence(foliageZoneUV);
+
 			if (foliagePresence) {
-				presenceByTexture = true;				
+				presenceByTexture = true;
 			}
 		}
-		
+
 		if (!foliagePresence) {
-			foliagePresence = foliagePosition.x > 0.0;	
+			foliagePresence = foliagePosition.x > 0.0;
 		}
 
 		if (foliagePresence) {
 			// HeightMap Texture (height calculation)
-			vec4 heightMapPosition = texture(HeightmapTextures, zoneUV);
+			vec3 heightmapZoneUV = foliageZoneUV;
+			if (Resolution > 1.0) {
+				heightmapZoneUV = calculateZoneUV(worldVertex);
+			}
+			vec4 heightMapPosition = texture(HeightmapTextures, heightmapZoneUV);
 			if (heightMapPosition.g > 0.0) {
 				// Disable instance
 				vertex = vec3(0.0); // Scale down the mesh so it "vanish"
 			} else {
 				float height = heightMapPosition.x;
 
-				vec4 waterPosition = texture(WaterTextures, zoneUV);
+				vec4 waterPosition = texture(WaterTextures, heightmapZoneUV);
 				float waterHeight = waterPosition.x * WaterFactor;
 
 				height -= waterHeight;
@@ -281,7 +285,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 					vertex *= meshScaleFactor;
 				}
 
-				vertex *= texture(ScaleNoiseTexture, zoneUV.xy).r;
+				vertex *= texture(ScaleNoiseTexture, foliageZoneUV.xy).r;
 
 				// Assign the position to the transform
 				vertex.x += particlePosition.x;
@@ -307,7 +311,7 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 				normal *= randomRotationMat;
 
 				if (UseGroundColor) {
-					color = calculateGroundColor(zoneUV);
+					color = calculateGroundColor(foliageZoneUV);
 				}
 			}
 		} else {
