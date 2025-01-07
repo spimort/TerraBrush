@@ -324,7 +324,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainZones.UpdateSplatmapsTextures();
 
         if (Engine.IsEditorHint()) {
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
         TerrainZones.UpdateZonesMap();
         TerrainZones.UpdateHeightmaps();
@@ -728,7 +728,7 @@ public partial class TerraBrush : TerraBrushTool {
                 zone.LockTexture = ZoneUtils.CreateLockImage(ZonesSize, zone.ZonePosition, true);
             }
 
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
     }
 
@@ -738,7 +738,7 @@ public partial class TerraBrush : TerraBrushTool {
                 zone.LockTexture = null;
             }
 
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
     }
 }

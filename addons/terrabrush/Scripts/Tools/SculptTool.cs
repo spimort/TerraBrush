@@ -97,22 +97,22 @@ public class SculptTool : ToolBase {
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var directions = new List<float>();
 
-            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, -1, 0);
+            var neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, -1, 0, true);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 1, 0);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 1, 0, true);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, -1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, -1, true);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }
 
-            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, 1);
+            neighbourImageZoneInfo = GetImageZoneInfoForPosition(imageZoneInfo.ZoneInfo, 0, 1, true);
             if (neighbourImageZoneInfo != null) {
                 directions.Add(neighbourImageZoneInfo.Image.GetPixel(neighbourImageZoneInfo.ZoneInfo.ImagePosition.X, neighbourImageZoneInfo.ZoneInfo.ImagePosition.Y).R);
             }

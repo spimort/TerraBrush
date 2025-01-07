@@ -262,7 +262,7 @@ public partial class Plugin : EditorPlugin {
         }
 
         _currentTerraBrushNode.Terrain.TerrainUpdated();
-        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures();
+        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures(_currentTerraBrushNode.ZonesSize);
 
         _currentTerraBrushNode.ClearObjects();
         await _currentTerraBrushNode.CreateObjects();

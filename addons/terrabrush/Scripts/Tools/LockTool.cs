@@ -34,7 +34,7 @@ public class LockTool : ToolBase {
             }
         }, true);
 
-        _terraBrush.TerrainZones.UpdateLockTexture();
+        _terraBrush.TerrainZones.UpdateLockTexture(_terraBrush.ZonesSize);
     }
 }
 #endif
