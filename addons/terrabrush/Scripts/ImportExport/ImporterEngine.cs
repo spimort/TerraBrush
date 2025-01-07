@@ -37,7 +37,8 @@ public static class ImporterEngine {
                 (x, y, pixel, image) => {
                     var resultHeight = pixel.R * settings.HeightmapScale;
                     image.SetPixel(x, y, new Color(resultHeight, settings.UseGreenChannelForHoles ? pixel.G : 0, 0, 1));
-                }
+                },
+                true
             );
 
             foreach (var resultImage in resultImages) {
@@ -139,7 +140,8 @@ public static class ImporterEngine {
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);
-                }
+                },
+                true
             );
 
             foreach (var resultImage in resultImages) {
@@ -157,7 +159,8 @@ public static class ImporterEngine {
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);
-                }
+                },
+                true
             );
 
             foreach (var resultImage in resultImages) {
@@ -181,9 +184,18 @@ public static class ImporterEngine {
         return zone;
     }
 
-    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrushTool terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage) {
-        var xNumberOfZones = Mathf.CeilToInt(image.GetWidth() / terrabrush.ZonesSize);
-        var yNumberOfZones = Mathf.CeilToInt(image.GetHeight() / terrabrush.ZonesSize);
+    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrushTool terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage, bool applyResolution = false) {
+        if (terrabrush.Resolution != 1 && applyResolution) {
+            var newImage = new Image();
+            newImage.CopyFrom(image);
+            newImage.Resize(image.GetWidth() / terrabrush.Resolution, image.GetHeight() / terrabrush.Resolution);
+            image = newImage;
+        }
+
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(terrabrush.ZonesSize, applyResolution ? terrabrush.Resolution : 1);
+
+        var xNumberOfZones = Mathf.CeilToInt(image.GetWidth() / (float) resolutionZoneSize);
+        var yNumberOfZones = Mathf.CeilToInt(image.GetHeight() / (float) resolutionZoneSize);
         var resultList = new List<ImportImageInfo>();
 
         for (var x = 0; x < xNumberOfZones; x++) {

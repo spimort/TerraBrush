@@ -90,6 +90,8 @@ public partial class ImportDialog : Window {
 
             _previewTerrain?.QueueFree();
             _previewTerrain = new TerraBrush();
+            _previewTerrain.ZonesSize = OriginialTerraBrush.ZonesSize;
+            _previewTerrain.Resolution = OriginialTerraBrush.Resolution;
             ImporterEngine.ImportTerrain(_previewTerrain, settings);
             _subViewport.AddChild(_previewTerrain);
         };
