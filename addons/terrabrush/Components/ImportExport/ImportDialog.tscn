@@ -109,6 +109,15 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Use green channel for holes"
 
+[node name="HBoxContainer3" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScaleToResolutionCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Scale to match resolution"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
