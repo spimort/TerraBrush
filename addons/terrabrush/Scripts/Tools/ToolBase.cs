@@ -102,6 +102,7 @@ public abstract class ToolBase {
         var startingY = imagePosition.Y - (brushSize / 2);
         var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, GetResolution());
 
+        var pointsCache = new HashSet<string>();
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
                 var offsetX = x;
@@ -113,13 +114,25 @@ public abstract class ToolBase {
                 var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
 
                 if (imageZoneInfo != null) {
-                    var brushPixelValue = brushImage.GetPixel(x, y);
-                    var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
+                    var zoneKey = imageZoneInfo.ZoneInfo.ZoneKey;
+                    var zoneImagePosition = imageZoneInfo.ZoneInfo?.ImagePosition ?? new Vector2I(0, 0);
+                    var positionKey = (zoneImagePosition.X << 8) + zoneImagePosition.Y;
+                    // Create a cache key with the zone and the position
+                    var zonePositionKey = $"{zoneKey}_{positionKey}";
 
-                    onBrushPixel(
-                        imageZoneInfo,
-                        brushPixelStrength
-                    );
+                    if (_terraBrush.Resolution == 1 || !ApplyResolution || !pointsCache.Contains(zonePositionKey)) {
+                        if (_terraBrush.Resolution != 1) {
+                            pointsCache.Add(zonePositionKey);
+                        }
+
+                        var brushPixelValue = brushImage.GetPixel(x, y);
+                        var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
+
+                        onBrushPixel(
+                            imageZoneInfo,
+                            brushPixelStrength
+                        );
+                    }
                 }
             }
         }
