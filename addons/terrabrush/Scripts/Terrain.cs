@@ -163,6 +163,8 @@ public partial class Terrain : Node3D {
                         var currentZone = zone;
                         var lookupX = x;
                         var lookupY = y;
+                        // TODO : This does not always work but it does most of the time.
+                        // We should ensure of the direction of the pixel directly in the shader, so it works all the time.
                         if (ZonesSize % 2 == 0) {
                             if (x == 0 && leftNeighbourZone != null) {
                                 currentZone = leftNeighbourZone;
