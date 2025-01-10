@@ -4,6 +4,8 @@ using Godot;
 namespace TerraBrush;
 
 public class SnowTool : ToolBase {
+    protected override bool ApplyResolution => true;
+
     public SnowTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {

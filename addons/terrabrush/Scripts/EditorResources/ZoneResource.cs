@@ -17,7 +17,7 @@ public partial class ZoneResource : Resource {
     [Export] public ImageTexture SnowTexture { get;set; }
 
     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
-        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+        HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
 
         var numberOfSplatmaps = Mathf.CeilToInt((terraBrush.TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
         var splatmaps = new List<ImageTexture>();
@@ -39,11 +39,11 @@ public partial class ZoneResource : Resource {
         }
 
         if (terraBrush.WaterDefinition != null) {
-            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+            WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
         }
 
         if (terraBrush.SnowDefinition != null) {
-            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, ZonePosition, terraBrush.DataPath);
+            SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
         }
     }
 }

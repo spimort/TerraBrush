@@ -21,6 +21,7 @@ public partial class TerraBrush : TerraBrushTool {
 	public delegate void TerrainLoadedEventHandler();
 
     private int _zonesSize = 256;
+    private int _resolution = 1;
     private ShaderMaterial _customShader;
     private Terrain _terrain;
     private TextureSetResource[] _texturesSet;
@@ -51,9 +52,41 @@ public partial class TerraBrush : TerraBrushTool {
             return _zonesSize;
         } set {
             if (_terrain == null) {
+                if (Resolution != 1 && !Utils.IsPowerOfTwo(value - 1)) {
+                    OS.Alert("When the resolution is not 1, it must be a (power of 2) + 1 (ex. 257).");
+                    return;
+                }
+
                 _zonesSize = value;
+
+                UpdateConfigurationWarnings();
             } else if (value != _zonesSize) {
                 OS.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
+            }
+        }
+    }
+
+    [Export]
+    public override int Resolution {
+        get {
+            return _resolution;
+        } set {
+            if (_terrain == null) {
+                if (value < 1) {
+                    OS.Alert("The minimum value for the resolution is 1.");
+                    return;
+                }
+
+                if (value > 1 && !Utils.IsPowerOfTwo(value)){
+                    OS.Alert("When the resolution is not 1, it must be a power of 2.");
+                    return;
+                }
+
+                _resolution = value;
+
+                UpdateConfigurationWarnings();
+            } else if (value != _resolution) {
+                OS.Alert("The Resolution property cannot change once the terrain has been created. Make sure you remove the terrain before changing the Resolution.");
             }
         }
     }
@@ -193,10 +226,34 @@ public partial class TerraBrush : TerraBrushTool {
             warnings.Add($"{nameof(DataPath)} is required");
         }
 
+        if (Resolution != 1) {
+            if (!Utils.IsPowerOfTwo(Resolution)) {
+                warnings.Add($"{nameof(Resolution)} must be a power of 2");
+            }
+
+            if (!Utils.IsPowerOfTwo(ZonesSize - 1)) {
+                warnings.Add($"{nameof(ZonesSize)} must be a (power of 2) + 1");
+            }
+
+            if (LODInitialCellWidth != Resolution) {
+                warnings.Add($"{nameof(LODInitialCellWidth)} should be equals to {nameof(Resolution)} for better result");
+            }
+        }
+
         return warnings.ToArray();
     }
 
     public override async void OnCreateTerrain() {
+        if (Resolution != 1) {
+            if (!Utils.IsPowerOfTwo(Resolution)) {
+                return;
+            }
+
+            if (!Utils.IsPowerOfTwo(ZonesSize - 1)) {
+                return;
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(DataPath)) {
             return;
         }
@@ -210,7 +267,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainZones = new ZonesResource() {
             Zones = new ZoneResource[] {
                 new ZoneResource() {
-                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, new Vector2I(0, 0), DataPath)
+                    HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, Resolution, new Vector2I(0, 0), DataPath)
                 }
             }
         };
@@ -259,7 +316,7 @@ public partial class TerraBrush : TerraBrushTool {
             var zone = TerrainZones.Zones[i];
 
             if (zone.HeightMapTexture == null) {
-                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, zone.ZonePosition, DataPath);
+                zone.HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
             }
 
             CreateSplatmaps(zone);
@@ -267,7 +324,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainZones.UpdateSplatmapsTextures();
 
         if (Engine.IsEditorHint()) {
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
         TerrainZones.UpdateZonesMap();
         TerrainZones.UpdateHeightmaps();
@@ -287,6 +344,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.CollisionLayers = CollisionLayers;
         _terrain.CollisionMask = CollisionMask;
         _terrain.ZonesSize = ZonesSize;
+        _terrain.Resolution = Resolution;
         _terrain.TerrainZones = TerrainZones;
         _terrain.HeightMapFactor = HeightMapFactor;
         _terrain.TextureDetail = TextureDetail;
@@ -407,6 +465,7 @@ public partial class TerraBrush : TerraBrushTool {
 
                 newFoliage.FoliageIndex = i;
                 newFoliage.ZonesSize = ZonesSize;
+                newFoliage.Resolution = Resolution;
                 newFoliage.TerrainZones = TerrainZones;
                 newFoliage.TextureSets = TextureSets;
                 newFoliage.TextureDetail = TextureDetail;
@@ -462,6 +521,7 @@ public partial class TerraBrush : TerraBrushTool {
             objectNode.Definition = objectItem.Definition;
             objectNode.TerrainZones = TerrainZones;
             objectNode.ZonesSize = ZonesSize;
+            objectNode.Resolution = Resolution;
             objectNode.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
             objectNode.LoadInThread = loadInThread;
             objectNode.DefaultObjectFrequency = DefaultObjectFrequency;
@@ -480,7 +540,7 @@ public partial class TerraBrush : TerraBrushTool {
         for (var i = 0; i < TerrainZones.Zones?.Count(); i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(ZonesSize, zone.ZonePosition, DataPath);
+            zone.WaterTexture ??= ZoneUtils.CreateWaterImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
         }
 
         TerrainZones.UpdateWaterTextures();
@@ -495,6 +555,7 @@ public partial class TerraBrush : TerraBrushTool {
 
             _waterNode.TerrainZones = TerrainZones;
             _waterNode.ZonesSize = ZonesSize;
+            _waterNode.Resolution = Resolution;
             _waterNode.WaterFactor = WaterDefinition.WaterFactor;
             _waterNode.WaterInnerOffset = WaterDefinition.WaterInnerOffset;
             _waterNode.HeightMapFactor = HeightMapFactor;
@@ -536,7 +597,7 @@ public partial class TerraBrush : TerraBrushTool {
         for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
             var zone = TerrainZones.Zones[i];
 
-            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, zone.ZonePosition, DataPath);
+            zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
         }
 
         _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
@@ -552,6 +613,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         _snowNode.TerrainZones = TerrainZones;
         _snowNode.ZonesSize = ZonesSize;
+        _snowNode.Resolution = Resolution;
         _snowNode.SnowDefinition = SnowDefinition;
         _snowNode.LODLevels = LODLevels;
         _snowNode.LODRowsPerLevel = LODRowsPerLevel;
@@ -611,7 +673,7 @@ public partial class TerraBrush : TerraBrushTool {
             y -= LODInitialCellWidth / 2.0f;
         }
 
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize, Resolution);
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {
@@ -666,7 +728,7 @@ public partial class TerraBrush : TerraBrushTool {
                 zone.LockTexture = ZoneUtils.CreateLockImage(ZonesSize, zone.ZonePosition, true);
             }
 
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
     }
 
@@ -676,7 +738,7 @@ public partial class TerraBrush : TerraBrushTool {
                 zone.LockTexture = null;
             }
 
-            TerrainZones.UpdateLockTexture();
+            TerrainZones.UpdateLockTexture(ZonesSize);
         }
     }
 }

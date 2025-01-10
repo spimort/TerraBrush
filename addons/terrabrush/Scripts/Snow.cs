@@ -16,6 +16,7 @@ public partial class Snow : Node3D {
     [NodePath] private Clipmap _clipmap;
 
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public SnowResource SnowDefinition { get;set; }
     [Export] public int LODLevels { get;set; } = 8;
@@ -38,6 +39,7 @@ public partial class Snow : Node3D {
 
         _clipmap.ClipmapMesh.Layers = (uint) SnowDefinition.VisualInstanceLayers;
         _clipmap.ZonesSize = ZonesSize;
+        _clipmap.Resolution = Resolution;
         _clipmap.TerrainZones = TerrainZones;
         _clipmap.Levels = LODLevels;
         _clipmap.RowsPerLevel = LODRowsPerLevel;
@@ -121,7 +123,7 @@ public partial class Snow : Node3D {
     }
 
     public void AddCompressedSnow(float x, float y) {
-        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize);
+        var zoneInfo = ZoneUtils.GetPixelToZoneInfo(x, y, ZonesSize, Resolution);
         var zone = TerrainZones.GetZoneForZoneInfo(zoneInfo);
 
         if (zone != null) {

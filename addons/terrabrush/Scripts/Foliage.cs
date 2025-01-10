@@ -20,6 +20,7 @@ public partial class Foliage : Node3D {
 
     [Export] public int FoliageIndex { get;set; }
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public TextureSetsResource TextureSets { get;set;}
 	[Export] public int TextureDetail { get;set; } = 1;
@@ -164,6 +165,7 @@ public partial class Foliage : Node3D {
 
         _foliageShader.SetShaderParameter(StringNames.HeightmapTextures, TerrainZones.HeightmapTextures);
         _foliageShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
+        _foliageShader.SetShaderParameter(StringNames.Resolution, (float) Resolution);
         _foliageShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Count());
 		_foliageShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
 

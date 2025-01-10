@@ -24,6 +24,7 @@ public partial class Terrain : Node3D {
     [NodePath] private StaticBody3D _terrainCollider;
 
     [Export] public int ZonesSize { get;set; }
+    [Export] public int Resolution { get;set; }
     [Export] public ZonesResource TerrainZones { get;set; }
     [Export] public float HeightMapFactor { get;set; }
     [Export] public ShaderMaterial CustomShader { get;set; }
@@ -78,6 +79,7 @@ public partial class Terrain : Node3D {
             _clipmap.ClipmapMesh.Visible = false;
         } else {
             _clipmap.ZonesSize = ZonesSize;
+            _clipmap.Resolution = Resolution;
             _clipmap.TerrainZones = TerrainZones;
             _clipmap.Levels = LODLevels;
             _clipmap.RowsPerLevel = LODRowsPerLevel;
@@ -114,7 +116,7 @@ public partial class Terrain : Node3D {
     	Clipmap.Shader.SetShaderParameter(StringNames.WaterFactor, WaterFactor);
     }
 
-	private void UpdateCollisionShape() {
+    private void UpdateCollisionShape() {
         if (CreateCollisionInThread) {
             _collisionCancellationSource?.Cancel();
             _collisionCancellationSource = new CancellationTokenSource();
@@ -140,6 +142,9 @@ public partial class Terrain : Node3D {
                 var zone = TerrainZones.Zones[i];
                 var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
                 var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
+                var rightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
+                var bottomNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
+                var bottomRightNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X + 1 && x.ZonePosition.Y == zone.ZonePosition.Y + 1);
 
                 var heightMapImage = zone.HeightMapTexture.GetImage();
                 var waterImage = zone.WaterTexture?.GetImage();
@@ -158,12 +163,28 @@ public partial class Terrain : Node3D {
                         var currentZone = zone;
                         var lookupX = x;
                         var lookupY = y;
-                        if (x == 0 && leftNeighbourZone != null) {
-                            currentZone = leftNeighbourZone;
-                            lookupX = heightMapImage.GetWidth() - 1;
-                        } else if (y == 0 && topNeighbourZone != null) {
-                            currentZone = topNeighbourZone;
-                            lookupY = heightMapImage.GetHeight() - 1;
+                        // TODO : This does not always work but it does most of the time.
+                        // We should ensure of the direction of the pixel directly in the shader, so it works all the time.
+                        if (ZonesSize % 2 == 0) {
+                            if (x == 0 && leftNeighbourZone != null) {
+                                currentZone = leftNeighbourZone;
+                                lookupX = heightMapImage.GetWidth() - 1;
+                            } else if (y == 0 && topNeighbourZone != null) {
+                                currentZone = topNeighbourZone;
+                                lookupY = heightMapImage.GetHeight() - 1;
+                            }
+                        } else {
+                            if (x == heightMapImage.GetWidth() - 1 && y == heightMapImage.GetHeight() - 1 && bottomRightNeighbourZone != null) {
+                                currentZone = bottomRightNeighbourZone;
+                                lookupX = 0;
+                                lookupY = 0;
+                            } else if (x == heightMapImage.GetWidth() - 1 && rightNeighbourZone != null) {
+                                currentZone = rightNeighbourZone;
+                                lookupX = 0;
+                            } else if (y == heightMapImage.GetHeight() - 1 && bottomNeighbourZone != null) {
+                                currentZone = bottomNeighbourZone;
+                                lookupY = 0;
+                            }
                         }
 
                         var pixelHeight = GetHeightForZone(currentZone, lookupX, lookupY, imagesCache);
@@ -186,22 +207,26 @@ public partial class Terrain : Node3D {
         } else {
             updateAction();
         }
-	}
+    }
 
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
         shape.MapData = data;
     }
 
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
+
         var collisionShape = new CollisionShape3D();
         _terrainCollider.AddChild(collisionShape);
 
         collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
+        collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
 
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
-        heightMapShape3D.MapWidth = ZonesSize;
-        heightMapShape3D.MapDepth = ZonesSize;
+
+        heightMapShape3D.MapWidth = resolutionZoneSize;
+        heightMapShape3D.MapDepth = resolutionZoneSize;
 
         return heightMapShape3D;
     }

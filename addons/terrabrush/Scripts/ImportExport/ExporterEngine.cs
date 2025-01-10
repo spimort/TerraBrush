@@ -21,17 +21,21 @@ public static class ExporterEngine {
         var minZoneY = terrabrush.TerrainZones.Zones.Min(x => x.ZonePosition.Y);
         var maxZoneY = terrabrush.TerrainZones.Zones.Max(x => x.ZonePosition.Y);
 
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(terrabrush.ZonesSize, terrabrush.Resolution);
+        var resolutionWidth = (maxZoneX + 1 - minZoneX) * resolutionZoneSize;
+        var resolutionHeight = (maxZoneY + 1 - minZoneY) * resolutionZoneSize;
+
         var width = (maxZoneX + 1 - minZoneX) * terrabrush.ZonesSize;
         var height = (maxZoneY + 1 - minZoneY) * terrabrush.ZonesSize;
 
         var firstZone = terrabrush.TerrainZones.Zones[0];
 
-        var resultHeightmapImage = Image.CreateEmpty(width, height, false, firstZone.HeightMapTexture.GetFormat());
+        var resultHeightmapImage = Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.HeightMapTexture.GetFormat());
         var resultSplatmapsImages = firstZone.SplatmapsTexture?.Select(x => Image.CreateEmpty(width, height, false, x.GetFormat())).ToList();
         var resultFoliagesImages = firstZone.FoliagesTexture?.Select(x => Image.CreateEmpty(width, height, false, x.GetFormat())).ToList();
         var resultObjectsImages = firstZone.ObjectsTexture?.Select(x => Image.CreateEmpty(width, height, false, x.GetFormat())).ToList();
-        var resultWaterImage = firstZone.WaterTexture == null ? null : Image.CreateEmpty(width, height, false, firstZone.WaterTexture.GetFormat());
-        var resultSnowImage = firstZone.SnowTexture == null ? null : Image.CreateEmpty(width, height, false, firstZone.SnowTexture.GetFormat());
+        var resultWaterImage = firstZone.WaterTexture == null ? null : Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.WaterTexture.GetFormat());
+        var resultSnowImage = firstZone.SnowTexture == null ? null : Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.SnowTexture.GetFormat());
 
         for (var zoneX = minZoneX; zoneX <= maxZoneX; zoneX++) {
             for (var zoneY = minZoneY; zoneY <= maxZoneY; zoneY++) {
@@ -52,12 +56,24 @@ public static class ExporterEngine {
                     snowImage = zone.SnowTexture?.GetImage();
                 }
 
+                // Process the images that works with resolution
+                for (var x = 0; x < resolutionZoneSize; x++) {
+                    for (var y = 0; y < resolutionZoneSize; y++) {
+                        var globalX = x + (zoneX - minZoneX) * resolutionZoneSize;
+                        var globalY = y + (zoneY - minZoneY) * resolutionZoneSize;
+
+                        resultHeightmapImage.SetPixel(globalX, globalY, heightMapImage == null ? Colors.Black : heightMapImage.GetPixel(x, y));
+                        resultWaterImage?.SetPixel(globalX, globalY, waterImage == null ? new Color(0, 0.5f, 0.5f, 1f) : waterImage.GetPixel(x, y));
+                        resultSnowImage?.SetPixel(globalX, globalY, snowImage == null ? Colors.Black : snowImage.GetPixel(x, y));
+                    }
+                }
+
+                // Process the images that does not work with resolution
                 for (var x = 0; x < terrabrush.ZonesSize; x++) {
                     for (var y = 0; y < terrabrush.ZonesSize; y++) {
                         var globalX = x + (zoneX - minZoneX) * terrabrush.ZonesSize;
                         var globalY = y + (zoneY - minZoneY) * terrabrush.ZonesSize;
 
-                        resultHeightmapImage.SetPixel(globalX, globalY, heightMapImage == null ? Colors.Black : heightMapImage.GetPixel(x, y));
                         if (splatmapsImages != null) {
                             for (var itemIndex = 0; itemIndex < splatmapsImages.Count; itemIndex++) {
                                 var itemItem = splatmapsImages[itemIndex];
@@ -76,8 +92,6 @@ public static class ExporterEngine {
                                 resultObjectsImages[itemIndex].SetPixel(globalX, globalY, itemItem.GetPixel(x, y));
                             }
                         }
-                        resultWaterImage?.SetPixel(globalX, globalY, waterImage == null ? new Color(0, 0.5f, 0.5f, 1f) : waterImage.GetPixel(x, y));
-                        resultSnowImage?.SetPixel(globalX, globalY, snowImage == null ? Colors.Black : snowImage.GetPixel(x, y));
                     }
                 }
             }

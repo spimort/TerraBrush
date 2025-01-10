@@ -8,6 +8,8 @@ namespace TerraBrush;
 public class WaterTool : ToolBase {
     private HashSet<ZoneResource> _sculptedZones;
 
+    protected override bool ApplyResolution => true;
+
     public WaterTool(TerraBrush terraBrush) : base(terraBrush) {}
 
     public override void BeginPaint() {

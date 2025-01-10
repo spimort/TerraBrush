@@ -9,6 +9,7 @@ namespace TerraBrush;
 public partial class ImporterSettings : GodotObject {
     public Texture2D Heightmap { get;set; }
     public bool UseGreenChannelForHoles { get;set;}
+    public bool ScaleToResolution { get;set;}
     public float HeightmapScale { get;set; }
     public Texture2D[] Splatmaps { get;set;}
     public Texture2D[] Foliages { get;set;}
@@ -32,12 +33,14 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Heightmap.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateHeightmapImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateHeightmapImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     var resultHeight = pixel.R * settings.HeightmapScale;
                     image.SetPixel(x, y, new Color(resultHeight, settings.UseGreenChannelForHoles ? pixel.G : 0, 0, 1));
-                }
+                },
+                true,
+                settings.ScaleToResolution
             );
 
             foreach (var resultImage in resultImages) {
@@ -135,11 +138,13 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Water.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateWaterImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateWaterImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);
-                }
+                },
+                true,
+                settings.ScaleToResolution
             );
 
             foreach (var resultImage in resultImages) {
@@ -153,11 +158,13 @@ public static class ImporterEngine {
                 terrabrush,
                 settings.Snow.GetImage(),
                 (zoneX, zoneY) => {
-                    return ZoneUtils.CreateSnowImage(terrabrush.ZonesSize, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                    return ZoneUtils.CreateSnowImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
                 },
                 (x, y, pixel, image) => {
                     image.SetPixel(x, y, pixel);
-                }
+                },
+                true,
+                settings.ScaleToResolution
             );
 
             foreach (var resultImage in resultImages) {
@@ -181,9 +188,18 @@ public static class ImporterEngine {
         return zone;
     }
 
-    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrushTool terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage) {
-        var xNumberOfZones = Mathf.CeilToInt(image.GetWidth() / terrabrush.ZonesSize);
-        var yNumberOfZones = Mathf.CeilToInt(image.GetHeight() / terrabrush.ZonesSize);
+    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrushTool terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage, bool applyResolution = false, bool scaleToResolution = true) {
+        if (terrabrush.Resolution != 1 && applyResolution && scaleToResolution) {
+            var newImage = new Image();
+            newImage.CopyFrom(image);
+            newImage.Resize(image.GetWidth() / terrabrush.Resolution, image.GetHeight() / terrabrush.Resolution);
+            image = newImage;
+        }
+
+        var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(terrabrush.ZonesSize, applyResolution ? terrabrush.Resolution : 1);
+
+        var xNumberOfZones = Mathf.CeilToInt(image.GetWidth() / (float) resolutionZoneSize);
+        var yNumberOfZones = Mathf.CeilToInt(image.GetHeight() / (float) resolutionZoneSize);
         var resultList = new List<ImportImageInfo>();
 
         for (var x = 0; x < xNumberOfZones; x++) {
@@ -208,6 +224,16 @@ public static class ImporterEngine {
                 var toY = y + startingY;
 
                 var pixel = Colors.Black;
+
+                // Try to match the next pixel with the one of the previous zone, for better transition
+                if (x == newImageSize - 1) {
+                    toX += 1;
+                }
+
+                if (y == newImageSize - 1) {
+                    toY += 1;
+                }
+
                 if (toX < image.GetWidth() && toY < image.GetHeight()) {
                     pixel = image.GetPixel(toX, toY);
                 }

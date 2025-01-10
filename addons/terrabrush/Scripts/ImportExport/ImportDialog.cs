@@ -18,6 +18,7 @@ public partial class ImportDialog : Window {
     [NodePath] private ImportImageRow _snowRow;
     [NodePath] private SpinBox _heightmapScaleSpinBox;
     [NodePath] private CheckBox _useGreenChannelForHolesCheckbox;
+    [NodePath] private CheckBox _scaleToResolutionCheckbox;
 	[NodePath] private Button _previewButton;
 	[NodePath] private Button _okButton;
 	[NodePath] private Button _cancelButton;
@@ -90,6 +91,8 @@ public partial class ImportDialog : Window {
 
             _previewTerrain?.QueueFree();
             _previewTerrain = new TerraBrush();
+            _previewTerrain.ZonesSize = OriginialTerraBrush.ZonesSize;
+            _previewTerrain.Resolution = OriginialTerraBrush.Resolution;
             ImporterEngine.ImportTerrain(_previewTerrain, settings);
             _subViewport.AddChild(_previewTerrain);
         };
@@ -110,6 +113,7 @@ public partial class ImportDialog : Window {
             Heightmap = _heightmapRow.ImageTexture,
             HeightmapScale = (float) _heightmapScaleSpinBox.Value,
             UseGreenChannelForHoles = _useGreenChannelForHolesCheckbox.ButtonPressed,
+            ScaleToResolution = _scaleToResolutionCheckbox.ButtonPressed,
             Splatmaps = _splatmapsContainer.GetChildren().ToList()
                 .Where(x => x is ImportImageRow importRow && importRow.ImageTexture != null)
                 .Cast<ImportImageRow>()

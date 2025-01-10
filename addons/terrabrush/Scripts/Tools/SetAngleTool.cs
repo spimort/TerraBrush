@@ -14,6 +14,8 @@ public class SetAngleTool : ToolBase {
     private Vector3? _setAngleInitialPoint = null;
     private Node3D _initialPointMesh = null;
 
+    protected override bool ApplyResolution => true;
+
     public SetAngleTool(TerraBrush terraBrush) : base(terraBrush) {
         ClearInitialPointMesh();
 
@@ -93,7 +95,7 @@ public class SetAngleTool : ToolBase {
 
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
         if (Input.IsKeyPressed(Key.Ctrl)) {
-            var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize);
+            var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize, _terraBrush.Resolution);
             var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0);
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
 
@@ -110,7 +112,7 @@ public class SetAngleTool : ToolBase {
         }
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
-            var absolutePosition = imageZoneInfo.ZoneInfo.ImagePosition + (imageZoneInfo.ZoneInfo.ZonePosition * (_terraBrush.ZonesSize - 1));
+            var absolutePosition = (imageZoneInfo.ZoneInfo.ImagePosition * _terraBrush.Resolution) + (imageZoneInfo.ZoneInfo.ZonePosition * (_terraBrush.ZonesSize - 1));
             var distanceToStartingPoint = new Vector2(_setAngleInitialPoint.Value.X, _setAngleInitialPoint.Value.Z).DistanceTo(absolutePosition);
             var angleHeight = (float) (distanceToStartingPoint * Mathf.Tan(Mathf.DegToRad(_setAngleValue))) + _setAngleInitialPoint.Value.Y;
 

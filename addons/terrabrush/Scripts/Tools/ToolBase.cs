@@ -19,6 +19,8 @@ public abstract class ToolBase {
     protected TerraBrush _terraBrush;
     private List<ImageTexture> _modifiedUndoTextures;
 
+    protected virtual bool ApplyResolution => false;
+
     protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength);
 
     public ToolBase(TerraBrush terraBrush) {
@@ -98,27 +100,46 @@ public abstract class ToolBase {
 
         var startingX = imagePosition.X - (brushSize / 2);
         var startingY = imagePosition.Y - (brushSize / 2);
-        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize);
+        var startingZoneInfo = ZoneUtils.GetPixelToZoneInfo(startingX, startingY, _terraBrush.ZonesSize, GetResolution());
 
+        var pointsCache = new HashSet<string>();
         for (var x = 0; x < brushSize; x++) {
             for (var y = 0; y < brushSize; y++) {
-                var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, x, y, ignoreLockedZone);
-                if (imageZoneInfo != null) {
-                    var brushPixelValue = brushImage.GetPixel(x, y);
-                    var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
+                var offsetX = x;
+                var offsetY = y;
+                if (_terraBrush.Resolution != 1 && ApplyResolution) {
+                    offsetX = Mathf.FloorToInt(Mathf.Remap(x, 0, brushSize, 0, Mathf.CeilToInt(brushSize / _terraBrush.Resolution)));
+                    offsetY = Mathf.FloorToInt(Mathf.Remap(y, 0, brushSize, 0, Mathf.CeilToInt(brushSize / _terraBrush.Resolution)));
+                }
+                var imageZoneInfo = GetImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
 
-                    onBrushPixel(
-                        imageZoneInfo,
-                        brushPixelStrength
-                    );
+                if (imageZoneInfo != null) {
+                    var zoneKey = imageZoneInfo.ZoneInfo.ZoneKey;
+                    var zoneImagePosition = imageZoneInfo.ZoneInfo?.ImagePosition ?? new Vector2I(0, 0);
+                    var positionKey = (zoneImagePosition.X << 8) + zoneImagePosition.Y;
+                    // Create a cache key with the zone and the position
+                    var zonePositionKey = $"{zoneKey}_{positionKey}";
+
+                    if (_terraBrush.Resolution == 1 || !ApplyResolution || !pointsCache.Contains(zonePositionKey)) {
+                        if (_terraBrush.Resolution != 1) {
+                            pointsCache.Add(zonePositionKey);
+                        }
+
+                        var brushPixelValue = brushImage.GetPixel(x, y);
+                        var brushPixelStrength = brushPixelValue.A * (1.0f - imageZoneInfo.LockedStrength);
+
+                        onBrushPixel(
+                            imageZoneInfo,
+                            brushPixelStrength
+                        );
+                    }
                 }
             }
         }
-
     }
 
     protected ImageZoneInfo GetImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false) {
-        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize);
+        var zoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(startingZoneInfo, new Vector2I(offsetX, offsetY), _terraBrush.ZonesSize, GetResolution());
         _zonesPositionCache.TryGetValue(zoneInfo.ZoneKey, out ZoneResource zone);
 
         if (zone == null) {
@@ -140,8 +161,19 @@ public abstract class ToolBase {
 
         if (zone != null) {
             (bool locked, float lockedStrength) lockInfo = (false, 0.0f);
-            if (!ignoreLockedZone) {
-                lockInfo = IsZonePixelLocked(zone, zoneInfo);
+            if (!ignoreLockedZone && zone.LockTexture != null) {
+                var lockZoneInfo = zoneInfo;
+                if (_terraBrush.Resolution != 1 && ApplyResolution) {
+                    lockZoneInfo = ZoneUtils.GetZoneInfoFromZoneOffset(
+                        new ZoneInfo() {
+                            ImagePosition = startingZoneInfo.ImagePosition * _terraBrush.Resolution
+                        },
+                        new Vector2I(offsetX * _terraBrush.Resolution, offsetY * _terraBrush.Resolution),
+                        _terraBrush.ZonesSize,
+                        1
+                    );
+                }
+                lockInfo = IsZonePixelLocked(zone, lockZoneInfo);
             }
 
             if (!lockInfo.locked) {
@@ -171,10 +203,6 @@ public abstract class ToolBase {
     }
 
     private (bool locked, float lockedStrength) IsZonePixelLocked(ZoneResource zone, ZoneInfo zoneInfo) {
-        if (zone.LockTexture == null) {
-            return (false, 0.0f);
-        }
-
         var image = zone.LockTexture.GetImage();
         var pixel = image.GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
         return (pixel.R == 1.0, pixel.R);
@@ -199,6 +227,14 @@ public abstract class ToolBase {
         image.SetData(imageTexture.GetWidth(), imageTexture.GetHeight(), imageTexture.GetImage().HasMipmaps(), imageTexture.GetFormat(), imageTexture.GetImage().GetData());
 
         return image;
+    }
+
+    private int GetResolution() {
+        if (ApplyResolution) {
+            return _terraBrush.Resolution;
+        }
+
+        return 1;
     }
 
     public class ImageZoneInfo {

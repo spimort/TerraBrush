@@ -262,7 +262,7 @@ public partial class Plugin : EditorPlugin {
         }
 
         _currentTerraBrushNode.Terrain.TerrainUpdated();
-        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures();
+        _currentTerraBrushNode.TerrainZones?.UpdateImageTextures(_currentTerraBrushNode.ZonesSize);
 
         _currentTerraBrushNode.ClearObjects();
         await _currentTerraBrushNode.CreateObjects();
@@ -300,7 +300,7 @@ public partial class Plugin : EditorPlugin {
         for (var i = 0; i < 20000; i++) {
             var position = from + (direction * i * 0.1f) - _currentTerraBrushNode.GlobalPosition;
 
-            var zoneInfo = ZoneUtils.GetPixelToZoneInfo(position.X + (_currentTerraBrushNode.ZonesSize / 2), position.Z + (_currentTerraBrushNode.ZonesSize / 2), _currentTerraBrushNode.ZonesSize);
+            var zoneInfo = ZoneUtils.GetPixelToZoneInfo(position.X + (_currentTerraBrushNode.ZonesSize / 2), position.Z + (_currentTerraBrushNode.ZonesSize / 2), _currentTerraBrushNode.ZonesSize, _currentTerraBrushNode.Resolution);
             var zone = _currentTerraBrushNode?.TerrainZones?.GetZoneForZoneInfo(zoneInfo);
             if (zone != null && zone.HeightMapTexture != null) {
                 heightmapsCache.TryGetValue(zone.HeightMapTexture, out var heightMapImage);

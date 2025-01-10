@@ -30,9 +30,9 @@ public partial class ZonesResource : Resource {
 
     [Export] public ZoneResource[] Zones { get;set; }
 
-    public void UpdateLockTexture() {
-        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zone.HeightMapTexture.GetWidth(), zone.HeightMapTexture.GetHeight(), false, Image.Format.Rf)).ToArray();
-		
+    public void UpdateLockTexture(int zoneSize) {
+        var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf)).ToArray();
+
 		if (images.Length != 0) {
             _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
@@ -65,7 +65,7 @@ public partial class ZonesResource : Resource {
 
     public void UpdateFoliagesTextures() {
 		if (_foliagesTextures?.Length <= 0) return;
-		
+
 		for (var i = 0; i < _foliagesTextures?.Length; i++) {
 			UpdateFoliagesTextures(i);
 		}
@@ -158,7 +158,7 @@ public partial class ZonesResource : Resource {
         };
         Zones = newList.ToArray();
 
-        UpdateImageTextures();
+        UpdateImageTextures(terraBrush.ZonesSize);
 
         terraBrush.Terrain?.Clipmap?.UpdateAABB();
         terraBrush.Water?.Clipmap?.UpdateAABB();
@@ -171,9 +171,9 @@ public partial class ZonesResource : Resource {
         _dirtyImageTextures.Add(imageTexture);
     }
 
-    public void UpdateImageTextures() {
+    public void UpdateImageTextures(int zoneSize) {
         if (Engine.IsEditorHint()) {
-            UpdateLockTexture();
+            UpdateLockTexture(zoneSize);
         }
         UpdateHeightmaps();
         UpdateSplatmapsTextures();
