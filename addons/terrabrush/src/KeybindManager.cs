@@ -1,5 +1,4 @@
-﻿#if TOOLS
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Godot;
@@ -158,4 +157,3 @@ public partial class KeybindManager : RefCounted {
 		return DescribeKey((InputEventKey)key[0]);
 	}
 }
-#endif

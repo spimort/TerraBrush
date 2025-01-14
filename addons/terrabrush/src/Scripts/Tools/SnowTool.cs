@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -33,4 +32,3 @@ public class SnowTool : ToolBase {
         _terraBrush.TerrainZones.UpdateSnowTextures();
     }
 }
-#endif

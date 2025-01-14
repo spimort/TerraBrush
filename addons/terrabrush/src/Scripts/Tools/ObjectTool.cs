@@ -1,4 +1,3 @@
-#if TOOLS
 using System.Collections.Generic;
 using Godot;
 
@@ -86,4 +85,3 @@ public class ObjectTool : ToolBase {
         objectsNode.UpdateMeshesFromTool();
     }
 }
-#endif

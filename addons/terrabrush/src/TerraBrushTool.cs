@@ -4,7 +4,6 @@ using Godot;
 
 namespace TerraBrush;
 
-#if TOOLS
 public enum TerrainToolType {
     None = 0,
     [ToolType(typeof(SculptTool))] TerrainAdd = 1,
@@ -29,10 +28,8 @@ public enum TerrainToolType {
     [ToolType(typeof(LockTool))] LockAdd = 20,
     [ToolType(typeof(LockTool))] LockRemove = 21,
 }
-#endif
 
 public partial class TerraBrushTool : Node3D {
-#if TOOLS
     private int _brushSize = 100;
     private Image _originalBrushImage;
     private Image _brushImage;
@@ -205,7 +202,6 @@ public partial class TerraBrushTool : Node3D {
 
         ExporterEngine.ExportTerrain(this, folder);
     }
-#endif
 
 #region  " Virtual overrides "
     public virtual int ZonesSize { get;set; }

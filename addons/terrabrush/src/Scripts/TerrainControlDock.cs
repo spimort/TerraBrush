@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -236,4 +235,3 @@ public partial class TerrainControlDock : Control {
         UpdateSelectedTerrainTool();
     }
 }
-#endif

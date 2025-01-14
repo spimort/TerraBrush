@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -59,4 +58,3 @@ public partial class ImportImageRow : PanelContainer {
         };
     }
 }
-#endif

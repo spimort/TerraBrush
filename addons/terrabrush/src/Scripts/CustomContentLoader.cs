@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -154,4 +153,3 @@ public static class CustomContentLoader {
         }
     }
 }
-#endif

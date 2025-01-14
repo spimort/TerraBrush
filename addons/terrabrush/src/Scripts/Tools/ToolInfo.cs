@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -26,4 +25,3 @@ public partial class ToolInfo : Control {
         }
     }
 }
-#endif

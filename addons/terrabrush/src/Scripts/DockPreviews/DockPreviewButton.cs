@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using Godot;
 
@@ -125,4 +124,3 @@ public partial class DockPreviewButton : TextureButton {
         }
     }
 }
-#endif

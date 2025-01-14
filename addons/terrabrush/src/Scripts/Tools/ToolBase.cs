@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -244,4 +243,3 @@ public abstract class ToolBase {
         public float LockedStrength { get;set; }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if TOOLS
 using System.Linq;
 using Godot;
 
@@ -37,4 +36,3 @@ public static class CompatibilityScript_0_4_Alpha {
 		GD.Print("Conversion done!");
 	}
 }
-#endif

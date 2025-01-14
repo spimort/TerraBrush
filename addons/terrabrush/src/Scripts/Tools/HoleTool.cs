@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,4 +50,3 @@ public class HoleTool : ToolBase {
         _terraBrush.TerrainZones.UpdateHeightmaps();
     }
 }
-#endif

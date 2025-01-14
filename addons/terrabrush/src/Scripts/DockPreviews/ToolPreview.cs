@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -7,4 +6,3 @@ namespace TerraBrush;
 public partial class ToolPreview : DockPreviewButton {
     [Export] public TerrainToolType ToolType { get;set; }
 }
-#endif

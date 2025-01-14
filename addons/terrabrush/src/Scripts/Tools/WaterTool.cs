@@ -1,4 +1,3 @@
-#if TOOLS
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -52,4 +51,3 @@ public class WaterTool : ToolBase {
         _terraBrush.TerrainZones.UpdateWaterTextures();
     }
 }
-#endif

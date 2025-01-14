@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -39,4 +38,3 @@ public partial class KeyListenDialog : Window {
 		}
 	}
 }
-#endif

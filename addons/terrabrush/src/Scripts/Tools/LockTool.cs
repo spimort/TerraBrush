@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,4 +36,3 @@ public class LockTool : ToolBase {
         _terraBrush.TerrainZones.UpdateLockTexture(_terraBrush.ZonesSize);
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -29,4 +28,3 @@ public partial class ButtonEditorProperty : EditorProperty {
         methodInfo?.Invoke(_originalObject, null);
     }
 }
-#endif

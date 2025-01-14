@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 using Microsoft.VisualBasic;
 using System;
@@ -600,4 +599,3 @@ public partial class Plugin : EditorPlugin {
         _currentTerraBrushNode.AutoAddZones = _autoAddZonesCheckbox.ButtonPressed;
     }
 }
-#endif

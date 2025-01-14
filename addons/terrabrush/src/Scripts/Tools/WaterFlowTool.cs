@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -51,4 +50,3 @@ public class WaterFlowTool : ToolBase {
         _previousWaterMousePosition = imagePosition;
     }
 }
-#endif

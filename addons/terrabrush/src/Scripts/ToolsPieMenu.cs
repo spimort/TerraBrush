@@ -1,4 +1,3 @@
-#if TOOLS
 using System;
 using System.Linq;
 using Godot;
@@ -22,4 +21,3 @@ public partial class ToolsPieMenu : Control {
         }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if TOOLS
 using Godot;
 using System.Text;
 
@@ -80,4 +79,3 @@ public partial class KeybindSettings : AcceptDialog {
 		}
 	}
 }
-#endif
