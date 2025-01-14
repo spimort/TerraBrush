@@ -69,12 +69,12 @@ public static class ZoneUtils {
         } else {
             var resourcePath = Utils.PathCombineForwardSlash(dataPath, filePath);
             if (Godot.FileAccess.FileExists(resourcePath)) {
-                imageTexture = ResourceLoader.Load<ImageTexture>(resourcePath);
+                imageTexture = (ImageTexture) ResourceLoader.Singleton.Load(resourcePath);
                 imageTexture.SetImage(image);
             } else {
                 imageTexture = ImageTexture.CreateFromImage(image);
                 ResourceSaver.Save(imageTexture, resourcePath);
-                imageTexture = ResourceLoader.Load<ImageTexture>(resourcePath);
+                imageTexture = (ImageTexture) ResourceLoader.Singleton.Load(resourcePath);
             }
         }
 

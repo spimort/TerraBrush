@@ -146,7 +146,7 @@ public class SetAngleTool : ToolBase {
             _initialPointMesh?.QueueFree();
         } else {
             if (_initialPointMesh == null) {
-                _initialPointMesh = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/SetAngleInitialPoint.tscn").Instantiate<Node3D>();
+                _initialPointMesh = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/SetAngleInitialPoint.tscn")).Instantiate<Node3D>();
 
                 var container = _terraBrush.GetNodeOrNull(new NodePath((string)StringNames.SetAnglePointContainer));
                 if (container == null) {

@@ -27,7 +27,7 @@ public partial class Objects : Node3D, IObjectsNode {
             return;
         }
 
-        _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
+        _defaultNoise = (Texture2D) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
         UpdateObjects();
     }

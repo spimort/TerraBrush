@@ -31,7 +31,7 @@ public partial class TextureSetResource : Resource {
                 }
 
                 if (!string.IsNullOrWhiteSpace(normalFile)) {
-                    NormalTexture = ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, normalFile));
+                    NormalTexture = (Texture2D) ResourceLoader.Singleton.Load(System.IO.Path.Combine(directory, normalFile));
                 }
 
                 RoughnessTexture ??= FindTexture(RoughnessFilesHint, directory, directoryFiles);
@@ -51,7 +51,7 @@ public partial class TextureSetResource : Resource {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
         if (files.Count() == 1) {
             var file = files.ElementAt(0);
-            return ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, file));
+            return (Texture2D) ResourceLoader.Singleton.Load(System.IO.Path.Combine(directory, file));
         }
         return null;
     }

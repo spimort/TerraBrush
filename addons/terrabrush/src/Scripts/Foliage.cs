@@ -41,7 +41,7 @@ public partial class Foliage : Node3D {
             ShaderMaterial shaderMaterial;
             if (Definition.CustomShader == null) {
                 shaderMaterial = new ShaderMaterial() {
-                    Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader")
+                    Shader = (Shader) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader")
                 };
             } else {
                 shaderMaterial = Utils.CreateCustomShaderCopy(Definition.CustomShader);
@@ -53,7 +53,7 @@ public partial class Foliage : Node3D {
             this._foliageShader = (ShaderMaterial) this._particles.ProcessMaterial;
         }
 
-        _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
+        _defaultNoise = (Texture2D) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
         UpdateFoliage();
         UpdateAABB();

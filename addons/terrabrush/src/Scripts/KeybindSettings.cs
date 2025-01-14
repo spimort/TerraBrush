@@ -53,7 +53,7 @@ public partial class KeybindSettings : AcceptDialog {
 
 		switch ((ShortcutType)id) {
 			case ShortcutType.Add:
-				var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeyListenDialog.tscn")
+				var dlg = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/KeyListenDialog.tscn"))
 					.Instantiate<KeyListenDialog>();
 
 				dlg.KeyListenAccepted += (key) => {

@@ -64,9 +64,9 @@ public partial class Plugin : EditorPlugin {
         };
         AddControlToDock(DockSlot.RightBl, _terrainDockContainer);
 
-		_terrainControlDockPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
-        _toolsPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ToolsPieMenu.tscn");
-        _customContentPieMenuPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
+		_terrainControlDockPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/TerrainControlDock.tscn");
+        _toolsPieMenuPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolsPieMenu.tscn");
+        _customContentPieMenuPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
 
@@ -76,7 +76,7 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void HandleKeyBindings() {
-        var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeybindSettings.tscn")
+        var dlg = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/KeybindSettings.tscn"))
             .Instantiate<KeybindSettings>();
         dlg.Confirmed += () => dlg.QueueFree();
         GetTree().Root.AddChild(dlg);
@@ -93,7 +93,7 @@ public partial class Plugin : EditorPlugin {
         }
     }
 
-    public override bool _Handles(GodotObject @object) {
+    protected override bool _Handles(GodotObject @object) {
         return @object is TerraBrush;
     }
 
@@ -103,7 +103,7 @@ public partial class Plugin : EditorPlugin {
         _currentTerraBrushNode?.SaveResources();
     }
 
-    public override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
+    protected override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
         var preventGuiInput = false;
 
         if (_toolInfo != null) {
@@ -124,7 +124,7 @@ public partial class Plugin : EditorPlugin {
         }
 
         if (@event is InputEventKey inputEvent) {
-            _terrainControlDock.SetShiftPressed(Input.IsKeyPressed(Key.Shift));
+            _terrainControlDock.SetShiftPressed(Input.Singleton.IsKeyPressed(Key.Shift));
 
             if (!inputEvent.Pressed || inputEvent.Echo) return base._Forward3DGuiInput(viewportCamera, @event);
 
@@ -149,7 +149,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
-                ShowBrushNumericSelector(1, 200, Colors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
+                ShowBrushNumericSelector(1, 200, NamedColors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
                 }, KeybindManager.StringNames.BrushSizeSelector);
 
@@ -157,7 +157,7 @@ public partial class Plugin : EditorPlugin {
             }
 
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
-                ShowBrushNumericSelector(1, 100, Colors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
+                ShowBrushNumericSelector(1, 100, NamedColors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
                 }, KeybindManager.StringNames.BrushStrengthSelector);
 
@@ -361,7 +361,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
         _brushDecal?.QueueFree();
 
-        _brushDecal = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
+        _brushDecal = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
         _brushDecal.Name = (StringName)"BrushDecal";
         AddChild(_brushDecal);
 
@@ -379,7 +379,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         _toolInfo?.QueueFree();
 
-        _toolInfo = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
+        _toolInfo = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
         _toolInfo.Name = (StringName)"ToolInfo";
         AddChild(_toolInfo);
 
@@ -563,7 +563,7 @@ public partial class Plugin : EditorPlugin {
         if (previewActionName != actionName) {
             var activeViewport = GetActiveViewport();
             if (activeViewport != null) {
-                var selectorPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushNumericSelector.tscn");
+                var selectorPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushNumericSelector.tscn");
                 var selector = selectorPrefab.Instantiate<BrushNumericSelector>();
 
                 selector.MinValue = minVale;

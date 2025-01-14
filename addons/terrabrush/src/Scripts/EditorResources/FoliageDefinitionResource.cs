@@ -61,7 +61,7 @@ public partial class FoliageDefinitionResource : Resource {
             _customShader = value;
 
             if (value != null && value.Shader == null) {
-                var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader");
+                var defaultShader = (Shader) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader");
                 var defaultCode = defaultShader.Code;
 
                 var shader = new Shader {

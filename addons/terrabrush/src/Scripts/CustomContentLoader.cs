@@ -8,7 +8,7 @@ namespace TerraBrush;
 
 public static class CustomContentLoader {
     public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
-        var brushPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+        var brushPreviewPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
         var directories = new List<DirAccess>() {DirAccess.Open("res://addons/terrabrush/Assets/Brushes/")};
 
@@ -21,7 +21,7 @@ public static class CustomContentLoader {
         foreach (var directory in directories) {
             foreach (var file in directory.GetFiles()) {
                 if (file.EndsWith(".png", StringComparison.InvariantCultureIgnoreCase)) {
-                    var brushImage = ResourceLoader.Load<Texture2D>(Path.Combine(directory.GetCurrentDir(), file));
+                    var brushImage = (Texture2D) ResourceLoader.Singleton.Load(Path.Combine(directory.GetCurrentDir(), file));
                     var dockPreviewButton = brushPreviewPrefab.Instantiate<DockPreviewButton>();
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
@@ -54,7 +54,7 @@ public static class CustomContentLoader {
 
     public static void AddTexturesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.TextureSets?.TextureSets != null) {
-            var texturePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+            var texturePreviewPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.TextureSets.TextureSets.Length; i++) {
                 var textureSet = terraBrush.TextureSets.TextureSets[i];
@@ -80,7 +80,7 @@ public static class CustomContentLoader {
 
     public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Foliages != null) {
-            var foliagePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+            var foliagePreviewPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.Foliages.Length; i++) {
                 var foliage = terraBrush.Foliages[i];
@@ -114,7 +114,7 @@ public static class CustomContentLoader {
 
     public static void AddObjectsPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Objects != null) {
-            var objectPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+            var objectPreviewPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
             for (var i = 0; i < terraBrush.Objects.Length; i++) {
                 var objectItem = terraBrush.Objects[i];

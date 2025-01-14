@@ -60,7 +60,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
             return;
         }
 
-        _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
+        _defaultNoise = (Texture2D) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
         if (Engine.Singleton.IsEditorHint()) {
             _camera = EditorInterface.Singleton.GetEditorViewport3D().GetCamera3D();

@@ -23,7 +23,7 @@ public partial class SnowResource : Resource {
             _customShader = value;
 
             if (value != null && value.Shader == null) {
-                var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader");
+                var defaultShader = (Shader) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader");
                 var defaultCode = defaultShader.Code;
 
                 var shader = new Shader {

@@ -45,7 +45,7 @@ public partial class ImportImageRow : PanelContainer {
                     _isSelectorOpen = false;
 
                     if (file != null) {
-                        var imageResource = ResourceLoader.Load<Texture2D>(file);
+                        var imageResource = (Texture2D) ResourceLoader.Singleton.Load(file);
                         _textureButton.TextureNormal = (Texture2D)imageResource;
                         ImageTexture = (Texture2D)imageResource;
                     }

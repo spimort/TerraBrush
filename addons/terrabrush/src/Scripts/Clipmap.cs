@@ -79,7 +79,7 @@ public partial class Clipmap : Node3D {
     public void CreateMesh() {
         var clipmapShader = Shader;
         if (clipmapShader == null) {
-            clipmapShader = ResourceLoader.Load<ShaderMaterial>("res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader");
+            clipmapShader = (ShaderMaterial) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/clipmap_shader.gdshader");
         }
         _clipmapShader = clipmapShader;
         _clipmapMesh.MaterialOverride = clipmapShader;

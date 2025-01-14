@@ -33,7 +33,7 @@ public partial class ImportDialog : Window {
         base._Ready();
         this.RegisterNodePaths();
 
-        var importRowPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn");
+        var importRowPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn");
 
         // Splatmaps
         if (OriginialTerraBrush?.TextureSets?.TextureSets?.Length > 0) {

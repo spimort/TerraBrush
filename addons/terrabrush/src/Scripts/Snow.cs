@@ -46,7 +46,7 @@ public partial class Snow : Node3D {
 
         if (SnowDefinition.CustomShader == null) {
             _clipmap.Shader = new ShaderMaterial() {
-                Shader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader")
+                Shader = (Shader) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader")
             };
         } else {
             _clipmap.Shader = Utils.CreateCustomShaderCopy(SnowDefinition.CustomShader);

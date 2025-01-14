@@ -45,7 +45,7 @@ public static class DialogUtils {
 
 	public static Task<float?> ShowNumericSelector(Node sourceNode, float defaultValue = 0, float? minValue = null, float? maxValue = null) {
 		var completionSource = new TaskCompletionSource<float?>();
-		var dialog = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/NumericSelectorDialog.tscn").Instantiate<NumericSelectorDialog>();
+		var dialog = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/NumericSelectorDialog.tscn")).Instantiate<NumericSelectorDialog>();
         dialog.MinValue = minValue;
         dialog.MaxValue = maxValue;
 
@@ -104,7 +104,7 @@ public static class DialogUtils {
 
 	public static Task<ImporterSettings> ShowImportDialog(Node sourceNode, TerraBrushTool originalTerraBursh) {
 		var completionSource = new TaskCompletionSource<ImporterSettings?>();
-		var dialog = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ImportExport/ImportDialog.tscn").Instantiate<ImportDialog>();
+		var dialog = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ImportExport/ImportDialog.tscn")).Instantiate<ImportDialog>();
 		dialog.OriginialTerraBrush = originalTerraBursh;
 
 		dialog.Accepted += settings => {

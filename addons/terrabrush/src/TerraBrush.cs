@@ -108,7 +108,7 @@ public partial class TerraBrush : TerraBrushTool {
             _customShader = value;
 
             if (value != null && value.Shader == null) {
-                var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader");
+                var defaultShader = (Shader) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader");
                 var defaultCode = defaultShader.Code;
 
                 var shader = new Shader {
@@ -161,14 +161,14 @@ public partial class TerraBrush : TerraBrushTool {
 
     public override ZonesResource TerrainZones { get;set; }
 
-    public async override void _Ready() {
+    protected async override void _Ready() {
         base._Ready();
 
         if (Engine.Singleton.IsEditorHint()) {
             CompatibilityScript_0_4_Alpha.Convert(this);
         }
 
-        _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
+        _defaultNoise = (Texture2D) ResourceLoader.Singleton.Load("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
         if (string.IsNullOrEmpty(DataPath)) {
             var scenePath = GetTree().EditedSceneRoot.SceneFilePath;
@@ -182,7 +182,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    public override string[] _GetConfigurationWarnings() {
+    protected override string[] _GetConfigurationWarnings() {
         var warnings = new List<string>();
 
         if (string.IsNullOrWhiteSpace(DataPath)) {
