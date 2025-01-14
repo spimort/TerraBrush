@@ -5,7 +5,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class Snow : Node3D {
     private const float DeCompressSpeed = 0.5f;
     private const float DeCompressOffsetSpeed = 2.0f;

@@ -13,7 +13,6 @@ public enum ObjectLoadingStrategy {
     NotThreaded = 3
 }
 
-[Tool]
 public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
 

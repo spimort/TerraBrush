@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class PieMenu : Control {
     private float _angleOffset;
     private int _buttonCount;

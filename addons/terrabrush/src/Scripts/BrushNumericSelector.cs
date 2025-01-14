@@ -3,7 +3,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class BrushNumericSelector : Control {
     private const int BackgroundMargin = 10;
 

@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
     public const string ButtonInspectorHintString = "ButtonHint";
 

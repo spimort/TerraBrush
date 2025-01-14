@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class CustomContentPieMenu : Control {
     [NodePath] private PieMenu _pieMenu;
 

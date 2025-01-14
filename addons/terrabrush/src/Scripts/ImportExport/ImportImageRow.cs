@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class ImportImageRow : PanelContainer {
     private bool _isSelectorOpen = false;
     private Texture2D _originalNormalTexture;

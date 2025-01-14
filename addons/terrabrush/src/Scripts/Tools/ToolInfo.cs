@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class ToolInfo : Control {
     [NodePath] private Label _label;
     [NodePath] private AnimationPlayer _animationPlayer;

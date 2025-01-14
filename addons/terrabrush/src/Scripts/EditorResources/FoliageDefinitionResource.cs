@@ -4,7 +4,6 @@ using Godot.Collections;
 
 namespace TerraBrush;
 
-[Tool]
 [GlobalClass]
 public partial class FoliageDefinitionResource : Resource {
     private static readonly List<string> _multimeshProperties = new List<string> {

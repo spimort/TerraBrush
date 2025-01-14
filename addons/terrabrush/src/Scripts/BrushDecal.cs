@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class BrushDecal : Node3D {
     [NodePath] private Decal _decal;
 

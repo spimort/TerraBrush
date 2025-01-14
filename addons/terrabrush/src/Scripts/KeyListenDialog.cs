@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class KeyListenDialog : Window {
 	[Signal]
 	public delegate void KeyListenAcceptedEventHandler(InputEventKey key);

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class NumericSelectorDialog : Window {
 	[Signal]
 	public delegate void NumericSelectorAcceptedEventHandler(float value);
@@ -25,8 +24,8 @@ public partial class NumericSelectorDialog : Window {
 		_okButton.Pressed += () => {
 			SendResult();
 		};
-		_cancelButton.Pressed += () => EmitSignal(SignalName.NumericSelectorCancelled);
-		CloseRequested += () => EmitSignal(SignalName.NumericSelectorCancelled);
+		_cancelButton.Pressed += () => EmitSignal((StringName)"NumericSelectorCancelled");
+		CloseRequested += () => EmitSignal((StringName)"NumericSelectorCancelled");
 
 		_spinBox.GetLineEdit().GrabFocus();
 
@@ -52,6 +51,7 @@ public partial class NumericSelectorDialog : Window {
     }
 
 	private void SendResult() {
-		EmitSignal(SignalName.NumericSelectorAccepted, (float) Math.Round(_spinBox.Value, 2));
+		var result = (Variant) (float) Math.Round(_spinBox.Value, 2);
+		EmitSignal((StringName)"NumericSelectorAccepted", new ReadOnlySpan<Variant>(ref result));
 	}
 }

@@ -4,7 +4,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class ToolsPieMenu : Control {
     [NodePath] private Control _pieMenu;
 

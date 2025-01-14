@@ -5,7 +5,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 [GlobalClass]
 public partial class ZonesResource : Resource {
     private HashSet<ImageTexture> _dirtyImageTextures = new();

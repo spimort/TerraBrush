@@ -3,7 +3,6 @@ using System.Text;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class KeybindSettings : AcceptDialog {
 	[NodePath] private Tree _keybindList;
 	private TreeItem _root;

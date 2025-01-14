@@ -9,7 +9,6 @@ public enum IconType {
     CircleWithSign = 3
 }
 
-[Tool]
 public partial class DockPreviewButton : TextureButton {
     public Action OnSelect { get;set; }
 

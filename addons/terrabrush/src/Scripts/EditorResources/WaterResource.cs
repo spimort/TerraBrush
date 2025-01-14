@@ -3,7 +3,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 [GlobalClass]
 public partial class WaterResource : Resource {
     private ShaderMaterial _customShader;

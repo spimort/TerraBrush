@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 [GlobalClass]
 public partial class ObjectOctreeLODDefinitionResource : Resource {
     [Export] public float MaxDistance { get;set; }

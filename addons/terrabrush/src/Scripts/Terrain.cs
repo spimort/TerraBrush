@@ -14,7 +14,6 @@ public enum AlphaChannelUsage {
     Height = 2
 }
 
-[Tool]
 public partial class Terrain : Node3D {
     private const float HoleValue = float.NaN;
 

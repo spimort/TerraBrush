@@ -9,7 +9,6 @@ public enum FoliageStrategy {
     GPUParticle = 2
 }
 
-[Tool]
 public partial class Foliage : Node3D {
     private ShaderMaterial _foliageShader;
     private Vector3 _lastUpdatedPosition = Vector3.Zero;

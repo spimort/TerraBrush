@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 [GlobalClass]
 public partial class ObjectOctreeLODMeshDefinitionResource : Resource {
     [Export] public Mesh Mesh { get;set; }

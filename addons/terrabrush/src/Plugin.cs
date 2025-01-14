@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class Plugin : EditorPlugin {
     private const float UpdateDelay = 0.005f;
     private const int ToolInfoOffset = 20;

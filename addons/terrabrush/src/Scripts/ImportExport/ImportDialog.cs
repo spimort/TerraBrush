@@ -3,7 +3,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class ImportDialog : Window {
     private TerraBrush _previewTerrain;
 

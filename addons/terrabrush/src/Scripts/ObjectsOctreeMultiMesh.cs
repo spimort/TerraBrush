@@ -27,7 +27,6 @@ internal class CollisionShapeInfoInfo {
     public Shape3D Shape { get;set; }
 }
 
-[Tool]
 public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private const int DecimateFactor = 5;
 

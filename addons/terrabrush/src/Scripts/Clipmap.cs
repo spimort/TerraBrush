@@ -5,7 +5,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class Clipmap : Node3D {
     private ShaderMaterial _clipmapShader;
 

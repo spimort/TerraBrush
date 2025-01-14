@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class TerrainControlDock : Control {
     private int _selectedBrushIndex = 0;
     private TerrainToolType _selectedTool = TerrainToolType.TerrainAdd;

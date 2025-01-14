@@ -7,7 +7,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[Tool]
 public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private CancellationTokenSource _objectsCreationCancellationTokenSource;
