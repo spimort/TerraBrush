@@ -26,7 +26,7 @@ public partial class ZonesResource : Resource {
     public Texture2DArray SnowTextures => _snowTextures;
     public ImageTexture ZonesMap => _zonesMap;
 
-    [Export] public ZoneResource[] Zones { get;set; }
+    public ZoneResource[] Zones { get;set; }
 
     public void UpdateLockTexture(int zoneSize) {
         var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf)).ToArray();
@@ -170,7 +170,7 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateImageTextures(int zoneSize) {
-        if (Engine.IsEditorHint()) {
+        if (Engine.Singleton.IsEditorHint()) {
             UpdateLockTexture(zoneSize);
         }
         UpdateHeightmaps();

@@ -11,14 +11,14 @@ public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private CancellationTokenSource _objectsCreationCancellationTokenSource;
 
-    [Export] public int ObjectsIndex { get;set; }
-    [Export] public ObjectDefinitionResource Definition { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public float WaterFactor { get;set; }
-    [Export] public bool LoadInThread { get;set; }
-    [Export] public int DefaultObjectFrequency { get;set;}
+    public int ObjectsIndex { get;set; }
+    public ObjectDefinitionResource Definition { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public float WaterFactor { get;set; }
+    public bool LoadInThread { get;set; }
+    public int DefaultObjectFrequency { get;set;}
 
     protected override void _Ready() {
         base._Ready();

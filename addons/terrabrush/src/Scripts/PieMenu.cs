@@ -16,9 +16,9 @@ public partial class PieMenu : Control {
     [NodePath] private Control _pieBackground;
     [NodePath] private Control _currentAnglePanel;
 
-    [Export] public int ButtonsRadiusRatio { get;set; } = 10;
-    [Export] public int ButtonsMinRadius { get;set; } = 150;
-    [Export] public string Label { get;set; }
+    public int ButtonsRadiusRatio { get;set; } = 10;
+    public int ButtonsMinRadius { get;set; } = 150;
+    public string Label { get;set; }
 
     protected override void _Ready() {
         this.RegisterNodePaths();

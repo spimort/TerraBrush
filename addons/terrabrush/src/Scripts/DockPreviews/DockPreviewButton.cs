@@ -16,18 +16,18 @@ public partial class DockPreviewButton : TextureButton {
     private Color _hoverColor;
     private Color _pressedColor;
 
-    [Export] public Texture2D ButtonImage { get;set; }
-    [Export] public TextureRect TextureRect { get;set; }
-    [Export] public MarginContainer MarginContainer { get;set; }
-    [Export] public Label Label { get;set; }
+    public Texture2D ButtonImage { get;set; }
+    public TextureRect TextureRect { get;set; }
+    public MarginContainer MarginContainer { get;set; }
+    public Label Label { get;set; }
 
-    [Export] public IconType IconType { get;set; } = IconType.Square;
-    [Export] public int Margin { get;set; }
-    [Export] public string Text { get;set; }
+    public IconType IconType { get;set; } = IconType.Square;
+    public int Margin { get;set; }
+    public string Text { get;set; }
 
-    [Export] public Texture2D TextureSquare { get;set; }
-    [Export] public Texture2D TextureCircle { get;set; }
-    [Export] public Texture2D TextureCircleWithSign { get;set; }
+    public Texture2D TextureSquare { get;set; }
+    public Texture2D TextureCircle { get;set; }
+    public Texture2D TextureCircleWithSign { get;set; }
 
     protected override void _Ready() {
         base._Ready();

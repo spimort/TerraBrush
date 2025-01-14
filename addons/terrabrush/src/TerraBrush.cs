@@ -44,8 +44,6 @@ public partial class TerraBrush : TerraBrushTool {
     public Action TerrainSettingsUpdated { get;set; }
     public bool AutoAddZones { get;set; }
 
-    [ExportGroup("TerrainSettings")]
-    [Export]
     public override int ZonesSize {
         get {
             return _zonesSize;
@@ -65,7 +63,6 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    [Export]
     public override int Resolution {
         get {
             return _resolution;
@@ -90,10 +87,8 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    [Export]
     public bool CollisionOnly { get;set; }
 
-    [Export(PropertyHint.Dir)]
     public override string DataPath {
         get {
             return _dataPath;
@@ -104,10 +99,9 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    [Export(PropertyHint.Layers3DRender)]
     public int VisualInstanceLayers { get;set; } = 1;
 
-    [Export] public ShaderMaterial CustomShader {
+    public ShaderMaterial CustomShader {
         get {
             return _customShader;
         } set {
@@ -125,80 +119,52 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    [ExportGroup("LOD")]
-    [Export]
     public int LODLevels { get;set; } = 5;
 
-    [Export]
     public int LODRowsPerLevel { get;set; } = 101;
 
-    [Export]
     public float LODInitialCellWidth { get;set; } = 1;
 
-    [ExportGroup("Collisions")]
-    [Export]
     public bool CreateCollisionInThread { get;set; } = true;
 
-    [Export(PropertyHint.Layers3DPhysics)]
     public int CollisionLayers { get;set; } = 1;
 
-    [Export(PropertyHint.Layers3DPhysics)]
     public int CollisionMask { get;set; } = 1;
 
-    [ExportGroup("Textures")]
-    [Export]
     public override TextureSetsResource TextureSets { get;set; }
 
-    [Export]
     public int TextureDetail { get;set; } = 20;
 
-    [Export]
     public bool UseAntiTile { get;set; } = true;
 
-    [Export]
     public bool NearestTextureFilter { get;set; } = false;
 
-    [Export]
     public float HeightBlendFactor { get;set; } = 10f;
 
-    [Export]
     public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
-    [Export]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
-    [ExportGroup("Foliage")]
-    [Export]
     public override FoliageResource[] Foliages { get;set; }
 
-    [ExportGroup("Objects")]
-    [Export]
     public int DefaultObjectFrequency { get;set; } = 10;
 
-    [Export]
     public ObjectLoadingStrategy ObjectLoadingStrategy { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
 
-    [Export]
     public override ObjectResource[] Objects { get;set; }
 
-    [ExportGroup("Water")]
 
-    [Export]
     public override WaterResource WaterDefinition { get;set; }
 
-    [ExportGroup("Snow")]
 
-    [Export]
     public override SnowResource SnowDefinition { get;set; }
 
-    [ExportGroup("Zones")]
-    [Export]
     public override ZonesResource TerrainZones { get;set; }
 
     public async override void _Ready() {
         base._Ready();
 
-        if (Engine.IsEditorHint()) {
+        if (Engine.Singleton.IsEditorHint()) {
             CompatibilityScript_0_4_Alpha.Convert(this);
         }
 
@@ -320,7 +286,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
         TerrainZones.UpdateSplatmapsTextures();
 
-        if (Engine.IsEditorHint()) {
+        if (Engine.Singleton.IsEditorHint()) {
             TerrainZones.UpdateLockTexture(ZonesSize);
         }
         TerrainZones.UpdateZonesMap();
@@ -328,7 +294,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         await Utils.WaitForTextureReady(_defaultNoise);
 
-        if (Engine.IsEditorHint() || (!CollisionOnly && !DefaultSettings.CollisionOnly)) {
+        if (Engine.Singleton.IsEditorHint() || (!CollisionOnly && !DefaultSettings.CollisionOnly)) {
             // Water needs to be created first so we have the reference to the image texture
             await CreateWater();
         }
@@ -361,7 +327,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         await CreateObjects();
 
-        if (Engine.IsEditorHint() || (!CollisionOnly && !DefaultSettings.CollisionOnly)) {
+        if (Engine.Singleton.IsEditorHint() || (!CollisionOnly && !DefaultSettings.CollisionOnly)) {
             await CreateFoliages();
             await CreateSnow();
         }
@@ -498,7 +464,7 @@ public partial class TerraBrush : TerraBrushTool {
             zone.ObjectsTexture = newList.ToArray();
         }
 
-        var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.IsEditorHint());
+        var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.Singleton.IsEditorHint());
         for (var objectIndex = 0; objectIndex < Objects.Length; objectIndex++) {
             var objectItem = Objects[objectIndex];
             if (objectItem.Hide) {

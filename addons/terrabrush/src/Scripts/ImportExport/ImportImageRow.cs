@@ -9,8 +9,8 @@ public partial class ImportImageRow : PanelContainer {
     [NodePath] private Label _label;
     [NodePath] private TextureButton _textureButton;
 
-    [Export] public string ImageTypeName { get;set; }
-    [Export] public Texture2D ImageTexture { get;set; }
+    public string ImageTypeName { get;set; }
+    public Texture2D ImageTexture { get;set; }
 
     protected override void _Ready() {
         base._Ready();

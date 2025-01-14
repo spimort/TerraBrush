@@ -28,7 +28,7 @@ public partial class FoliageDefinitionResource : Resource {
     private FoliageStrategy _strategy = FoliageStrategy.MultiMesh;
     private ShaderMaterial _customShader;
 
-    [Export] public FoliageStrategy Strategy {
+    public FoliageStrategy Strategy {
         get {
             return _strategy;
         }
@@ -37,24 +37,24 @@ public partial class FoliageDefinitionResource : Resource {
             NotifyPropertyListChanged();
         }
     }
-    [Export] public Mesh Mesh { get;set; }
+    public Mesh Mesh { get;set; }
     [Export(PropertyHint.Link)] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
-    [Export] public float WindStrength { get;set; } = 0.1f;
-    [Export] public Texture2D NoiseTexture { get;set; }
+    public float WindStrength { get;set; } = 0.1f;
+    public Texture2D NoiseTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
     // Multimesh settings
-    [Export] public int LODLevels { get;set; } = 3;
-    [Export] public int LODRowsPerLevel { get;set; } = 50;
-    [Export] public float LODInitialCellWidth { get;set; } = 1;
-    [Export] public Color Albedo { get;set; } = Colors.White;
-    [Export] public Texture2D[] AlbedoTextures { get;set; }
-    [Export] public bool UseGroundColor { get;set; }
-    [Export] public bool CastShadow { get;set; } = false;
-    [Export] public bool UseBrushScale { get;set; } = true;
-    [Export] public Texture2D ScaleNoiseTexture { get;set; }
-    [Export] public float RandomPlacementRange { get;set; } = 3.0f;
-    [Export] public int[] ApplyOnTextureIndexes { get;set; }
-    [Export] public ShaderMaterial CustomShader {
+    public int LODLevels { get;set; } = 3;
+    public int LODRowsPerLevel { get;set; } = 50;
+    public float LODInitialCellWidth { get;set; } = 1;
+    public Color Albedo { get;set; } = Colors.White;
+    public Texture2D[] AlbedoTextures { get;set; }
+    public bool UseGroundColor { get;set; }
+    public bool CastShadow { get;set; } = false;
+    public bool UseBrushScale { get;set; } = true;
+    public Texture2D ScaleNoiseTexture { get;set; }
+    public float RandomPlacementRange { get;set; } = 3.0f;
+    public int[] ApplyOnTextureIndexes { get;set; }
+    public ShaderMaterial CustomShader {
         get {
             return _customShader;
         } set {
@@ -72,9 +72,9 @@ public partial class FoliageDefinitionResource : Resource {
         }
     }
     // Particles settings
-    [Export] public Material MeshMaterial { get;set; }
-    [Export] public int MaximumRenderDistance { get;set; } = 50;
-    [Export] public int EditorMaximumRenderDistance { get;set; } = 50;
+    public Material MeshMaterial { get;set; }
+    public int MaximumRenderDistance { get;set; } = 50;
+    public int EditorMaximumRenderDistance { get;set; } = 50;
 
     protected override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);

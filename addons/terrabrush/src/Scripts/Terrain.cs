@@ -22,28 +22,28 @@ public partial class Terrain : Node3D {
     [NodePath] private Clipmap _clipmap;
     [NodePath] private StaticBody3D _terrainCollider;
 
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public float HeightMapFactor { get;set; }
-    [Export] public ShaderMaterial CustomShader { get;set; }
-    [Export] public TextureSetsResource TextureSets { get;set;}
-	[Export] public int TextureDetail { get;set; } = 1;
-    [Export] public bool UseAntiTile { get;set; } = true;
-    [Export] public bool NearestTextureFilter { get;set; } = false;
-    [Export] public float HeightBlendFactor { get;set; } = 10f;
-    [Export] public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
-    [Export] public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
-    [Export] public float WaterFactor { get;set; }
-    [Export] public Texture2D DefaultTexture { get;set; }
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
-    [Export(PropertyHint.Layers3DPhysics)] public int CollisionLayers { get;set; } = 1;
-    [Export(PropertyHint.Layers3DPhysics)] public int CollisionMask { get;set; } = 1;
-    [Export] public int LODLevels { get;set; } = 8;
-    [Export] public int LODRowsPerLevel { get;set; } = 21;
-    [Export] public float LODInitialCellWidth { get;set; } = 1;
-    [Export] public bool CollisionOnly { get;set; } = false;
-    [Export] public bool CreateCollisionInThread { get;set; } = true;
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public float HeightMapFactor { get;set; }
+    public ShaderMaterial CustomShader { get;set; }
+    public TextureSetsResource TextureSets { get;set;}
+	public int TextureDetail { get;set; } = 1;
+    public bool UseAntiTile { get;set; } = true;
+    public bool NearestTextureFilter { get;set; } = false;
+    public float HeightBlendFactor { get;set; } = 10f;
+    public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    public float WaterFactor { get;set; }
+    public Texture2D DefaultTexture { get;set; }
+    public int VisualInstanceLayers { get;set; } = 1;
+    public int CollisionLayers { get;set; } = 1;
+    public int CollisionMask { get;set; } = 1;
+    public int LODLevels { get;set; } = 8;
+    public int LODRowsPerLevel { get;set; } = 21;
+    public float LODInitialCellWidth { get;set; } = 1;
+    public bool CollisionOnly { get;set; } = false;
+    public bool CreateCollisionInThread { get;set; } = true;
 
     public StaticBody3D TerrainCollider => _terrainCollider;
     public Clipmap Clipmap => _clipmap;
@@ -73,7 +73,7 @@ public partial class Terrain : Node3D {
         _terrainCollider.CollisionLayer = (uint) CollisionLayers;
         _terrainCollider.CollisionMask = (uint) CollisionMask;
 
-        if (!Engine.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly)) {
+        if (!Engine.Singleton.IsEditorHint() && (CollisionOnly || DefaultSettings.CollisionOnly)) {
             UpdateCollisionShape();
             _clipmap.ClipmapMesh.Visible = false;
         } else {
@@ -86,7 +86,7 @@ public partial class Terrain : Node3D {
 
             _clipmap.CreateMesh();
 
-            if (Engine.IsEditorHint()) {
+            if (Engine.Singleton.IsEditorHint()) {
                 Clipmap.Shader.SetShaderParameter(StringNames.ApplyLockTextures, true);
                 Clipmap.Shader.SetShaderParameter(StringNames.LockTextures, TerrainZones.LockTextures);
             }

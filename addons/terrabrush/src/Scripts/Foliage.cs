@@ -17,14 +17,14 @@ public partial class Foliage : Node3D {
 
     [NodePath] private GpuParticles3D _particles;
 
-    [Export] public int FoliageIndex { get;set; }
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public TextureSetsResource TextureSets { get;set;}
-	[Export] public int TextureDetail { get;set; } = 1;
-    [Export] public float WaterFactor { get;set; }
-    [Export] public FoliageDefinitionResource Definition { get;set; }
+    public int FoliageIndex { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public TextureSetsResource TextureSets { get;set;}
+	public int TextureDetail { get;set; } = 1;
+    public float WaterFactor { get;set; }
+    public FoliageDefinitionResource Definition { get;set; }
 
     protected override void _Ready() {
         base._Ready();
@@ -63,7 +63,7 @@ public partial class Foliage : Node3D {
     }
 
     protected override void _Process(double delta) {
-        if (!Engine.IsEditorHint()) {
+        if (!Engine.Singleton.IsEditorHint()) {
             var position = GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
 
             UpdateFoliagePosition(position);
@@ -151,7 +151,7 @@ public partial class Foliage : Node3D {
             this._particles.MaterialOverride = Definition.MeshMaterial;
             this._particles.Amount = numberOfPoints;
 
-            if (Engine.IsEditorHint()) {
+            if (Engine.Singleton.IsEditorHint()) {
                 this._particles.Amount = Definition.EditorMaximumRenderDistance * Definition.EditorMaximumRenderDistance;
 
                 this._foliageShader.SetShaderParameter(StringNames.MaximumDistance, Definition.EditorMaximumRenderDistance);

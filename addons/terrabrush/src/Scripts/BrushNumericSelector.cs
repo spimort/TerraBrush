@@ -10,10 +10,10 @@ public partial class BrushNumericSelector : Control {
     [NodePath] private TextureRect _brushPreview;
     [NodePath] private Label _valueLabel;
 
-    [Export] public int BrushSizeFactor { get;set; } = 2;
-    [Export] public Color WidgetColor { get;set; } = Colors.White;
-    [Export] public int MinValue { get;set; } = -1;
-    [Export] public int MaxValue { get;set; } = -1;
+    public int BrushSizeFactor { get;set; } = 2;
+    public Color WidgetColor { get;set; } = Colors.White;
+    public int MinValue { get;set; } = -1;
+    public int MaxValue { get;set; } = -1;
 
     public Action<int> OnValueSelected { get;set; }
     public Action OnCancel { get;set; }

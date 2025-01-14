@@ -44,14 +44,14 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private CancellationTokenSource _cancellationTokenSource;
     private bool _initialized = false;
 
-    [Export] public int ObjectsIndex { get;set; }
-    [Export] public ObjectDefinitionResource Definition { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public float WaterFactor { get;set; }
-    [Export] public bool LoadInThread { get;set; }
-    [Export] public int DefaultObjectFrequency { get;set;}
+    public int ObjectsIndex { get;set; }
+    public ObjectDefinitionResource Definition { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public float WaterFactor { get;set; }
+    public bool LoadInThread { get;set; }
+    public int DefaultObjectFrequency { get;set;}
 
     protected override void _Ready() {
         base._Ready();
@@ -62,7 +62,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
         _defaultNoise = ResourceLoader.Load<Texture2D>("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
-        if (Engine.IsEditorHint()) {
+        if (Engine.Singleton.IsEditorHint()) {
             _camera = EditorInterface.Singleton.GetEditorViewport3D().GetCamera3D();
         }
 

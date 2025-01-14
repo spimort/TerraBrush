@@ -5,18 +5,18 @@ namespace TerraBrush;
 public partial class SnowResource : Resource {
     private ShaderMaterial _customShader;
 
-    [Export] public float SnowFactor { get;set; } = 1;
-    [Export] public float SnowInnerOffset { get;set; } = 0.3f;
-    [Export] public Texture2D SnowColorTexture { get;set; }
-    [Export] public Texture2D SnowColorNormal { get;set; }
-    [Export] public Texture2D SnowColorRoughness { get;set; }
-    [Export] public float SnowColorDetail { get;set; } = 20f;
-    [Export] public Texture2D Noise { get;set; }
-    [Export] public float NoiseFactor { get;set; }
+    public float SnowFactor { get;set; } = 1;
+    public float SnowInnerOffset { get;set; } = 0.3f;
+    public Texture2D SnowColorTexture { get;set; }
+    public Texture2D SnowColorNormal { get;set; }
+    public Texture2D SnowColorRoughness { get;set; }
+    public float SnowColorDetail { get;set; } = 20f;
+    public Texture2D Noise { get;set; }
+    public float NoiseFactor { get;set; }
     [Export(PropertyHint.Range, "0,1,0.001")] public float Metallic { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
 
-    [Export] public ShaderMaterial CustomShader {
+    public ShaderMaterial CustomShader {
         get {
             return _customShader;
         } set {

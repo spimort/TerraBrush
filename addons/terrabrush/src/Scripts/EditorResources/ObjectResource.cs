@@ -4,6 +4,6 @@ using Godot;
 namespace TerraBrush;
 
 public partial class ObjectResource : Resource {
-    [Export] public ObjectDefinitionResource Definition { get;set; }
-    [Export] public bool Hide { get;set; }
+    public ObjectDefinitionResource Definition { get;set; }
+    public bool Hide { get;set; }
 }

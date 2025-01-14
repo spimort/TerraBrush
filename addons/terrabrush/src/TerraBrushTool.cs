@@ -59,53 +59,42 @@ public partial class TerraBrushTool : Node3D {
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
 
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnCreateTerrain)}")]
     public bool CreateTerrain {
         get {
             return false;
         } set {}
     }
 
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUpdateTerrainSettings)}")]
     public bool UpdateTerrain {
         get {
             return false;
         } set {}
     }
 
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnRemoveTerrain)}")]
     public bool RemoveTerrain {
         get {
             return false;
         } set {}
     }
 
-    [ExportGroup("Lock | Unlock")]
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnLockTerrain)}")]
     public bool LockAllTerrain {
         get {
             return false;
         } set {}
     }
 
-    [ExportGroup("Lock | Unlock")]
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUnlockTerrain)}")]
     public bool UnlockAllTerrain {
         get {
             return false;
         } set {}
     }
 
-    [ExportGroup("Import | Export")]
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnImportTerrain)}")]
     public bool ImportTerrain {
         get {
             return false;
         } set {}
     }
 
-    [ExportGroup("Import | Export")]
-    [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnExportTerrain)}")]
     public bool ExportTerrain {
         get {
             return false;
@@ -189,7 +178,7 @@ public partial class TerraBrushTool : Node3D {
     public async Task OnImportTerrain() {
         var settings = await DialogUtils.ShowImportDialog(GetParent(), this);
         if (settings != null) {
-            ImporterEngine.ImportTerrain(this, settings);
+            ImporterEngine.Singleton.ImportTerrain(this, settings);
             OnUpdateTerrainSettings();
         }
     }
@@ -200,7 +189,7 @@ public partial class TerraBrushTool : Node3D {
             return;
         }
 
-        ExporterEngine.ExportTerrain(this, folder);
+        ExporterEngine.Singleton.ExportTerrain(this, folder);
     }
 
 #region  " Virtual overrides "

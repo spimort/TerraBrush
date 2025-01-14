@@ -6,13 +6,13 @@ namespace TerraBrush;
 
 public partial class ZoneResource : Resource {
     public ImageTexture LockTexture { get;set; }
-    [Export] public Vector2I ZonePosition { get;set; }
-    [Export] public ImageTexture HeightMapTexture { get;set; }
-    [Export] public ImageTexture[] SplatmapsTexture { get;set; }
-    [Export] public ImageTexture[] FoliagesTexture { get;set; }
-    [Export] public ImageTexture[] ObjectsTexture { get;set; }
-    [Export] public ImageTexture WaterTexture { get;set; }
-    [Export] public ImageTexture SnowTexture { get;set; }
+    public Vector2I ZonePosition { get;set; }
+    public ImageTexture HeightMapTexture { get;set; }
+    public ImageTexture[] SplatmapsTexture { get;set; }
+    public ImageTexture[] FoliagesTexture { get;set; }
+    public ImageTexture[] ObjectsTexture { get;set; }
+    public ImageTexture WaterTexture { get;set; }
+    public ImageTexture SnowTexture { get;set; }
 
     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
         HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);

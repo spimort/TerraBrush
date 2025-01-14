@@ -13,36 +13,36 @@ public partial class Water : Node3D {
 
     [NodePath] private Clipmap _clipmap;
 
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public float WaterFactor { get;set; }
-    [Export] public float HeightMapFactor { get;set; }
-    [Export] public float WaterInnerOffset { get;set; }
-    [Export(PropertyHint.ColorNoAlpha)] public Color WaterColor { get;set; }
-    [Export(PropertyHint.ColorNoAlpha)] public Color FresnelColor { get;set; }
-    [Export(PropertyHint.Range, "0,1,0.001")] public float Metallic { get;set; }
-    [Export(PropertyHint.Range, "0,1,0.001")] public float Roughness { get;set; }
-    [Export] public Texture2D NormalMap { get;set; }
-    [Export] public Texture2D NormalMap2 { get;set; }
-    [Export] public float TimeScale { get;set; } = 0.1f;
-    [Export] public float Strength { get;set; } = 0.4f;
-    [Export] public Texture2D Wave { get;set; }
-    [Export] public float NoiseScale { get;set; }
-    [Export] public float HeightScale { get;set; }
-    [Export] public Color ColorDeep { get;set; }
-    [Export] public Color ColorShallow { get;set; }
-    [Export] public float BeersLaw { get;set; }
-    [Export] public float DepthOffset { get;set; }
-    [Export] public float EdgeScale { get;set; }
-    [Export] public float Near { get;set; }
-    [Export] public float Far { get;set; }
-    [Export(PropertyHint.ColorNoAlpha)] public Color EdgeColor { get;set; }
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
-    [Export] public int LODLevels { get;set; } = 8;
-    [Export] public int LODRowsPerLevel { get;set; } = 21;
-    [Export] public float LODInitialCellWidth { get;set; } = 1;
-    [Export] public ShaderMaterial CustomShader { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public float WaterFactor { get;set; }
+    public float HeightMapFactor { get;set; }
+    public float WaterInnerOffset { get;set; }
+    public Color WaterColor { get;set; }
+    public Color FresnelColor { get;set; }
+    public float Metallic { get;set; }
+    public float Roughness { get;set; }
+    public Texture2D NormalMap { get;set; }
+    public Texture2D NormalMap2 { get;set; }
+    public float TimeScale { get;set; } = 0.1f;
+    public float Strength { get;set; } = 0.4f;
+    public Texture2D Wave { get;set; }
+    public float NoiseScale { get;set; }
+    public float HeightScale { get;set; }
+    public Color ColorDeep { get;set; }
+    public Color ColorShallow { get;set; }
+    public float BeersLaw { get;set; }
+    public float DepthOffset { get;set; }
+    public float EdgeScale { get;set; }
+    public float Near { get;set; }
+    public float Far { get;set; }
+    public Color EdgeColor { get;set; }
+    public int VisualInstanceLayers { get;set; } = 1;
+    public int LODLevels { get;set; } = 8;
+    public int LODRowsPerLevel { get;set; } = 21;
+    public float LODInitialCellWidth { get;set; } = 1;
+    public ShaderMaterial CustomShader { get;set; }
 
     public Clipmap Clipmap => _clipmap;
 
@@ -138,7 +138,7 @@ public partial class Water : Node3D {
         _clipmap.Shader.SetShaderParameter(StringNames.EdgeColor, EdgeColor);
 
         // This is for compatibility with Godot 4.2
-        var engineVersion = Engine.GetVersionInfo();
+        var engineVersion = Engine.Singleton.GetVersionInfo();
         var major = (int) engineVersion["major"];
         var minor = (int) engineVersion["minor"];
         if (major == 4 && minor < 3) {

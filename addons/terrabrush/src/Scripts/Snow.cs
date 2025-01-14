@@ -14,13 +14,13 @@ public partial class Snow : Node3D {
 
     [NodePath] private Clipmap _clipmap;
 
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public SnowResource SnowDefinition { get;set; }
-    [Export] public int LODLevels { get;set; } = 8;
-    [Export] public int LODRowsPerLevel { get;set; } = 21;
-    [Export] public float LODInitialCellWidth { get;set; } = 1;
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public SnowResource SnowDefinition { get;set; }
+    public int LODLevels { get;set; } = 8;
+    public int LODRowsPerLevel { get;set; } = 21;
+    public float LODInitialCellWidth { get;set; } = 1;
 
     public Clipmap Clipmap => _clipmap;
 

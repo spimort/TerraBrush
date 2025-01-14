@@ -10,12 +10,12 @@ public partial class TextureSetResource : Resource {
 
     private Texture2D _albedoTexture;
 
-    [Export] public string Name { get;set; }
-    [Export] public Texture2D AlbedoTexture {
+    public string Name { get;set; }
+    public Texture2D AlbedoTexture {
         get {
             return _albedoTexture;
         } set {
-            if (Engine.IsEditorHint() && value != null && !string.IsNullOrWhiteSpace(value.ResourcePath) && value.ResourcePath != _albedoTexture?.ResourcePath) {
+            if (Engine.Singleton.IsEditorHint() && value != null && !string.IsNullOrWhiteSpace(value.ResourcePath) && value.ResourcePath != _albedoTexture?.ResourcePath) {
                 var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), "");
                 var directoryFiles = DirAccess.GetFilesAt(directory);
 
@@ -42,10 +42,10 @@ public partial class TextureSetResource : Resource {
         }
     }
 
-    [Export] public Texture2D NormalTexture { get;set; }
-    [Export] public Texture2D RoughnessTexture { get;set; }
-    [Export] public Texture2D HeightTexture { get;set; }
-    [Export] public int TextureDetail { get;set; } = -1;
+    public Texture2D NormalTexture { get;set; }
+    public Texture2D RoughnessTexture { get;set; }
+    public Texture2D HeightTexture { get;set; }
+    public int TextureDetail { get;set; } = -1;
 
     private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));

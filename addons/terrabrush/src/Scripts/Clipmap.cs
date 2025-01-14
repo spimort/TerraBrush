@@ -10,13 +10,13 @@ public partial class Clipmap : Node3D {
 
     [NodePath] private MeshInstance3D _clipmapMesh;
 
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public int Levels { get;set; } = 8;
-    [Export] public int RowsPerLevel { get;set; } = 21;
-    [Export] public float InitialCellWidth { get;set; } = 1;
-    [Export] public ShaderMaterial Shader { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public int Levels { get;set; } = 8;
+    public int RowsPerLevel { get;set; } = 21;
+    public float InitialCellWidth { get;set; } = 1;
+    public ShaderMaterial Shader { get;set; }
 
     public MeshInstance3D ClipmapMesh => _clipmapMesh;
 
@@ -28,7 +28,7 @@ public partial class Clipmap : Node3D {
     }
 
     protected override void _Process(double delta) {
-        if (!Engine.IsEditorHint()) {
+        if (!Engine.Singleton.IsEditorHint()) {
             var cameraPosition = this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
             UpdateClipmapMeshPosition(cameraPosition);
         }
