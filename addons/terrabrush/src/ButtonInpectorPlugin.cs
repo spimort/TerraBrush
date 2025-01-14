@@ -9,7 +9,7 @@ public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
         return @object is TerraBrush;
     }
 
-    public override bool _ParseProperty(GodotObject @object, Variant.Type type, string name, PropertyHint hintType, string hintString, PropertyUsageFlags usageFlags, bool wide) {
+    public override bool _ParseProperty(GodotObject @object, Godot.VariantType type, string name, PropertyHint hintType, string hintString, PropertyUsageFlags usageFlags, bool wide) {
         if (hintString != null && hintString.StartsWith(ButtonInspectorHintString)) {
             var splitValues = hintString.Split("_");
             if (splitValues.Length == 2) {

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -30,21 +31,21 @@ public partial class Plugin : EditorPlugin {
     private Button _updateTerrainSettingsButton = null;
     private CheckBox _autoAddZonesCheckbox = null;
 
-    private void CreateCustomSetting(string name, Variant defaultValue, Variant.Type type, PropertyHint hint = PropertyHint.None, string hintString = null) {
-        if (ProjectSettings.HasSetting(name)) {
+    private void CreateCustomSetting(string name, Variant defaultValue, Godot.VariantType type, PropertyHint hint = PropertyHint.None, string hintString = null) {
+        if (ProjectSettings.Singleton.HasSetting(name)) {
             return;
         }
 
-        var propertyInfo = new Godot.Collections.Dictionary() {
+        var propertyInfo = new GodotDictionary() {
             {"name", name},
             {"type", (int)type},
             {"hint", (int)hint},
             {"hint_string", hintString}
         };
 
-        ProjectSettings.SetSetting(name, defaultValue);
-        ProjectSettings.AddPropertyInfo(propertyInfo);
-        ProjectSettings.SetInitialValue(name, defaultValue);
+        ProjectSettings.Singleton.SetSetting(name, defaultValue);
+        ProjectSettings.Singleton.AddPropertyInfo(propertyInfo);
+        ProjectSettings.Singleton.SetInitialValue(name, defaultValue);
     }
 
     protected override void _EnterTree() {
@@ -53,10 +54,10 @@ public partial class Plugin : EditorPlugin {
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
 		AddCustomType("TerraBrush", "Node3D", script, icon);
-        CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Variant.Type.Color);
-        CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Variant.Type.String);
-        CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Variant.Type.Int);
-        CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Variant.Type.Color);
+        CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Godot.VariantType.Color);
+        CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Godot.VariantType.String);
+        CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Godot.VariantType.Int);
+        CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Godot.VariantType.Color);
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
         _terrainDockContainer = new Control() {
@@ -151,7 +152,7 @@ public partial class Plugin : EditorPlugin {
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushSizeSelector)) {
                 ShowBrushNumericSelector(1, 200, NamedColors.LimeGreen, _currentTerraBrushNode.BrushSize, value => {
                     _terrainControlDock.SetBrushSize(value);
-                }, KeybindManager.StringNames.BrushSizeSelector);
+                }, (string)KeybindManager.StringNames.BrushSizeSelector);
 
                 return (int) AfterGuiInput.Stop;
             }
@@ -159,7 +160,7 @@ public partial class Plugin : EditorPlugin {
             if (inputEvent.IsAction(KeybindManager.StringNames.BrushStrengthSelector)) {
                 ShowBrushNumericSelector(1, 100, NamedColors.Crimson, (int) (_currentTerraBrushNode.BrushStrength * 100), value => {
                     _terrainControlDock.SetBrushStrength(value / 100.0f);
-                }, KeybindManager.StringNames.BrushStrengthSelector);
+                }, (string)KeybindManager.StringNames.BrushStrengthSelector);
 
                 return (int) AfterGuiInput.Stop;
             }
@@ -244,7 +245,7 @@ public partial class Plugin : EditorPlugin {
         }
     }
 
-    private void OnUndoTexture(ImageTexture imageTexture, byte[] previousImageData) {
+    private void OnUndoTexture(ImageTexture imageTexture, PackedByteArray previousImageData) {
         if (_preventInitialDo) {
             return;
         }
@@ -282,7 +283,7 @@ public partial class Plugin : EditorPlugin {
             };
             var result = spaceState.IntersectRay(query);
 
-            if (result?.Count > 0 && result["collider"].Obj == _currentTerraBrushNode.Terrain?.TerrainCollider) {
+            if (result?.Count > 0 && result["collider"].AsSystemObject() == _currentTerraBrushNode.Terrain?.TerrainCollider) {
                 return (Vector3)result["position"] + new Vector3(0, 0.1f, 0);
             } else {
                 return GetMouseClickToZoneHeight(from, dir);
@@ -322,7 +323,7 @@ public partial class Plugin : EditorPlugin {
 	protected override void _ExitTree() {
         if (_terrainDockContainer != null) {
             RemoveControlFromDocks(_terrainDockContainer);
-            _terrainDockContainer.Free();
+            _terrainDockContainer.QueueFree();
 
             _terrainDockContainer = null;
         }
@@ -361,7 +362,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
         _brushDecal?.QueueFree();
 
-        _brushDecal = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
+        _brushDecal = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn")).Instantiate<BrushDecal>();
         _brushDecal.Name = (StringName)"BrushDecal";
         AddChild(_brushDecal);
 
@@ -379,7 +380,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         _toolInfo?.QueueFree();
 
-        _toolInfo = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
+        _toolInfo = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolInfo.tscn")).Instantiate<ToolInfo>();
         _toolInfo.Name = (StringName)"ToolInfo";
         AddChild(_toolInfo);
 

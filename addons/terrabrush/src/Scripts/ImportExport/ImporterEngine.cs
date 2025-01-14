@@ -242,7 +242,7 @@ public static class ImporterEngine {
         }
 
         if (!string.IsNullOrWhiteSpace(newImageTexture.ResourcePath)) {
-            ResourceSaver.Save(newImageTexture);
+            ResourceSaver.Singleton.Save(newImageTexture);
         }
 
         return new ImportImageInfo {

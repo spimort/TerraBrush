@@ -56,14 +56,14 @@ public partial class KeybindSettings : AcceptDialog {
 				var dlg = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/KeyListenDialog.tscn"))
 					.Instantiate<KeyListenDialog>();
 
-				dlg.KeyListenAccepted += (key) => {
-					var action = item.GetMetadata(0).AsStringName();
-					item.SetText(1, KeybindManager.DescribeKey(key));
-					_keybindManager.UpdateKeybind(action, key);
-					dlg.QueueFree();
-				};
+				// dlg.KeyListenAccepted += (key) => {
+				// 	var action = item.GetMetadata(0).AsStringName();
+				// 	item.SetText(1, KeybindManager.DescribeKey(key));
+				// 	_keybindManager.UpdateKeybind(action, key);
+				// 	dlg.QueueFree();
+				// };
 
-				dlg.KeyListenCancelled += () => dlg.QueueFree();
+				// dlg.KeyListenCancelled += () => dlg.QueueFree();
 
 				GetTree().Root.AddChild(dlg);
 				dlg.PopupCentered();

@@ -24,9 +24,9 @@ public partial class KeyListenDialog : Window {
 				return;
 			}
 
-			EmitSignal(SignalName.KeyListenAccepted, _eventKey);
+			EmitSignal((StringName)"KeyListenAccepted", new ReadOnlySpan<Variant>(_eventKey));
 		};
-		_cancelButton.Pressed += () => EmitSignal(SignalName.KeyListenCancelled);
+		_cancelButton.Pressed += () => EmitSignal((StringName)"KeyListenCancelled");
 	}
 
 	protected override void _Input(InputEvent @event) {

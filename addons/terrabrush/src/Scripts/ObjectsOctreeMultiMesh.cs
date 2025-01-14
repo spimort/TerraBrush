@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 using TerraBrush.NetOctree;
 
 namespace TerraBrush;
@@ -206,7 +207,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                         var minimumSurfaceVerticesCount = 0;
                         for (int surfaceIndex = 0; surfaceIndex < meshInstance.Mesh.GetSurfaceCount(); surfaceIndex++) {
                             var surfaceArrays = meshInstance.Mesh.SurfaceGetArrays(surfaceIndex);
-                            var surfaceVerticesCount = ((Godot.Collections.Array) surfaceArrays[(int) Mesh.ArrayType.Vertex]).Count;
+                            var surfaceVerticesCount = ((GodotArray) surfaceArrays[(int) Mesh.ArrayType.Vertex]).Count;
 
                             if (minimumSurfaceVerticesCount == 0 || surfaceVerticesCount < minimumSurfaceVerticesCount) {
                                 minimumSurfaceVerticesCount = surfaceVerticesCount;
@@ -374,7 +375,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                             Position = nodeInfo.Position + shapeInfo.Offset,
                             Scale = lodMeshDefinition.Scale
                         };
-                        _staticBodyContainer.CallDeferred("add_child", nodeInfo.CollisionShape);
+                        _staticBodyContainer.CallDeferred((StringName)"add_child", new ReadOnlySpan<Variant>([nodeInfo.CollisionShape]));
                     }
 
                     _actualNodesWithCollision.Add(nodeInfo);
@@ -410,10 +411,10 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
 
                 var multiMeshInstance = _multiMeshIntances[multiMeshNodeValuePair.Key][multiMeshNodeBufferValuePair.Key].MultiMeshInstance;
                 if (multiMeshNodeBuffer.Count == 0) {
-                    multiMeshInstance.Multimesh.CallDeferred("set_instance_count", 0);
+                    multiMeshInstance.Multimesh.CallDeferred((StringName)"set_instance_count", new ReadOnlySpan<Variant>([0]));
                 } else {
-                    multiMeshInstance.Multimesh.CallDeferred("set_instance_count", multiMeshNodeBuffer.Count / 12);
-                    multiMeshInstance.Multimesh.CallDeferred("set_buffer", multiMeshNodeBuffer.ToArray());
+                    multiMeshInstance.Multimesh.CallDeferred((StringName)"set_instance_count", new  ReadOnlySpan<Variant>([multiMeshNodeBuffer.Count / 12]));
+                    multiMeshInstance.Multimesh.CallDeferred((StringName)"set_buffer", new ReadOnlySpan<Variant>([new GodotArray([..multiMeshNodeBuffer.ToArray()])]));
                 }
             }
         }

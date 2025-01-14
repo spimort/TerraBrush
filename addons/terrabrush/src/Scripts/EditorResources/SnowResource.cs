@@ -13,8 +13,8 @@ public partial class SnowResource : Resource {
     public float SnowColorDetail { get;set; } = 20f;
     public Texture2D Noise { get;set; }
     public float NoiseFactor { get;set; }
-    [Export(PropertyHint.Range, "0,1,0.001")] public float Metallic { get;set; }
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public float Metallic { get;set; }
+    public int VisualInstanceLayers { get;set; } = 1;
 
     public ShaderMaterial CustomShader {
         get {

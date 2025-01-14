@@ -24,7 +24,7 @@ public partial class BrushNumericSelector : Control {
 
         _brushPreview.Modulate = WidgetColor;
 
-        var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
+        var iconsColor = (Color) ProjectSettings.Singleton.GetSetting(SettingContants.IconsColor);
         _valueLabel.Set((StringName)"theme_override_colors/font_outline_color", iconsColor);
         var normalStyle = (StyleBoxFlat) _valueLabel.Get((StringName)"theme_override_styles/normal");
         normalStyle.BgColor = iconsColor;

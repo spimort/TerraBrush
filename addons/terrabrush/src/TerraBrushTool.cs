@@ -178,7 +178,7 @@ public partial class TerraBrushTool : Node3D {
     public async Task OnImportTerrain() {
         var settings = await DialogUtils.ShowImportDialog(GetParent(), this);
         if (settings != null) {
-            ImporterEngine.Singleton.ImportTerrain(this, settings);
+            ImporterEngine.ImportTerrain(this, settings);
             OnUpdateTerrainSettings();
         }
     }
@@ -189,7 +189,7 @@ public partial class TerraBrushTool : Node3D {
             return;
         }
 
-        ExporterEngine.Singleton.ExportTerrain(this, folder);
+        ExporterEngine.ExportTerrain(this, folder);
     }
 
 #region  " Virtual overrides "

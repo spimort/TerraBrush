@@ -12,7 +12,7 @@ public static class CustomContentLoader {
 
         var directories = new List<DirAccess>() {DirAccess.Open("res://addons/terrabrush/Assets/Brushes/")};
 
-        var customBrushesDirectory = (string) ProjectSettings.GetSetting(SettingContants.CustomBrushesFolder);
+        var customBrushesDirectory = (string) ProjectSettings.Singleton.GetSetting(SettingContants.CustomBrushesFolder);
         if (!string.IsNullOrWhiteSpace(customBrushesDirectory) && DirAccess.DirExistsAbsolute(customBrushesDirectory)) {
             directories.Add(DirAccess.Open(customBrushesDirectory));
         }

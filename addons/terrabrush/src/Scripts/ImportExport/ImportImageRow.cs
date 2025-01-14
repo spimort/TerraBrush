@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -16,7 +17,7 @@ public partial class ImportImageRow : PanelContainer {
         base._Ready();
         this.RegisterNodePaths();
 
-        var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
+        var iconsColor = (Color) ProjectSettings.Singleton.GetSetting(SettingContants.IconsColor);
         var rowStyle = (StyleBoxFlat) Get((StringName)"theme_override_styles/panel");
         rowStyle.BgColor = iconsColor;
 
@@ -34,14 +35,14 @@ public partial class ImportImageRow : PanelContainer {
 
         _textureButton.MouseExited += () => {
             var tween = CreateTween();
-            tween.TweenProperty(_textureButton, "self_modulate", NamedColors.White, 0.1);
+            tween.TweenProperty(_textureButton, (NodePath)"self_modulate", NamedColors.White, 0.1);
         };
 
         _textureButton.GuiInput += async e => {
             if (e is InputEventMouseButton mouseEvent && !e.IsEcho() && !_isSelectorOpen) {
                 if (mouseEvent.ButtonIndex == MouseButton.Left) {
                     _isSelectorOpen = true;
-                    var file = await DialogUtils.ShowFileDialog(this, filters: new [] {"*.png, *.jpg, *.jpeg, *.bmp, *.exr ; Supported Images", "*res, *.tres ; Resources"}, transient: true);
+                    var file = await DialogUtils.ShowFileDialog(this, filters: new PackedStringArray([..new [] {"*.png, *.jpg, *.jpeg, *.bmp, *.exr ; Supported Images", "*res, *.tres ; Resources"}]), transient: true);
                     _isSelectorOpen = false;
 
                     if (file != null) {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -50,7 +51,7 @@ public partial class TerraBrush : TerraBrushTool {
         } set {
             if (_terrain == null) {
                 if (Resolution != 1 && !Utils.IsPowerOfTwo(value - 1)) {
-                    OS.Alert("When the resolution is not 1, it must be a (power of 2) + 1 (ex. 257).");
+                    OS.Singleton.Alert("When the resolution is not 1, it must be a (power of 2) + 1 (ex. 257).");
                     return;
                 }
 
@@ -58,7 +59,7 @@ public partial class TerraBrush : TerraBrushTool {
 
                 UpdateConfigurationWarnings();
             } else if (value != _zonesSize) {
-                OS.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
+                OS.Singleton.Alert("The ZonesSize property cannot change once the terrain has been created. Make sure you remove the terrain before changing the ZonesSize.");
             }
         }
     }
@@ -69,12 +70,12 @@ public partial class TerraBrush : TerraBrushTool {
         } set {
             if (_terrain == null) {
                 if (value < 1) {
-                    OS.Alert("The minimum value for the resolution is 1.");
+                    OS.Singleton.Alert("The minimum value for the resolution is 1.");
                     return;
                 }
 
                 if (value > 1 && !Utils.IsPowerOfTwo(value)){
-                    OS.Alert("When the resolution is not 1, it must be a power of 2.");
+                    OS.Singleton.Alert("When the resolution is not 1, it must be a power of 2.");
                     return;
                 }
 
@@ -82,7 +83,7 @@ public partial class TerraBrush : TerraBrushTool {
 
                 UpdateConfigurationWarnings();
             } else if (value != _resolution) {
-                OS.Alert("The Resolution property cannot change once the terrain has been created. Make sure you remove the terrain before changing the Resolution.");
+                OS.Singleton.Alert("The Resolution property cannot change once the terrain has been created. Make sure you remove the terrain before changing the Resolution.");
             }
         }
     }
@@ -182,8 +183,8 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    protected override string[] _GetConfigurationWarnings() {
-        var warnings = new List<string>();
+    protected override PackedStringArray _GetConfigurationWarnings() {
+        var warnings = new PackedStringArray();
 
         if (string.IsNullOrWhiteSpace(DataPath)) {
             warnings.Add($"{nameof(DataPath)} is required");
@@ -203,7 +204,7 @@ public partial class TerraBrush : TerraBrushTool {
             }
         }
 
-        return warnings.ToArray();
+        return warnings;
     }
 
     public override async void OnCreateTerrain() {

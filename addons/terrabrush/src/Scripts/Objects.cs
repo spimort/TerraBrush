@@ -74,7 +74,7 @@ public partial class Objects : Node3D, IObjectsNode {
             objectsContainerNode.Name = (StringName)$"{zoneIndex}";
             objectsContainerNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
 
-            CallDeferred("add_child", objectsContainerNode);
+            CallDeferred((StringName)"add_child", new ReadOnlySpan<Variant>([objectsContainerNode]));
 
             var imageTexture = zone.ObjectsTexture[ObjectsIndex];
 
@@ -112,12 +112,14 @@ public partial class Objects : Node3D, IObjectsNode {
                             }
 
                             CallDeferred(
-                                nameof(AddObjectNode),
-                                objectsContainerNode,
-                                $"{x}_{y}",
-                                result.ResultPosition,
-                                result.ResultRotation,
-                                result.ResultPackedSceneIndex
+                                (StringName)nameof(AddObjectNode),
+                                new ReadOnlySpan<Variant>([
+                                    objectsContainerNode,
+                                    $"{x}_{y}",
+                                    result.ResultPosition,
+                                    result.ResultRotation,
+                                    result.ResultPackedSceneIndex
+                                ])
                             );
                         }
                     );
@@ -250,12 +252,14 @@ public partial class Objects : Node3D, IObjectsNode {
                 NamedColors.White,
                 result => {
                     CallDeferred(
-                        nameof(AddObjectNode),
-                        containerNode,
-                        nodeName,
-                        result.ResultPosition,
-                        result.ResultRotation,
-                        result.ResultPackedSceneIndex
+                        (StringName)nameof(AddObjectNode),
+                        new ReadOnlySpan<Variant>([
+                            containerNode,
+                            nodeName,
+                            result.ResultPosition,
+                            result.ResultRotation,
+                            result.ResultPackedSceneIndex
+                        ])
                     );
                 }
             );

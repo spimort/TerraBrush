@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -195,7 +196,7 @@ public partial class Terrain : Node3D {
                     return;
                 }
 
-                CallDeferred(nameof(AssignCollisionData), shapes[i], terrainData.ToArray());
+                CallDeferred((StringName) nameof(AssignCollisionData), new ReadOnlySpan<Variant>([shapes[i], new GodotArray([..terrainData.ToArray()])]));
             }
         };
 
@@ -209,7 +210,7 @@ public partial class Terrain : Node3D {
     }
 
     private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
-        shape.MapData = data;
+        shape.MapData = [..data];
     }
 
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
@@ -240,7 +241,7 @@ public partial class Terrain : Node3D {
 
         if (this.TextureSets?.TextureSets?.Length > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
-            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray());
+            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray()]));
             Clipmap.Shader.SetShaderParameter((StringName)$"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
 
@@ -268,7 +269,7 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter(StringNames.NormalAlphaChannelUsage, (int) NormalAlphaChannelUsage);
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
-            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new int[] {TextureDetail});
+            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..new int[] {TextureDetail}]));
             Clipmap.Shader.SetShaderParameter((StringName)$"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
             Clipmap.Shader.SetShaderParameter(StringNames.UseAntitile, false);

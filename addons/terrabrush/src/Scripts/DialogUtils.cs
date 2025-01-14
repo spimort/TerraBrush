@@ -2,12 +2,13 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 using static Godot.EditorFileDialog;
 
 namespace TerraBrush;
 
 public static class DialogUtils {
-    public static Task<string> ShowFileDialog(Node sourceNode, AccessEnum access = AccessEnum.Filesystem, FileModeEnum fileMode = FileModeEnum.OpenFile, string[] filters = null, bool transient = false) {
+    public static Task<string> ShowFileDialog(Node sourceNode, AccessEnum access = AccessEnum.Filesystem, FileModeEnum fileMode = FileModeEnum.OpenFile, PackedStringArray filters = null, bool transient = false) {
         var completionSource = new TaskCompletionSource<string>();
         var fileDialog = new EditorFileDialog {
             Access = access,
@@ -49,15 +50,15 @@ public static class DialogUtils {
         dialog.MinValue = minValue;
         dialog.MaxValue = maxValue;
 
-		dialog.NumericSelectorAccepted += (value) => {
-			dialog.QueueFree();
-			completionSource.TrySetResult(value);
-		};
+		// dialog.NumericSelectorAccepted += (value) => {
+		// 	dialog.QueueFree();
+		// 	completionSource.TrySetResult(value);
+		// };
 
-		dialog.NumericSelectorCancelled += () => {
-			dialog.QueueFree();
-			completionSource.TrySetResult(null);
-		};
+		// dialog.NumericSelectorCancelled += () => {
+		// 	dialog.QueueFree();
+		// 	completionSource.TrySetResult(null);
+		// };
 
 		sourceNode.GetTree().Root.AddChild(dialog);
 		dialog.PopupCentered();
@@ -107,15 +108,15 @@ public static class DialogUtils {
 		var dialog = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ImportExport/ImportDialog.tscn")).Instantiate<ImportDialog>();
 		dialog.OriginialTerraBrush = originalTerraBursh;
 
-		dialog.Accepted += settings => {
-			dialog.QueueFree();
-			completionSource.TrySetResult(settings);
-		};
+		// dialog.Accepted += settings => {
+		// 	dialog.QueueFree();
+		// 	completionSource.TrySetResult(settings);
+		// };
 
-		dialog.Cancelled += () => {
-			dialog.QueueFree();
-			completionSource.TrySetResult(null);
-		};
+		// dialog.Cancelled += () => {
+		// 	dialog.QueueFree();
+		// 	completionSource.TrySetResult(null);
+		// };
 
 		sourceNode.GetTree().Root.AddChild(dialog);
 		dialog.PopupCentered();

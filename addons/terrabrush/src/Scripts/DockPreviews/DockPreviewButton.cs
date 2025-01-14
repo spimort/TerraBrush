@@ -41,7 +41,7 @@ public partial class DockPreviewButton : TextureButton {
 
         CalculateTextures();
 
-        var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
+        var iconsColor = (Color) ProjectSettings.Singleton.GetSetting(SettingContants.IconsColor);
 
         _normalColor = iconsColor;
         _hoverColor = _normalColor.Lightened(0.4f);

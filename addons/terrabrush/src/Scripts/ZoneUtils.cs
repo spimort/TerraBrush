@@ -14,7 +14,7 @@ public static class ZoneUtils {
     public static ImageTexture CreateLockImage(int zoneSize, Vector2I zonePosition, bool lockAll = false) {
         var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf);
         if (lockAll) {
-            image.Fill(Colors.White);
+            image.Fill(NamedColors.White);
         }
 
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), "");
@@ -73,7 +73,7 @@ public static class ZoneUtils {
                 imageTexture.SetImage(image);
             } else {
                 imageTexture = ImageTexture.CreateFromImage(image);
-                ResourceSaver.Save(imageTexture, resourcePath);
+                ResourceSaver.Singleton.Save(imageTexture, resourcePath);
                 imageTexture = (ImageTexture) ResourceLoader.Singleton.Load(resourcePath);
             }
         }

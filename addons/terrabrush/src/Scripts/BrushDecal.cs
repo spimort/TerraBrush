@@ -26,6 +26,6 @@ public partial class BrushDecal : Node3D {
         }
 
         _decal.TextureAlbedo = ImageTexture.CreateFromImage(imageCopy);
-        _decal.Modulate = (Color) ProjectSettings.GetSetting(SettingContants.DecalColor);
+        _decal.Modulate = (Color) ProjectSettings.Singleton.GetSetting(SettingContants.DecalColor);
     }
 }

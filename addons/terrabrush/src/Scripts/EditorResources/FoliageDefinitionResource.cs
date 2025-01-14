@@ -76,21 +76,21 @@ public partial class FoliageDefinitionResource : Resource {
     public int MaximumRenderDistance { get;set; } = 50;
     public int EditorMaximumRenderDistance { get;set; } = 50;
 
-    protected override void _ValidateProperty(Dictionary property) {
-        base._ValidateProperty(property);
+    // protected override void _ValidateProperty(GodotDictionary property) {
+    //     base._ValidateProperty(property);
 
-        if (Strategy == FoliageStrategy.MultiMesh) {
-            if (_gpuParticlesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.NoEditor;
-            } else if (_multimeshProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Default;
-            }
-        } else if (Strategy == FoliageStrategy.GPUParticle) {
-            if (_gpuParticlesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Default;
-            } else if (_multimeshProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.NoEditor;
-            }
-        }
-    }
+    //     if (Strategy == FoliageStrategy.MultiMesh) {
+    //         if (_gpuParticlesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.NoEditor;
+    //         } else if (_multimeshProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.Default;
+    //         }
+    //     } else if (Strategy == FoliageStrategy.GPUParticle) {
+    //         if (_gpuParticlesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.Default;
+    //         } else if (_multimeshProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.NoEditor;
+    //         }
+    //     }
+    // }
 }

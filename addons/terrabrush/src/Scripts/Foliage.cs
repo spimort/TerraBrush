@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -110,13 +111,13 @@ public partial class Foliage : Node3D {
                 TransformFormat = MultiMesh.TransformFormatEnum.Transform3D,
                 Mesh = Definition.Mesh,
                 InstanceCount = numberOfPoints,
-                Buffer = Enumerable.Range(0, numberOfPoints).Select(_ => {
+                Buffer = [..Enumerable.Range(0, numberOfPoints).Select(_ => {
                     return new float[] {
                         1f, 0f, 0f, 0f,
                         0f, 1f, 0f, 0f,
                         0f, 0f, 1f, 0f
                     };
-                }).SelectMany(x => x).ToArray()
+                }).SelectMany(x => x).ToArray()]
             };
 
             if (Definition.CastShadow) {
@@ -132,7 +133,7 @@ public partial class Foliage : Node3D {
 
             if (Definition.AlbedoTextures?.Length > 0) {
                 var albedoTextures = new Texture2DArray();
-                albedoTextures.CreateFromImages(new Godot.Collections.Array<Image>(Definition.AlbedoTextures.Select(x => x.GetImage())));
+                albedoTextures.CreateFromImages([..Definition.AlbedoTextures.Select(x => x.GetImage())]);
                 _foliageShader.SetShaderParameter(StringNames.FoliageAlbedoTextures, albedoTextures);
                 _foliageShader.SetShaderParameter(StringNames.FoliageNumberOfTexture, Definition.AlbedoTextures.Length);
             }
@@ -141,7 +142,7 @@ public partial class Foliage : Node3D {
             _foliageShader.SetShaderParameter(StringNames.UseBrushScale, Definition.UseBrushScale);
             _foliageShader.SetShaderParameter(StringNames.ScaleNoiseTexture, Definition.ScaleNoiseTexture);
             _foliageShader.SetShaderParameter(StringNames.RandomPlacementRange, Definition.RandomPlacementRange);
-            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, Definition.ApplyOnTextureIndexes ?? new int[] {});
+            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, new GodotArray([..Definition.ApplyOnTextureIndexes ?? []]));
             _foliageShader.SetShaderParameter(StringNames.NumberOfTexturesToApplyOn, Definition.ApplyOnTextureIndexes?.Length ?? 0);
         } else {
             _particles.Visible = true;

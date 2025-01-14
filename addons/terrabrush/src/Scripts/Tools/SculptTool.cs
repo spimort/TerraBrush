@@ -16,7 +16,7 @@ public class SculptTool : ToolBase {
     public override void BeginPaint() {
         base.BeginPaint();
 
-        _sculptingMultiplier = (int) ProjectSettings.GetSetting(SettingContants.SculptingMultiplier);
+        _sculptingMultiplier = (int) ProjectSettings.Singleton.GetSetting(SettingContants.SculptingMultiplier);
         _sculptedZones = new HashSet<ZoneResource>();
     }
 

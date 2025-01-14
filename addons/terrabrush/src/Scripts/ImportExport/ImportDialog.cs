@@ -91,18 +91,18 @@ public partial class ImportDialog : Window {
             _previewTerrain = new TerraBrush();
             _previewTerrain.ZonesSize = OriginialTerraBrush.ZonesSize;
             _previewTerrain.Resolution = OriginialTerraBrush.Resolution;
-            ImporterEngine.Singleton.ImportTerrain(_previewTerrain, settings);
+            ImporterEngine.ImportTerrain(_previewTerrain, settings);
             _subViewport.AddChild(_previewTerrain);
         };
 
 		_okButton.Pressed += () => {
-			EmitSignal(SignalName.Accepted, GetImporterSettings());
+			EmitSignal((StringName)"Accepted", new ReadOnlySpan<Variant>(GetImporterSettings()));
 		};
 		_cancelButton.Pressed += () => {
-            EmitSignal(SignalName.Cancelled);
+            EmitSignal((StringName)"Cancelled");
         };
 		CloseRequested += () => {
-            EmitSignal(SignalName.Cancelled);
+            EmitSignal((StringName)"Cancelled");
         };
     }
 

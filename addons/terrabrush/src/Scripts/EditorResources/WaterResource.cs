@@ -8,10 +8,10 @@ public partial class WaterResource : Resource {
 
     public float WaterFactor { get;set; } = 1.0f;
     public float WaterInnerOffset { get;set; } = 0.2f;
-    [Export(PropertyHint.ColorNoAlpha)] public Color WaterColor { get;set; } = NamedColors.White;
-    [Export(PropertyHint.ColorNoAlpha)] public Color WaterFresnelColor { get;set; } = NamedColors.White;
-    [Export(PropertyHint.Range, "0,1,0.001")] public float WaterMetallic { get;set; }
-    [Export(PropertyHint.Range, "0,1,0.001")] public float WaterRoughness { get;set; }
+    public Color WaterColor { get;set; } = NamedColors.White;
+    public Color WaterFresnelColor { get;set; } = NamedColors.White;
+    public float WaterMetallic { get;set; }
+    public float WaterRoughness { get;set; }
     public Texture2D WaterNormalMap { get;set; }
     public Texture2D WaterNormalMap2 { get;set; }
     public float WaterTimeScale { get;set; } = 0.1f;
@@ -26,8 +26,8 @@ public partial class WaterResource : Resource {
     public float WaterEdgeScale { get;set; } = 0.1f;
     public float WaterNear { get;set; } = 0.5f;
     public float WaterFar { get;set; } = 100f;
-    [Export(PropertyHint.ColorNoAlpha)] public Color WaterEdgeColor { get;set; } = NamedColors.White;
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public Color WaterEdgeColor { get;set; } = NamedColors.White;
+    public int VisualInstanceLayers { get;set; } = 1;
 
     public ShaderMaterial CustomShader {
         get {

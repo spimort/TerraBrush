@@ -1,5 +1,6 @@
 using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -47,7 +48,7 @@ public partial class TextureSetResource : Resource {
     public Texture2D HeightTexture { get;set; }
     public int TextureDetail { get;set; } = -1;
 
-    private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
+    private Texture2D FindTexture(string fileHint, string directory, PackedStringArray directoryFiles) {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
         if (files.Count() == 1) {
             var file = files.ElementAt(0);
