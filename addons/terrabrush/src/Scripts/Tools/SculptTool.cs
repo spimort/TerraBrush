@@ -66,7 +66,7 @@ public class SculptTool : ToolBase {
     }
 
     private void Flatten(Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        Color smoothValue = Colors.Transparent;
+        Color smoothValue = NamedColors.Transparent;
         var numberOfSamples = 0;
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {

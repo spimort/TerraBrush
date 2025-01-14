@@ -34,7 +34,7 @@ public partial class ImportImageRow : PanelContainer {
 
         _textureButton.MouseExited += () => {
             var tween = CreateTween();
-            tween.TweenProperty(_textureButton, "self_modulate", Colors.White, 0.1);
+            tween.TweenProperty(_textureButton, "self_modulate", NamedColors.White, 0.1);
         };
 
         _textureButton.GuiInput += async e => {

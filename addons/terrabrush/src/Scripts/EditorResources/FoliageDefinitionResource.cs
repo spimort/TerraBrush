@@ -38,15 +38,15 @@ public partial class FoliageDefinitionResource : Resource {
         }
     }
     public Mesh Mesh { get;set; }
-    [Export(PropertyHint.Link)] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
+    public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
     public float WindStrength { get;set; } = 0.1f;
     public Texture2D NoiseTexture { get;set; }
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public int VisualInstanceLayers { get;set; } = 1;
     // Multimesh settings
     public int LODLevels { get;set; } = 3;
     public int LODRowsPerLevel { get;set; } = 50;
     public float LODInitialCellWidth { get;set; } = 1;
-    public Color Albedo { get;set; } = Colors.White;
+    public Color Albedo { get;set; } = NamedColors.White;
     public Texture2D[] AlbedoTextures { get;set; }
     public bool UseGroundColor { get;set; }
     public bool CastShadow { get;set; } = false;

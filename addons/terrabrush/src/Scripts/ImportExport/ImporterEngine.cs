@@ -222,7 +222,7 @@ public static class ImporterEngine {
                 var toX = x + startingX;
                 var toY = y + startingY;
 
-                var pixel = Colors.Black;
+                var pixel = NamedColors.Black;
 
                 // Try to match the next pixel with the one of the previous zone, for better transition
                 if (x == newImageSize - 1) {

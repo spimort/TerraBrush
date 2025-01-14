@@ -73,7 +73,7 @@ public class ObjectTool : ToolBase {
             var newColor = currentPixel;
 
             if (pixelBrushStrength > 0f) {
-                newColor = toolType == TerrainToolType.ObjectAdd ? Colors.Red : Colors.Transparent;
+                newColor = toolType == TerrainToolType.ObjectAdd ? NamedColors.Red : NamedColors.Transparent;
 
                 objectsNode.AddRemoveObjectFromTool(toolType == TerrainToolType.ObjectAdd, xPosition, yPosition, imageZoneInfo.Zone, heightmapImage, waterImage, noiseImage);
                 imageZoneInfo.Image.SetPixel(xPosition, yPosition, newColor);

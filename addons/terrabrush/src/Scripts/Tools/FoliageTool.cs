@@ -16,7 +16,7 @@ public class FoliageTool : ToolBase {
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
-            var newColor = toolType == TerrainToolType.FoliageAdd ? Colors.Red : new Color(0, 0, 0, 0);
+            var newColor = toolType == TerrainToolType.FoliageAdd ? NamedColors.Red : new Color(0, 0, 0, 0);
 
             var newValue = new Color(
                 Mathf.Lerp(currentPixel.R, newColor.R, pixelBrushStrength * brushStrength),

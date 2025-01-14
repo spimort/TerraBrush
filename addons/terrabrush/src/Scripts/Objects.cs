@@ -247,7 +247,7 @@ public partial class Objects : Node3D, IObjectsNode {
                 noiseImage,
                 x,
                 y,
-                Colors.White,
+                NamedColors.White,
                 result => {
                     CallDeferred(
                         nameof(AddObjectNode),

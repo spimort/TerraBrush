@@ -61,9 +61,9 @@ public static class ExporterEngine {
                         var globalX = x + (zoneX - minZoneX) * resolutionZoneSize;
                         var globalY = y + (zoneY - minZoneY) * resolutionZoneSize;
 
-                        resultHeightmapImage.SetPixel(globalX, globalY, heightMapImage == null ? Colors.Black : heightMapImage.GetPixel(x, y));
+                        resultHeightmapImage.SetPixel(globalX, globalY, heightMapImage == null ? NamedColors.Black : heightMapImage.GetPixel(x, y));
                         resultWaterImage?.SetPixel(globalX, globalY, waterImage == null ? new Color(0, 0.5f, 0.5f, 1f) : waterImage.GetPixel(x, y));
-                        resultSnowImage?.SetPixel(globalX, globalY, snowImage == null ? Colors.Black : snowImage.GetPixel(x, y));
+                        resultSnowImage?.SetPixel(globalX, globalY, snowImage == null ? NamedColors.Black : snowImage.GetPixel(x, y));
                     }
                 }
 

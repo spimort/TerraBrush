@@ -101,7 +101,7 @@ public partial class Clipmap : Node3D {
         arrays.Resize((int) Mesh.ArrayType.Max);
         arrays[(int) Mesh.ArrayType.Vertex] = vertices.ToArray();
         arrays[(int) Mesh.ArrayType.TexUV] = uvs.ToArray();
-        arrays[(int) Mesh.ArrayType.Color] = colors.ToArray();
+        arrays[(int) Mesh.ArrayType.Color] = NamedColors.ToArray();
 
         var normals = new Vector3[vertices.Count];
         Array.Fill(normals, new Vector3(0, 1, 0));
@@ -161,7 +161,7 @@ public partial class Clipmap : Node3D {
                     var vertex4MidZone = (x == toIndex && z % 2 == 0) || (z == toIndex && x % 2 == 0);
                     var vertex5MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
 
-                    colors.AddRange(new [] {
+                    NamedColors.AddRange(new [] {
                         new Color(vertex0MidZone ? 1 : 0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, level / 100.0f),
                         new Color(vertex1MidZone ? 1 : 0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, level / 100.0f),
                         new Color(vertex2MidZone ? 1 : 0, vertex2MidZone && z == toIndex ? 1 : 0, vertex2MidZone && x == startIndex ? 1 : 0, level / 100.0f),

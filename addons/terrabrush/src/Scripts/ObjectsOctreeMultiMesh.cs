@@ -521,7 +521,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
             noiseImage,
             x,
             y,
-            Colors.White,
+            NamedColors.White,
             result => {
                 var resultPosition = result.ResultPosition + new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
                 var existingNodes = _octree.GetNearby(resultPosition, 0.1f);
