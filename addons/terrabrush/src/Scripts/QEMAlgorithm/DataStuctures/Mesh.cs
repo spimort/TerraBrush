@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Godot.Collections;
 
 namespace TerraBrush.qem;
 
@@ -37,8 +38,8 @@ public struct Mesh {
     public static List<Triangle> GetTrianglesFromGodotMesh(Godot.Mesh mesh, int surface) {
         var triangles = new List<Triangle>();
         var surfaceArrays = mesh.SurfaceGetArrays(surface);
-        var vertices = (Godot.Collections.Array<Godot.Vector3>) surfaceArrays[(int) Godot.Mesh.ArrayType.Vertex];
-        var arrays = (Godot.Collections.Array<int>) surfaceArrays[(int) Godot.Mesh.ArrayType.Index];
+        var vertices = (GodotArray<Godot.Vector3>) surfaceArrays[(int) Godot.Mesh.ArrayType.Vertex];
+        var arrays = (GodotArray<int>) surfaceArrays[(int) Godot.Mesh.ArrayType.Index];
 
         for (var indiceIndex = 0; indiceIndex < arrays.Count; indiceIndex += 3) {
             var vertex1 = vertices[arrays[indiceIndex]];

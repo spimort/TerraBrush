@@ -5,11 +5,11 @@ namespace TerraBrush;
 public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
     public const string ButtonInspectorHintString = "ButtonHint";
 
-    public override bool _CanHandle(GodotObject @object) {
+    protected override bool _CanHandle(GodotObject @object) {
         return @object is TerraBrush;
     }
 
-    public override bool _ParseProperty(GodotObject @object, Godot.VariantType type, string name, PropertyHint hintType, string hintString, PropertyUsageFlags usageFlags, bool wide) {
+    protected override bool _ParseProperty(GodotObject @object, Godot.VariantType type, string name, PropertyHint hintType, string hintString, PropertyUsageFlags usageFlags, bool wide) {
         if (hintString != null && hintString.StartsWith(ButtonInspectorHintString)) {
             var splitValues = hintString.Split("_");
             if (splitValues.Length == 2) {

@@ -29,7 +29,7 @@ public static class CompatibilityScript_0_4_Alpha {
 				}
 
 				zone.HeightMapTexture.SetImage(newImage);
-				ResourceSaver.Save(zone.HeightMapTexture, zone.HeightMapTexture.ResourcePath);
+				ResourceSaver.Singleton.Save(zone.HeightMapTexture, zone.HeightMapTexture.ResourcePath);
 			}
 		}
 

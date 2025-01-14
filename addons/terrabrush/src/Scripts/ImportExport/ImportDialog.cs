@@ -96,7 +96,7 @@ public partial class ImportDialog : Window {
         };
 
 		_okButton.Pressed += () => {
-			EmitSignal((StringName)"Accepted", new ReadOnlySpan<Variant>(GetImporterSettings()));
+			EmitSignal((StringName)"Accepted", new ReadOnlySpan<Variant>([GetImporterSettings()]));
 		};
 		_cancelButton.Pressed += () => {
             EmitSignal((StringName)"Cancelled");

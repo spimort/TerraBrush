@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -32,14 +33,14 @@ public partial class ZonesResource : Resource {
         var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf)).ToArray();
 
 		if (images.Length != 0) {
-            _lockTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+            _lockTextures.CreateFromImages(new GodotArray<Image>([..images]));
         }
     }
 
     public void UpdateHeightmaps() {
 		var images = Zones.Select(zone => zone.HeightMapTexture.GetImage()).ToArray();
 		if (images.Length != 0) {
-            _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+            _heightmapTextures.CreateFromImages(new GodotArray<Image>([..images]));
         }
     }
 
@@ -53,7 +54,7 @@ public partial class ZonesResource : Resource {
         });
 
         if (images.Count > 0) {
-            _splatmapsTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+            _splatmapsTextures.CreateFromImages(new GodotArray<Image>([..images]));
         }
     }
 
@@ -73,7 +74,7 @@ public partial class ZonesResource : Resource {
         var images = Zones.Select(zone => zone.FoliagesTexture[foliageIndex].GetImage()).ToArray();
 
         if (images.Length > 0) {
-            _foliagesTextures[foliageIndex].CreateFromImages(new Godot.Collections.Array<Image>(images));
+            _foliagesTextures[foliageIndex].CreateFromImages(new GodotArray<Image>([..images]));
         }
     }
 
@@ -87,7 +88,7 @@ public partial class ZonesResource : Resource {
         });
 
         if (images.Count > 0) {
-            _objectsTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+            _objectsTextures.CreateFromImages(new GodotArray<Image>([..images]));
         }
     }
 
@@ -96,7 +97,7 @@ public partial class ZonesResource : Resource {
             return;
         }
 
-        _waterTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.WaterTexture.GetImage())));
+        _waterTextures.CreateFromImages(new GodotArray<Image>([..Zones.Select(zone => zone.WaterTexture.GetImage())]));
     }
 
     public void UpdateZoneWaterTexture(ZoneResource zone) {
@@ -108,7 +109,7 @@ public partial class ZonesResource : Resource {
             return;
         }
 
-        _snowTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.SnowTexture.GetImage())));
+        _snowTextures.CreateFromImages(new GodotArray<Image>([..Zones.Select(zone => zone.SnowTexture.GetImage())]));
     }
 
     public void UpdateZoneSnowTexture(ZoneResource zone) {
@@ -124,8 +125,8 @@ public partial class ZonesResource : Resource {
     }
 
     private void SaveImageResource(ImageTexture image) {
-        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && FileAccess.FileExists(image.ResourcePath)) {
-            ResourceSaver.Save(image, image.ResourcePath);
+        if (!string.IsNullOrWhiteSpace(image.ResourcePath) && Godot.FileAccess.FileExists(image.ResourcePath)) {
+            ResourceSaver.Singleton.Save(image, image.ResourcePath);
         }
     }
 

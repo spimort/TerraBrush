@@ -41,23 +41,23 @@ public partial class ObjectDefinitionResource : Resource {
     public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
     public float UpdateDistanceThreshold { get;set; } = 1;
     public float UpdateTimeFrequency { get;set; } = 0.1f;
-    [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public int VisualInstanceLayers { get;set; } = 1;
 
-    protected override void _ValidateProperty(Dictionary property) {
-        base._ValidateProperty(property);
+    // protected override void _ValidateProperty(GodotDictionary property) {
+    //     base._ValidateProperty(property);
 
-        if (Strategy == ObjectStrategy.PackedScenes) {
-            if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.NoEditor;
-            } else if (_packedScenesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Default;
-            }
-        } else if (Strategy == ObjectStrategy.OctreeMultiMeshes) {
-            if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.Default;
-            } else if (_packedScenesProperties.Contains((string) property["name"])) {
-                property["usage"] = (long) PropertyUsageFlags.NoEditor;
-            }
-        }
-    }
+    //     if (Strategy == ObjectStrategy.PackedScenes) {
+    //         if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.NoEditor;
+    //         } else if (_packedScenesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.Default;
+    //         }
+    //     } else if (Strategy == ObjectStrategy.OctreeMultiMeshes) {
+    //         if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.Default;
+    //         } else if (_packedScenesProperties.Contains((string) property["name"])) {
+    //             property["usage"] = (long) PropertyUsageFlags.NoEditor;
+    //         }
+    //     }
+    // }
 }

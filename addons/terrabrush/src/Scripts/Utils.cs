@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
@@ -36,7 +37,7 @@ public static class Utils {
 
 	public static Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
 		var textureArray = new Texture2DArray();
-		var textureImageArray = new Godot.Collections.Array<Image>();
+		var textureImageArray = new GodotArray<Image>();
 
 		int width = 0;
 		int height = 0;
@@ -58,7 +59,7 @@ public static class Utils {
 			});
 		}
 
-		textureArray._Images = textureImageArray;
+		textureArray.Set((StringName)"_images", textureImageArray);
 
 		return textureArray;
 	}
@@ -68,7 +69,7 @@ public static class Utils {
 			Shader = customShader.Shader
 		};
 
-		foreach (Godot.Collections.Dictionary uniform in customShader.Shader.GetShaderUniformList()) {
+		foreach (GodotDictionary uniform in customShader.Shader.GetShaderUniformList()) {
 			var uniformName = (string) uniform.GetValueOrDefault("name");
 			newShader.SetShaderParameter((StringName)uniformName, customShader.GetShaderParameter((StringName)uniformName));
 		}
