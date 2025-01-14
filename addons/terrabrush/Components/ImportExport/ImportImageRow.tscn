@@ -1,7 +1,5 @@
 [gd_scene load_steps=6 format=3 uid="uid://brgfdwv5cmbfy"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportImageRow.cs" id="1_5ms08"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0e42"]
 bg_color = Color(0, 0.0823529, 0.121569, 1)
 corner_radius_top_left = 5
@@ -29,7 +27,6 @@ gradient = SubResource("Gradient_lnr3e")
 
 [node name="ImportRow" type="PanelContainer"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_e0e42")
-script = ExtResource("1_5ms08")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

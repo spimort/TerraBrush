@@ -1,7 +1,5 @@
 [gd_scene load_steps=6 format=3 uid="uid://ckae4nuanw4sk"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Tools/ToolInfo.cs" id="1_1c1v5"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5m7py"]
 bg_color = Color(0.152941, 0.152941, 0.152941, 1)
 
@@ -46,7 +44,6 @@ _data = {
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
-script = ExtResource("1_1c1v5")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 modulate = Color(1, 1, 1, 0)

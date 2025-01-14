@@ -1,6 +1,5 @@
 [gd_scene load_steps=4 format=3 uid="uid://cyask5b1q7we4"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Foliage.cs" id="1_lxro2"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/foliage_shader.gdshader" id="2_hixc1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6tf5l"]
@@ -17,7 +16,6 @@ shader_parameter/ZonesSize = null
 shader_parameter/NumberOfZones = null
 
 [node name="Foliage" type="Node3D"]
-script = ExtResource("1_lxro2")
 AlbedoTextures = []
 MeshScale = Vector3(1, 1, 1)
 WindStrength = 0.1

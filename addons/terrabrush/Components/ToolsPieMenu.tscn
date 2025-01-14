@@ -1,7 +1,6 @@
 [gd_scene load_steps=27 format=3 uid="uid://bfgf5k0vqj828"]
 
 [ext_resource type="PackedScene" uid="uid://rmuvkqdg8w8q" path="res://addons/terrabrush/Components/PieMenu.tscn" id="1_efnm5"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ToolsPieMenu.cs" id="1_fiy40"]
 [ext_resource type="PackedScene" uid="uid://d243ps0q1hxp4" path="res://addons/terrabrush/Components/ToolPreview.tscn" id="2_b6unk"]
 [ext_resource type="Texture2D" uid="uid://dxsbe136337p2" path="res://addons/terrabrush/Assets/Icons/map_add.png" id="3_3isqm"]
 [ext_resource type="Texture2D" uid="uid://dqgc1ym8vyqgy" path="res://addons/terrabrush/Assets/Buttons/circle_sign_white.png" id="4_dsg64"]
@@ -30,7 +29,6 @@
 [node name="ToolsPieMenu" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_fiy40")
 
 [node name="PieMenu" parent="." instance=ExtResource("1_efnm5")]
 unique_name_in_owner = true

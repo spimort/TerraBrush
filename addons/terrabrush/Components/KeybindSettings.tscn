@@ -1,14 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://eqx7sntvcxw4"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/KeybindSettings.cs" id="1_rua0l"]
-
 [node name="KeybindSettings" type="AcceptDialog"]
 title = "TerraBrush Keybindings"
 initial_position = 2
 size = Vector2i(400, 300)
 visible = true
 ok_button_text = "Close"
-script = ExtResource("1_rua0l")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 15

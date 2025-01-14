@@ -1,6 +1,5 @@
 [gd_scene load_steps=9 format=3 uid="uid://bdwp2ci6wb66i"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportDialog.cs" id="1_cymwf"]
 [ext_resource type="PackedScene" uid="uid://brgfdwv5cmbfy" path="res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn" id="1_i0uwh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_lbm12"]
@@ -30,7 +29,6 @@ title = "Import Terrain"
 initial_position = 2
 size = Vector2i(800, 600)
 exclusive = true
-script = ExtResource("1_cymwf")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchors_preset = 15

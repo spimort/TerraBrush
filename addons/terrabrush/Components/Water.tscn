@@ -1,6 +1,5 @@
 [gd_scene load_steps=5 format=3 uid="uid://c1hskhrgdx6ug"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Water.cs" id="1_4nwuo"]
 [ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="2_002qp"]
 [ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader" id="3_xfn30"]
 
@@ -31,7 +30,6 @@ shader_parameter/Far = 100.0
 shader_parameter/EdgeColor = null
 
 [node name="Water" type="Node3D"]
-script = ExtResource("1_4nwuo")
 TimeScale = 0.0
 Strength = 0.0
 

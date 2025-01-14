@@ -1,6 +1,5 @@
 [gd_scene load_steps=9 format=3 uid="uid://rmuvkqdg8w8q"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/PieMenu.cs" id="1_b4r6x"]
 [ext_resource type="Texture2D" uid="uid://cgnwd7d8im54" path="res://addons/terrabrush/Assets/white_circle.png" id="17_dxx0s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rumxx"]
@@ -66,7 +65,6 @@ corner_radius_bottom_left = 5
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1e-05, 1e-05)
-script = ExtResource("1_b4r6x")
 
 [node name="ControlsContainer" type="Control" parent="."]
 unique_name_in_owner = true

@@ -438,6 +438,10 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
     private Node GetEditorViewportsContainerRecursive(Node node) {
         foreach (var child in node.GetChildren()) {
+            if (child == null) {
+                continue;
+            }
+
             if (child.GetClass() == "Node3DEditorViewportContainer") {
                 return child;
             }
