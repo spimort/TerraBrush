@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Bridge;
 using Godot.Collections;
 using Microsoft.VisualBasic;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace TerraBrush;
 
-public partial class Plugin : EditorPlugin {
+public partial class TerraBrushPlugin : EditorPlugin {
     private const float UpdateDelay = 0.005f;
     private const int ToolInfoOffset = 20;
     private const string OverlayActionNameKey = "ActionName";
@@ -30,6 +31,10 @@ public partial class Plugin : EditorPlugin {
     private Control _overlaySelector = null;
     private Button _updateTerrainSettingsButton = null;
     private CheckBox _autoAddZonesCheckbox = null;
+
+    internal static void BindMethods(ClassDBRegistrationContext context) {
+        context.BindConstructor(() => new TerraBrushPlugin());
+    }
 
     private void CreateCustomSetting(string name, Variant defaultValue, Godot.VariantType type, PropertyHint hint = PropertyHint.None, string hintString = null) {
         if (ProjectSettings.Singleton.HasSetting(name)) {

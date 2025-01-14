@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Bridge;
 using Godot.Collections;
 
 namespace TerraBrush;
@@ -161,6 +162,10 @@ public partial class TerraBrush : TerraBrushTool {
     public override SnowResource SnowDefinition { get;set; }
 
     public override ZonesResource TerrainZones { get;set; }
+
+    internal static void BindMethods(ClassDBRegistrationContext context) {
+        context.BindConstructor(() => new TerraBrush());
+    }
 
     protected async override void _Ready() {
         base._Ready();

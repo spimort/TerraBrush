@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Godot;
+using Godot.Bridge;
 using Godot.Collections;
 
 namespace TerraBrush;
@@ -68,6 +69,10 @@ public partial class KeybindManager : RefCounted {
 		    { StringNames.LockXAxis, LockXAxis },
 		    { StringNames.LockZAxis, LockZAxis },
 	    };
+    }
+
+	internal static void BindMethods(ClassDBRegistrationContext context) {
+        context.BindConstructor(() => new KeybindManager());
     }
 
     public static GodotArray<InputEvent> GetBinding(StringName actionName) => InputMap.Singleton.ActionGetEvents(actionName);

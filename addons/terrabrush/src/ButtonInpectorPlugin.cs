@@ -1,9 +1,14 @@
 using Godot;
+using Godot.Bridge;
 
 namespace TerraBrush;
 
 public partial class ButtonInspectorPlugin : EditorInspectorPlugin {
     public const string ButtonInspectorHintString = "ButtonHint";
+
+    internal static void BindMethods(ClassDBRegistrationContext context) {
+        context.BindConstructor(() => new ButtonInspectorPlugin());
+    }
 
     protected override bool _CanHandle(GodotObject @object) {
         return @object is TerraBrush;

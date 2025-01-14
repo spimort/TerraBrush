@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Bridge;
 
 namespace TerraBrush;
 
@@ -99,6 +100,10 @@ public partial class TerraBrushTool : Node3D {
         get {
             return false;
         } set {}
+    }
+
+    internal static void BindMethods(ClassDBRegistrationContext context) {
+        context.BindConstructor(() => new TerraBrushTool());
     }
 
     protected override void _Ready() {
