@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot>true</PublishAot>
+    <PublishDir>..\bin</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Godot.Bindings" Version="4.4.0-nightly.24509.1" />
+    <PackageReference Include="Godot.SourceGenerators" Version="4.4.0-nightly.24509.1" />
+  </ItemGroup>
+</Project>

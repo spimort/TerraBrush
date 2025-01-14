@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj": {}
+  },
+  "projects": {
+    "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj",
+        "projectName": "TerraBrush",
+        "projectPath": "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj",
+        "packagesPath": "C:\\Users\\yoyo_\\.nuget\\packages\\",
+        "outputPath": "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Users\\yoyo_\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "F:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\NuGet.Config",
+          "C:\\Users\\yoyo_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\yoyo_\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/godotengine/godot-dotnet/_packaging/godot-nightly/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Godot.Bindings": {
+              "target": "Package",
+              "version": "[4.4.0-nightly.24509.1, )"
+            },
+            "Godot.SourceGenerators": {
+              "target": "Package",
+              "version": "[4.4.0-nightly.24509.1, )"
+            },
+            "Microsoft.DotNet.ILCompiler": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
+              "version": "[9.0.0, 9.0.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
