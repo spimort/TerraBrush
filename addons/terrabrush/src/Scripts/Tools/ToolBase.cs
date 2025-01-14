@@ -37,7 +37,7 @@ public abstract class ToolBase {
     }
 
     public virtual bool HandleInput(TerrainToolType toolType, InputEvent @event) {
-        if (@event is InputEventKey inputEvent && !Input.IsKeyPressed(Key.Ctrl)) {
+        if (@event is InputEventKey inputEvent && !Input.Singleton.IsKeyPressed(Key.Ctrl)) {
             if (inputEvent.IsAction(KeybindManager.StringNames.LockXAxis)) {
                 if (_lockedAxis != LockedAxis.X) {
                     _lockedAxis = LockedAxis.X;

@@ -16,10 +16,10 @@ public class SetHeightTool : ToolBase {
     }
 
     public override bool HandleInput(TerrainToolType toolType, InputEvent @event) {
-        if (Input.IsKeyPressed(Key.Ctrl)) {
+        if (Input.Singleton.IsKeyPressed(Key.Ctrl)) {
             float increment = 1;
             int roundFactor = 0;
-            if (Input.IsKeyPressed(Key.Alt)) {
+            if (Input.Singleton.IsKeyPressed(Key.Alt)) {
                 increment = 0.1f;
                 roundFactor = 1;
             }
@@ -79,7 +79,7 @@ public class SetHeightTool : ToolBase {
     }
 
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (Input.IsKeyPressed(Key.Ctrl)) {
+        if (Input.Singleton.IsKeyPressed(Key.Ctrl)) {
             var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize, _terraBrush.Resolution);
             var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0, true);
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);

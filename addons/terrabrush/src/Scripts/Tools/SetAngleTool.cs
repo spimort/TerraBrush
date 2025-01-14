@@ -29,7 +29,7 @@ public class SetAngleTool : ToolBase {
     }
 
     public override bool HandleInput(TerrainToolType toolType, InputEvent @event) {
-        if (Input.IsKeyPressed(Key.Ctrl)) {
+        if (Input.Singleton.IsKeyPressed(Key.Ctrl)) {
             float increment = 1;
             int roundFactor = 0;
 
@@ -93,7 +93,7 @@ public class SetAngleTool : ToolBase {
     }
 
     public override void Paint(TerrainToolType toolType, Image brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-        if (Input.IsKeyPressed(Key.Ctrl)) {
+        if (Input.Singleton.IsKeyPressed(Key.Ctrl)) {
             var initialPoint = ZoneUtils.GetPixelToZoneInfo(imagePosition.X, imagePosition.Y, _terraBrush.ZonesSize, _terraBrush.Resolution);
             var imageZoneInfo = GetImageZoneInfoForPosition(initialPoint, 0, 0);
             var currentPixel = imageZoneInfo.Image.GetPixel(imageZoneInfo.ZoneInfo.ImagePosition.X, imageZoneInfo.ZoneInfo.ImagePosition.Y);
