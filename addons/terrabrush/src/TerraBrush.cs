@@ -208,7 +208,7 @@ public partial class TerraBrush : TerraBrushTool {
         if (string.IsNullOrEmpty(DataPath)) {
             var scenePath = GetTree().EditedSceneRoot.SceneFilePath;
             if (!string.IsNullOrWhiteSpace(scenePath)) {
-                DataPath = scenePath.Replace(System.IO.Path.GetFileName(scenePath), GetTree().EditedSceneRoot.Name);
+                DataPath = scenePath.Replace(System.IO.Path.GetFileName(scenePath), (string)GetTree().EditedSceneRoot.Name);
             }
         }
 
@@ -429,7 +429,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Foliage.tscn", CancellationToken.None);
 
-        _foliagesNode = GetNodeOrNull<Node3D>("Foliages");
+        _foliagesNode = GetNodeOrNull<Node3D>((NodePath)"Foliages");
         if (_foliagesNode == null) {
             _foliagesNode = new Node3D();
             AddChild(_foliagesNode);
@@ -480,7 +480,7 @@ public partial class TerraBrush : TerraBrushTool {
             return;
         }
 
-        _objectsContainerNode = GetNodeOrNull<Node3D>("Objects");
+        _objectsContainerNode = GetNodeOrNull<Node3D>((NodePath)"Objects");
         if (_objectsContainerNode == null) {
             _objectsContainerNode = new Node3D();
             AddChild(_objectsContainerNode);
@@ -513,7 +513,7 @@ public partial class TerraBrush : TerraBrushTool {
             };
 
             var objectNode = prefab.Instantiate<IObjectsNode>();
-            ((Node3D) objectNode).Name = $"{objectIndex}";
+            ((Node3D) objectNode).Name = (StringName)$"{objectIndex}";
 
             objectNode.ObjectsIndex = objectIndex;
             objectNode.Definition = objectItem.Definition;
@@ -543,7 +543,7 @@ public partial class TerraBrush : TerraBrushTool {
 
         TerrainZones.UpdateWaterTextures();
 
-        _waterNodeContainer = GetNodeOrNull<Node3D>("Water");
+        _waterNodeContainer = GetNodeOrNull<Node3D>((NodePath)"Water");
         if (_waterNodeContainer == null) {
             _waterNodeContainer = new Node3D();
             AddChild(_waterNodeContainer);
@@ -598,7 +598,7 @@ public partial class TerraBrush : TerraBrushTool {
             zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
         }
 
-        _snowNodeContainer = GetNodeOrNull<Node3D>("Snow");
+        _snowNodeContainer = GetNodeOrNull<Node3D>((NodePath)"Snow");
         if (_snowNodeContainer == null) {
             _snowNodeContainer = new Node3D();
             AddChild(_snowNodeContainer);
@@ -626,7 +626,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
         for (var i = 0; i < Objects?.Length; i++) {
-            var objectsNode = _objectsContainerNode.GetNode<IObjectsNode>($"{i}");
+            var objectsNode = _objectsContainerNode.GetNode<IObjectsNode>((NodePath)$"{i}");
             objectsNode.UpdateObjectsHeight(zones);
         }
     }

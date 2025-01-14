@@ -18,7 +18,7 @@ public partial class ImportImageRow : PanelContainer {
         this.RegisterNodePaths();
 
         var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
-        var rowStyle = (StyleBoxFlat) Get("theme_override_styles/panel");
+        var rowStyle = (StyleBoxFlat) Get((StringName)"theme_override_styles/panel");
         rowStyle.BgColor = iconsColor;
 
         _label.Text = ImageTypeName;
@@ -30,7 +30,7 @@ public partial class ImportImageRow : PanelContainer {
 
         _textureButton.MouseEntered += () => {
             var tween = CreateTween();
-            tween.TweenProperty(_textureButton, "self_modulate", new Color(1, 1, 1, 0.3f), 0.1);
+            tween.TweenProperty(_textureButton, (NodePath)"self_modulate", new Color(1, 1, 1, 0.3f), 0.1);
         };
 
         _textureButton.MouseExited += () => {
@@ -47,8 +47,8 @@ public partial class ImportImageRow : PanelContainer {
 
                     if (file != null) {
                         var imageResource = ResourceLoader.Load<Texture2D>(file);
-                        _textureButton.TextureNormal = imageResource;
-                        ImageTexture = imageResource;
+                        _textureButton.TextureNormal = (Texture2D)imageResource;
+                        ImageTexture = (Texture2D)imageResource;
                     }
                 } else if (mouseEvent.ButtonIndex == MouseButton.Right) {
                     ImageTexture = null;

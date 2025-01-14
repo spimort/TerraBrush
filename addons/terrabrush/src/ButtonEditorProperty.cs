@@ -13,12 +13,12 @@ public partial class ButtonEditorProperty : EditorProperty {
         _functionName = functionName;
 
         var button = new Button() {
-            Name = propertyName,
+            Name = (StringName)propertyName,
             Text = propertyName
         };
         AddChild(button);
 
-        button.Connect("pressed", new Callable(this, nameof(OnButtonClick)));
+        button.Connect((StringName)"pressed", new Callable(this, (StringName)nameof(OnButtonClick)));
     }
 
     private void OnButtonClick() {

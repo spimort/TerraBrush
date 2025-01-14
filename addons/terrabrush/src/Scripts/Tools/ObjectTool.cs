@@ -48,7 +48,7 @@ public class ObjectTool : ToolBase {
             noiseImage = noiseTexture.GetImage();
         }
 
-        var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>($"{_terraBrush.ObjectIndex}");
+        var objectsNode = _terraBrush.ObjectsContainerNode.GetNode<IObjectsNode>((NodePath)$"{_terraBrush.ObjectIndex}");
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             _heightmapImagesCache.TryGetValue(imageZoneInfo.Zone, out var heightmapImage);

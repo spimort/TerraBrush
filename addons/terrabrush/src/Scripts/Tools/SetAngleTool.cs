@@ -148,7 +148,7 @@ public class SetAngleTool : ToolBase {
             if (_initialPointMesh == null) {
                 _initialPointMesh = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/SetAngleInitialPoint.tscn").Instantiate<Node3D>();
 
-                var container = _terraBrush.GetNodeOrNull(new NodePath(StringNames.SetAnglePointContainer));
+                var container = _terraBrush.GetNodeOrNull(new NodePath((string)StringNames.SetAnglePointContainer));
                 if (container == null) {
                     container = new Node3D();
                     container.Name = StringNames.SetAnglePointContainer;
@@ -163,7 +163,7 @@ public class SetAngleTool : ToolBase {
     }
 
     private void ClearInitialPointMesh() {
-        var existingPointContainer = _terraBrush.GetNodeOrNull(new NodePath(StringNames.SetAnglePointContainer));
+        var existingPointContainer = _terraBrush.GetNodeOrNull(new NodePath((string)StringNames.SetAnglePointContainer));
         if (existingPointContainer != null) {
             existingPointContainer.Name = new StringName($"{StringNames.SetAnglePointContainer}_temp");
             existingPointContainer.QueueFree();

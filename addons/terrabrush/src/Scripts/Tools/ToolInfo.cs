@@ -18,9 +18,9 @@ public partial class ToolInfo : Control {
 
             _animationPlayer.Stop();
             if (string.IsNullOrWhiteSpace(text)) {
-                _animationPlayer.Play("RESET");
+                _animationPlayer.Play((StringName)"RESET");
             } else {
-                _animationPlayer.Play("Show");
+                _animationPlayer.Play((StringName)"Show");
             }
         }
     }

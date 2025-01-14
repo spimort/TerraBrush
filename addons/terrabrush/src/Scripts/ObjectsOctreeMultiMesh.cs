@@ -104,11 +104,11 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
         await InitializeOctree();
         _maxDistance = _sortedLODDefinitions.Last().MaxDistance;
 
-        _staticBodyContainer = GetNodeOrNull<StaticBody3D>("StaticBody");
+        _staticBodyContainer = GetNodeOrNull<StaticBody3D>((NodePath)"StaticBody");
 		_staticBodyContainer?.QueueFree();
 
         _staticBodyContainer = new StaticBody3D {
-            Name = "StaticBody"
+            Name = (StringName)"StaticBody"
         };
         AddChild(_staticBodyContainer);
 
@@ -394,7 +394,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
             if (!nodes.Contains(actualNode) || toRemoveNodes.Contains(actualNode)) {
                 if (cancellationToken.IsCancellationRequested) return;
 
-                actualNode.CollisionShape?.CallDeferred("queue_free");
+                actualNode.CollisionShape?.CallDeferred((StringName)"queue_free");
                 actualNode.CollisionShape = null;
 
                 _actualNodesWithCollision.Remove(actualNode);

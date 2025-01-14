@@ -41,8 +41,8 @@ public partial class KeybindSettings : AcceptDialog {
 			iter.SetText(0, ProperCase(action));
 			iter.SetText(1, _keybindManager.DescribeKey(action));
 
-			iter.AddButton(1, iconTheme.GetIcon("Edit", "EditorIcons"), (int)ShortcutType.Add);
-			iter.AddButton(1, iconTheme.GetIcon("Close", "EditorIcons"), (int)ShortcutType.Erase);
+			iter.AddButton(1, iconTheme.GetIcon((StringName)"Edit", (StringName)"EditorIcons"), (int)ShortcutType.Add);
+			iter.AddButton(1, iconTheme.GetIcon((StringName)"Close", (StringName)"EditorIcons"), (int)ShortcutType.Erase);
 			iter.SetMetadata(0, action);
 		}
 		_keybindList.ButtonClicked += KeybindListOnButtonClicked;

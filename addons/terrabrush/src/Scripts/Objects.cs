@@ -72,7 +72,7 @@ public partial class Objects : Node3D, IObjectsNode {
             }
 
             var objectsContainerNode = new Node3D();
-            objectsContainerNode.Name = $"{zoneIndex}";
+            objectsContainerNode.Name = (StringName)$"{zoneIndex}";
             objectsContainerNode.Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
 
             CallDeferred("add_child", objectsContainerNode);
@@ -129,7 +129,7 @@ public partial class Objects : Node3D, IObjectsNode {
 
     private void AddObjectNode(Node3D parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, int packedSceneIndex) {
         var newNode =  Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>();
-        newNode.Name = nodeName;
+        newNode.Name = (StringName)nodeName;
         newNode.Position = nodePosition;
         newNode.RotationDegrees = nodeRotation;
 
@@ -145,7 +145,7 @@ public partial class Objects : Node3D, IObjectsNode {
             var waterImage = zone.WaterTexture?.GetImage();
 
             var nodeName = $"{zoneIndex}";
-            var objectsNode = GetNodeOrNull(nodeName);
+            var objectsNode = GetNodeOrNull((NodePath)nodeName);
 
             if (objectsNode != null) {
                 var noiseTexture = Definition.NoiseTexture ?? _defaultNoise;
@@ -230,17 +230,17 @@ public partial class Objects : Node3D, IObjectsNode {
 
     public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage) {
         var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
-        var containerNode = GetNodeOrNull($"{zoneIndex}");
+        var containerNode = GetNodeOrNull((NodePath)$"{zoneIndex}");
         if (containerNode == null) {
             containerNode = new Node3D() {
-                Name = $"{zoneIndex}",
+                Name = (StringName)$"{zoneIndex}",
                 Position = new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize)
             };
             AddChild(containerNode);
         }
 
         var nodeName = $"{x}_{y}";
-        var existingNode = containerNode.GetNodeOrNull(nodeName);
+        var existingNode = containerNode.GetNodeOrNull((NodePath)nodeName);
         if (add && existingNode == null) {
             CalculateObjectPresenceForPixel(
                 heightmapImage,

@@ -26,11 +26,11 @@ public partial class PieMenu : Control {
 
         UpdateContent();
 
-        _animationPlayer.Play("EnterTree");
+        _animationPlayer.Play((StringName)"EnterTree");
 
         var iconsColor = (Color) ProjectSettings.GetSetting(SettingContants.IconsColor);
-        _menuLabel.Set("theme_override_colors/font_outline_color", iconsColor);
-        var normalStyle = (StyleBoxFlat) _menuLabel.Get("theme_override_styles/normal");
+        _menuLabel.Set((StringName)"theme_override_colors/font_outline_color", iconsColor);
+        var normalStyle = (StyleBoxFlat) _menuLabel.Get((StringName)"theme_override_styles/normal");
         normalStyle.BgColor = iconsColor;
     }
 

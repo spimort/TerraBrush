@@ -47,7 +47,7 @@ public partial class NumericSelectorDialog : Window {
         base._Input(@event);
 
 		if (@event is InputEventKey inputEvent && (inputEvent.Keycode == Key.Enter || inputEvent.Keycode == Key.KpEnter)) {
-			CallDeferred(nameof(SendResult));
+			CallDeferred((StringName)nameof(SendResult));
 		}
     }
 

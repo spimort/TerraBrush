@@ -70,7 +70,7 @@ public static class Utils {
 
 		foreach (Godot.Collections.Dictionary uniform in customShader.Shader.GetShaderUniformList()) {
 			var uniformName = (string) uniform.GetValueOrDefault("name");
-			newShader.SetShaderParameter(uniformName, customShader.GetShaderParameter(uniformName));
+			newShader.SetShaderParameter((StringName)uniformName, customShader.GetShaderParameter((StringName)uniformName));
 		}
 
 		return newShader;

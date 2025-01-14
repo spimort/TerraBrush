@@ -61,7 +61,7 @@ public partial class Plugin : EditorPlugin {
         AddInspectorPlugin(new ButtonInspectorPlugin());
 
         _terrainDockContainer = new Control() {
-            Name = "Terrain Editor"
+            Name = (StringName)"Terrain Editor"
         };
         AddControlToDock(DockSlot.RightBl, _terrainDockContainer);
 
@@ -130,7 +130,7 @@ public partial class Plugin : EditorPlugin {
             if (!inputEvent.Pressed || inputEvent.Echo) return base._Forward3DGuiInput(viewportCamera, @event);
 
             if (inputEvent.IsAction(KeybindManager.StringNames.ToolPie)) {
-                ShowToolPieMenu(KeybindManager.StringNames.ToolPie);
+                ShowToolPieMenu((string)KeybindManager.StringNames.ToolPie);
                 return (int) AfterGuiInput.Stop;
             }
 
@@ -193,7 +193,7 @@ public partial class Plugin : EditorPlugin {
                         _undoRedo.CreateAction("Modify terrain");
 
                         // Trigger a dirty state
-                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
+                        _undoRedo.AddUndoProperty(_currentTerraBrushNode, (StringName)nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
                         _isMousePressed = true;
                         preventGuiInput = true;
@@ -204,12 +204,12 @@ public partial class Plugin : EditorPlugin {
                     _isMousePressed = false;
 
                     // Trigger a dirty state
-                    _undoRedo.AddDoProperty(_currentTerraBrushNode, nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
+                    _undoRedo.AddDoProperty(_currentTerraBrushNode, (StringName)nameof(TerraBrush.ZonesSize), _currentTerraBrushNode.ZonesSize);
 
                     _currentTerraBrushNode.EndEditTerrain();
 
-                    _undoRedo.AddUndoMethod(this, nameof(OnUndoRedo));
-                    _undoRedo.AddDoMethod(this, nameof(OnUndoRedo));
+                    _undoRedo.AddUndoMethod(this, (StringName)nameof(OnUndoRedo));
+                    _undoRedo.AddDoMethod(this, (StringName)nameof(OnUndoRedo));
 
                     _preventInitialDo = true;
                     _undoRedo.CommitAction();
@@ -359,11 +359,11 @@ public partial class Plugin : EditorPlugin {
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
         RemoveDock();
-        GetNodeOrNull("BrushDecal")?.QueueFree();
+        GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
         _brushDecal?.QueueFree();
 
         _brushDecal = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
-        _brushDecal.Name = "BrushDecal";
+        _brushDecal.Name = (StringName)"BrushDecal";
         AddChild(_brushDecal);
 
         _brushDecal.SetSize(terraBrush.BrushSize);
@@ -377,16 +377,16 @@ public partial class Plugin : EditorPlugin {
         _undoRedo = GetUndoRedo();
         _currentTerraBrushNode.UndoRedo = _undoRedo;
 
-        GetNodeOrNull("ToolInfo")?.QueueFree();
+        GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         _toolInfo?.QueueFree();
 
         _toolInfo = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
-        _toolInfo.Name = "ToolInfo";
+        _toolInfo.Name = (StringName)"ToolInfo";
         AddChild(_toolInfo);
 
         AddDock();
 
-        terraBrush.SetMeta("_edit_lock_", true);
+        terraBrush.SetMeta((StringName)"_edit_lock_", true);
     }
 
     private void AddDock() {
@@ -399,14 +399,14 @@ public partial class Plugin : EditorPlugin {
         _updateTerrainSettingsButton = new Button() {
             Text = "Update terrain"
         };
-        _updateTerrainSettingsButton.Connect("pressed", new Callable(this, nameof(UpdateTerrainSettings)));
+        _updateTerrainSettingsButton.Connect((StringName)"pressed", new Callable(this, (StringName)nameof(UpdateTerrainSettings)));
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _updateTerrainSettingsButton);
 
         _autoAddZonesCheckbox = new CheckBox() {
             Text = "Auto add zones",
             ButtonPressed = _currentTerraBrushNode.AutoAddZones
         };
-        _autoAddZonesCheckbox.Connect("pressed", new Callable(this, nameof(UpdateAutoAddZonesSetting)));
+        _autoAddZonesCheckbox.Connect((StringName)"pressed", new Callable(this, (StringName)nameof(UpdateAutoAddZonesSetting)));
         AddControlToContainer(CustomControlContainer.SpatialEditorMenu, _autoAddZonesCheckbox);
     }
 
@@ -416,13 +416,13 @@ public partial class Plugin : EditorPlugin {
 
         _brushDecal?.QueueFree();
         _brushDecal = null;
-        GetNodeOrNull("BrushDecal")?.QueueFree();
+        GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
 
-        GetNodeOrNull("ToolInfo")?.QueueFree();
+        GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         _toolInfo?.QueueFree();
         _toolInfo = null;
 
-        _currentTerraBrushNode?.SetMeta("_edit_lock_", false);
+        _currentTerraBrushNode?.SetMeta((StringName)"_edit_lock_", false);
 
         _currentTerraBrushNode = null;
     }
@@ -454,7 +454,7 @@ public partial class Plugin : EditorPlugin {
 
     private string HideOverlaySelector() {
         if (_overlaySelector != null) {
-            var overlayActionName = (string) _overlaySelector.GetMeta(OverlayActionNameKey, default(string));
+            var overlayActionName = (string) _overlaySelector.GetMeta((StringName)OverlayActionNameKey, default(string));
 
             _overlaySelector.QueueFree();
             _overlaySelector = null;
@@ -481,7 +481,7 @@ public partial class Plugin : EditorPlugin {
                 _overlaySelector = pieMenu;
 
                 _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
-                _overlaySelector.SetMeta(OverlayActionNameKey, actionName);
+                _overlaySelector.SetMeta((StringName)OverlayActionNameKey, actionName);
 
                 EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
             }
@@ -498,7 +498,7 @@ public partial class Plugin : EditorPlugin {
 
                 _overlaySelector = customContentPieMenu;
                 _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
-                _overlaySelector.SetMeta(OverlayActionNameKey, label);
+                _overlaySelector.SetMeta((StringName)OverlayActionNameKey, label);
 
                 EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
 
@@ -573,7 +573,7 @@ public partial class Plugin : EditorPlugin {
 
                 _overlaySelector = selector;
                 _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();
-                _overlaySelector.SetMeta(OverlayActionNameKey, actionName);
+                _overlaySelector.SetMeta((StringName)OverlayActionNameKey, actionName);
 
                 EditorInterface.Singleton.GetBaseControl().AddChild(_overlaySelector);
 

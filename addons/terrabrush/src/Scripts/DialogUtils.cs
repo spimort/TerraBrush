@@ -17,22 +17,22 @@ public static class DialogUtils {
             Transient = transient
         };
 
-        fileDialog.Connect("file_selected", Callable.From((string file) => {
+        fileDialog.Connect((StringName)"file_selected", Callable.From((string file) => {
             fileDialog.QueueFree();
             completionSource.TrySetResult(file);
         }));
 
-        fileDialog.Connect("dir_selected", Callable.From((string dir) => {
+        fileDialog.Connect((StringName)"dir_selected", Callable.From((string dir) => {
             fileDialog.QueueFree();
             completionSource.TrySetResult(dir);
         }));
 
-        fileDialog.Connect("canceled", Callable.From(() => {
+        fileDialog.Connect((StringName)"canceled", Callable.From(() => {
             fileDialog.QueueFree();
             completionSource.TrySetResult(null);
         }));
 
-		fileDialog.Connect("close_requested", Callable.From(() => {
+		fileDialog.Connect((StringName)"close_requested", Callable.From(() => {
 			fileDialog.QueueFree();
 			completionSource.TrySetResult(null);
 		}));

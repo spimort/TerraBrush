@@ -35,7 +35,7 @@ public static class NodePathUtils {
                 switch(attr)
                 {
                     case NodePathAttribute pathAttr:
-                        AssignPathToMember(node, member, pathAttr.NodePath);
+                        AssignPathToMember(node, member, (NodePath)pathAttr.NodePath);
                         break;
                 }
             }
@@ -46,11 +46,11 @@ public static class NodePathUtils {
     {
         foreach(var name in names) {
             if (string.IsNullOrEmpty(name)) continue;
-            var target = node.GetNodeOrNull(name);
+            var target = node.GetNodeOrNull((NodePath)name);
             if (target != null)
                 return target;
             if (node.Owner == null) continue;
-            target = node.Owner.GetNodeOrNull(name);
+            target = node.Owner.GetNodeOrNull((NodePath)name);
             if (target != null)
                 return target;
         }

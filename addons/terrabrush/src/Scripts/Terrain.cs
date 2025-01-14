@@ -242,24 +242,24 @@ public partial class Terrain : Node3D {
         if (this.TextureSets?.TextureSets?.Length > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray());
-            Clipmap.Shader.SetShaderParameter($"Textures{filterParamName}", textureArray);
+            Clipmap.Shader.SetShaderParameter((StringName)$"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
 
             if (this.TextureSets.TextureSets.Any(x => x.NormalTexture != null)) {
                 var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));
-                Clipmap.Shader.SetShaderParameter($"Normals{filterParamName}", normalArray);
+                Clipmap.Shader.SetShaderParameter((StringName)$"Normals{filterParamName}", normalArray);
                 Clipmap.Shader.SetShaderParameter(StringNames.HasNormalTextures, true);
             }
 
             if (this.TextureSets.TextureSets.Any(x => x.RoughnessTexture != null)) {
                 var roughnessArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.RoughnessTexture));
-                Clipmap.Shader.SetShaderParameter($"RoughnessTextures{filterParamName}", roughnessArray);
+                Clipmap.Shader.SetShaderParameter((StringName)$"RoughnessTextures{filterParamName}", roughnessArray);
                 Clipmap.Shader.SetShaderParameter(StringNames.HasRoughnessTextures, true);
             }
 
             if (this.TextureSets.TextureSets.Any(x => x.HeightTexture != null)) {
                 var heightArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.HeightTexture));
-                Clipmap.Shader.SetShaderParameter($"HeightTextures{filterParamName}", heightArray);
+                Clipmap.Shader.SetShaderParameter((StringName)$"HeightTextures{filterParamName}", heightArray);
                 Clipmap.Shader.SetShaderParameter(StringNames.HasHeightTextures, true);
             }
 
@@ -270,7 +270,7 @@ public partial class Terrain : Node3D {
         } else if (DefaultTexture != null) {
             var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new int[] {TextureDetail});
-            Clipmap.Shader.SetShaderParameter($"Textures{filterParamName}", textureArray);
+            Clipmap.Shader.SetShaderParameter((StringName)$"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
             Clipmap.Shader.SetShaderParameter(StringNames.UseAntitile, false);
         }

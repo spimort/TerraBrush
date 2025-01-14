@@ -34,7 +34,7 @@ public partial class DockPreviewButton : TextureButton {
         base._Ready();
         this.RegisterNodePaths();
 
-        Connect("pressed", new Callable(this, nameof(OnItemSelect)));
+        Connect((StringName)"pressed", new Callable(this, (StringName)nameof(OnItemSelect)));
 
         if (ButtonImage != null) {
             SetTextureImage(ButtonImage);
@@ -49,10 +49,10 @@ public partial class DockPreviewButton : TextureButton {
         _pressedColor = _normalColor.Lightened(0.5f);
 
         if (MarginContainer != null && Margin > 0) {
-            MarginContainer.Set("theme_override_constants/margin_left", Margin);
-            MarginContainer.Set("theme_override_constants/margin_right", Margin);
-            MarginContainer.Set("theme_override_constants/margin_top", Margin);
-            MarginContainer.Set("theme_override_constants/margin_bottom", Margin);
+            MarginContainer.Set((StringName)"theme_override_constants/margin_left", Margin);
+            MarginContainer.Set((StringName)"theme_override_constants/margin_right", Margin);
+            MarginContainer.Set((StringName)"theme_override_constants/margin_top", Margin);
+            MarginContainer.Set((StringName)"theme_override_constants/margin_bottom", Margin);
         }
 
         if (Label != null && Text != "") {
@@ -108,11 +108,11 @@ public partial class DockPreviewButton : TextureButton {
         };
 
         var tween = CreateTween();
-        tween.TweenProperty(this, "self_modulate", color, 0.1);
+        tween.TweenProperty(this, (NodePath)"self_modulate", color, 0.1);
     }
 
     public void LoadResourcePreview(Resource resoruce) {
-        EditorInterface.Singleton.GetResourcePreviewer().QueueEditedResourcePreview(resoruce, this, nameof(OnPreviewThumbnailReady), System.IO.Path.GetFileName(resoruce.ResourcePath));
+        EditorInterface.Singleton.GetResourcePreviewer().QueueEditedResourcePreview(resoruce, this, (StringName)nameof(OnPreviewThumbnailReady), System.IO.Path.GetFileName(resoruce.ResourcePath));
     }
 
     private void OnPreviewThumbnailReady(string path, Texture2D preview, Texture2D thumbnail_preview, string resourceName) {
