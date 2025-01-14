@@ -4,7 +4,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[GlobalClass]
 public partial class ZoneResource : Resource {
     public ImageTexture LockTexture { get;set; }
     [Export] public Vector2I ZonePosition { get;set; }

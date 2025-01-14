@@ -2,7 +2,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[GlobalClass]
 public partial class SnowResource : Resource {
     private ShaderMaterial _customShader;
 

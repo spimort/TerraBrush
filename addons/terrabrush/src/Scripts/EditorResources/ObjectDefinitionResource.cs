@@ -9,7 +9,6 @@ public enum ObjectStrategy {
     OctreeMultiMeshes = 2
 }
 
-[GlobalClass]
 public partial class ObjectDefinitionResource : Resource {
     private static readonly List<string> _packedScenesProperties = new List<string> {
     };

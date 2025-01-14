@@ -3,7 +3,6 @@ using Godot;
 
 namespace TerraBrush;
 
-[GlobalClass]
 public partial class TextureSetResource : Resource {
     private const string NormalFilesHint = "normal";
     private const string RoughnessFilesHint = "roughness";
