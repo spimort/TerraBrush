@@ -21,7 +21,7 @@ public partial class Objects : Node3D, IObjectsNode {
     [Export] public bool LoadInThread { get;set; }
     [Export] public int DefaultObjectFrequency { get;set;}
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
 
         if (Definition == null) {
@@ -33,7 +33,7 @@ public partial class Objects : Node3D, IObjectsNode {
         UpdateObjects();
     }
 
-    public override void _ExitTree() {
+    protected override void _ExitTree() {
         base._ExitTree();
 
         _objectsCreationCancellationTokenSource?.Cancel();

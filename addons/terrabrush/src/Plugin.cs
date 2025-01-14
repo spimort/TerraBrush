@@ -48,7 +48,7 @@ public partial class Plugin : EditorPlugin {
         ProjectSettings.SetInitialValue(name, defaultValue);
     }
 
-    public override void _EnterTree() {
+    protected override void _EnterTree() {
         var keybindManager = new KeybindManager();
 		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
 		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
@@ -84,7 +84,7 @@ public partial class Plugin : EditorPlugin {
         dlg.PopupCentered();
     }
 
-    public override void _Edit(GodotObject @object) {
+    protected override void _Edit(GodotObject @object) {
         base._Edit(@object);
 
         if (_Handles(@object)) {
@@ -98,7 +98,7 @@ public partial class Plugin : EditorPlugin {
         return @object is TerraBrush;
     }
 
-    public override void _SaveExternalData() {
+    protected override void _SaveExternalData() {
         base._SaveExternalData();
 
         _currentTerraBrushNode?.SaveResources();
@@ -231,7 +231,7 @@ public partial class Plugin : EditorPlugin {
         }
     }
 
-    public override void _PhysicsProcess(double delta) {
+    protected override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
 
         if (!_isMousePressed) {
@@ -320,7 +320,7 @@ public partial class Plugin : EditorPlugin {
         return Vector3.Inf;
     }
 
-	public override void _ExitTree() {
+	protected override void _ExitTree() {
         if (_terrainDockContainer != null) {
             RemoveControlFromDocks(_terrainDockContainer);
             _terrainDockContainer.Free();

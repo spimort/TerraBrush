@@ -8,7 +8,7 @@ public partial class CustomContentPieMenu : Control {
 
     public PieMenu PieMenu => _pieMenu;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
     }

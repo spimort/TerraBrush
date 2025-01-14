@@ -25,7 +25,7 @@ public partial class Snow : Node3D {
 
     public Clipmap Clipmap => _clipmap;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
@@ -67,7 +67,7 @@ public partial class Snow : Node3D {
         _clipmap.Shader.SetShaderParameter(StringNames.Metallic, SnowDefinition.Metallic);
     }
 
-    public override void _PhysicsProcess(double delta) {
+    protected override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
 
         if (_compressedPositions.Count > 0) {

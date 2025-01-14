@@ -6,7 +6,7 @@ namespace TerraBrush;
 public partial class BrushDecal : Node3D {
     [NodePath] private Decal _decal;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
     }

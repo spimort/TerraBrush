@@ -17,7 +17,7 @@ public partial class KeyListenDialog : Window {
 	private InputEventKey _eventKey;
 
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready() {
+	protected override void _Ready() {
 		this.RegisterNodePaths();
 		_okButton.Pressed += () => {
 			if (_eventKey == null) {
@@ -30,7 +30,7 @@ public partial class KeyListenDialog : Window {
 		_cancelButton.Pressed += () => EmitSignal(SignalName.KeyListenCancelled);
 	}
 
-	public override void _Input(InputEvent @event) {
+	protected override void _Input(InputEvent @event) {
 		if (@event is InputEventKey iek) {
 			_eventKey = iek;
 			_okButton.Disabled = false;

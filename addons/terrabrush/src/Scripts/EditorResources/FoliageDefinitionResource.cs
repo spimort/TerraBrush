@@ -78,7 +78,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public int MaximumRenderDistance { get;set; } = 50;
     [Export] public int EditorMaximumRenderDistance { get;set; } = 50;
 
-    public override void _ValidateProperty(Dictionary property) {
+    protected override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
 
         if (Strategy == FoliageStrategy.MultiMesh) {

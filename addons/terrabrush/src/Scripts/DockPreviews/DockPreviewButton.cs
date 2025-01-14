@@ -30,7 +30,7 @@ public partial class DockPreviewButton : TextureButton {
     [Export] public Texture2D TextureCircle { get;set; }
     [Export] public Texture2D TextureCircleWithSign { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
@@ -60,7 +60,7 @@ public partial class DockPreviewButton : TextureButton {
         }
     }
 
-    public override void _Notification(int what) {
+    protected override void _Notification(int what) {
         base._Notification(what);
 
         if (what == NotificationDraw) {

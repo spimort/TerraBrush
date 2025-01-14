@@ -7,7 +7,7 @@ public partial class ToolInfo : Control {
     [NodePath] private Label _label;
     [NodePath] private AnimationPlayer _animationPlayer;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
     }

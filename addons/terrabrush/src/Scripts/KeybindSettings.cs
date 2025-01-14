@@ -28,7 +28,7 @@ public partial class KeybindSettings : AcceptDialog {
 	}
 
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready() {
+	protected override void _Ready() {
 		this.RegisterNodePaths();
 		var iconTheme = EditorInterface.Singleton.GetEditorTheme();
 		_keybindManager = new KeybindManager();

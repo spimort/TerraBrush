@@ -21,21 +21,21 @@ public partial class Clipmap : Node3D {
 
     public MeshInstance3D ClipmapMesh => _clipmapMesh;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
         SetNotifyTransform(true);
     }
 
-    public override void _Process(double delta) {
+    protected override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
             var cameraPosition = this.GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
             UpdateClipmapMeshPosition(cameraPosition);
         }
     }
 
-    public override void _Notification(int what) {
+    protected override void _Notification(int what) {
         base._Notification(what);
 
         if (what == NotificationTransformChanged) {

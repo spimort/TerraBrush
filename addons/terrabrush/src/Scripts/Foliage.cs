@@ -27,7 +27,7 @@ public partial class Foliage : Node3D {
     [Export] public float WaterFactor { get;set; }
     [Export] public FoliageDefinitionResource Definition { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
@@ -63,7 +63,7 @@ public partial class Foliage : Node3D {
         SetNotifyTransform(true);
     }
 
-    public override void _Process(double delta) {
+    protected override void _Process(double delta) {
         if (!Engine.IsEditorHint()) {
             var position = GetViewport()?.GetCamera3D()?.GlobalPosition ?? Vector3.Zero;
 
@@ -71,7 +71,7 @@ public partial class Foliage : Node3D {
         }
     }
 
-    public override void _Notification(int what) {
+    protected override void _Notification(int what) {
         base._Notification(what);
 
         if (what == NotificationTransformChanged) {

@@ -45,7 +45,7 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public float UpdateTimeFrequency { get;set; } = 0.1f;
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
 
-    public override void _ValidateProperty(Dictionary property) {
+    protected override void _ValidateProperty(Dictionary property) {
         base._ValidateProperty(property);
 
         if (Strategy == ObjectStrategy.PackedScenes) {

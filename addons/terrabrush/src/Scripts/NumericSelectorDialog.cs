@@ -19,7 +19,7 @@ public partial class NumericSelectorDialog : Window {
 	public float? MinValue { get;set; }
 	public float? MaxValue { get;set; }
 
-	public override void _Ready() {
+	protected override void _Ready() {
 		this.RegisterNodePaths();
 
 		_okButton.Pressed += () => {
@@ -43,7 +43,7 @@ public partial class NumericSelectorDialog : Window {
 		_spinBox.Value = value;
 	}
 
-    public override void _UnhandledKeyInput(InputEvent @event) {
+    protected override void _UnhandledKeyInput(InputEvent @event) {
         base._Input(@event);
 
 		if (@event is InputEventKey inputEvent && (inputEvent.Keycode == Key.Enter || inputEvent.Keycode == Key.KpEnter)) {

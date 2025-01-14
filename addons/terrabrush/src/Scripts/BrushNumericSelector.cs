@@ -19,7 +19,7 @@ public partial class BrushNumericSelector : Control {
     public Action<int> OnValueSelected { get;set; }
     public Action OnCancel { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
@@ -31,13 +31,13 @@ public partial class BrushNumericSelector : Control {
         normalStyle.BgColor = iconsColor;
     }
 
-    public override void _Process(double delta) {
+    protected override void _Process(double delta) {
         base._Process(delta);
 
         UpdateValue(GetMouseDistance());
     }
 
-    public override void _GuiInput(InputEvent @event) {
+    protected override void _GuiInput(InputEvent @event) {
         base._GuiInput(@event);
 
         if (@event is InputEventMouseButton inputButton) {

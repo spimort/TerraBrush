@@ -30,7 +30,7 @@ public partial class ImportDialog : Window {
 	[Signal]
 	public delegate void CancelledEventHandler();
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 

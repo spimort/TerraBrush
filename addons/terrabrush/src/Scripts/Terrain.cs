@@ -49,7 +49,7 @@ public partial class Terrain : Node3D {
     public StaticBody3D TerrainCollider => _terrainCollider;
     public Clipmap Clipmap => _clipmap;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 

@@ -21,7 +21,7 @@ public partial class PieMenu : Control {
     [Export] public int ButtonsMinRadius { get;set; } = 150;
     [Export] public string Label { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         this.RegisterNodePaths();
 
         UpdateContent();
@@ -34,7 +34,7 @@ public partial class PieMenu : Control {
         normalStyle.BgColor = iconsColor;
     }
 
-    public override void _Process(double delta) {
+    protected override void _Process(double delta) {
         base._Process(delta);
 
         var itemForAngle = GetChild((int) GetMouseOverItemIndex());
@@ -52,7 +52,7 @@ public partial class PieMenu : Control {
         UpdateCurrentAnglePanel();
     }
 
-    public override void _GuiInput(InputEvent @event) {
+    protected override void _GuiInput(InputEvent @event) {
         base._GuiInput(@event);
 
         if (@event is InputEventMouseButton inputButton && inputButton.ButtonIndex == MouseButton.Left) {

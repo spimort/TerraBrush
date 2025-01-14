@@ -23,7 +23,7 @@ public partial class TerrainControlDock : Control {
     public BrushDecal BrushDecal { get;set; }
     public EditorResourcePreview EditorResourcePreview { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
@@ -52,7 +52,7 @@ public partial class TerrainControlDock : Control {
         };
     }
 
-    public override void _ExitTree() {
+    protected override void _ExitTree() {
         base._ExitTree();
     }
 

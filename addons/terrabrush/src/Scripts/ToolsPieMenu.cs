@@ -10,7 +10,7 @@ public partial class ToolsPieMenu : Control {
 
     public Action<TerrainToolType> OnToolSelected { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 

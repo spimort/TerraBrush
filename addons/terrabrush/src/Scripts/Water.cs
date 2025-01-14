@@ -47,14 +47,14 @@ public partial class Water : Node3D {
 
     public Clipmap Clipmap => _clipmap;
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
         UpdateWater();
     }
 
-    public override void _PhysicsProcess(double delta) {
+    protected override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
         if (_ripplePositions.Count > 0) {
             for (var imageIndex = _ripplePositions.Count - 1; imageIndex >= 0; imageIndex--) {

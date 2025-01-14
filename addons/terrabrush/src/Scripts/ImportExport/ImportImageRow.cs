@@ -13,7 +13,7 @@ public partial class ImportImageRow : PanelContainer {
     [Export] public string ImageTypeName { get;set; }
     [Export] public Texture2D ImageTexture { get;set; }
 
-    public override void _Ready() {
+    protected override void _Ready() {
         base._Ready();
         this.RegisterNodePaths();
 
