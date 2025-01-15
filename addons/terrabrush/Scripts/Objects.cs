@@ -207,9 +207,12 @@ public partial class Objects : Node3D, IObjectsNode {
     }
 
     private Vector3 GetPositionWithNoise(Image noiseImage, int x, int y) {
+        var remapXPixel = Mathf.RoundToInt(Mathf.Remap(x, 0, ZonesSize - 1, 0, noiseImage.GetWidth() - 1));
+        var remapYPixel = Mathf.RoundToInt(Mathf.Remap(y, 0, ZonesSize - 1, 0, noiseImage.GetHeight() - 1));
+
         var resultPosition = new Vector3(x, 0, y);
         if (noiseImage != null) {
-            var noisePixel = noiseImage.GetPixel(x, y).R;
+            var noisePixel = noiseImage.GetPixel(remapXPixel, remapYPixel).R;
             var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
             var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
             resultPosition += new Vector3(randomValueX, 0, randomValueZ);
