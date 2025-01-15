@@ -1,0 +1,9 @@
+[configuration]
+
+entry_symbol = "terrabrush_init"
+compatibility_minimum = 4.1
+
+[libraries]
+
+windows.debug.x86_64 = "res://addons/terrabrush/bin/TerraBrush.dll"
+windows.release.x86_64 = "res://addons/terrabrush/bin/TerraBrush.dll"

@@ -55,10 +55,7 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
     protected override void _EnterTree() {
         var keybindManager = new KeybindManager();
-		// var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
-		// var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
-		// AddCustomType("TerraBrush", "Node3D", script, icon);
         CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Godot.VariantType.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Godot.VariantType.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Godot.VariantType.Int);
@@ -73,8 +70,8 @@ public partial class TerraBrushPlugin : EditorPlugin {
 		_terrainControlDockPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/TerrainControlDock.tscn");
         _toolsPieMenuPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolsPieMenu.tscn");
         _customContentPieMenuPrefab = (PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
-        _editorViewportsContainer = GetEditorViewportsContainer();
-        _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
+        // _editorViewportsContainer = GetEditorViewportsContainer();
+        _editorViewports = []; //_editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
 
         keybindManager.RegisterInputMap();
         keybindManager.LoadEditorSettings();
