@@ -17,5 +17,5 @@ mono_crash.*.json
 /.idea
 
 # Build
-src/bin/
-src/obj/
+/addons/terrabrush/src/bin
+/addons/terrabrush/src/obj
