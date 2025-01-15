@@ -55,10 +55,10 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
     protected override void _EnterTree() {
         var keybindManager = new KeybindManager();
-		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
-		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
+		// var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
+		// var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
-		AddCustomType("TerraBrush", "Node3D", script, icon);
+		// AddCustomType("TerraBrush", "Node3D", script, icon);
         CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), Godot.VariantType.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Godot.VariantType.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Godot.VariantType.Int);

@@ -8,8 +8,6 @@ public class ObjectTool : ToolBase {
     private Dictionary<ZoneResource, Image> _heightmapImagesCache = null;
     private Dictionary<ZoneResource, Image> _waterImagesCache = null;
 
-    public ObjectTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     public override void BeginPaint() {
         base.BeginPaint();
 

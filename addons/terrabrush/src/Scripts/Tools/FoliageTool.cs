@@ -3,8 +3,6 @@ using Godot;
 namespace TerraBrush;
 
 public class FoliageTool : ToolBase {
-    public FoliageTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.FoliagesTexture[_terraBrush.FoliageIndex.Value];
     }

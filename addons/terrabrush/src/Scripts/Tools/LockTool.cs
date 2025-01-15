@@ -6,8 +6,6 @@ using Godot;
 namespace TerraBrush;
 
 public class LockTool : ToolBase {
-    public LockTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         if (zone.LockTexture == null) {
             zone.LockTexture = ZoneUtils.CreateLockImage(_terraBrush.ZonesSize, zone.ZonePosition);

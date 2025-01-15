@@ -22,7 +22,7 @@ public abstract class ToolBase {
 
     protected delegate void OnBrushPixel(ImageZoneInfo imageZoneInfo, float pixelBrushStrength);
 
-    public ToolBase(TerraBrush terraBrush) {
+    public virtual void Initialize(TerraBrush terraBrush) {
         _terraBrush = terraBrush;
     }
 

@@ -10,8 +10,6 @@ public class HoleTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public HoleTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.HeightMapTexture;
     }

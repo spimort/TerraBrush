@@ -9,8 +9,6 @@ public class WaterTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public WaterTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     public override void BeginPaint() {
         base.BeginPaint();
         _sculptedZones = new HashSet<ZoneResource>();

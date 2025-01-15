@@ -15,7 +15,9 @@ public class SetAngleTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public SetAngleTool(TerraBrush terraBrush) : base(terraBrush) {
+    public override void  Initialize(TerraBrush terraBrush) {
+        base.Initialize(terraBrush);
+
         ClearInitialPointMesh();
 
         _setAngleValue = terraBrush.SelectedSetAngle;

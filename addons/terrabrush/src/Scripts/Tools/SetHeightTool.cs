@@ -11,7 +11,9 @@ public class SetHeightTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public SetHeightTool(TerraBrush terraBrush) : base(terraBrush) {
+    public override void  Initialize(TerraBrush terraBrush) {
+        base.Initialize(terraBrush);
+
         _setHeightValue = terraBrush.SelectedSetHeight;
     }
 

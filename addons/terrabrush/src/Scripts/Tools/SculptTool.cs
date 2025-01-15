@@ -11,8 +11,6 @@ public class SculptTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public SculptTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     public override void BeginPaint() {
         base.BeginPaint();
 

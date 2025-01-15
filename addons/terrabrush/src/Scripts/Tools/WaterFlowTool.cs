@@ -8,8 +8,6 @@ public class WaterFlowTool : ToolBase {
 
     protected override bool ApplyResolution => true;
 
-    public WaterFlowTool(TerraBrush terraBrush) : base(terraBrush) {}
-
     protected override ImageTexture GetToolCurrentImageTexture(ZoneResource zone) {
         return zone.WaterTexture;
     }
