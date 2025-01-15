@@ -6,7 +6,7 @@ namespace TerraBrush;
 public partial class ImportDialog : Window {
     private TerraBrush _previewTerrain;
 
-    public TerraBrushTool OriginialTerraBrush { get;set; }
+    public TerraBrush OriginialTerraBrush { get;set; }
 
     [NodePath] private ImportImageRow _heightmapRow;
     [NodePath] private VBoxContainer _splatmapsContainer;

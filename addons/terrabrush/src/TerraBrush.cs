@@ -15,11 +15,52 @@ public enum ObjectLoadingStrategy {
     NotThreaded = 3
 }
 
-public partial class TerraBrush : TerraBrushTool {
+public enum TerrainToolType {
+    None = 0,
+    [ToolType(typeof(SculptTool))] TerrainAdd = 1,
+    [ToolType(typeof(SculptTool))] TerrainRemove = 2,
+    [ToolType(typeof(SculptTool))] TerrainSmooth = 3,
+    [ToolType(typeof(SculptTool))] TerrainFlatten = 4,
+    [ToolType(typeof(SetHeightTool))] TerrainSetHeight = 5,
+    [ToolType(typeof(SetAngleTool))] TerrainSetAngle = 19,
+    [ToolType(typeof(TextureTool))] Paint = 6,
+    [ToolType(typeof(FoliageTool))] FoliageAdd = 7,
+    [ToolType(typeof(FoliageTool))] FoliageRemove = 8,
+    [ToolType(typeof(ObjectTool))] ObjectAdd = 9,
+    [ToolType(typeof(ObjectTool))] ObjectRemove = 10,
+    [ToolType(typeof(WaterTool))] WaterAdd = 11,
+    [ToolType(typeof(WaterTool))] WaterRemove = 12,
+    [ToolType(typeof(WaterFlowTool))] WaterFlowAdd = 13,
+    [ToolType(typeof(WaterFlowTool))] WaterFlowRemove = 14,
+    [ToolType(typeof(SnowTool))] SnowAdd = 15,
+    [ToolType(typeof(SnowTool))] SnowRemove = 16,
+    [ToolType(typeof(HoleTool))] HoleAdd = 17,
+    [ToolType(typeof(HoleTool))] HoleRemove = 18,
+    [ToolType(typeof(LockTool))] LockAdd = 20,
+    [ToolType(typeof(LockTool))] LockRemove = 21,
+}
+
+public partial class TerraBrush : Node3D {
     public const int HeightMapFactor = 1;
 
 	[Signal]
 	public delegate void TerrainLoadedEventHandler();
+
+#region Tools
+    private int _brushSize = 100;
+    private Image _originalBrushImage;
+    private Image _brushImage;
+    private int? _selectedBrushIndex = null;
+    private float _brushStrength = 0.1f;
+    private float _selectedSetHeight = 0;
+    private float _selectedSetAngle = 0;
+    private Vector3? _selectedSetAngleInitialPoint = null;
+    private int? _textureSetIndex = null;
+    private int? _foliageIndex = null;
+    private int? _objectIndex = null;
+    private ToolBase _currentTool;
+    private TerrainToolType _terrainTool = TerrainToolType.TerrainAdd;
+#endregion
 
     private int _zonesSize = 256;
     private int _resolution = 1;
@@ -37,6 +78,65 @@ public partial class TerraBrush : TerraBrushTool {
     private Texture2D _defaultNoise;
     private string _dataPath;
 
+#region Tools
+    public TerrainToolType TerrainTool => _terrainTool;
+    public ToolBase CurrentTool => _currentTool;
+    public EditorUndoRedoManager UndoRedo { get;set; }
+
+    public int BrushSize => _brushSize;
+    public float BrushStrength => _brushStrength;
+    public Image BrushImage => _brushImage;
+    public int? SelectedBrushIndex => _selectedBrushIndex;
+    public float SelectedSetHeight => _selectedSetHeight;
+    public float SelectedSetAngle => _selectedSetAngle;
+    public Vector3? SelectedSetAngleInitialPoint => _selectedSetAngleInitialPoint;
+    public int? TextureSetIndex => _textureSetIndex;
+    public int? FoliageIndex => _foliageIndex;
+    public int? ObjectIndex => _objectIndex;
+
+    public bool CreateTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool UpdateTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool RemoveTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool LockAllTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool UnlockAllTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool ImportTerrain {
+        get {
+            return false;
+        } set {}
+    }
+
+    public bool ExportTerrain {
+        get {
+            return false;
+        } set {}
+    }
+#endregion
+
     public Terrain Terrain => _terrain;
     public Water Water => _waterNode;
     public Snow Snow => _snowNode;
@@ -46,7 +146,7 @@ public partial class TerraBrush : TerraBrushTool {
     public Action TerrainSettingsUpdated { get;set; }
     public bool AutoAddZones { get;set; }
 
-    public override int ZonesSize {
+    public int ZonesSize {
         get {
             return _zonesSize;
         } set {
@@ -65,7 +165,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    public override int Resolution {
+    public int Resolution {
         get {
             return _resolution;
         } set {
@@ -91,7 +191,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     public bool CollisionOnly { get;set; }
 
-    public override string DataPath {
+    public string DataPath {
         get {
             return _dataPath;
         } set{
@@ -133,7 +233,7 @@ public partial class TerraBrush : TerraBrushTool {
 
     public int CollisionMask { get;set; } = 1;
 
-    public override TextureSetsResource TextureSets { get;set; }
+    public TextureSetsResource TextureSets { get;set; }
 
     public int TextureDetail { get;set; } = 20;
 
@@ -147,21 +247,19 @@ public partial class TerraBrush : TerraBrushTool {
 
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
-    public override FoliageResource[] Foliages { get;set; }
+    public FoliageResource[] Foliages { get;set; }
 
     public int DefaultObjectFrequency { get;set; } = 10;
 
     public ObjectLoadingStrategy ObjectLoadingStrategy { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
 
-    public override ObjectResource[] Objects { get;set; }
+    public ObjectResource[] Objects { get;set; }
 
+    public WaterResource WaterDefinition { get;set; }
 
-    public override WaterResource WaterDefinition { get;set; }
+    public SnowResource SnowDefinition { get;set; }
 
-
-    public override SnowResource SnowDefinition { get;set; }
-
-    public override ZonesResource TerrainZones { get;set; }
+    public ZonesResource TerrainZones { get;set; }
 
     internal static void BindMethods(ClassDBRegistrationContext context) {
         context.BindConstructor(() => new TerraBrush());
@@ -169,6 +267,8 @@ public partial class TerraBrush : TerraBrushTool {
 
     protected async override void _Ready() {
         base._Ready();
+
+        SetTerrainTool(_terrainTool);
 
         if (Engine.Singleton.IsEditorHint()) {
             CompatibilityScript_0_4_Alpha.Convert(this);
@@ -212,7 +312,7 @@ public partial class TerraBrush : TerraBrushTool {
         return warnings;
     }
 
-    public override async void OnCreateTerrain() {
+    public async void OnCreateTerrain() {
         if (Resolution != 1) {
             if (!Utils.IsPowerOfTwo(Resolution)) {
                 return;
@@ -246,7 +346,7 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainSettingsUpdated?.Invoke();
     }
 
-    public override void OnRemoveTerrain() {
+    public void OnRemoveTerrain() {
         if (_terrain != null) {
             _terrain.QueueFree();
             _terrain = null;
@@ -341,7 +441,7 @@ public partial class TerraBrush : TerraBrushTool {
         EmitSignal(StringNames.TerrainLoaded);
     }
 
-    public override async void OnUpdateTerrainSettings() {
+    public async void OnUpdateTerrainSettings() {
         if (_terrain != null) {
             _terrain.QueueFree();
             _terrain = null;
@@ -691,7 +791,7 @@ public partial class TerraBrush : TerraBrushTool {
         return image;
     }
 
-    public override void OnLockTerrain() {
+    public void OnLockTerrain() {
         if (TerrainZones?.Zones != null) {
             foreach (var zone in TerrainZones.Zones) {
                 zone.LockTexture = ZoneUtils.CreateLockImage(ZonesSize, zone.ZonePosition, true);
@@ -701,7 +801,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    public override void OnUnlockTerrain() {
+    public void OnUnlockTerrain() {
         if (TerrainZones?.Zones != null) {
             foreach (var zone in TerrainZones.Zones) {
                 zone.LockTexture = null;
@@ -710,4 +810,92 @@ public partial class TerraBrush : TerraBrushTool {
             TerrainZones.UpdateLockTexture(ZonesSize);
         }
     }
+
+#region Tools
+    public void SetTerrainTool(TerrainToolType terrainToolType) {
+        _terrainTool = terrainToolType;
+
+        var terrainToolTypeAttribute = AttributeUtils.GetAttribute<ToolTypeAttribute>(terrainToolType);
+        if (terrainToolTypeAttribute == null) {
+            _currentTool?.BeforeDeselect();
+            _currentTool = null;
+        } else if (_currentTool == null || _currentTool.GetType() != terrainToolTypeAttribute.PaintToolType) {
+            _currentTool?.BeforeDeselect();
+            _currentTool = (ToolBase) Activator.CreateInstance(terrainToolTypeAttribute.PaintToolType);
+            _currentTool.Initialize((TerraBrush) this);
+        }
+    }
+
+    public void BeingEditTerrain() {
+        _currentTool?.BeginPaint();
+    }
+
+    public void EditTerrain(Vector3 meshPosition) {
+        var meshToImagePosition = meshPosition + new Vector3(ZonesSize / 2, 0, ZonesSize / 2);
+        var imagePosition = new Vector2(meshToImagePosition.X, meshToImagePosition.Z);
+
+        _currentTool?.Paint(_terrainTool, _brushImage, _brushSize, _brushStrength, imagePosition);
+    }
+
+    public void EndEditTerrain() {
+        _currentTool?.EndPaint();
+    }
+
+    public void SetCurrentBrush(int brushIndex, Image brushImage) {
+        _selectedBrushIndex = brushIndex;
+        _originalBrushImage = brushImage;
+
+        SetBrushSize(_brushSize);
+    }
+
+    public void SetBrushSize(int value) {
+        _brushImage = new Image();
+        _brushImage.CopyFrom(_originalBrushImage);
+        _brushImage.Resize(value, value);
+
+        _brushSize = value;
+    }
+
+    public void SetBrushStrength(float value) {
+        _brushStrength = value;
+    }
+
+    public void SetTextureSet(int? textureSetIndex) {
+        _textureSetIndex = textureSetIndex;
+    }
+
+    public void SetFoliage(int? foliageIndex) {
+        _foliageIndex = foliageIndex;
+    }
+
+    public void SetObject(int? objectIndex) {
+        _objectIndex = objectIndex;
+    }
+
+    public void UpdateSetHeightValue(float value) {
+        _selectedSetHeight = value;
+    }
+
+    public void UpdateSetAngleValue(float value, Vector3? initialPoint) {
+        _selectedSetAngle = value;
+        _selectedSetAngleInitialPoint = initialPoint;
+    }
+
+    public async Task OnImportTerrain() {
+        var settings = await DialogUtils.ShowImportDialog(GetParent(), this);
+        if (settings != null) {
+            ImporterEngine.ImportTerrain(this, settings);
+            OnUpdateTerrainSettings();
+        }
+    }
+
+    public async Task OnExportTerrain() {
+        var folder = await DialogUtils.ShowFileDialog(GetTree().Root, fileMode: EditorFileDialog.FileModeEnum.OpenDir);
+        if (string.IsNullOrWhiteSpace(folder)) {
+            return;
+        }
+
+        ExporterEngine.ExportTerrain(this, folder);
+    }
+#endregion
 }

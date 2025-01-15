@@ -6,7 +6,7 @@ using Godot;
 namespace TerraBrush;
 
 public static class ExporterEngine {
-    public static void ExportTerrain(TerraBrushTool terrabrush, string dataPath) {
+    public static void ExportTerrain(TerraBrush terrabrush, string dataPath) {
         if ((terrabrush.TerrainZones?.Zones?.Length).GetValueOrDefault() == 0) {
             return;
         }

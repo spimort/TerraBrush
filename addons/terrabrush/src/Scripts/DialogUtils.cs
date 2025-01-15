@@ -103,7 +103,7 @@ public static class DialogUtils {
         return completionSource.Task;
 	}
 
-	public static Task<ImporterSettings> ShowImportDialog(Node sourceNode, TerraBrushTool originalTerraBursh) {
+	public static Task<ImporterSettings> ShowImportDialog(Node sourceNode, TerraBrush originalTerraBursh) {
 		var completionSource = new TaskCompletionSource<ImporterSettings?>();
 		var dialog = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ImportExport/ImportDialog.tscn")).Instantiate<ImportDialog>();
 		dialog.OriginialTerraBrush = originalTerraBursh;

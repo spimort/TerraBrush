@@ -18,7 +18,7 @@ public partial class ImporterSettings : GodotObject {
 }
 
 public static class ImporterEngine {
-    public static void ImportTerrain(TerraBrushTool terrabrush, ImporterSettings settings) {
+    public static void ImportTerrain(TerraBrush terrabrush, ImporterSettings settings) {
         if (!string.IsNullOrWhiteSpace(terrabrush.DataPath) && !DirAccess.DirExistsAbsolute(terrabrush.DataPath)) {
             DirAccess.MakeDirAbsolute(terrabrush.DataPath);
         }
@@ -172,7 +172,7 @@ public static class ImporterEngine {
         }
     }
 
-    private static ZoneResource GetZoneForImageInfo(TerraBrushTool terraBrush, ImportImageInfo imageInfo) {
+    private static ZoneResource GetZoneForImageInfo(TerraBrush terraBrush, ImportImageInfo imageInfo) {
         var zone = terraBrush.TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == imageInfo.ZoneX && x.ZonePosition.Y == imageInfo.ZoneY);
         if (zone == null) {
             zone = new ZoneResource() {
@@ -187,7 +187,7 @@ public static class ImporterEngine {
         return zone;
     }
 
-    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrushTool terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage, bool applyResolution = false, bool scaleToResolution = true) {
+    private static List<ImportImageInfo> GenerateImageTextureForZones(TerraBrush terrabrush, Image image, Func<int, int, ImageTexture> generateNewImageCallback, Action<int, int, Color, Image> applyPixelToNewImage, bool applyResolution = false, bool scaleToResolution = true) {
         if (terrabrush.Resolution != 1 && applyResolution && scaleToResolution) {
             var newImage = new Image();
             newImage.CopyFrom(image);

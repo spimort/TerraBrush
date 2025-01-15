@@ -31,7 +31,6 @@ public class EntryPoint {
         ClassDB.RegisterClass<KeybindManager>(KeybindManager.BindMethods);
         ClassDB.RegisterClass<ButtonInspectorPlugin>(ButtonInspectorPlugin.BindMethods);
 
-        ClassDB.RegisterClass<TerraBrushTool>(TerraBrushTool.BindMethods);
         ClassDB.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
 
         ClassDB.RegisterClass<TerraBrushPlugin>(TerraBrushPlugin.BindMethods);
