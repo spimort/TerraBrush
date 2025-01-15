@@ -40,6 +40,7 @@ public enum TerrainToolType {
     [ToolType(typeof(LockTool))] LockRemove = 21,
 }
 
+[GodotClass(Tool=true)]
 public partial class TerraBrush : Node3D {
     public const int HeightMapFactor = 1;
 
@@ -146,6 +147,7 @@ public partial class TerraBrush : Node3D {
     public Action TerrainSettingsUpdated { get;set; }
     public bool AutoAddZones { get;set; }
 
+    [BindProperty]
     public int ZonesSize {
         get {
             return _zonesSize;
@@ -165,6 +167,7 @@ public partial class TerraBrush : Node3D {
         }
     }
 
+    [BindProperty]
     public int Resolution {
         get {
             return _resolution;
@@ -189,8 +192,10 @@ public partial class TerraBrush : Node3D {
         }
     }
 
+    [BindProperty]
     public bool CollisionOnly { get;set; }
 
+    [BindProperty]
     public string DataPath {
         get {
             return _dataPath;
@@ -200,9 +205,10 @@ public partial class TerraBrush : Node3D {
             UpdateConfigurationWarnings();
         }
     }
-
+    [BindProperty]
     public int VisualInstanceLayers { get;set; } = 1;
 
+    [BindProperty]
     public ShaderMaterial CustomShader {
         get {
             return _customShader;
@@ -221,49 +227,53 @@ public partial class TerraBrush : Node3D {
         }
     }
 
+    [BindProperty]
     public int LODLevels { get;set; } = 5;
-
+    [BindProperty]
     public int LODRowsPerLevel { get;set; } = 101;
-
+    [BindProperty]
     public float LODInitialCellWidth { get;set; } = 1;
 
+    [BindProperty]
     public bool CreateCollisionInThread { get;set; } = true;
-
+    [BindProperty]
     public int CollisionLayers { get;set; } = 1;
-
+    [BindProperty]
     public int CollisionMask { get;set; } = 1;
 
+    // [BindProperty]
     public TextureSetsResource TextureSets { get;set; }
-
+    [BindProperty]
     public int TextureDetail { get;set; } = 20;
-
+    [BindProperty]
     public bool UseAntiTile { get;set; } = true;
-
+    [BindProperty]
     public bool NearestTextureFilter { get;set; } = false;
-
+    [BindProperty]
     public float HeightBlendFactor { get;set; } = 10f;
-
+    [BindProperty]
     public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
-
+    [BindProperty]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
+    // [BindProperty]
     public FoliageResource[] Foliages { get;set; }
 
+    [BindProperty]
     public int DefaultObjectFrequency { get;set; } = 10;
-
+    [BindProperty]
     public ObjectLoadingStrategy ObjectLoadingStrategy { get;set; } = ObjectLoadingStrategy.ThreadedInEditorOnly;
-
+    // [BindProperty]
     public ObjectResource[] Objects { get;set; }
 
+    // [BindProperty]
     public WaterResource WaterDefinition { get;set; }
 
+    // [BindProperty]
     public SnowResource SnowDefinition { get;set; }
 
+    // [BindProperty]
     public ZonesResource TerrainZones { get;set; }
-
-    internal static void BindMethods(ClassDBRegistrationContext context) {
-        context.BindConstructor(() => new TerraBrush());
-    }
 
     protected async override void _Ready() {
         base._Ready();

@@ -360,35 +360,35 @@ public partial class TerraBrushPlugin : EditorPlugin {
     }
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
-        RemoveDock();
-        GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
-        _brushDecal?.QueueFree();
+        // RemoveDock();
+        // GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
+        // _brushDecal?.QueueFree();
 
-        _brushDecal = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn")).Instantiate<BrushDecal>();
-        _brushDecal.Name = (StringName)"BrushDecal";
-        AddChild(_brushDecal);
+        // _brushDecal = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn")).Instantiate<BrushDecal>();
+        // _brushDecal.Name = (StringName)"BrushDecal";
+        // AddChild(_brushDecal);
 
-        _brushDecal.SetSize(terraBrush.BrushSize);
-        _brushDecal.SetBrushImage(terraBrush.BrushImage);
+        // _brushDecal.SetSize(terraBrush.BrushSize);
+        // _brushDecal.SetBrushImage(terraBrush.BrushImage);
 
-        _currentTerraBrushNode = terraBrush;
-        _currentTerraBrushNode.TerrainSettingsUpdated += () => {
-            RemoveDock();
-            AddDock();
-        };
-        _undoRedo = GetUndoRedo();
-        _currentTerraBrushNode.UndoRedo = _undoRedo;
+        // _currentTerraBrushNode = terraBrush;
+        // _currentTerraBrushNode.TerrainSettingsUpdated += () => {
+        //     RemoveDock();
+        //     AddDock();
+        // };
+        // _undoRedo = GetUndoRedo();
+        // _currentTerraBrushNode.UndoRedo = _undoRedo;
 
-        GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
-        _toolInfo?.QueueFree();
+        // GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
+        // _toolInfo?.QueueFree();
 
-        _toolInfo = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolInfo.tscn")).Instantiate<ToolInfo>();
-        _toolInfo.Name = (StringName)"ToolInfo";
-        AddChild(_toolInfo);
+        // _toolInfo = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/ToolInfo.tscn")).Instantiate<ToolInfo>();
+        // _toolInfo.Name = (StringName)"ToolInfo";
+        // AddChild(_toolInfo);
 
-        AddDock();
+        // AddDock();
 
-        terraBrush.SetMeta((StringName)"_edit_lock_", true);
+        // terraBrush.SetMeta((StringName)"_edit_lock_", true);
     }
 
     private void AddDock() {
