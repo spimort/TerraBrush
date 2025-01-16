@@ -245,7 +245,8 @@ public partial class TerraBrush {
         context.BindProperty(
             new PropertyInfo((StringName) nameof(AlbedoAlphaChannelUsage), VariantType.Int) {
                 Usage = PropertyUsageFlags.Default,
-                Hint = PropertyHint.Enum
+                Hint = PropertyHint.Enum,
+                HintString = "None, Roughness, Height"
             },
             static (TerraBrush instance) =>
             {
@@ -259,7 +260,8 @@ public partial class TerraBrush {
         context.BindProperty(
             new PropertyInfo((StringName) nameof(NormalAlphaChannelUsage), VariantType.Int) {
                 Usage = PropertyUsageFlags.Default,
-                Hint = PropertyHint.Enum
+                Hint = PropertyHint.Enum,
+                HintString = "None, Roughness, Height"
             },
             static (TerraBrush instance) =>
             {
@@ -303,7 +305,8 @@ public partial class TerraBrush {
         context.BindProperty(
             new PropertyInfo((StringName) nameof(ObjectLoadingStrategy), VariantType.Int) {
                 Usage = PropertyUsageFlags.Default,
-                Hint = PropertyHint.Enum
+                Hint = PropertyHint.Enum,
+                HintString = "ThreadedInEditorOnly, Threaded, NotThreaded"
             },
             static (TerraBrush instance) =>
             {
