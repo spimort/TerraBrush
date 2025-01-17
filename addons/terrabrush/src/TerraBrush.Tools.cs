@@ -41,6 +41,13 @@ public partial class TerraBrush {
     private int? _objectIndex = null;
     private ToolBase _currentTool;
     private TerrainToolType _terrainTool = TerrainToolType.TerrainAdd;
+    private Callable? _createTerrain;
+    private Callable? _updateTerrain;
+    private Callable? _removeTerrain;
+    private Callable? _lockAllTerrain;
+    private Callable? _unlockTerrain;
+    private Callable? _importTerrain;
+    private Callable? _exportTerrain;
 
     public TerrainToolType TerrainTool => _terrainTool;
     public ToolBase CurrentTool => _currentTool;
@@ -56,48 +63,6 @@ public partial class TerraBrush {
     public int? TextureSetIndex => _textureSetIndex;
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
-
-    public bool CreateTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool UpdateTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool RemoveTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool LockAllTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool UnlockAllTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool ImportTerrain {
-        get {
-            return false;
-        } set {}
-    }
-
-    public bool ExportTerrain {
-        get {
-            return false;
-        } set {}
-    }
 
     public void SetTerrainTool(TerrainToolType terrainToolType) {
         _terrainTool = terrainToolType;

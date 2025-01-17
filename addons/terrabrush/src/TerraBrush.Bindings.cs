@@ -12,12 +12,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(ZonesSize), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.ZonesSize;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.ZonesSize = value;
             }
         );
@@ -25,12 +23,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(Resolution), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.Resolution;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.Resolution = value;
             }
         );
@@ -38,12 +34,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(CollisionOnly), VariantType.Bool) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.CollisionOnly;
             },
-            static (TerraBrush instance, bool value) =>
-            {
+            static (TerraBrush instance, bool value) => {
                 instance.CollisionOnly = value;
             }
         );
@@ -52,12 +46,10 @@ public partial class TerraBrush {
                 Usage = PropertyUsageFlags.Default,
                 Hint = PropertyHint.Dir
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.DataPath;
             },
-            static (TerraBrush instance, string value) =>
-            {
+            static (TerraBrush instance, string value) => {
                 instance.DataPath = value;
             }
         );
@@ -66,12 +58,10 @@ public partial class TerraBrush {
                 Usage = PropertyUsageFlags.Default,
                 Hint = PropertyHint.Layers3DRender
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.VisualInstanceLayers;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.VisualInstanceLayers = value;
             }
         );
@@ -82,14 +72,48 @@ public partial class TerraBrush {
                 Usage = PropertyUsageFlags.Default,
                 ClassName = (StringName) "ShaderMaterial"
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.CustomShader;
             },
-            static (TerraBrush instance, ShaderMaterial value) =>
-            {
+            static (TerraBrush instance, ShaderMaterial value) => {
                 instance.CustomShader = value;
             }
+        );
+        context.BindProperty(
+            new PropertyInfo((StringName) "CreateTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Create terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._createTerrain ??= Callable.From(instance.OnCreateTerrain);
+                return instance._createTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
+        context.BindProperty(
+            new PropertyInfo((StringName) "UpdateTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Update terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._updateTerrain ??= Callable.From(instance.OnUpdateTerrainSettings);
+                return instance._updateTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
+        context.BindProperty(
+            new PropertyInfo((StringName) "RemoveTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Remove terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._removeTerrain ??= Callable.From(instance.OnRemoveTerrain);
+                return instance._removeTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
         );
 
         context.AddPropertyGroup("LOD");
@@ -97,12 +121,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(LODLevels), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.LODLevels;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.LODLevels = value;
             }
         );
@@ -110,12 +132,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(LODRowsPerLevel), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.LODRowsPerLevel;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.LODRowsPerLevel = value;
             }
         );
@@ -123,12 +143,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(LODInitialCellWidth), VariantType.Float, VariantTypeMetadata.Single) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.LODInitialCellWidth;
             },
-            static (TerraBrush instance, float value) =>
-            {
+            static (TerraBrush instance, float value) => {
                 instance.LODInitialCellWidth = value;
             }
         );
@@ -138,12 +156,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(CreateCollisionInThread), VariantType.Bool) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.CreateCollisionInThread;
             },
-            static (TerraBrush instance, bool value) =>
-            {
+            static (TerraBrush instance, bool value) => {
                 instance.CreateCollisionInThread = value;
             }
         );
@@ -152,12 +168,10 @@ public partial class TerraBrush {
                 Usage = PropertyUsageFlags.Default,
                 Hint = PropertyHint.Layers3DPhysics
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.CollisionLayers;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.CollisionLayers = value;
             }
         );
@@ -166,12 +180,10 @@ public partial class TerraBrush {
                 Usage = PropertyUsageFlags.Default,
                 Hint = PropertyHint.Layers3DPhysics
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.CollisionMask;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.CollisionMask = value;
             }
         );
@@ -194,12 +206,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(TextureDetail), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.TextureDetail;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.TextureDetail = value;
             }
         );
@@ -207,12 +217,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(UseAntiTile), VariantType.Bool) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.UseAntiTile;
             },
-            static (TerraBrush instance, bool value) =>
-            {
+            static (TerraBrush instance, bool value) => {
                 instance.UseAntiTile = value;
             }
         );
@@ -220,12 +228,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(NearestTextureFilter), VariantType.Bool) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.NearestTextureFilter;
             },
-            static (TerraBrush instance, bool value) =>
-            {
+            static (TerraBrush instance, bool value) => {
                 instance.NearestTextureFilter = value;
             }
         );
@@ -233,12 +239,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(HeightBlendFactor), VariantType.Float, VariantTypeMetadata.Single) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.HeightBlendFactor;
             },
-            static (TerraBrush instance, float value) =>
-            {
+            static (TerraBrush instance, float value) => {
                 instance.HeightBlendFactor = value;
             }
         );
@@ -248,12 +252,10 @@ public partial class TerraBrush {
                 Hint = PropertyHint.Enum,
                 HintString = "None, Roughness, Height"
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.AlbedoAlphaChannelUsage;
             },
-            static (TerraBrush instance, AlphaChannelUsage value) =>
-            {
+            static (TerraBrush instance, AlphaChannelUsage value) => {
                 instance.AlbedoAlphaChannelUsage = value;
             }
         );
@@ -263,12 +265,10 @@ public partial class TerraBrush {
                 Hint = PropertyHint.Enum,
                 HintString = "None, Roughness, Height"
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.NormalAlphaChannelUsage;
             },
-            static (TerraBrush instance, AlphaChannelUsage value) =>
-            {
+            static (TerraBrush instance, AlphaChannelUsage value) => {
                 instance.NormalAlphaChannelUsage = value;
             }
         );
@@ -293,12 +293,10 @@ public partial class TerraBrush {
             new PropertyInfo((StringName) nameof(DefaultObjectFrequency), VariantType.Int, VariantTypeMetadata.Int32) {
                 Usage = PropertyUsageFlags.Default,
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.DefaultObjectFrequency;
             },
-            static (TerraBrush instance, int value) =>
-            {
+            static (TerraBrush instance, int value) => {
                 instance.DefaultObjectFrequency = value;
             }
         );
@@ -308,12 +306,10 @@ public partial class TerraBrush {
                 Hint = PropertyHint.Enum,
                 HintString = "ThreadedInEditorOnly, Threaded, NotThreaded"
             },
-            static (TerraBrush instance) =>
-            {
+            static (TerraBrush instance) => {
                 return instance.ObjectLoadingStrategy;
             },
-            static (TerraBrush instance, ObjectLoadingStrategy value) =>
-            {
+            static (TerraBrush instance, ObjectLoadingStrategy value) => {
                 instance.ObjectLoadingStrategy = value;
             }
         );
@@ -375,5 +371,57 @@ public partial class TerraBrush {
         //         instance.TerrainZones = value;
         //     }
         // );
+
+        context.AddPropertyGroup("Lock | Unlock");
+        context.BindProperty(
+            new PropertyInfo((StringName) "LockAllTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Lock all terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._lockAllTerrain ??= Callable.From(instance.OnLockTerrain);
+                return instance._lockAllTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
+        context.BindProperty(
+            new PropertyInfo((StringName) "UnlockAllTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Unlock all terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._unlockTerrain ??= Callable.From(instance.OnUnlockTerrain);
+                return instance._unlockTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
+
+        context.AddPropertyGroup("Import | Export");
+        context.BindProperty(
+            new PropertyInfo((StringName) "ImportTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Import terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._importTerrain ??= Callable.From(instance.OnImportTerrain);
+                return instance._importTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
+        context.BindProperty(
+            new PropertyInfo((StringName) "ExportTerrain", VariantType.Callable) {
+                Usage = PropertyUsageFlags.Editor,
+                Hint = PropertyHint.ToolButton,
+                HintString = "Export terrain"
+            },
+            static (TerraBrush instance) => {
+                instance._exportTerrain ??= Callable.From(instance.OnExportTerrain);
+                return instance._exportTerrain.Value;
+            },
+            static (TerraBrush instance, Callable value) => {}
+        );
     }
 }

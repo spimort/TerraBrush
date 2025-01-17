@@ -60,7 +60,6 @@ public partial class TerraBrushPlugin : EditorPlugin {
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", Godot.VariantType.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, Godot.VariantType.Int);
         CreateCustomSetting(SettingContants.IconsColor, Color.FromHtml("#00151F"), Godot.VariantType.Color);
-        AddInspectorPlugin(new ButtonInspectorPlugin());
 
         _terrainDockContainer = new Control() {
             Name = (StringName)"Terrain Editor"
