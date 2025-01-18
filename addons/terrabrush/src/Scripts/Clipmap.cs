@@ -6,10 +6,11 @@ using Godot.Collections;
 
 namespace TerraBrush;
 
+[GodotClass]
 public partial class Clipmap : Node3D {
     private ShaderMaterial _clipmapShader;
 
-    [NodePath] private MeshInstance3D _clipmapMesh;
+    private MeshInstance3D _clipmapMesh;
 
     public int ZonesSize { get;set; }
     public int Resolution { get;set; }
@@ -23,7 +24,9 @@ public partial class Clipmap : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmapMesh = new MeshInstance3D();
+        AddChild(_clipmapMesh);
 
         SetNotifyTransform(true);
     }

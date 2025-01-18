@@ -287,6 +287,7 @@ public partial class TerraBrushPlugin : EditorPlugin {
             if (result?.Count > 0 && result["collider"].AsSystemObject() == _currentTerraBrushNode.Terrain?.TerrainCollider) {
                 return (Vector3)result["position"] + new Vector3(0, 0.1f, 0);
             } else {
+                // TODO : See why this make NativeAOT crash
                 // return GetMouseClickToZoneHeight(from, dir);
             }
         }

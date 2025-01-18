@@ -30,6 +30,7 @@ public class EntryPoint {
 
         ClassDB.RegisterInternalClass<KeybindManager>(KeybindManager.BindMethods);
         ClassDB.RegisterInternalClass<BrushDecal>(BrushDecal.BindMethods);
+        ClassDB.RegisterInternalClass<Clipmap>(Clipmap.BindMethods);
 
         ClassDB.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
         // ClassDB.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
