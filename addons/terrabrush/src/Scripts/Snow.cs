@@ -5,6 +5,7 @@ using Godot;
 
 namespace TerraBrush;
 
+[GodotClass]
 public partial class Snow : Node3D {
     private const float DeCompressSpeed = 0.5f;
     private const float DeCompressOffsetSpeed = 2.0f;
@@ -12,7 +13,7 @@ public partial class Snow : Node3D {
     private Dictionary<ZoneResource, Dictionary<Vector2I, float>> _compressedPositions = new();
     private Dictionary<ZoneResource, Image> _imagesCache = new();
 
-    [NodePath] private Clipmap _clipmap;
+    private Clipmap _clipmap;
 
     public int ZonesSize { get;set; }
     public int Resolution { get;set; }
@@ -26,7 +27,9 @@ public partial class Snow : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmap = new Clipmap();
+        AddChild(_clipmap);
 
         UpdateSnow();
     }

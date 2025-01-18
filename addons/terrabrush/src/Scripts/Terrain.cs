@@ -15,13 +15,14 @@ public enum AlphaChannelUsage {
     Height = 2
 }
 
+[GodotClass]
 public partial class Terrain : Node3D {
     private const float HoleValue = float.NaN;
 
     private CancellationTokenSource _collisionCancellationSource = null;
 
-    [NodePath] private Clipmap _clipmap;
-    [NodePath] private StaticBody3D _terrainCollider;
+    private Clipmap _clipmap;
+    private StaticBody3D _terrainCollider;
 
     public int ZonesSize { get;set; }
     public int Resolution { get;set; }
@@ -51,7 +52,12 @@ public partial class Terrain : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmap = new Clipmap();
+        AddChild(_clipmap);
+
+        _terrainCollider = new StaticBody3D();
+        AddChild(_terrainCollider);
 
         BuildTerrain();
     }

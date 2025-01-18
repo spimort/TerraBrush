@@ -5,13 +5,14 @@ using Godot;
 
 namespace TerraBrush;
 
+[GodotClass]
 public partial class Water : Node3D {
     private const float RippleResetSpeed = 0.9f;
 
     private Dictionary<ZoneResource, Dictionary<Vector2I, float>> _ripplePositions = new();
     private Dictionary<ZoneResource, Image> _imagesCache = new();
 
-    [NodePath] private Clipmap _clipmap;
+    private Clipmap _clipmap;
 
     public int ZonesSize { get;set; }
     public int Resolution { get;set; }
@@ -48,7 +49,9 @@ public partial class Water : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmap = new Clipmap();
+        AddChild(_clipmap);
 
         UpdateWater();
     }
