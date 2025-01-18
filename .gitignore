@@ -19,3 +19,5 @@ mono_crash.*.json
 # Build
 /addons/terrabrush/src/bin
 /addons/terrabrush/src/obj
+/addons/terrabrush/src/.generated
+/addons/terrabrush/src/.vs
