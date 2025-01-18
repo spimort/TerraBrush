@@ -65,9 +65,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.SplatmapsTexture ??= new ImageTexture [] {};
-                    if (zone.SplatmapsTexture.Length < i + 1) {
-                        zone.SplatmapsTexture = zone.SplatmapsTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.SplatmapsTexture ??= [];
+                    if (zone.SplatmapsTexture.Count < i + 1) {
+                        zone.SplatmapsTexture = [..zone.SplatmapsTexture.Append(resultImage.ImageTexture).ToArray()];
                     } else {
                         zone.SplatmapsTexture[i] = resultImage.ImageTexture;
                     }
@@ -93,9 +93,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.FoliagesTexture ??= new ImageTexture [] {};
-                    if (zone.FoliagesTexture.Length < i + 1) {
-                        zone.FoliagesTexture = zone.FoliagesTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.FoliagesTexture ??= [];
+                    if (zone.FoliagesTexture.Count < i + 1) {
+                        zone.FoliagesTexture = [..zone.FoliagesTexture.Append(resultImage.ImageTexture).ToArray()];
                     } else {
                         zone.FoliagesTexture[i] = resultImage.ImageTexture;
                     }
@@ -121,9 +121,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.ObjectsTexture ??= new ImageTexture [] {};
-                    if (zone.ObjectsTexture.Length < i + 1) {
-                        zone.ObjectsTexture = zone.ObjectsTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.ObjectsTexture ??= [];
+                    if (zone.ObjectsTexture.Count < i + 1) {
+                        zone.ObjectsTexture = [..zone.ObjectsTexture.Append(resultImage.ImageTexture).ToArray()];
                     } else {
                         zone.ObjectsTexture[i] = resultImage.ImageTexture;
                     }

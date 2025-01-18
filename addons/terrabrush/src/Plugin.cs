@@ -287,7 +287,7 @@ public partial class TerraBrushPlugin : EditorPlugin {
             if (result?.Count > 0 && result["collider"].AsSystemObject() == _currentTerraBrushNode.Terrain?.TerrainCollider) {
                 return (Vector3)result["position"] + new Vector3(0, 0.1f, 0);
             } else {
-                return GetMouseClickToZoneHeight(from, dir);
+                // return GetMouseClickToZoneHeight(from, dir);
             }
         }
 
@@ -315,7 +315,6 @@ public partial class TerraBrushPlugin : EditorPlugin {
                     return new Vector3(position.X, zoneHeight, position.Z) + _currentTerraBrushNode.GlobalPosition;
                 }
             }
-
         }
 
         return Vector3.Inf;
@@ -360,23 +359,23 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
     private void OnEditTerrainNode(TerraBrush terraBrush) {
         // RemoveDock();
-        // GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
-        // _brushDecal?.QueueFree();
+        GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
+        _brushDecal?.QueueFree();
 
-        // _brushDecal = ((PackedScene) ResourceLoader.Singleton.Load("res://addons/terrabrush/Components/BrushDecal.tscn")).Instantiate<BrushDecal>();
-        // _brushDecal.Name = (StringName)"BrushDecal";
-        // AddChild(_brushDecal);
+        _brushDecal = new BrushDecal();
+        _brushDecal.Name = (StringName)"BrushDecal";
+        AddChild(_brushDecal);
 
-        // _brushDecal.SetSize(terraBrush.BrushSize);
-        // _brushDecal.SetBrushImage(terraBrush.BrushImage);
+        _brushDecal.SetSize(terraBrush.BrushSize);
+        _brushDecal.SetBrushImage(terraBrush.BrushImage);
 
-        // _currentTerraBrushNode = terraBrush;
-        // _currentTerraBrushNode.TerrainSettingsUpdated += () => {
-        //     RemoveDock();
-        //     AddDock();
-        // };
-        // _undoRedo = GetUndoRedo();
-        // _currentTerraBrushNode.UndoRedo = _undoRedo;
+        _currentTerraBrushNode = terraBrush;
+        _currentTerraBrushNode.TerrainSettingsUpdated += () => {
+            RemoveDock();
+            AddDock();
+        };
+        _undoRedo = GetUndoRedo();
+        _currentTerraBrushNode.UndoRedo = _undoRedo;
 
         // GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         // _toolInfo?.QueueFree();
@@ -387,7 +386,7 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
         // AddDock();
 
-        // terraBrush.SetMeta((StringName)"_edit_lock_", true);
+        terraBrush.SetMeta((StringName)"_edit_lock_", true);
     }
 
     private void AddDock() {

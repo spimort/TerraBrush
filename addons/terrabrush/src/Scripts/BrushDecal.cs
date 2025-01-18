@@ -2,12 +2,15 @@ using Godot;
 
 namespace TerraBrush;
 
+[GodotClass]
 public partial class BrushDecal : Node3D {
-    [NodePath] private Decal _decal;
+    private Decal _decal;
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _decal = new Decal();
+        AddChild(_decal);
     }
 
     public void SetSize(int size) {
@@ -15,6 +18,10 @@ public partial class BrushDecal : Node3D {
     }
 
     public void SetBrushImage(Image image) {
+        if (image == null) {
+            return;
+        }
+
         var imageCopy = new Image();
         imageCopy.CopyFrom(image);
 

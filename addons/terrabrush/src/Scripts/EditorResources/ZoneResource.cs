@@ -1,17 +1,28 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Godot.Bridge;
+using Godot.Collections;
 
 namespace TerraBrush;
 
+[GodotClass]
 public partial class ZoneResource : Resource {
     public ImageTexture LockTexture { get;set; }
+    [BindProperty]
     public Vector2I ZonePosition { get;set; }
+    [BindProperty]
     public ImageTexture HeightMapTexture { get;set; }
-    public ImageTexture[] SplatmapsTexture { get;set; }
-    public ImageTexture[] FoliagesTexture { get;set; }
-    public ImageTexture[] ObjectsTexture { get;set; }
+    // [BindProperty]
+    public GodotArray<ImageTexture> SplatmapsTexture { get;set; }
+    // [BindProperty]
+    public GodotArray<ImageTexture> FoliagesTexture { get;set; }
+    // [BindProperty]
+    public GodotArray<ImageTexture> ObjectsTexture { get;set; }
+    [BindProperty]
     public ImageTexture WaterTexture { get;set; }
+    [BindProperty]
     public ImageTexture SnowTexture { get;set; }
 
     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
@@ -22,18 +33,18 @@ public partial class ZoneResource : Resource {
         for (var i = 0; i < numberOfSplatmaps; i++) {
             splatmaps.Add(ZoneUtils.CreateSplatmapImage(terraBrush.ZonesSize, ZonePosition, i, terraBrush.DataPath));
         }
-        SplatmapsTexture = splatmaps.ToArray();
+        SplatmapsTexture = [..splatmaps.ToArray()];
 
         if (terraBrush.Foliages != null) {
-            FoliagesTexture = terraBrush.Foliages.Select((foliage, index) => {
+            FoliagesTexture = [..terraBrush.Foliages.Select((foliage, index) => {
                 return ZoneUtils.CreateFoliageImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
-            }).ToArray();
+            }).ToArray()];
         }
 
         if (terraBrush.Objects != null) {
-            ObjectsTexture = terraBrush.Objects.Select((objectItem, index) => {
+            ObjectsTexture = [..terraBrush.Objects.Select((objectItem, index) => {
                 return ZoneUtils.CreateObjectImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
-            }).ToArray();
+            }).ToArray()];
         }
 
         if (terraBrush.WaterDefinition != null) {

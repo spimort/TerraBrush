@@ -29,8 +29,11 @@ public class EntryPoint {
         GD.Print("Initialize TerraBrush extension");
 
         ClassDB.RegisterInternalClass<KeybindManager>(KeybindManager.BindMethods);
+        ClassDB.RegisterInternalClass<BrushDecal>(BrushDecal.BindMethods);
 
         ClassDB.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
+        // ClassDB.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
+        ClassDB.RegisterClass<ZoneResource>(ZoneResource.BindMethods);
 
         ClassDB.RegisterInternalClass<TerraBrushPlugin>(TerraBrushPlugin.BindMethods);
         EditorPlugins.AddByType<TerraBrushPlugin>();
