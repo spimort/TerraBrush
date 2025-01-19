@@ -5,7 +5,7 @@ using Godot;
 
 namespace TerraBrush;
 
-[GodotClass]
+[GodotClass(Tool = true)]
 public partial class Water : Node3D {
     private const float RippleResetSpeed = 0.9f;
 

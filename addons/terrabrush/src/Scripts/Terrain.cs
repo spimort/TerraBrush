@@ -15,7 +15,7 @@ public enum AlphaChannelUsage {
     Height = 2
 }
 
-[GodotClass]
+[GodotClass(Tool = true)]
 public partial class Terrain : Node3D {
     private const float HoleValue = float.NaN;
 
@@ -23,6 +23,7 @@ public partial class Terrain : Node3D {
 
     private Clipmap _clipmap;
     private StaticBody3D _terrainCollider;
+    public Texture2D _defaultTexture;
 
     public int ZonesSize { get;set; }
     public int Resolution { get;set; }
@@ -37,7 +38,6 @@ public partial class Terrain : Node3D {
     public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
     public float WaterFactor { get;set; }
-    public Texture2D DefaultTexture { get;set; }
     public int VisualInstanceLayers { get;set; } = 1;
     public int CollisionLayers { get;set; } = 1;
     public int CollisionMask { get;set; } = 1;
@@ -58,6 +58,8 @@ public partial class Terrain : Node3D {
 
         _terrainCollider = new StaticBody3D();
         AddChild(_terrainCollider);
+
+        _defaultTexture = (Texture2D) ResourceLoader.Singleton.Load("res://addons/terrabrush/Assets/placeholder_texture.png");
 
         BuildTerrain();
     }
@@ -202,7 +204,7 @@ public partial class Terrain : Node3D {
                     return;
                 }
 
-                CallDeferred((StringName) nameof(AssignCollisionData), new ReadOnlySpan<Variant>([shapes[i], new GodotArray([..terrainData.ToArray()])]));
+                CallDeferred((StringName) nameof(AssignCollisionData), new ReadOnlySpan<Variant>([shapes[i], new PackedFloat32Array([..terrainData.ToArray()])]));
             }
         };
 
@@ -215,8 +217,9 @@ public partial class Terrain : Node3D {
         }
     }
 
-    private void AssignCollisionData(HeightMapShape3D shape, float[] data) {
-        shape.MapData = [..data];
+    [BindMethod]
+    private void AssignCollisionData(HeightMapShape3D shape, PackedFloat32Array data) {
+        shape.MapData = data;
     }
 
     public HeightMapShape3D AddZoneCollision(ZoneResource zone) {
@@ -227,6 +230,7 @@ public partial class Terrain : Node3D {
 
         collisionShape.Position = new Vector3((ZonesSize - 1) * zone.ZonePosition.X, 0, (ZonesSize - 1) * zone.ZonePosition.Y);
         collisionShape.Scale = new Vector3(Resolution, 1, Resolution);
+        collisionShape.Owner = this;
 
         var heightMapShape3D = new HeightMapShape3D();
         collisionShape.Shape = heightMapShape3D;
@@ -273,8 +277,8 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter(StringNames.BlendFactor, HeightBlendFactor);
             Clipmap.Shader.SetShaderParameter(StringNames.AlbedoAlphaChannelUsage, (int) AlbedoAlphaChannelUsage);
             Clipmap.Shader.SetShaderParameter(StringNames.NormalAlphaChannelUsage, (int) NormalAlphaChannelUsage);
-        } else if (DefaultTexture != null) {
-            var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
+        } else if (_defaultTexture != null) {
+            var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {_defaultTexture});
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..new int[] {TextureDetail}]));
             Clipmap.Shader.SetShaderParameter((StringName)$"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());

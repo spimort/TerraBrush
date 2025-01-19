@@ -6,7 +6,7 @@ using Godot.Collections;
 
 namespace TerraBrush;
 
-[GodotClass]
+[GodotClass(Tool = true)]
 public partial class Clipmap : Node3D {
     private ShaderMaterial _clipmapShader;
 
@@ -102,14 +102,14 @@ public partial class Clipmap : Node3D {
         }
 
         var arrays = new GodotArray();
-        arrays.Resize(sizeof(Mesh.ArrayType));
-        arrays[(int) Mesh.ArrayType.Vertex] = new GodotArray([..vertices.ToArray()]);
-        arrays[(int) Mesh.ArrayType.TexUV] = new GodotArray([..uvs.ToArray()]);
-        arrays[(int) Mesh.ArrayType.Color] = new GodotArray([..colors.ToArray()]);
+        arrays.Resize(13); // Mesh.ArrayType.Max
+        arrays[(int) Mesh.ArrayType.Vertex] = new PackedVector3Array([..vertices.ToArray()]);
+        arrays[(int) Mesh.ArrayType.TexUV] = new PackedVector2Array([..uvs.ToArray()]);
+        arrays[(int) Mesh.ArrayType.Color] = new PackedColorArray([..colors.ToArray()]);
 
         var normals = new Vector3[vertices.Count];
         Array.Fill(normals, new Vector3(0, 1, 0));
-        arrays[(int) Mesh.ArrayType.Normal] = new GodotArray([..normals]);
+        arrays[(int) Mesh.ArrayType.Normal] = new PackedVector3Array([..normals]);
 
         var arrayMesh = new ArrayMesh();
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
@@ -192,7 +192,7 @@ public partial class Clipmap : Node3D {
             #  #  #  3
         */
 
-        vertices.AddRange(new [] {
+        vertices.AddRange([
             new Vector3(xPosition, 0, zPosition),
             new Vector3(xPosition + width, 0, zPosition),
             new Vector3(xPosition, 0, zPosition + width),
@@ -200,9 +200,9 @@ public partial class Clipmap : Node3D {
             new Vector3(xPosition + width, 0, zPosition),
             new Vector3(xPosition + width, 0, zPosition + width),
             new Vector3(xPosition, 0, zPosition + width)
-        });
+        ]);
 
-        uvs.AddRange(new [] {
+        uvs.AddRange([
             new Vector2(0, 1),
             new Vector2(1, 1),
             new Vector2(0, 0),
@@ -210,7 +210,7 @@ public partial class Clipmap : Node3D {
             new Vector2(1, 1),
             new Vector2(1, 0),
             new Vector2(0, 0)
-        });
+        ]);
     }
 
     public void UpdateAABB() {

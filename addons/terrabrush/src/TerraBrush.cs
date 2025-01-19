@@ -284,7 +284,7 @@ public partial class TerraBrush : Node3D {
             await CreateWater();
         }
 
-        _terrain = (await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Terrain.tscn", CancellationToken.None)).Instantiate<Terrain>();
+        _terrain = new Terrain();
 
         _terrain.TextureSets = TextureSets;
         _terrain.VisualInstanceLayers = VisualInstanceLayers;
@@ -362,7 +362,7 @@ public partial class TerraBrush : Node3D {
         var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
 
         if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Count < numberOfSplatmaps) {
-            var newList = new List<ImageTexture>(zone.SplatmapsTexture.ToArray() ?? []);
+            var newList = new List<ImageTexture>(zone.SplatmapsTexture?.ToArray() ?? []);
 
 			for (var i = zone.SplatmapsTexture?.Count ?? 0; i < numberOfSplatmaps; i++) {
                 newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
@@ -498,8 +498,7 @@ public partial class TerraBrush : Node3D {
             _waterNodeContainer = new Node3D();
             AddChild(_waterNodeContainer);
 
-            var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Water.tscn", CancellationToken.None);
-            _waterNode = prefab.Instantiate<Water>();
+            _waterNode = new Water();
 
             _waterNode.TerrainZones = TerrainZones;
             _waterNode.ZonesSize = ZonesSize;
@@ -556,8 +555,7 @@ public partial class TerraBrush : Node3D {
 
         TerrainZones.UpdateSnowTextures();
 
-        var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Snow.tscn", CancellationToken.None);
-        _snowNode = prefab.Instantiate<Snow>();
+        _snowNode = new Snow();
 
         _snowNode.TerrainZones = TerrainZones;
         _snowNode.ZonesSize = ZonesSize;

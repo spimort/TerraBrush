@@ -36,7 +36,7 @@ public class EntryPoint {
         ClassDB.RegisterInternalClass<Water>(Water.BindMethods);
 
         ClassDB.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
-        // ClassDB.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
+        ClassDB.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
         ClassDB.RegisterClass<ZoneResource>(ZoneResource.BindMethods);
 
         ClassDB.RegisterInternalClass<TerraBrushPlugin>(TerraBrushPlugin.BindMethods);

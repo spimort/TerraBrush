@@ -106,6 +106,8 @@ public partial class TerraBrushPlugin : EditorPlugin {
     }
 
     protected override int _Forward3DGuiInput(Camera3D viewportCamera, InputEvent @event) {
+            return base._Forward3DGuiInput(viewportCamera, @event);
+
         var preventGuiInput = false;
 
         if (_toolInfo != null) {
@@ -372,8 +374,8 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
         _currentTerraBrushNode = terraBrush;
         _currentTerraBrushNode.TerrainSettingsUpdated += () => {
-            RemoveDock();
-            AddDock();
+            // RemoveDock();
+            // AddDock();
         };
         _undoRedo = GetUndoRedo();
         _currentTerraBrushNode.UndoRedo = _undoRedo;
