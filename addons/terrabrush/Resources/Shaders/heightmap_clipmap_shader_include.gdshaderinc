@@ -129,7 +129,7 @@ void calculateHeightmapFragment(
 	int currentChannel = 0;
 	for (int i = 0; i < NumberOfTextures; i++) {
 		int textureDetail = TexturesDetail[i];
-		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
+		vec2 worldVertexUV = (worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize))) * -1.0; // * -1.0 otherwise the textures/normals are flipped
 		vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
 		vec3 textureZoneUV = zoneUV;
 		if (Resolution > 1.0) {
