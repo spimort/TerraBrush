@@ -108,6 +108,8 @@ public partial class Clipmap : Node3D {
         Array.Fill(normals, new Vector3(0, 1, 0));
         arrays[(int) Mesh.ArrayType.Normal] = normals;
 
+        arrays[(int) Mesh.ArrayType.Tangent] = CalculateTangents(vertices, uvs).ToArray();
+
         var arrayMesh = new ArrayMesh();
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 
@@ -208,6 +210,52 @@ public partial class Clipmap : Node3D {
             new Vector2(1, 0),
             new Vector2(0, 0)
         });
+    }
+
+    private List<float> CalculateTangents(List<Vector3> vertices, List<Vector2> uvs) {
+        var tangents = new List<float>();
+        int triangleCount = vertices.Count / 3;
+
+        for (int i = 0; i < triangleCount; i++) {
+            var v0 = vertices[i * 3];
+            var v1 = vertices[i * 3 + 1];
+            var v2 = vertices[i * 3 + 2];
+
+            var uv0 = uvs[i * 3];
+            var uv1 = uvs[i * 3 + 1];
+            var uv2 = uvs[i * 3 + 2];
+
+            // Calculate the edges
+            var edge1 = v1 - v0;
+            var edge2 = v2 - v0;
+
+            // Calculate the UV space edges
+            var deltaUV1 = uv1 - uv0;
+            var deltaUV2 = uv2 - uv0;
+
+            // Calculate tangent
+            var inversedDeterminant = 1.0f / ((deltaUV1.X * deltaUV2.Y) - (deltaUV1.Y * deltaUV2.X));
+            var tangent = ((edge1 * deltaUV2.Y) - (edge2 * deltaUV1.Y)) * inversedDeterminant;
+            tangent = tangent.Normalized();
+
+            // Create tangent for each vertex of the triangle
+            tangents.Add(tangent.X);
+            tangents.Add(tangent.Y);
+            tangents.Add(tangent.Z);
+            tangents.Add(1.0f); // W is for a positive sign (1.0)
+
+            tangents.Add(tangent.X);
+            tangents.Add(tangent.Y);
+            tangents.Add(tangent.Z);
+            tangents.Add(1.0f);
+
+            tangents.Add(tangent.X);
+            tangents.Add(tangent.Y);
+            tangents.Add(tangent.Z);
+            tangents.Add(1.0f);
+        }
+
+        return tangents;
     }
 
     public void UpdateAABB() {
