@@ -161,7 +161,7 @@ public partial class Objects : Node3D, IObjectsNode {
                     var yPosition = int.Parse(positions[1]);
 
                     var resultPosition = GetPositionWithNoise(noiseImage, xPosition, yPosition);
-                    if (IsImagePositionInRange(resultPosition.X, resultPosition.Y)) {
+                    if (IsImagePositionInRange(resultPosition.X, resultPosition.Z)) {
                         var heightImagePosition = GetHeightPositionForResolution(new Vector2(resultPosition.X, resultPosition.Z), resolutionZoneSize);
                         objectNode.Position = new Vector3(objectNode.Position.X, GetObjectHeight(heightmapImage, waterImage, heightImagePosition.X, heightImagePosition.Y), objectNode.Position.Z);
                     }
@@ -183,7 +183,7 @@ public partial class Objects : Node3D, IObjectsNode {
             }
 
             var resultPosition = GetPositionWithNoise(noiseImage, x, y);
-            if (IsImagePositionInRange(resultPosition.X, resultPosition.Y)) {
+            if (IsImagePositionInRange(resultPosition.X, resultPosition.Z)) {
                 var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
                 var heightImagePosition = GetHeightPositionForResolution(new Vector2(resultPosition.X, resultPosition.Z), resolutionZoneSize);
                 var heightmapPixel = Utils.GetPixelLinear(heightmapImage, heightImagePosition.X, heightImagePosition.Y);
