@@ -28,6 +28,21 @@ const int ALPHA_CHANNEL_USAGE_NONE = 0;
 const int ALPHA_CHANNEL_USAGE_ROUGHNESS = 1;
 const int ALPHA_CHANNEL_USAGE_HEIGHT = 2;
 
+// unpack_normal from zylann's shader
+vec3 unpack_normal(vec4 rgba) {
+	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+	// Had to negate Z because it comes from Y in the normal map,
+	// and OpenGL-style normal maps are Y-up.
+	n.z *= -1.0;
+	return n;
+}
+
+// pack_normal from zylann's shader
+vec4 pack_normal(vec3 n, float a) {
+	n.z *= -1.0;
+	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+}
+
 vec2 rotate(vec2 v, float cosa, float sina) {
 	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
 }
@@ -43,7 +58,7 @@ vec4 depth_blend2(vec4 a_value, float a_bump, vec4 b_value, float b_bump, float 
 }
 
 // Antitile from zylann's shader
-vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest, vec3 uv) {
+vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest, vec3 uv, bool isNormal) {
 	float frequency = 2.0;
 	float scale = 1.3;
 	float sharpness = 0.7;
@@ -63,6 +78,12 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 	} else {
 		col0 = texture(texLinear, uv);
 		col1 = texture(texLinear, uv2);
+	}
+	
+	if (isNormal) {
+		vec3 n = unpack_normal(col1);
+		n.xz = rotate(n.xz, cosa, -sina);
+		col1 = pack_normal(n, col1.a);		
 	}
 
 	// Periodically alternate between the two versions using a warped checker pattern
@@ -104,11 +125,11 @@ float contrast(float factor, float v) {
 	return max(0.0, min(1.0, factor * (v - 0.5) + 0.5));
 }
 
-void fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sampler2DArray nearestTextures, out vec4 resultTexture) {
+vec4 fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sampler2DArray nearestTextures, bool isNormal) {
 	if (NearestFilter) {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(nearestTextures, textureUV);
+		return UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV, isNormal) : texture(nearestTextures, textureUV);
 	} else {
-		resultTexture = UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV) : texture(linearTextures, textureUV);
+		return UseAntitile ? texture_array_antitile(linearTextures, nearestTextures, textureUV, isNormal) : texture(linearTextures, textureUV);
 	}
 }
 
@@ -142,19 +163,19 @@ void calculateHeightmapFragment(
 		vec4 currentRoughness = vec4(0);
 		vec4 currentHeight = vec4(0);
 
-		fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, currentTexture);
+		currentTexture = fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, false);
 		currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
 		currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
 		if (HasNormalTextures) {
-			fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, currentNormal);
+			currentNormal = fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, true);
 			currentRoughness = max(currentRoughness, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_ROUGHNESS && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS)));
 			currentHeight = max(currentHeight, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_HEIGHT && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT)));
 		}
 		if (HasRoughnessTextures) {
-			fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, currentRoughness);
+			currentRoughness = fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, false);
 		}
 		if (HasHeightTextures) {
-			fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, currentHeight);
+			currentHeight = fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, false);
 		}
 
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
