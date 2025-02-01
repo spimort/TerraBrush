@@ -472,7 +472,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
             }
 
             var resultPosition = GetPositionWithNoise(noiseImage, x, y);
-            if (IsImagePositionInRange(resultPosition.X, resultPosition.Y)) {
+            if (IsImagePositionInRange(resultPosition.X, resultPosition.Z)) {
                 var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
                 var heightImagePosition = GetHeightPositionForResolution(new Vector2(resultPosition.X, resultPosition.Z), resolutionZoneSize);
                 var heightmapPixel = Utils.GetPixelLinear(heightmapImage, heightImagePosition.X, heightImagePosition.Y);
