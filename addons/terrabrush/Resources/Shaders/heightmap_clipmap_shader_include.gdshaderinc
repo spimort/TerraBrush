@@ -148,6 +148,7 @@ void calculateHeightmapFragment(
 	vec3 zoneUV = calculateZoneUV(worldVertex);
 
 	int currentChannel = 0;
+	float channelSum = 0.0;
 	for (int i = 0; i < NumberOfTextures; i++) {
 		int textureDetail = TexturesDetail[i];
 		vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
@@ -185,9 +186,10 @@ void calculateHeightmapFragment(
 		if (HasHeightTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT) {
 			heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
 		}
+		channelSum += heightBlendedChannelValue;
 
 		resultTexture += currentTexture * heightBlendedChannelValue;
-		resultNormal += currentNormal * channelValue;
+		resultNormal += currentNormal * heightBlendedChannelValue;
 		resultRoughness += currentRoughness * heightBlendedChannelValue;
 
 		if (currentChannel == 3) {
@@ -197,7 +199,7 @@ void calculateHeightmapFragment(
 		}
 	}
 
-	albedo = resultTexture.xyz;
+	albedo = resultTexture.xyz / channelSum;
 
 	if (ApplyLockTextures) {
 		vec4 lockTexture = texture(LockTextures, zoneUV);
@@ -206,11 +208,11 @@ void calculateHeightmapFragment(
 	}
 
 	if (HasRoughnessTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS) {
-		roughness = resultRoughness.x;
+		roughness = resultRoughness.x / channelSum;
 	}
 
 	if (HasNormalTextures) {
-		normalMap = resultNormal.xyz;
+		normalMap = resultNormal.xyz / channelSum;
 	}
 
 	alpha = 1.0;
