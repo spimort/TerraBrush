@@ -23,6 +23,8 @@ uniform float BlendFactor;
 uniform bool NearestFilter = false;
 uniform int AlbedoAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
 uniform int NormalAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
+uniform bool Triplanar = true;
+uniform int[100] TexturesTriplanar;
 
 const int ALPHA_CHANNEL_USAGE_NONE = 0;
 const int ALPHA_CHANNEL_USAGE_ROUGHNESS = 1;
@@ -79,11 +81,11 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 		col0 = texture(texLinear, uv);
 		col1 = texture(texLinear, uv2);
 	}
-	
+
 	if (isNormal) {
 		vec3 n = unpack_normal(col1);
 		n.xz = rotate(n.xz, cosa, -sina);
-		col1 = pack_normal(n, col1.a);		
+		col1 = pack_normal(n, col1.a);
 	}
 
 	// Periodically alternate between the two versions using a warped checker pattern
@@ -100,12 +102,13 @@ void calculateHeightmapVertex(
 	inout vec4 color,
 	inout vec3 vertex,
 	inout vec3 normal,
-	inout vec3 worldVertex
+	inout vec3 worldVertex,
+	inout vec3 triplanarPos,
+	inout vec3 triplanarPowerNormal
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
 
 	vec3 zoneUV = calculateZoneUV(worldVertex);
-
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
 	float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
@@ -115,6 +118,13 @@ void calculateHeightmapVertex(
 
 	vec4 waterTexture = texture(WaterTextures, zoneUV);
 	vertex.y -= waterTexture.r * WaterFactor;
+
+	if (Triplanar) {
+		triplanarPowerNormal = pow(abs(normal), vec3(150.0));
+		triplanarPos = vec3(worldVertex.x, vertex.y, worldVertex.z);
+		triplanarPowerNormal /= dot(triplanarPowerNormal, vec3(1.0));
+		triplanarPos *= vec3(1.0, -1.0, 1.0);
+	}
 }
 
 float getChannelValue(int currentChannel, vec4 currentSplatmap) {
@@ -133,8 +143,35 @@ vec4 fillVec4WithFilterTexture(vec3 textureUV, sampler2DArray linearTextures, sa
 	}
 }
 
+vec4 triplanarTexture(float textureIndex, sampler2DArray linearTextures, sampler2DArray nearestTextures, bool isNormal, vec3 triplanarWeights, vec3 triplanarPos) {
+	vec4 samp = vec4(0.0);
+	float textureDetail = (float(TexturesDetail[int(textureIndex)]) * (1.0 / ZonesSize));;
+
+	samp += fillVec4WithFilterTexture(vec3(triplanarPos.xy * textureDetail, textureIndex), linearTextures, nearestTextures, isNormal) * triplanarWeights.z;
+	samp += fillVec4WithFilterTexture(vec3(triplanarPos.xz * textureDetail, textureIndex), linearTextures, nearestTextures, isNormal) * triplanarWeights.y;
+	samp += fillVec4WithFilterTexture(vec3((triplanarPos.zy * vec2(-1.0, 1.0)) * textureDetail, textureIndex), linearTextures, nearestTextures, isNormal) * triplanarWeights.x;
+	return samp;
+}
+
+vec4 getVec4Texture(
+	vec3 textureUV,
+	vec3 triplanarPos,
+	vec3 triplanarPowerNormal,
+	sampler2DArray linearTextures,
+	sampler2DArray nearestTextures,
+	bool isNormal
+) {
+	if (TexturesTriplanar[int(textureUV.z)] == 1) {
+		return triplanarTexture(textureUV.z, linearTextures, nearestTextures, isNormal, triplanarPowerNormal, triplanarPos);
+	} else {
+		return fillVec4WithFilterTexture(textureUV, linearTextures, nearestTextures, isNormal);
+	}
+}
+
 void calculateHeightmapFragment(
 	vec3 worldVertex,
+	vec3 triplanarPos,
+	vec3 triplanarPowerNormal,
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float roughness,
@@ -164,19 +201,19 @@ void calculateHeightmapFragment(
 		vec4 currentRoughness = vec4(0);
 		vec4 currentHeight = vec4(0);
 
-		currentTexture = fillVec4WithFilterTexture(textureUV, Textures, TexturesNearest, false);
+		currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
 		currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
 		currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
 		if (HasNormalTextures) {
-			currentNormal = fillVec4WithFilterTexture(textureUV, Normals, NormalsNearest, true);
+			currentNormal = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Normals, NormalsNearest, true);
 			currentRoughness = max(currentRoughness, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_ROUGHNESS && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS)));
 			currentHeight = max(currentHeight, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_HEIGHT && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT)));
 		}
 		if (HasRoughnessTextures) {
-			currentRoughness = fillVec4WithFilterTexture(textureUV, RoughnessTextures, RoughnessTexturesNearest, false);
+			currentRoughness = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, RoughnessTextures, RoughnessTexturesNearest, false);
 		}
 		if (HasHeightTextures) {
-			currentHeight = fillVec4WithFilterTexture(textureUV, HeightTextures, HeightTexturesNearest, false);
+			currentHeight = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, HeightTextures, HeightTexturesNearest, false);
 		}
 
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
