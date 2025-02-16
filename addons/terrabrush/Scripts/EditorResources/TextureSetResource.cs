@@ -48,6 +48,7 @@ public partial class TextureSetResource : Resource {
     [Export] public Texture2D RoughnessTexture { get;set; }
     [Export] public Texture2D HeightTexture { get;set; }
     [Export] public int TextureDetail { get;set; } = -1;
+    [Export] public bool Triplanar { get;set; }
 
     private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
