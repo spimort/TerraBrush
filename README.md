@@ -151,6 +151,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |TextureSetResource[x].NormalTexture|The normal map texture of the set.|
 |TextureSetResource[x].RoughnessTexture|The roughness texture of the set.|
 |TextureSetResource[x].TextureDetail|This will determine how often your texture will be repeated on the terrain. A higher value means more repetitions. The default value is -1 to take the global TextureDetail of the terrain.|
+|TextureSetResource[x].Triplanar|This option prevents texture stretching using a triplanar algorithm. This option is available per texture for better control over performance.|
 |Texture Detail|This will determine how often your textures will be repeated on the terrain. A higher value means more repetitions. The default value is 20.|
 |Use Anti Tile|This will determine if the textures will use an Anti Tile algorithm.|
 |Height Blend Factor|The intensity (contrast) of the texture blending when using heightmaps/bumpmaps. 0 will use classic linear blending. The default value is 10. Negative or exaggerated values may produce interesting artistic effects.
