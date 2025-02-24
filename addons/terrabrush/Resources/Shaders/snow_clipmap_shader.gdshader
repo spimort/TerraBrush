@@ -7,7 +7,13 @@ varying vec3 _worldVertex;
 
 void vertex() {
 	_worldVertex = vec3(0);
-	calculateSnowVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
+	calculateSnowVertex(
+		MODEL_MATRIX, 
+		COLOR, 
+		VERTEX, 
+		NORMAL,
+		_worldVertex
+	);
 }
 
 void fragment() {

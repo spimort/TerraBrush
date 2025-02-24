@@ -4,7 +4,7 @@ uniform sampler2DArray SnowTextures: hint_default_transparent, repeat_disable;
 uniform float SnowFactor = 1.0;
 uniform float SnowInnerOffset = 0.3;
 uniform sampler2D SnowColorTexture: source_color, filter_linear_mipmap, repeat_enable;
-uniform sampler2D SnowColorNormal: source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D SnowColorNormal: filter_linear_mipmap, repeat_enable;
 uniform sampler2D SnowColorRoughness: source_color, filter_linear_mipmap, repeat_enable;
 uniform float SnowColorDetail = 20;
 uniform sampler2D Noise: hint_default_transparent, repeat_disable;
@@ -19,6 +19,7 @@ void calculateSnowVertex(
 	mat4 modelMatrix, 
 	inout vec4 color, 
 	inout vec3 vertex, 
+	inout vec3 normal, 
 	inout vec3 worldVertex	
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
@@ -38,6 +39,13 @@ void calculateSnowVertex(
 		}
 
 		color = vec4(currentSnowColor.r, currentSnowColor.g, currentSnowColor.b, 1.0);
+		
+		const vec3 off = vec3(1.0, 1.0, 0.0);
+		float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
+		float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
+		float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
+		float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
+		normal = normalize(vec3(hL - hR, 2.0, hB - hF));		
 	} else {
 		vertex.y -= 1.0;
 		
