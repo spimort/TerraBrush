@@ -61,6 +61,7 @@ internal static class StringNames {
     public static readonly StringName LODLevels = "LODLevels";
     public static readonly StringName FoliageAlbedo = "FoliageAlbedo";
     public static readonly StringName FoliageAlbedoTextures = "FoliageAlbedoTextures";
+    public static readonly StringName FoliageAlbedoTexturesNearest = "FoliageAlbedoTexturesNearest";
     public static readonly StringName UseGroundColor = "UseGroundColor";
     public static readonly StringName FoliageNumberOfTexture = "FoliageNumberOfTexture";
     public static readonly StringName UseBrushScale = "UseBrushScale";

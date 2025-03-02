@@ -134,8 +134,9 @@ public partial class Foliage : Node3D {
             if (Definition.AlbedoTextures?.Length > 0) {
                 var albedoTextures = new Texture2DArray();
                 albedoTextures.CreateFromImages(new Godot.Collections.Array<Image>(Definition.AlbedoTextures.Select(x => x.GetImage())));
-                _foliageShader.SetShaderParameter(StringNames.FoliageAlbedoTextures, albedoTextures);
+                _foliageShader.SetShaderParameter(Definition.NearestTextureFilter ? StringNames.FoliageAlbedoTexturesNearest : StringNames.FoliageAlbedoTextures, albedoTextures);
                 _foliageShader.SetShaderParameter(StringNames.FoliageNumberOfTexture, Definition.AlbedoTextures.Length);
+                _foliageShader.SetShaderParameter(StringNames.NearestFilter, Definition.NearestTextureFilter);
             }
 
             _foliageShader.SetShaderParameter(StringNames.UseGroundColor, Definition.UseGroundColor);
