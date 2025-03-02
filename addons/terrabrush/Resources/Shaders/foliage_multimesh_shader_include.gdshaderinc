@@ -8,6 +8,7 @@ uniform int LODLevels = 5;
 uniform float WindStrength = 0.1;
 uniform vec4 FoliageAlbedo: source_color = vec4(1.0);
 uniform sampler2DArray FoliageAlbedoTextures: hint_default_white, repeat_disable;
+uniform sampler2DArray FoliageAlbedoTexturesNearest: hint_default_white, repeat_disable, filter_nearest_mipmap;
 uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
 uniform vec3 MeshScale = vec3(1.0);
@@ -16,6 +17,7 @@ uniform sampler2D ScaleNoiseTexture: hint_default_white;
 uniform float RandomPlacementRange = 2.0;
 uniform int[100] ApplyOnTextureIndexes;
 uniform int NumberOfTexturesToApplyOn = 0;
+uniform bool NearestFilter = false;
 
 uniform sampler2DArray HeightmapTextures: hint_default_black, repeat_disable;
 uniform sampler2DArray FoliageTextures : hint_default_black, repeat_disable;
@@ -327,7 +329,7 @@ void calculateFoliageFragment(vec2 uv, vec4 color, vec3 instancePosition, out ve
 		float randomValue = hash_noise_range(instancePosition).x;
 		float randomTexture = mix(0.0, float(FoliageNumberOfTexture - 1), randomValue);
 
-		albedoTexture = texture(FoliageAlbedoTextures, vec3(uv.x, uv.y, randomTexture));
+		albedoTexture = NearestFilter ? texture(FoliageAlbedoTexturesNearest, vec3(uv.x, uv.y, randomTexture)) : texture(FoliageAlbedoTextures, vec3(uv.x, uv.y, randomTexture));
 	}
 
 	albedo = color.rgb * albedoTexture.rgb * FoliageAlbedo.rgb;

@@ -13,6 +13,7 @@ public partial class FoliageDefinitionResource : Resource {
         nameof(LODInitialCellWidth),
         nameof(Albedo),
         nameof(AlbedoTextures),
+        nameof(NearestTextureFilter),
         nameof(UseGroundColor),
         nameof(CastShadow),
         nameof(UseBrushScale),
@@ -50,6 +51,7 @@ public partial class FoliageDefinitionResource : Resource {
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public Color Albedo { get;set; } = Colors.White;
     [Export] public Texture2D[] AlbedoTextures { get;set; }
+    [Export] public bool NearestTextureFilter { get;set; }
     [Export] public bool UseGroundColor { get;set; }
     [Export] public bool CastShadow { get;set; } = false;
     [Export] public bool UseBrushScale { get;set; } = true;
