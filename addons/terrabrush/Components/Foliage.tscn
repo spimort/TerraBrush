@@ -1,20 +1,22 @@
 [gd_scene load_steps=4 format=3 uid="uid://cyask5b1q7we4"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Foliage.cs" id="1_lxro2"]
-[ext_resource type="Shader" path="res://addons/terrabrush/Resources/Shaders/foliage_shader.gdshader" id="2_hixc1"]
+[ext_resource type="Script" uid="uid://lc21sxdb7pva" path="res://addons/terrabrush/Scripts/Foliage.cs" id="1_lxro2"]
+[ext_resource type="Shader" uid="uid://ddhmcgd2lqdfw" path="res://addons/terrabrush/Resources/Shaders/foliage_shader.gdshader" id="2_hixc1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6tf5l"]
 resource_local_to_scene = true
 shader = ExtResource("2_hixc1")
-shader_parameter/GlobalPosition = null
-shader_parameter/TextureDetail = null
-shader_parameter/NumberOfTextures = null
-shader_parameter/WaterFactor = null
-shader_parameter/MaximumDistance = null
+shader_parameter/GlobalPosition = Vector3(0, 0, 0)
+shader_parameter/OffsetPosition = Vector3(0, 0, 0)
+shader_parameter/TextureDetail = 0
+shader_parameter/NumberOfTextures = 0
+shader_parameter/WaterFactor = 0.0
+shader_parameter/MaximumDistance = 0
 shader_parameter/MeshScale = Vector3(1, 1, 1)
 shader_parameter/WindStrength = 0.1
-shader_parameter/ZonesSize = null
-shader_parameter/NumberOfZones = null
+shader_parameter/ZonesSize = 0.0
+shader_parameter/Resolution = 0.0
+shader_parameter/NumberOfZones = 0.0
 
 [node name="Foliage" type="Node3D"]
 script = ExtResource("1_lxro2")

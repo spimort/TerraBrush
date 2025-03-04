@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ckae4nuanw4sk"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/Tools/ToolInfo.cs" id="1_1c1v5"]
+[ext_resource type="Script" uid="uid://uf3a87vh207a" path="res://addons/terrabrush/Scripts/Tools/ToolInfo.cs" id="1_1c1v5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5m7py"]
 bg_color = Color(0.152941, 0.152941, 0.152941, 1)
@@ -38,8 +38,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_75p15"]
 _data = {
-"RESET": SubResource("Animation_34o64"),
-"Show": SubResource("Animation_votki")
+&"RESET": SubResource("Animation_34o64"),
+&"Show": SubResource("Animation_votki")
 }
 
 [node name="ToolInfo" type="Control"]

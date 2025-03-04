@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://rdljgysyl5no"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/DockPreviewButton.cs" id="4_yckld"]
+[ext_resource type="Script" uid="uid://dgieqihju3uyo" path="res://addons/terrabrush/Scripts/DockPreviews/DockPreviewButton.cs" id="4_yckld"]
 [ext_resource type="Texture2D" uid="uid://dy7hwn8w6ax3a" path="res://addons/terrabrush/Assets/Buttons/square_white.png" id="5_70n7q"]
 [ext_resource type="Texture2D" uid="uid://cq00yrrj12q13" path="res://addons/terrabrush/Assets/Brushes/square.png" id="5_qxkv6"]
 [ext_resource type="Texture2D" uid="uid://cqcsl4r3p1dv7" path="res://addons/terrabrush/Assets/Buttons/circle_white.png" id="6_0jc2o"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bh83eseucsstx"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/KeyListenDialog.cs" id="1_ybsql"]
+[ext_resource type="Script" uid="uid://cxq6r767hwiyj" path="res://addons/terrabrush/Scripts/KeyListenDialog.cs" id="1_ybsql"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6pp30"]
 font_size = 14

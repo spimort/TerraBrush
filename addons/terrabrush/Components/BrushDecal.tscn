@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://5jvvrtgq4llr"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/BrushDecal.cs" id="1_jow3u"]
+[ext_resource type="Script" uid="uid://ch126bvn533l4" path="res://addons/terrabrush/Scripts/BrushDecal.cs" id="1_jow3u"]
 [ext_resource type="Texture2D" uid="uid://bxcc8v5gvkwp5" path="res://addons/terrabrush/Assets/brush_preview.png" id="1_k83t0"]
 
 [node name="BrushDecal" type="Node3D"]

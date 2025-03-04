@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cqcsl4r3p1dv7" path="res://addons/terrabrush/Assets/Buttons/circle_white.png" id="3_tbl55"]
 [ext_resource type="Texture2D" uid="uid://dqgc1ym8vyqgy" path="res://addons/terrabrush/Assets/Buttons/circle_sign_white.png" id="4_8lgvv"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/DockPreviews/ToolPreview.cs" id="4_dvfei"]
+[ext_resource type="Script" uid="uid://bkt4wavweugyw" path="res://addons/terrabrush/Scripts/DockPreviews/ToolPreview.cs" id="4_dvfei"]
 [ext_resource type="Texture2D" uid="uid://dy7hwn8w6ax3a" path="res://addons/terrabrush/Assets/Buttons/square_white.png" id="5_tb0eh"]
 
 [node name="ToolPreview" type="TextureButton" node_paths=PackedStringArray("TextureRect")]

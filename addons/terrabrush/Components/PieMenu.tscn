@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://rmuvkqdg8w8q"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/PieMenu.cs" id="1_b4r6x"]
+[ext_resource type="Script" uid="uid://3nfjppj662rv" path="res://addons/terrabrush/Scripts/PieMenu.cs" id="1_b4r6x"]
 [ext_resource type="Texture2D" uid="uid://cgnwd7d8im54" path="res://addons/terrabrush/Assets/white_circle.png" id="17_dxx0s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rumxx"]
@@ -49,8 +49,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_j4nrl"]
 _data = {
-"EnterTree": SubResource("Animation_qqj0i"),
-"RESET": SubResource("Animation_ndtf8")
+&"EnterTree": SubResource("Animation_qqj0i"),
+&"RESET": SubResource("Animation_ndtf8")
 }
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_253w6"]
