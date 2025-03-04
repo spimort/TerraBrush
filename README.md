@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-<h4 align="center">A minimal Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.3</a></h4>
+<h4 align="center">A minimal Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.4</a></h4>
 
 <p align="center">
   <a href="https://godotengine.org/">
@@ -36,9 +36,9 @@ I'm happy to share it with the community but it's possible that some features th
 <br>
 I'm gonna be happy to accept PR for new features if it fits.
 
-## Godot 4.2 and lower (4.x)
+## Godot 4.3 and lower (4.x)
 
-The demo scene has been updated to Godot 4.3 which makes it break with older version of Godot.
+The demo scene has been updated to Godot 4.4 which makes it break with older version of Godot.
 
 ## Key Features
 
