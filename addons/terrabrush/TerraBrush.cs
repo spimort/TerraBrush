@@ -131,7 +131,7 @@ public partial class TerraBrush : TerraBrushTool {
     public int LODLevels { get;set; } = 5;
 
     [Export]
-    public int LODRowsPerLevel { get;set; } = 101;
+    public int LODRowsPerLevel { get;set; } = 50;
 
     [Export]
     public float LODInitialCellWidth { get;set; } = 1;
