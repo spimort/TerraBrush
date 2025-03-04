@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bdwp2ci6wb66i"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportDialog.cs" id="1_cymwf"]
+[ext_resource type="Script" uid="uid://bxblb3ram3gi" path="res://addons/terrabrush/Scripts/ImportExport/ImportDialog.cs" id="1_cymwf"]
 [ext_resource type="PackedScene" uid="uid://brgfdwv5cmbfy" path="res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn" id="1_i0uwh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_lbm12"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://brgfdwv5cmbfy"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/ImportExport/ImportImageRow.cs" id="1_5ms08"]
+[ext_resource type="Script" uid="uid://dase7cxtc2i1h" path="res://addons/terrabrush/Scripts/ImportExport/ImportImageRow.cs" id="1_5ms08"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0e42"]
 bg_color = Color(0, 0.0823529, 0.121569, 1)

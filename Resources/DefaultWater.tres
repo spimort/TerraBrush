@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="WaterResource" load_steps=8 format=3 uid="uid://bf3nx6nl2obra"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/WaterResource.cs" id="1_fauwg"]
+[ext_resource type="Script" uid="uid://k2tvfxm6feg5" path="res://addons/terrabrush/Scripts/EditorResources/WaterResource.cs" id="1_fauwg"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ls6ha"]
 noise_type = 3

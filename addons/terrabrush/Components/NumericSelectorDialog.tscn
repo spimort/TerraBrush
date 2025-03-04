@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c5dhs7kc4xfyg"]
 
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/NumericSelectorDialog.cs" id="1_seyxx"]
+[ext_resource type="Script" uid="uid://bj5cef0d70joh" path="res://addons/terrabrush/Scripts/NumericSelectorDialog.cs" id="1_seyxx"]
 
 [node name="NumericSelectorDialog" type="Window"]
 title = "Select a value"

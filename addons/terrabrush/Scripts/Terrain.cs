@@ -108,7 +108,11 @@ public partial class Terrain : Node3D {
     }
 
     private void TerrainSplatmapsUpdated() {
-        Clipmap.Shader.SetShaderParameter(StringNames.Splatmaps, TerrainZones.SplatmapsTextures);
+        if (TerrainZones.SplatmapsTextures.GetLayers() == 0) {
+            Clipmap.Shader.SetShaderParameter(StringNames.Splatmaps, default);
+        } else {
+            Clipmap.Shader.SetShaderParameter(StringNames.Splatmaps, TerrainZones.SplatmapsTextures);
+        }        
     }
 
     public void TerrainWaterUpdated() {

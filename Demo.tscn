@@ -1,14 +1,14 @@
 [gd_scene load_steps=77 format=3 uid="uid://v4o1p7h4rn3j"]
 
 [ext_resource type="Texture2D" uid="uid://b8oilw31hv88p" path="res://Assets/hdri/hilly_terrain_01_puresky_1k.hdr" id="1_iuqbl"]
-[ext_resource type="Script" path="res://Demo.cs" id="1_ntfcg"]
-[ext_resource type="Script" path="res://addons/terrabrush/TerraBrush.cs" id="2_pdfhx"]
+[ext_resource type="Script" uid="uid://rucv2wgp8eli" path="res://Demo.cs" id="1_ntfcg"]
+[ext_resource type="Script" uid="uid://i5jcj7ukvoen" path="res://addons/terrabrush/TerraBrush.cs" id="2_pdfhx"]
 [ext_resource type="Texture2D" uid="uid://mt1iq0ehpi76" path="res://Demo/Heightmap.res" id="3_ckogt"]
 [ext_resource type="Texture2D" uid="uid://b5w0aj68co7mc" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Color.jpg" id="3_dxgqb"]
 [ext_resource type="Texture2D" uid="uid://f6k5xa1are2a" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Displacement.jpg" id="4_w0eiu"]
 [ext_resource type="Texture2D" uid="uid://cfhrarnnkgmul" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_NormalGL.jpg" id="5_6an3f"]
 [ext_resource type="Texture2D" uid="uid://btm7xw6mknurq" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Roughness - inverted.jpg" id="6_oy27c"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetResource.cs" id="7_yvfmb"]
+[ext_resource type="Script" uid="uid://c2l8t4xcdxwvu" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetResource.cs" id="7_yvfmb"]
 [ext_resource type="Texture2D" uid="uid://c564h6uniucsk" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_color_1k.jpg" id="8_7f4ek"]
 [ext_resource type="Texture2D" uid="uid://c7h0hrakrlkpq" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_height_1k.png" id="8_srk7a"]
 [ext_resource type="Texture2D" uid="uid://b34wpvg5h4p4q" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_normal_opengl_1k.png" id="9_satbt"]
@@ -25,17 +25,17 @@
 [ext_resource type="Texture2D" uid="uid://dmtgcaq3rd8c2" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_height_1k.png" id="17_quhjx"]
 [ext_resource type="Texture2D" uid="uid://ckjbys2om7wsa" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_normal_opengl_1k.png" id="18_3axer"]
 [ext_resource type="Texture2D" uid="uid://ci2ebkk666awq" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_roughness_1k.jpg" id="19_b7yqj"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetsResource.cs" id="20_mt8yi"]
+[ext_resource type="Script" uid="uid://043vjblb04jf" path="res://addons/terrabrush/Scripts/EditorResources/TextureSetsResource.cs" id="20_mt8yi"]
 [ext_resource type="Texture2D" uid="uid://c4o743jmncnva" path="res://Demo/Splatmap0.res" id="21_uuhvh"]
 [ext_resource type="Texture2D" uid="uid://dw5eoaubpj8ca" path="res://Demo/Splatmap1.res" id="22_rxty4"]
 [ext_resource type="Texture2D" uid="uid://btqvtq3waf3m6" path="res://Demo/Water.res" id="23_e5br0"]
 [ext_resource type="Resource" uid="uid://bf3nx6nl2obra" path="res://Resources/DefaultWater.tres" id="23_rpaxe"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/FoliageDefinitionResource.cs" id="24_4t1h3"]
+[ext_resource type="Script" uid="uid://dgf8vwa2n8r11" path="res://addons/terrabrush/Scripts/EditorResources/FoliageDefinitionResource.cs" id="24_4t1h3"]
 [ext_resource type="Texture2D" uid="uid://b68a2ljs41avw" path="res://Demo/Foliage0.res" id="25_001cp"]
 [ext_resource type="Texture2D" uid="uid://bu3p6spdkfd42" path="res://Demo/Snow.res" id="25_4k6f3"]
 [ext_resource type="Texture2D" uid="uid://oym5iluojwnn" path="res://Assets/Images/grassbushcc008.png" id="25_e6dcx"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/FoliageResource.cs" id="25_q5pkn"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/SnowResource.cs" id="25_q46kk"]
+[ext_resource type="Script" uid="uid://d33x21vao7tj2" path="res://addons/terrabrush/Scripts/EditorResources/FoliageResource.cs" id="25_q5pkn"]
+[ext_resource type="Script" uid="uid://di03satw2avie" path="res://addons/terrabrush/Scripts/EditorResources/SnowResource.cs" id="25_q46kk"]
 [ext_resource type="ArrayMesh" uid="uid://b3jybvl4hcmx5" path="res://Assets/Models/Foliage/foliage.obj" id="26_eqy4b"]
 [ext_resource type="PackedScene" uid="uid://bcw1uunyy5sdy" path="res://Assets/PackedScenes/Tree1.tscn" id="28_7kh4w"]
 [ext_resource type="PackedScene" uid="uid://by5jhpanviatg" path="res://Assets/PackedScenes/Tree2.tscn" id="29_lcqjd"]
@@ -49,11 +49,11 @@
 [ext_resource type="PackedScene" uid="uid://cwh3uwqhgvdh3" path="res://Assets/PackedScenes/Tree10.tscn" id="37_53qnf"]
 [ext_resource type="PackedScene" uid="uid://71itdw6m0jou" path="res://Assets/PackedScenes/Tree11.tscn" id="38_ch8bs"]
 [ext_resource type="PackedScene" uid="uid://bworhtcsluxw7" path="res://Assets/PackedScenes/Tree12.tscn" id="39_6yo16"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ObjectDefinitionResource.cs" id="42_hjjk2"]
+[ext_resource type="Script" uid="uid://cgf61yxk46wa4" path="res://addons/terrabrush/Scripts/EditorResources/ObjectDefinitionResource.cs" id="42_hjjk2"]
 [ext_resource type="Texture2D" uid="uid://d0qwv6p6dgdg" path="res://Demo/Object0.res" id="43_4bivk"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ObjectResource.cs" id="43_y5duh"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ZoneResource.cs" id="48_gk6oc"]
-[ext_resource type="Script" path="res://addons/terrabrush/Scripts/EditorResources/ZonesResource.cs" id="49_fduo2"]
+[ext_resource type="Script" uid="uid://comabiqrwe5u0" path="res://addons/terrabrush/Scripts/EditorResources/ObjectResource.cs" id="43_y5duh"]
+[ext_resource type="Script" uid="uid://d2qebwt0ednya" path="res://addons/terrabrush/Scripts/EditorResources/ZoneResource.cs" id="48_gk6oc"]
+[ext_resource type="Script" uid="uid://nt172hqpx1j5" path="res://addons/terrabrush/Scripts/EditorResources/ZonesResource.cs" id="49_fduo2"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_a58er"]
 panorama = ExtResource("1_iuqbl")
@@ -78,6 +78,7 @@ NormalTexture = ExtResource("5_6an3f")
 RoughnessTexture = ExtResource("6_oy27c")
 HeightTexture = ExtResource("4_w0eiu")
 TextureDetail = -1
+Triplanar = false
 
 [sub_resource type="Resource" id="Resource_al3h6"]
 script = ExtResource("7_yvfmb")
@@ -87,6 +88,7 @@ NormalTexture = ExtResource("9_satbt")
 RoughnessTexture = ExtResource("10_lt8js")
 HeightTexture = ExtResource("8_srk7a")
 TextureDetail = -1
+Triplanar = false
 
 [sub_resource type="Resource" id="Resource_0e1fb"]
 script = ExtResource("7_yvfmb")
@@ -96,6 +98,7 @@ NormalTexture = ExtResource("12_36x75")
 RoughnessTexture = ExtResource("13_43kc8")
 HeightTexture = ExtResource("11_b3m5x")
 TextureDetail = -1
+Triplanar = false
 
 [sub_resource type="Resource" id="Resource_1laah"]
 script = ExtResource("7_yvfmb")
@@ -105,6 +108,7 @@ NormalTexture = ExtResource("15_6s3cb")
 RoughnessTexture = ExtResource("16_d4u8t")
 HeightTexture = ExtResource("17_quhjx")
 TextureDetail = -1
+Triplanar = false
 
 [sub_resource type="Resource" id="Resource_xss3l"]
 script = ExtResource("7_yvfmb")
@@ -114,6 +118,7 @@ NormalTexture = ExtResource("18_3axer")
 RoughnessTexture = ExtResource("19_b7yqj")
 HeightTexture = ExtResource("17_l1sku")
 TextureDetail = -1
+Triplanar = false
 
 [sub_resource type="Resource" id="Resource_nwvvi"]
 script = ExtResource("20_mt8yi")
@@ -143,11 +148,13 @@ LODRowsPerLevel = 50
 LODInitialCellWidth = 1.0
 Albedo = Color(1, 1, 1, 1)
 AlbedoTextures = [ExtResource("25_e6dcx")]
+NearestTextureFilter = false
 UseGroundColor = true
 CastShadow = false
 UseBrushScale = true
 ScaleNoiseTexture = SubResource("NoiseTexture2D_rb8l3")
 RandomPlacementRange = 3.0
+ApplyOnTextureIndexes = PackedInt32Array()
 MaximumRenderDistance = 50
 EditorMaximumRenderDistance = 50
 
@@ -157,10 +164,16 @@ Definition = SubResource("Resource_uou6r")
 
 [sub_resource type="Resource" id="Resource_edv2t"]
 script = ExtResource("42_hjjk2")
+Strategy = 1
 ObjectFrequency = -1
 RandomRange = 4.0
 RandomYRotation = true
 ObjectScenes = [ExtResource("28_7kh4w"), ExtResource("29_lcqjd"), ExtResource("30_iv0fo"), ExtResource("31_eut0r"), ExtResource("32_bygrd"), ExtResource("33_b356k"), ExtResource("34_fbx31"), ExtResource("35_bfsrw"), ExtResource("36_0lkg2"), ExtResource("37_53qnf"), ExtResource("38_ch8bs"), ExtResource("39_6yo16")]
+LODList = []
+LODMeshes = []
+UpdateDistanceThreshold = 1.0
+UpdateTimeFrequency = 0.1
+VisualInstanceLayers = 1
 
 [sub_resource type="Resource" id="Resource_0o1vb"]
 script = ExtResource("43_y5duh")
