@@ -415,11 +415,15 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                 if (multiMeshNodeBuffer.Count == 0) {
                     multiMeshInstance.Multimesh.CallDeferred("set_instance_count", 0);
                 } else {
-                    multiMeshInstance.Multimesh.CallDeferred("set_instance_count", multiMeshNodeBuffer.Count / 12);
-                    multiMeshInstance.Multimesh.CallDeferred("set_buffer", multiMeshNodeBuffer.ToArray());
+                    CallDeferred(nameof(AssignMultiMesheInstances), multiMeshInstance.Multimesh, multiMeshNodeBuffer.ToArray());                                    
                 }
             }
         }
+    }
+
+    private void AssignMultiMesheInstances(MultiMesh multiMesh, float[] instances) {
+        multiMesh.InstanceCount = instances.Length / 12;
+        multiMesh.Buffer = instances;        
     }
 
     private MeshInstance3D GetMeshForSceneNode(Node node) {
