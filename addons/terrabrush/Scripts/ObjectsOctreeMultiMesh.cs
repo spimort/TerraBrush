@@ -10,6 +10,7 @@ using TerraBrush.NetOctree;
 namespace TerraBrush;
 
 internal class OctreeNodeInfo {
+    public Vector2I ImagePosition { get;set; }       
     public Vector3 Position { get;set; }
     public int MeshIndex { get;set; }
     public Vector3 MeshRotation { get;set; }
@@ -145,7 +146,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                             Mesh = x.Mesh
                         },
                         MaterialOverride = x.MaterialOverride,
-                        Layers = (uint) Definition.VisualInstanceLayers
+                        Layers = (uint) Definition.VisualInstanceLayers,
+                        CastShadow = x.CastShadow
                     };
 
                     AddChild(multiMeshInstance);
@@ -294,6 +296,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                         result => {
                             var resultPosition = result.ResultPosition + new Vector3(zone.ZonePosition.X * ZonesSize, 0, zone.ZonePosition.Y * ZonesSize);
                             var octreeNodeInfo = new OctreeNodeInfo() {
+                                ImagePosition = new Vector2I(x, y),
                                 Position = resultPosition,
                                 MeshIndex = result.ResultPackedSceneIndex,
                                 MeshRotation = result.ResultRotation
@@ -350,6 +353,12 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                 if (_multiMeshIntances[nodeInfo.MeshIndex].Length <= lodDefinitionIndex) {
                     continue;
                 }
+
+                // We can have different frequency per lod level so check if we need to skip a node
+                var objectFrequency = lodDefinition.ObjectFrequency < 1 ? Definition.ObjectFrequency < 1 ? DefaultObjectFrequency : Definition.ObjectFrequency : lodDefinition.ObjectFrequency;   
+                if (nodeInfo.ImagePosition.X % objectFrequency != 0 ||nodeInfo.ImagePosition.Y % objectFrequency != 0) {
+                    continue;
+                }                   
 
                 var multiMeshNodesForMeshIndex = multiMeshNodes[nodeInfo.MeshIndex];
                 if (!multiMeshNodesForMeshIndex.ContainsKey(lodDefinitionIndex)) {
@@ -537,6 +546,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                 var existingNodes = _octree.GetNearby(resultPosition, 0.1f);
                 if (add && existingNodes.Length == 0) {
                     var octreeNodeInfo = new OctreeNodeInfo() {
+                        ImagePosition = new Vector2I(x, y),                        
                         Position = resultPosition,
                         MeshIndex = result.ResultPackedSceneIndex,
                         MeshRotation = result.ResultRotation
