@@ -168,6 +168,9 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
+    [Export]
+    public bool UseSharpTransitions { get;set; } = false;
+
     [ExportGroup("Foliage")]
     [Export]
     public override FoliageResource[] Foliages { get;set; }
@@ -361,6 +364,8 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.CreateCollisionInThread = CreateCollisionInThread;
 
         AddChild(_terrain);
+        
+        ApplySharpTransitionsSetting();
 
         await CreateObjects();
 
@@ -370,6 +375,14 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         EmitSignal(StringNames.TerrainLoaded);
+    }
+
+    private void ApplySharpTransitionsSetting()
+    {
+        if (_terrain != null && _terrain.Clipmap != null && _terrain.Clipmap.Shader != null)
+        {
+            _terrain.Clipmap.Shader.SetShaderParameter("UseSharpTransitions", UseSharpTransitions);
+        }
     }
 
     public override async void OnUpdateTerrainSettings() {
@@ -403,6 +416,11 @@ public partial class TerraBrush : TerraBrushTool {
         TerrainSettingsUpdated?.Invoke();
     }
 
+    public void UpdateSharpTransitions()
+    {
+        ApplySharpTransitionsSetting();
+    }
+
     public void ClearObjects() {
         if (_objectsContainerNode != null) {
             _objectsContainerNode.QueueFree();
@@ -416,7 +434,7 @@ public partial class TerraBrush : TerraBrushTool {
         if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Length < numberOfSplatmaps) {
             var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
 
-			for (var i = zone.SplatmapsTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
+            for (var i = zone.SplatmapsTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
                 newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
             }
 
