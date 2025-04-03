@@ -168,9 +168,6 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
-    [Export]
-    public bool UseSharpTransitions { get;set; } = false;
-
     [ExportGroup("Foliage")]
     [Export]
     public override FoliageResource[] Foliages { get;set; }
@@ -356,6 +353,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.HeightBlendFactor = HeightBlendFactor;
         _terrain.AlbedoAlphaChannelUsage = AlbedoAlphaChannelUsage;
         _terrain.NormalAlphaChannelUsage = NormalAlphaChannelUsage;
+        _terrain.UseSharpTransitions = UseSharpTransitions;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;
@@ -364,8 +362,6 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.CreateCollisionInThread = CreateCollisionInThread;
 
         AddChild(_terrain);
-        
-        ApplySharpTransitionsSetting();
 
         await CreateObjects();
 
@@ -375,14 +371,6 @@ public partial class TerraBrush : TerraBrushTool {
         }
 
         EmitSignal(StringNames.TerrainLoaded);
-    }
-
-    private void ApplySharpTransitionsSetting()
-    {
-        if (_terrain != null && _terrain.Clipmap != null && _terrain.Clipmap.Shader != null)
-        {
-            _terrain.Clipmap.Shader.SetShaderParameter("UseSharpTransitions", UseSharpTransitions);
-        }
     }
 
     public override async void OnUpdateTerrainSettings() {
@@ -414,11 +402,6 @@ public partial class TerraBrush : TerraBrushTool {
 
         await LoadTerrain();
         TerrainSettingsUpdated?.Invoke();
-    }
-
-    public void UpdateSharpTransitions()
-    {
-        ApplySharpTransitionsSetting();
     }
 
     public void ClearObjects() {
