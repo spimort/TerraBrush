@@ -35,6 +35,7 @@ public partial class Terrain : Node3D {
     [Export] public float HeightBlendFactor { get;set; } = 10f;
     [Export] public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
     [Export] public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    [Export] public bool UseSharpTransitions { get;set; } = false;
     [Export] public float WaterFactor { get;set; }
     [Export] public Texture2D DefaultTexture { get;set; }
     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
@@ -250,6 +251,7 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesTriplanar, TextureSets.TextureSets.Select(x => x.Triplanar ? 1 : 0).ToArray());
             Clipmap.Shader.SetShaderParameter($"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
+            Clipmap.Shader.SetShaderParameter(StringNames.UseSharpTransitions, UseSharpTransitions);
 
             if (this.TextureSets.TextureSets.Any(x => x.NormalTexture != null)) {
                 var normalArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.NormalTexture));

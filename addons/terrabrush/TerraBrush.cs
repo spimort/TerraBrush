@@ -168,6 +168,9 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
+    [Export]
+    public bool UseSharpTransitions { get;set; } = false;
+
     [ExportGroup("Foliage")]
     [Export]
     public override FoliageResource[] Foliages { get;set; }
@@ -353,6 +356,7 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.HeightBlendFactor = HeightBlendFactor;
         _terrain.AlbedoAlphaChannelUsage = AlbedoAlphaChannelUsage;
         _terrain.NormalAlphaChannelUsage = NormalAlphaChannelUsage;
+        _terrain.UseSharpTransitions = UseSharpTransitions;
         _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
         _terrain.LODLevels = LODLevels;
         _terrain.LODRowsPerLevel = LODRowsPerLevel;
@@ -416,7 +420,7 @@ public partial class TerraBrush : TerraBrushTool {
         if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Length < numberOfSplatmaps) {
             var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
 
-			for (var i = zone.SplatmapsTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
+            for (var i = zone.SplatmapsTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
                 newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
             }
 
