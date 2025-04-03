@@ -158,6 +158,7 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |Nearest Texture Filter|Use nearest texture filter instead of linear filter.|
 |Albedo Alpha Channel Usage|Allow the use of the alpha channel of the albedo texture for either roughness or height. The default value is none.|
 |Normal Alpha Channel Usage|Allow the use of the alpha channel of the normal texture for either roughness or height. The default value is none.|
+|Use Sharp Transitions|Use sharp transition between textures instead of blending them together. This will use the most dominant texture.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
