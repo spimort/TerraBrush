@@ -79,4 +79,5 @@ internal static class StringNames {
     public static readonly StringName Resolution = "Resolution";
     public static readonly StringName Triplanar = "Triplanar";
     public static readonly StringName TexturesTriplanar = "TexturesTriplanar";
+    public static readonly StringName UseSharpTransitions = "UseSharpTransitions";
 }
