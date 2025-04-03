@@ -168,6 +168,9 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
 
+    [Export]
+    public bool UseSharpTransitions { get;set; } = false;
+
     [ExportGroup("Foliage")]
     [Export]
     public override FoliageResource[] Foliages { get;set; }
