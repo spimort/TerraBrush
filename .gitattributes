@@ -10,6 +10,7 @@
 /.gitattributes           export-ignore
 /.gitignore               export-ignore
 /Demo.cs                  export-ignore
+/Demo.cs.uid              export-ignore
 /Demo.tscn                export-ignore
 /LICENSE                  export-ignore
 /preview.gif              export-ignore
