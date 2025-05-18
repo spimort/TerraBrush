@@ -17,6 +17,7 @@
   [Disclaimer](#disclaimer) •
   [Key Features](#key-features) •
   [How To Use](#how-to-use) •
+  [FAQ](#faq) •
   [Support](#support) •
   [License](#license)
 
@@ -309,6 +310,11 @@ if is_on_floor() and get_last_slide_collision() != null:
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
+
+## FAQ
+
+### Unable to load addon script
+* Make sure to use the .Net version of Godot. See the following issue for more details : https://github.com/spimort/TerraBrush/issues/201
 
 ## Support
 
