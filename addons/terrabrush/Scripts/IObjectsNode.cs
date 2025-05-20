@@ -17,3 +17,10 @@ public interface IObjectsNode {
     public void UpdateMeshesFromTool();
     public void UpdateObjectsHeight(List<ZoneResource> zones);
 }
+
+internal class ObjectPresenceResult {
+    public Vector3 ResultPosition { get;set; }
+    public Vector3 ResultRotation { get;set; }
+    public float ResultSizeFactor { get;set; }
+    public int ResultPackedSceneIndex { get;set; }
+}

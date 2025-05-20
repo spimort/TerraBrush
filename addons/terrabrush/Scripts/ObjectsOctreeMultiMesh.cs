@@ -14,6 +14,7 @@ internal class OctreeNodeInfo {
     public Vector3 Position { get;set; }
     public int MeshIndex { get;set; }
     public Vector3 MeshRotation { get;set; }
+    public float MeshSizeFactor { get;set; }
     public CollisionShape3D CollisionShape { get;set; }
     public int PreviousLodIndex { get;set; }
 }
@@ -299,7 +300,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                                 ImagePosition = new Vector2I(x, y),
                                 Position = resultPosition,
                                 MeshIndex = result.ResultPackedSceneIndex,
-                                MeshRotation = result.ResultRotation
+                                MeshRotation = result.ResultRotation,
+                                MeshSizeFactor = result.ResultSizeFactor
                             };
 
                             _octree.Add(octreeNodeInfo, octreeNodeInfo.Position);
@@ -369,7 +371,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                 var lodMeshDefinition = _multiMeshIntances[nodeInfo.MeshIndex][lodDefinitionIndex].LODMeshDefinition;
 
                 var basis = new Basis(Quaternion.FromEuler(nodeInfo.MeshRotation));
-                basis = basis.Scaled(lodMeshDefinition.Scale);
+                basis = basis.Scaled(lodMeshDefinition.Scale * nodeInfo.MeshSizeFactor);
                 lodMultiMeshNodesBuffer.AddRange(new float[] {
                     basis.X.X, basis.X.Y, basis.X.Z, nodeInfo.Position.X,
                     basis.Y.X, basis.Y.Y, basis.Y.Z, nodeInfo.Position.Y,
@@ -477,7 +479,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     }
 
     // TODO : Refactor this part so it shares the same code as the other strategy
-    public void CalculateObjectPresenceForPixel(Image heightmapImage, Image waterImage, Image noiseImage, int x, int y, Color pixelValue, Action<(Vector3 ResultPosition, Vector3 ResultRotation, int ResultPackedSceneIndex)> objectPresentCallback, Action objectNotPresentCallback = null) {
+    internal void CalculateObjectPresenceForPixel(Image heightmapImage, Image waterImage, Image noiseImage, int x, int y, Color pixelValue, Action<ObjectPresenceResult> objectPresentCallback, Action objectNotPresentCallback = null) {
         if (pixelValue.A > 0.0f) {
             var objectFrequency = Definition.ObjectFrequency < 1 ? DefaultObjectFrequency : Definition.ObjectFrequency;
             if (x % objectFrequency != 0 || y % objectFrequency != 0) {
@@ -494,13 +496,12 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                     var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, _multiMeshIntances.Count() - 1);
                     resultPosition -= new Vector3(ZonesSize / 2, -GetObjectHeight(heightmapImage, waterImage, heightImagePosition.X, heightImagePosition.Y), ZonesSize / 2);
 
-                    objectPresentCallback(
-                        (
-                            resultPosition,
-                            Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero,
-                            randomItemIndex
-                        )
-                    );
+                    objectPresentCallback(new ObjectPresenceResult() {
+                        ResultPosition = resultPosition,
+                        ResultRotation = Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero,
+                        ResultSizeFactor = Definition.RandomSize ? Utils.GetNextFloatWithSeed((x * 1000) + y, Definition.RandomSizeFactorMin, Definition.RandomSizeFactorMax) : 1.0f,
+                        ResultPackedSceneIndex = randomItemIndex
+                    });
                 }
             }
         } else {
@@ -549,7 +550,8 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
                         ImagePosition = new Vector2I(x, y),
                         Position = resultPosition,
                         MeshIndex = result.ResultPackedSceneIndex,
-                        MeshRotation = result.ResultRotation
+                        MeshRotation = result.ResultRotation,
+                        MeshSizeFactor = result.ResultSizeFactor
                     };
 
                     _octree.Add(octreeNodeInfo, octreeNodeInfo.Position);
