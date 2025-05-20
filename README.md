@@ -195,6 +195,9 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |ObjectResource[x].Definition.RandomRange|The range from which the random placement will be added from the original grid position.|
 |ObjectResource[x].Definition.NoiseTexture|This texture makes sure that the object placement is not too straight. If not specified, the default noise texture will be used.|
 |ObjectResource[x].Definition.RandomYRotation|This allows the objects to be rotated randomly on the Y axis.|
+|ObjectResource[x].Definition.RandomSize|This allows the objects to be sized randomly.|
+|ObjectResource[x].Definition.RandomSizeFactorMin|The minimum factor that will be multiplied with the scale of the object.|
+|ObjectResource[x].Definition.RandomSizeFactorMax|The maximum factor that will be multiplied with the scale of the object.|
 |ObjectResource[x].Definition.ObjectScenes|A list of packed scenes. A random one will be selected while painting.|
 |ObjectResource[x].Definition.LODList|**(MultiMeshes only)** The list of LOD for the objects.|
 |ObjectResource[x].Definition.LODMeshes|**(MultiMeshes only)** The list of meshes used with the LODList.|
