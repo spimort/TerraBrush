@@ -12,14 +12,14 @@ public partial class Objects : Node3D, IObjectsNode {
     private Texture2D _defaultNoise;
     private CancellationTokenSource _objectsCreationCancellationTokenSource;
 
-    [Export] public int ObjectsIndex { get;set; }
-    [Export] public ObjectDefinitionResource Definition { get;set; }
-    [Export] public ZonesResource TerrainZones { get;set; }
-    [Export] public int ZonesSize { get;set; }
-    [Export] public int Resolution { get;set; }
-    [Export] public float WaterFactor { get;set; }
-    [Export] public bool LoadInThread { get;set; }
-    [Export] public int DefaultObjectFrequency { get;set;}
+    [Export] public int ObjectsIndex { get; set; }
+    [Export] public ObjectDefinitionResource Definition { get; set; }
+    [Export] public ZonesResource TerrainZones { get; set; }
+    [Export] public int ZonesSize { get; set; }
+    [Export] public int Resolution { get; set; }
+    [Export] public float WaterFactor { get; set; }
+    [Export] public bool LoadInThread { get; set; }
+    [Export] public int DefaultObjectFrequency { get; set; }
 
     public override void _Ready() {
         base._Ready();
@@ -47,7 +47,8 @@ public partial class Objects : Node3D, IObjectsNode {
             await Task.Factory.StartNew(async () => {
                 await UpdateObjectsAsync(_objectsCreationCancellationTokenSource.Token);
             }, _objectsCreationCancellationTokenSource.Token);
-        } else {
+        }
+        else {
             await UpdateObjectsAsync(CancellationToken.None);
         }
     }
@@ -118,6 +119,7 @@ public partial class Objects : Node3D, IObjectsNode {
                                 $"{x}_{y}",
                                 result.ResultPosition,
                                 result.ResultRotation,
+                                result.ResultSizeFactor,
                                 result.ResultPackedSceneIndex
                             );
                         }
@@ -127,11 +129,12 @@ public partial class Objects : Node3D, IObjectsNode {
         }
     }
 
-    private void AddObjectNode(Node3D parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, int packedSceneIndex) {
-        var newNode =  Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>();
+    private void AddObjectNode(Node3D parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, float nodeSizeFactor, int packedSceneIndex) {
+        var newNode = Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>();
         newNode.Name = nodeName;
         newNode.Position = nodePosition;
         newNode.RotationDegrees = nodeRotation;
+        newNode.Scale *= nodeSizeFactor;
 
         parentNode.AddChild(newNode);
     }
@@ -175,7 +178,7 @@ public partial class Objects : Node3D, IObjectsNode {
     }
 
     // TODO : Refactor this part so it shares the same code as the other strategy
-    public void CalculateObjectPresenceForPixel(Image heightmapImage, Image waterImage, Image noiseImage, int x, int y, Color pixelValue, Action<(Vector3 ResultPosition, Vector3 ResultRotation, int ResultPackedSceneIndex)> objectPresentCallback, Action objectNotPresentCallback = null) {
+    internal void CalculateObjectPresenceForPixel(Image heightmapImage, Image waterImage, Image noiseImage, int x, int y, Color pixelValue, Action<ObjectPresenceResult> objectPresentCallback, Action objectNotPresentCallback = null) {
         if (pixelValue.A > 0.0f) {
             var objectFrequency = Definition.ObjectFrequency < 1 ? DefaultObjectFrequency : Definition.ObjectFrequency;
             if (x % objectFrequency != 0 || y % objectFrequency != 0) {
@@ -192,16 +195,16 @@ public partial class Objects : Node3D, IObjectsNode {
                     var randomItemIndex = Utils.GetNextIntWithSeed((x * 1000) + y, 0, Definition.ObjectScenes.Count() - 1);
                     resultPosition -= new Vector3(ZonesSize / 2, -GetObjectHeight(heightmapImage, waterImage, heightImagePosition.X, heightImagePosition.Y), ZonesSize / 2);
 
-                    objectPresentCallback(
-                        (
-                            resultPosition,
-                            Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero,
-                            randomItemIndex
-                        )
-                    );
+                    objectPresentCallback(new ObjectPresenceResult() {
+                        ResultPosition = resultPosition,
+                        ResultRotation = Definition.RandomYRotation ? new Vector3(0, Utils.GetNextFloatWithSeed((x * 1000) + y, 0f, 360f), 0) : Vector3.Zero,
+                        ResultSizeFactor = Definition.RandomSize ? Utils.GetNextFloatWithSeed((x * 1000) + y, Definition.RandomSizeFactorMin, Definition.RandomSizeFactorMax) : 1.0f,
+                        ResultPackedSceneIndex = randomItemIndex
+                    });
                 }
             }
-        } else {
+        }
+        else {
             objectNotPresentCallback?.Invoke();
         }
     }
@@ -213,8 +216,8 @@ public partial class Objects : Node3D, IObjectsNode {
         var resultPosition = new Vector3(x, 0, y);
         if (noiseImage != null) {
             var noisePixel = noiseImage.GetPixel(remapXPixel, remapYPixel).R;
-            var randomValueX = Utils.GetNextFloatWithSeed((int) (noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
-            var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int) (noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
+            var randomValueX = Utils.GetNextFloatWithSeed((int)(noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
+            var randomValueZ = Utils.GetNextFloatWithSeed(1 + (int)(noisePixel * 100), -Definition.RandomRange, Definition.RandomRange);
             resultPosition += new Vector3(randomValueX, 0, randomValueZ);
         }
 
@@ -259,11 +262,13 @@ public partial class Objects : Node3D, IObjectsNode {
                         nodeName,
                         result.ResultPosition,
                         result.ResultRotation,
+                        result.ResultSizeFactor,
                         result.ResultPackedSceneIndex
                     );
                 }
             );
-        } else if (!add && existingNode != null) {
+        }
+        else if (!add && existingNode != null) {
             existingNode.QueueFree();
         }
     }

@@ -24,6 +24,7 @@ public partial class ObjectDefinitionResource : Resource {
     };
 
     private ObjectStrategy _strategy = ObjectStrategy.PackedScenes;
+    private bool _randomSize;
 
     [Export] public ObjectStrategy Strategy {
         get {
@@ -38,6 +39,18 @@ public partial class ObjectDefinitionResource : Resource {
     [Export] public float RandomRange { get;set; } = 1;
     [Export] public Texture2D NoiseTexture { get;set; }
     [Export] public bool RandomYRotation { get;set; }
+    [Export]
+    public bool RandomSize {
+        get {
+            return _randomSize;
+        }
+        set {
+            _randomSize = value;
+            NotifyPropertyListChanged();
+        }
+    }
+    [Export] public float RandomSizeFactorMin { get;set; } = 0.2f;
+    [Export] public float RandomSizeFactorMax { get;set; } = 1.2f;
     [Export] public PackedScene[] ObjectScenes { get;set; }
     [Export] public ObjectOctreeLODDefinitionResource[] LODList { get;set;}
     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
@@ -60,6 +73,10 @@ public partial class ObjectDefinitionResource : Resource {
             } else if (_packedScenesProperties.Contains((string) property["name"])) {
                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
             }
+        }
+
+        if ((string)property["name"] == nameof(RandomSizeFactorMin) || (string)property["name"] == nameof(RandomSizeFactorMax)) {
+            property["usage"] = (long) (RandomSize ? PropertyUsageFlags.Default : PropertyUsageFlags.NoEditor);
         }
     }
 }

@@ -1,0 +1,10 @@
+[*.cs]
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_open_brace_types = false
+csharp_new_line_before_open_brace_methods = false
+csharp_new_line_before_open_brace_properties = false
+csharp_new_line_before_open_brace_accessors = false
+csharp_new_line_before_open_brace_anonymous_methods = false
+csharp_new_line_before_open_brace_control_blocks = false
+csharp_new_line_before_open_brace_anonymous_types = false
+csharp_new_line_before_open_brace_object_collection_array_initializers = false
