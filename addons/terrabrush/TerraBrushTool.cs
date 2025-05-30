@@ -175,11 +175,11 @@ public partial class TerraBrushTool : Node3D {
 		_textureSetIndex = textureSetIndex;
 	}
 
-    public void SetAudio(int? audioIndex) {
-        _audioIndex = audioIndex;
-    }
+	public void SetAudio(int? audioIndex) {
+		_audioIndex = audioIndex;
+	}
 
-    public void SetFoliage(int? foliageIndex) {
+	public void SetFoliage(int? foliageIndex) {
 		_foliageIndex = foliageIndex;
 	}
 

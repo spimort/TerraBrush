@@ -151,36 +151,36 @@ public partial class TerrainControlDock : Control {
 		TerraBrush?.SetTextureSet(_selectedTextureIndex);
 	}
 
-    private void InitializeAudioCollection() {
-        CustomContentLoader.AddAudioPreviewToParent(TerraBrush, _audioContainer, index => {
-            SetSelectedAudioIndex(index);
-        });
+	private void InitializeAudioCollection() {
+		CustomContentLoader.AddAudioPreviewToParent(TerraBrush, _audioContainer, index => {
+			SetSelectedAudioIndex(index);
+		});
 
-        if (_audioContainer.GetChildCount() > 0 && _selectedAudioIndex == null) {
-            _selectedAudioIndex = 0;
-        }
-        UpateSelectedAudioSet();
-    }
+		if (_audioContainer.GetChildCount() > 0 && _selectedAudioIndex == null) {
+			_selectedAudioIndex = 0;
+		}
+		UpateSelectedAudioSet();
+	}
 
-    public void SetSelectedAudioIndex(int index) {
-        _selectedAudioIndex = index;
+	public void SetSelectedAudioIndex(int index) {
+		_selectedAudioIndex = index;
 
-        UpateSelectedAudioSet();
-    }
+		UpateSelectedAudioSet();
+	}
 
-    private void UpateSelectedAudioSet() {
-        var texturesPreview = _audioContainer.GetChildren();
+	private void UpateSelectedAudioSet() {
+		var texturesPreview = _audioContainer.GetChildren();
 
-        for (var i = 0; i < texturesPreview.Count; i++) {
-            var texturePreview = texturesPreview[i];
+		for (var i = 0; i < texturesPreview.Count; i++) {
+			var texturePreview = texturesPreview[i];
 
-            ((DockPreviewButton)texturePreview).ButtonPressed = i == _selectedAudioIndex;
-        }
+			((DockPreviewButton)texturePreview).ButtonPressed = i == _selectedAudioIndex;
+		}
 
-        TerraBrush?.SetAudio(_selectedAudioIndex);
-    }
+		TerraBrush?.SetAudio(_selectedAudioIndex);
+	}
 
-    private void InitializeFoliages() {
+	private void InitializeFoliages() {
 		CustomContentLoader.AddFoliagesPreviewToParent(TerraBrush, _foliagesContainer, index => {
 			SetSelectedFoliageIndex(index);
 		});

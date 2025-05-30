@@ -255,7 +255,7 @@ Objects = [SubResource("Resource_0o1vb")]
 WaterDefinition = ExtResource("23_rpaxe")
 SnowDefinition = SubResource("Resource_ibahd")
 TerrainZones = SubResource("Resource_dp21i")
-metadata/_edit_lock_ = true
+metadata/_edit_lock_ = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("Camera", "Terrain", "DebugLabel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.4413, 21.1014, 57.3405)
