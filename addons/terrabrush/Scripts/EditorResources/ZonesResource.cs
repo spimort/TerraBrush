@@ -13,6 +13,7 @@ public partial class ZonesResource : Resource {
     private Texture2DArray _lockTextures = new();
     private Texture2DArray _heightmapTextures = new();
     private Texture2DArray _splatmapsTextures = new();
+    private Texture2DArray _audioTextures = new();
     private Texture2DArray[] _foliagesTextures;
     private Texture2DArray _objectsTextures = new();
     private Texture2DArray _waterTextures = new();
@@ -22,6 +23,7 @@ public partial class ZonesResource : Resource {
     public Texture2DArray LockTextures => _lockTextures;
     public Texture2DArray HeightmapTextures => _heightmapTextures;
     public Texture2DArray SplatmapsTextures => _splatmapsTextures;
+    public Texture2DArray AudioTextures => _audioTextures;
     public Texture2DArray[] FoliagesTextures => _foliagesTextures;
     public Texture2DArray ObjectsTextures => _objectsTextures;
     public Texture2DArray WaterTextures => _waterTextures;
@@ -42,6 +44,19 @@ public partial class ZonesResource : Resource {
 		var images = Zones.Select(zone => zone.HeightMapTexture.GetImage()).ToArray();
 		if (images.Length != 0) {
             _heightmapTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
+        }
+    }
+    public void UpdateAudioSplatmapsTextures() {
+        var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
+            if (zone.AudioTexture != null) {
+                source.AddRange(zone.AudioTexture.Select(texture => texture.GetImage()));
+            }
+
+            return source;
+        });
+
+        if (images.Count > 0) {
+            _audioTextures.CreateFromImages(new Godot.Collections.Array<Image>(images));
         }
     }
 

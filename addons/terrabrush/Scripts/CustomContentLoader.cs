@@ -79,6 +79,32 @@ public static class CustomContentLoader {
         }
     }
 
+    public static void AddAudioPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
+        if (terraBrush.AudioCollection?.AudioCollection!= null) {
+            var texturePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+
+            for (var i = 0; i < terraBrush.AudioCollection.AudioCollection.Length; i++) {
+                var textureSet = terraBrush.AudioCollection.AudioCollection[i];
+
+                var dockPreviewButton = texturePreviewPrefab.Instantiate<DockPreviewButton>();
+                dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                dockPreviewButton.Margin = 10;
+                //dockPreviewButton.SetTextureImage(textureSet.AlbedoTexture);
+                dockPreviewButton.TooltipText = !string.IsNullOrEmpty(textureSet.Name)
+                                                ? textureSet.Name
+                                                : $"Audio {i + 1}";
+
+                parentNode.AddChild(dockPreviewButton);
+
+
+                var currentIndex = i;
+                dockPreviewButton.OnSelect = () => {
+                    onSelect(currentIndex);
+                };
+            }
+        }
+    }
+
     public static void AddFoliagesPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         if (terraBrush.Foliages != null) {
             var foliagePreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");

@@ -11,8 +11,8 @@ public partial class KeybindSettings : AcceptDialog {
 	private KeybindManager _keybindManager;
 
 	private enum ShortcutType {
-	    Add = 1,
-	    Erase  = 2
+		Add = 1,
+		Erase  = 2
 	}
 
 	private string ProperCase(StringName name) {
@@ -20,8 +20,8 @@ public partial class KeybindSettings : AcceptDialog {
 		var newString = new StringBuilder();
 		foreach (var part in parts) {
 			if (part != "terrabrush") {
-			    newString.Append(char.ToUpperInvariant(part[0]) + part[1..]);
-			    newString.Append(' ');
+				newString.Append(char.ToUpperInvariant(part[0]) + part[1..]);
+				newString.Append(' ');
 			}
 		}
 

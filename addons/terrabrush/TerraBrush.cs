@@ -26,6 +26,7 @@ public partial class TerraBrush : TerraBrushTool {
     private Terrain _terrain;
     private TextureSetResource[] _texturesSet;
     private ImageTexture[] _splatmaps = new ImageTexture[]{};
+    private ImageTexture[] _audioTextures = new ImageTexture[] { }; //friedmonkey
     private Node3D _foliagesNode = null;
     private Node3D _objectsContainerNode = null;
     private Node3D _waterNodeContainer = null;
@@ -170,6 +171,31 @@ public partial class TerraBrush : TerraBrushTool {
 
     [Export]
     public bool UseSharpTransitions { get;set; } = false;
+
+    [ExportGroup("Audio")]
+    [Export]
+    public override AudioCollectionsResource AudioCollection { get; set; }
+
+    [Export]
+    public int AudioTextureDetail { get; set; } = 20;
+
+    [Export]
+    public bool AudioUseAntiTile { get; set; } = true;
+
+    [Export]
+    public bool AudioNearestTextureFilter { get; set; } = false;
+
+    [Export]
+    public float AudioHeightBlendFactor { get; set; } = 10f;
+
+    [Export]
+    public AlphaChannelUsage AudioAlbedoAlphaChannelUsage { get; set; } = AlphaChannelUsage.None;
+
+    [Export]
+    public AlphaChannelUsage AudioNormalAlphaChannelUsage { get; set; } = AlphaChannelUsage.None;
+
+    [Export]
+    public bool AudioUseSharpTransitions { get; set; } = false;
 
     [ExportGroup("Foliage")]
     [Export]
@@ -323,7 +349,9 @@ public partial class TerraBrush : TerraBrushTool {
             }
 
             CreateSplatmaps(zone);
+            CreateAudioSplatmaps(zone);
         }
+        TerrainZones.UpdateAudioSplatmapsTextures();
         TerrainZones.UpdateSplatmapsTextures();
 
         if (Engine.IsEditorHint()) {
@@ -363,6 +391,15 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.LODInitialCellWidth = LODInitialCellWidth;
         _terrain.CollisionOnly = CollisionOnly;
         _terrain.CreateCollisionInThread = CreateCollisionInThread;
+
+        _terrain.AudioCollection = AudioCollection;
+        _terrain.AudioTextureDetail = AudioTextureDetail;
+        _terrain.AudioUseAntiTile = AudioUseAntiTile;
+        _terrain.AudioNearestTextureFilter = AudioNearestTextureFilter;
+        _terrain.AudioHeightBlendFactor = AudioHeightBlendFactor;
+        _terrain.AudioAlbedoAlphaChannelUsage = AudioAlbedoAlphaChannelUsage;
+        _terrain.AudioNormalAlphaChannelUsage = AudioNormalAlphaChannelUsage;
+        _terrain.AudioUseSharpTransitions = AudioUseSharpTransitions;
 
         AddChild(_terrain);
 
@@ -411,6 +448,20 @@ public partial class TerraBrush : TerraBrushTool {
         if (_objectsContainerNode != null) {
             _objectsContainerNode.QueueFree();
             _objectsContainerNode = null;
+        }
+    }
+
+    public void CreateAudioSplatmaps(ZoneResource zone) {
+        var numberOfSplatmaps = Mathf.CeilToInt((AudioCollection?.AudioCollection?.Length ?? 0) / 4.0f);
+
+        if (zone.AudioTexture == null || zone.AudioTexture.Length < numberOfSplatmaps) {
+            var newList = new List<ImageTexture>(zone.AudioTexture ?? Array.Empty<ImageTexture>());
+
+            for (var i = zone.AudioTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
+                newList.Add(ZoneUtils.CreateAudioSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
+            }
+
+            zone.AudioTexture = newList.ToArray();
         }
     }
 
@@ -708,6 +759,18 @@ public partial class TerraBrush : TerraBrushTool {
                         Factor = pixel[colorIndex]
                     };
                 }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] {},
+                AudioTextures = zone.AudioTexture?.Length > 0 ? AudioCollection?.AudioCollection?.Select((textureSet, index) => {
+                    var splatmapIndex = Mathf.FloorToInt(index / 4);
+                    var splatmapImage = zone.AudioTexture[splatmapIndex];
+                    var pixel = GetImageFromImageTexture(splatmapImage).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+                    var colorIndex = index % 4;
+
+                    return new TerrainPositionTextureInformation() {
+                        Index = index,
+                        Name = textureSet.Name,
+                        Factor = pixel[colorIndex]
+                    };
+                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] { },
                 WaterFactor = waterFactor ?? 0,
                 WaterDeepness = waterFactor * WaterDefinition?.WaterFactor ?? 0,
                 SnowFactor = snowFactor ?? 0,

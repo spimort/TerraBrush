@@ -39,17 +39,17 @@ public partial class NumericSelectorDialog : Window {
 		}
 	}
 
-    public void SetValue(float value) {
+	public void SetValue(float value) {
 		_spinBox.Value = value;
 	}
 
-    public override void _UnhandledKeyInput(InputEvent @event) {
-        base._Input(@event);
+	public override void _UnhandledKeyInput(InputEvent @event) {
+		base._Input(@event);
 
 		if (@event is InputEventKey inputEvent && (inputEvent.Keycode == Key.Enter || inputEvent.Keycode == Key.KpEnter)) {
 			CallDeferred(nameof(SendResult));
 		}
-    }
+	}
 
 	private void SendResult() {
 		EmitSignal(SignalName.NumericSelectorAccepted, (float) Math.Round(_spinBox.Value, 2));

@@ -1,4 +1,4 @@
-[gd_scene load_steps=77 format=3 uid="uid://v4o1p7h4rn3j"]
+[gd_scene load_steps=83 format=3 uid="uid://v4o1p7h4rn3j"]
 
 [ext_resource type="Texture2D" uid="uid://b8oilw31hv88p" path="res://Assets/hdri/hilly_terrain_01_puresky_1k.hdr" id="1_iuqbl"]
 [ext_resource type="Script" uid="uid://rucv2wgp8eli" path="res://Demo.cs" id="1_ntfcg"]
@@ -34,9 +34,12 @@
 [ext_resource type="Texture2D" uid="uid://b68a2ljs41avw" path="res://Demo/Foliage0.res" id="25_001cp"]
 [ext_resource type="Texture2D" uid="uid://bu3p6spdkfd42" path="res://Demo/Snow.res" id="25_4k6f3"]
 [ext_resource type="Texture2D" uid="uid://oym5iluojwnn" path="res://Assets/Images/grassbushcc008.png" id="25_e6dcx"]
+[ext_resource type="AudioStream" uid="uid://ja8flx28xre2" path="res://Assets/Sounds/ocean-waves.mp3" id="25_jnhsd"]
+[ext_resource type="Script" uid="uid://d31t7okawl1op" path="res://addons/terrabrush/Scripts/EditorResources/AudioCollectionResource.cs" id="25_ph4rl"]
 [ext_resource type="Script" uid="uid://d33x21vao7tj2" path="res://addons/terrabrush/Scripts/EditorResources/FoliageResource.cs" id="25_q5pkn"]
 [ext_resource type="Script" uid="uid://di03satw2avie" path="res://addons/terrabrush/Scripts/EditorResources/SnowResource.cs" id="25_q46kk"]
 [ext_resource type="ArrayMesh" uid="uid://b3jybvl4hcmx5" path="res://Assets/Models/Foliage/foliage.obj" id="26_eqy4b"]
+[ext_resource type="Script" uid="uid://kmus7nobeamr" path="res://addons/terrabrush/Scripts/EditorResources/AudioCollectionsResource.cs" id="26_jnhsd"]
 [ext_resource type="PackedScene" uid="uid://bcw1uunyy5sdy" path="res://Assets/PackedScenes/Tree1.tscn" id="28_7kh4w"]
 [ext_resource type="PackedScene" uid="uid://by5jhpanviatg" path="res://Assets/PackedScenes/Tree2.tscn" id="29_lcqjd"]
 [ext_resource type="PackedScene" uid="uid://dd0rnuhitww8y" path="res://Assets/PackedScenes/Tree3.tscn" id="30_iv0fo"]
@@ -52,6 +55,7 @@
 [ext_resource type="Script" uid="uid://cgf61yxk46wa4" path="res://addons/terrabrush/Scripts/EditorResources/ObjectDefinitionResource.cs" id="42_hjjk2"]
 [ext_resource type="Texture2D" uid="uid://d0qwv6p6dgdg" path="res://Demo/Object0.res" id="43_4bivk"]
 [ext_resource type="Script" uid="uid://comabiqrwe5u0" path="res://addons/terrabrush/Scripts/EditorResources/ObjectResource.cs" id="43_y5duh"]
+[ext_resource type="Texture2D" uid="uid://diedndhsg3lbi" path="res://Demo/Audiosplat_0_0_0.res" id="48_3ykeo"]
 [ext_resource type="Script" uid="uid://d2qebwt0ednya" path="res://addons/terrabrush/Scripts/EditorResources/ZoneResource.cs" id="48_gk6oc"]
 [ext_resource type="Script" uid="uid://nt172hqpx1j5" path="res://addons/terrabrush/Scripts/EditorResources/ZonesResource.cs" id="49_fduo2"]
 
@@ -123,6 +127,17 @@ Triplanar = false
 [sub_resource type="Resource" id="Resource_nwvvi"]
 script = ExtResource("20_mt8yi")
 TextureSets = [SubResource("Resource_wm6o8"), SubResource("Resource_al3h6"), SubResource("Resource_0e1fb"), SubResource("Resource_1laah"), SubResource("Resource_xss3l")]
+
+[sub_resource type="Resource" id="Resource_ujkiv"]
+script = ExtResource("25_ph4rl")
+Name = "Waves"
+Audio = ExtResource("25_jnhsd")
+metadata/_custom_type_script = "uid://d31t7okawl1op"
+
+[sub_resource type="Resource" id="Resource_31r2x"]
+script = ExtResource("26_jnhsd")
+AudioCollection = [SubResource("Resource_ujkiv")]
+metadata/_custom_type_script = "uid://kmus7nobeamr"
 
 [sub_resource type="Gradient" id="Gradient_andab"]
 colors = PackedColorArray(0.162066, 0.162066, 0.162066, 1, 1, 1, 1, 1)
@@ -209,6 +224,7 @@ HeightMapTexture = ExtResource("3_ckogt")
 SplatmapsTexture = [ExtResource("21_uuhvh"), ExtResource("22_rxty4")]
 FoliagesTexture = [ExtResource("25_001cp")]
 ObjectsTexture = [ExtResource("43_4bivk")]
+AudioTexture = [ExtResource("48_3ykeo")]
 WaterTexture = ExtResource("23_e5br0")
 SnowTexture = ExtResource("25_4k6f3")
 
@@ -233,12 +249,13 @@ script = ExtResource("2_pdfhx")
 DataPath = "res://Demo"
 LODLevels = 3
 TextureSets = SubResource("Resource_nwvvi")
+AudioCollection = SubResource("Resource_31r2x")
 Foliages = [SubResource("Resource_msipp")]
 Objects = [SubResource("Resource_0o1vb")]
 WaterDefinition = ExtResource("23_rpaxe")
 SnowDefinition = SubResource("Resource_ibahd")
 TerrainZones = SubResource("Resource_dp21i")
-metadata/_edit_lock_ = false
+metadata/_edit_lock_ = true
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("Camera", "Terrain", "DebugLabel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.4413, 21.1014, 57.3405)

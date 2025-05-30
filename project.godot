@@ -23,10 +23,6 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="TerraBrush"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/terrabrush/plugin.cfg")
-
 [input]
 
 left={

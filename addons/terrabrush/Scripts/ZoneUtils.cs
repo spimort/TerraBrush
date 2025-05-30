@@ -6,6 +6,7 @@ namespace TerraBrush;
 public static class ZoneUtils {
     private const string HeightmapFileName = "Heightmap_{0}_{1}.res";
     private const string SplatmapFileName = "Splatmap_{0}_{1}_{2}.res";
+    private const string AudioSplatFileName = "Audiosplat_{0}_{1}_{2}.res";
     private const string FoliageFileName = "Foliage_{0}_{1}_{2}.res";
     private const string ObjectFileName = "Object_{0}_{1}_{2}.res";
     private const string WaterFileName = "Water_{0}_{1}.res";
@@ -25,7 +26,18 @@ public static class ZoneUtils {
         var image = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rgf);
         return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
+    public static ImageTexture CreateAudioSplatmapImage(int zoneSize, Vector2I zonePosition, int splatmapIndex, string dataPath) {
+        var splatmapImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
 
+        if (splatmapIndex == 0) {
+            splatmapImage.Fill(new Color(1, 0, 0, 0));
+        }
+        else {
+            splatmapImage.Fill(new Color(0, 0, 0, 0));
+        }
+
+        return GetImageTextureResource(splatmapImage, string.Format(AudioSplatFileName, zonePosition.X, zonePosition.Y, splatmapIndex), dataPath);
+    }
     public static ImageTexture CreateSplatmapImage(int zoneSize, Vector2I zonePosition, int splatmapIndex, string dataPath) {
         var splatmapImage = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rgba8);
 

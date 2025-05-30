@@ -7,19 +7,19 @@ namespace TerraBrush;
 
 [Tool]
 public partial class ToolsPieMenu : Control {
-    [NodePath] private Control _pieMenu;
+	[NodePath] private Control _pieMenu;
 
-    public Action<TerrainToolType> OnToolSelected { get;set; }
+	public Action<TerrainToolType> OnToolSelected { get;set; }
 
-    public override void _Ready() {
-        base._Ready();
-        this.RegisterNodePaths();
+	public override void _Ready() {
+		base._Ready();
+		this.RegisterNodePaths();
 
-        foreach (var toolPreview in _pieMenu.GetChildren().Where(control => control is ToolPreview).Cast<ToolPreview>()) {
-            toolPreview.OnSelect = () => {
-                OnToolSelected.Invoke(toolPreview.ToolType);
-            };
-        }
-    }
+		foreach (var toolPreview in _pieMenu.GetChildren().Where(control => control is ToolPreview).Cast<ToolPreview>()) {
+			toolPreview.OnSelect = () => {
+				OnToolSelected.Invoke(toolPreview.ToolType);
+			};
+		}
+	}
 }
 #endif

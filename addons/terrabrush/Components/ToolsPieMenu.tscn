@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bfgf5k0vqj828"]
+[gd_scene load_steps=28 format=3 uid="uid://bfgf5k0vqj828"]
 
 [ext_resource type="PackedScene" uid="uid://rmuvkqdg8w8q" path="res://addons/terrabrush/Components/PieMenu.tscn" id="1_efnm5"]
 [ext_resource type="Script" uid="uid://coj8jj1x2ux8m" path="res://addons/terrabrush/Scripts/ToolsPieMenu.cs" id="1_fiy40"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://ci8h4u8w31qd6" path="res://addons/terrabrush/Assets/Icons/map_set_angle.png" id="11_ah8ik"]
 [ext_resource type="Texture2D" uid="uid://xchvcx32vuoy" path="res://addons/terrabrush/Assets/Icons/water_remove.png" id="12_rvs25"]
 [ext_resource type="Texture2D" uid="uid://clglkobyymycn" path="res://addons/terrabrush/Assets/Icons/flow_add.png" id="13_4ao1v"]
+[ext_resource type="Texture2D" uid="uid://dem7l621guytj" path="res://addons/terrabrush/Assets/Icons/paint_withdot.png" id="13_4om1y"]
 [ext_resource type="Texture2D" uid="uid://cquypfnsqiu2g" path="res://addons/terrabrush/Assets/Icons/flow_remove.png" id="14_4ykkx"]
 [ext_resource type="Texture2D" uid="uid://dc43ue31pa6x0" path="res://addons/terrabrush/Assets/Icons/snow_add.png" id="15_xtl3c"]
 [ext_resource type="Texture2D" uid="uid://dshqhgb6asd2f" path="res://addons/terrabrush/Assets/Icons/snow_remove.png" id="16_t3slk"]
@@ -68,7 +69,7 @@ self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
 offset_left = -145.768
 offset_top = -287.197
-offset_right = -97.7678
+offset_right = -97.7674
 offset_bottom = -239.196
 tooltip_text = "Smooth terrain"
 texture_normal = ExtResource("4_dsg64")
@@ -127,29 +128,33 @@ anchors_preset = 0
 offset_left = -303.429
 offset_top = -101.583
 offset_right = -255.429
-offset_bottom = -53.5832
+offset_bottom = -53.5834
 
 [node name="ToolPreview4" parent="PieMenu" instance=ExtResource("2_b6unk")]
-self_modulate = Color(0, 0.0823529, 0.121569, 1)
+self_modulate = Color(0.271689, 0.331668, 0.360229, 1)
 layout_mode = 1
 offset_left = -313.575
 offset_top = -39.7005
 offset_right = -265.575
-offset_bottom = 8.29955
+offset_bottom = 8.29954
 tooltip_text = "Paint texture"
 texture_normal = ExtResource("11_45nc6")
 ToolType = 6
 ButtonImage = ExtResource("6_5mgyo")
 IconType = 2
 
-[node name="Splitter2" type="Control" parent="PieMenu"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 3
-anchors_preset = 0
+[node name="ToolPreview22" parent="PieMenu" instance=ExtResource("2_b6unk")]
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
+layout_mode = 1
 offset_left = -310.18
 offset_top = 22.9166
 offset_right = -262.18
 offset_bottom = 70.9166
+tooltip_text = "Paint Audio"
+texture_normal = ExtResource("11_45nc6")
+ToolType = 22
+ButtonImage = ExtResource("13_4om1y")
+IconType = 2
 
 [node name="ToolPreview5" parent="PieMenu" instance=ExtResource("2_b6unk")]
 self_modulate = Color(0, 0.0823529, 0.121569, 1)
@@ -204,7 +209,7 @@ self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
 offset_left = -116.598
 offset_top = 250.819
-offset_right = -68.5977
+offset_right = -68.5973
 offset_bottom = 298.82
 tooltip_text = "Remove objects"
 texture_normal = ExtResource("4_dsg64")
@@ -296,7 +301,7 @@ ButtonImage = ExtResource("15_xtl3c")
 IconType = 3
 
 [node name="ToolPreview14" parent="PieMenu" instance=ExtResource("2_b6unk")]
-self_modulate = Color(0.4, 0.449412, 0.472941, 1)
+self_modulate = Color(0, 0.0823529, 0.121569, 1)
 layout_mode = 1
 offset_left = 262.18
 offset_top = 22.9174
@@ -326,7 +331,7 @@ anchor_bottom = 0.0
 offset_left = 255.43
 offset_top = -101.583
 offset_right = 303.43
-offset_bottom = -53.5826
+offset_bottom = -53.5818
 grow_horizontal = 1
 grow_vertical = 1
 tooltip_text = "Add hole"
