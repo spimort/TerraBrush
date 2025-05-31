@@ -88,6 +88,7 @@ The demo scene has been updated to Godot 4.4 which makes it break with older ver
 * **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 * **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
 * **Paint locked areas** - Areas on the terrain can be locked so you don't modify completed parts
+* **Paint meta info** - Define meta info on parts of the terrain. This can be retrieved using the `GetPositionInformation` function.
 * **Import and Export** - Import and export terrain from/to various images.
 
 ## How To Use
