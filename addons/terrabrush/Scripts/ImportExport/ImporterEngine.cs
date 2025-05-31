@@ -16,6 +16,7 @@ public partial class ImporterSettings : GodotObject {
     public Texture2D[] Objects { get;set;}
     public Texture2D Water { get;set;}
     public Texture2D Snow { get;set;}
+    public Texture2D MetaInfo { get;set;}
 }
 
 public static class ImporterEngine {
@@ -24,8 +25,8 @@ public static class ImporterEngine {
             DirAccess.MakeDirAbsolute(terrabrush.DataPath);
         }
 
-        terrabrush.TerrainZones??= new ZonesResource();
-        terrabrush.TerrainZones.Zones??= new ZoneResource[] {};
+        terrabrush.TerrainZones ??= new ZonesResource();
+        terrabrush.TerrainZones.Zones ??= new ZoneResource[] { };
 
         // Heightmap
         if (settings.Heightmap != null) {
@@ -66,10 +67,11 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.SplatmapsTexture ??= new ImageTexture [] {};
+                    zone.SplatmapsTexture ??= new ImageTexture[] { };
                     if (zone.SplatmapsTexture.Length < i + 1) {
                         zone.SplatmapsTexture = zone.SplatmapsTexture.Append(resultImage.ImageTexture).ToArray();
-                    } else {
+                    }
+                    else {
                         zone.SplatmapsTexture[i] = resultImage.ImageTexture;
                     }
                 }
@@ -94,10 +96,11 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.FoliagesTexture ??= new ImageTexture [] {};
+                    zone.FoliagesTexture ??= new ImageTexture[] { };
                     if (zone.FoliagesTexture.Length < i + 1) {
                         zone.FoliagesTexture = zone.FoliagesTexture.Append(resultImage.ImageTexture).ToArray();
-                    } else {
+                    }
+                    else {
                         zone.FoliagesTexture[i] = resultImage.ImageTexture;
                     }
                 }
@@ -122,10 +125,11 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.ObjectsTexture ??= new ImageTexture [] {};
+                    zone.ObjectsTexture ??= new ImageTexture[] { };
                     if (zone.ObjectsTexture.Length < i + 1) {
                         zone.ObjectsTexture = zone.ObjectsTexture.Append(resultImage.ImageTexture).ToArray();
-                    } else {
+                    }
+                    else {
                         zone.ObjectsTexture[i] = resultImage.ImageTexture;
                     }
                 }
@@ -169,6 +173,26 @@ public static class ImporterEngine {
 
             foreach (var resultImage in resultImages) {
                 GetZoneForImageInfo(terrabrush, resultImage).SnowTexture = resultImage.ImageTexture;
+            }
+        }
+
+        // MetaInfo
+        if (settings.MetaInfo != null) {
+            var resultImages = GenerateImageTextureForZones(
+                terrabrush,
+                settings.MetaInfo.GetImage(),
+                (zoneX, zoneY) => {
+                    return ZoneUtils.CreateMetaInfoImage(terrabrush.ZonesSize, terrabrush.Resolution, new Vector2I(zoneX, zoneY), terrabrush.DataPath);
+                },
+                (x, y, pixel, image) => {
+                    image.SetPixel(x, y, pixel);
+                },
+                true,
+                settings.ScaleToResolution
+            );
+
+            foreach (var resultImage in resultImages) {
+                GetZoneForImageInfo(terrabrush, resultImage).MetaInfoTexture = resultImage.ImageTexture;
             }
         }
     }

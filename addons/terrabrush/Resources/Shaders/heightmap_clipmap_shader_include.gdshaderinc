@@ -26,6 +26,9 @@ uniform int NormalAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
 uniform bool Triplanar = true;
 uniform int[100] TexturesTriplanar;
 uniform bool UseSharpTransitions = false;
+uniform bool ApplyMetaInfoTextures = false;
+uniform sampler2DArray MetaInfoTextures: filter_nearest;
+uniform vec4[100] MetaInfoColors;
 
 const int ALPHA_CHANNEL_USAGE_NONE = 0;
 const int ALPHA_CHANNEL_USAGE_ROUGHNESS = 1;
@@ -345,6 +348,13 @@ void calculateHeightmapFragment(
         float lockValue = (1.0 - lockTexture.r);
         albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);
     }
+	
+    if (ApplyMetaInfoTextures) {
+        vec4 metaInfoTexture = texture(MetaInfoTextures, zoneUV);
+		if (metaInfoTexture.r >= 0.0) {
+			albedo *= MetaInfoColors[int(metaInfoTexture.r)].rgb;
+		}
+    }	
 
     alpha = 1.0;
     alphaScissorThreshold = 1.0;

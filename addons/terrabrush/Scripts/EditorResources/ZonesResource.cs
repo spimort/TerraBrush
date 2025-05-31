@@ -17,6 +17,7 @@ public partial class ZonesResource : Resource {
     private Texture2DArray _objectsTextures = new();
     private Texture2DArray _waterTextures = new();
     private Texture2DArray _snowTextures = new();
+    private Texture2DArray _metaInfoTextures = new();
     private ImageTexture _zonesMap = new();
 
     public Texture2DArray LockTextures => _lockTextures;
@@ -26,6 +27,7 @@ public partial class ZonesResource : Resource {
     public Texture2DArray ObjectsTextures => _objectsTextures;
     public Texture2DArray WaterTextures => _waterTextures;
     public Texture2DArray SnowTextures => _snowTextures;
+    public Texture2DArray MetaInfoTextures => _metaInfoTextures;
     public ImageTexture ZonesMap => _zonesMap;
 
     [Export] public ZoneResource[] Zones { get;set; }
@@ -117,6 +119,18 @@ public partial class ZonesResource : Resource {
         _snowTextures.UpdateLayer(zone.SnowTexture.GetImage(), Array.IndexOf(Zones, zone));
     }
 
+    public void UpdateMetaInfoTextures() {
+        if (Zones.Any(zone => zone.MetaInfoTexture == null)) {
+            return;
+        }
+
+        _metaInfoTextures.CreateFromImages(new Godot.Collections.Array<Image>(Zones.Select(zone => zone.MetaInfoTexture.GetImage())));
+    }
+
+    public void UpdateZoneMetaInfoTexture(ZoneResource zone) {
+        _metaInfoTextures.UpdateLayer(zone.MetaInfoTexture.GetImage(), Array.IndexOf(Zones, zone));
+    }
+
     public void SaveResources() {
         foreach (var dirtyImageResource in _dirtyImageTextures) {
             SaveImageResource(dirtyImageResource);
@@ -181,6 +195,7 @@ public partial class ZonesResource : Resource {
         UpdateObjectsTextures();
         UpdateWaterTextures();
         UpdateSnowTextures();
+        UpdateMetaInfoTextures();
         UpdateZonesMap();
     }
 

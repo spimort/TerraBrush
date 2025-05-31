@@ -12,12 +12,12 @@ void vertex() {
 	_triplanarPos = vec3(0);
 	_triplanarPowerNormal = vec3(0);
 	calculateHeightmapVertex(
-		MODEL_MATRIX, 
-		COLOR, 
-		VERTEX, 
-		NORMAL, 
-		_worldVertex, 
-		_triplanarPos, 
+		MODEL_MATRIX,
+		COLOR,
+		VERTEX,
+		NORMAL,
+		_worldVertex,
+		_triplanarPos,
 		_triplanarPowerNormal
 	);
 }

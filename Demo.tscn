@@ -1,4 +1,4 @@
-[gd_scene load_steps=77 format=3 uid="uid://v4o1p7h4rn3j"]
+[gd_scene load_steps=82 format=3 uid="uid://v4o1p7h4rn3j"]
 
 [ext_resource type="Texture2D" uid="uid://b8oilw31hv88p" path="res://Assets/hdri/hilly_terrain_01_puresky_1k.hdr" id="1_iuqbl"]
 [ext_resource type="Script" uid="uid://rucv2wgp8eli" path="res://Demo.cs" id="1_ntfcg"]
@@ -52,7 +52,9 @@
 [ext_resource type="Script" uid="uid://cgf61yxk46wa4" path="res://addons/terrabrush/Scripts/EditorResources/ObjectDefinitionResource.cs" id="42_hjjk2"]
 [ext_resource type="Texture2D" uid="uid://d0qwv6p6dgdg" path="res://Demo/Object0.res" id="43_4bivk"]
 [ext_resource type="Script" uid="uid://comabiqrwe5u0" path="res://addons/terrabrush/Scripts/EditorResources/ObjectResource.cs" id="43_y5duh"]
+[ext_resource type="Script" uid="uid://1jhl1ptx6ntv" path="res://addons/terrabrush/Scripts/EditorResources/MetaInfoLayer.cs" id="45_jnhsd"]
 [ext_resource type="Script" uid="uid://d2qebwt0ednya" path="res://addons/terrabrush/Scripts/EditorResources/ZoneResource.cs" id="48_gk6oc"]
+[ext_resource type="Texture2D" uid="uid://bqan2knipfmpx" path="res://Demo/MetaInfo_0_0.res" id="48_ph4rl"]
 [ext_resource type="Script" uid="uid://nt172hqpx1j5" path="res://addons/terrabrush/Scripts/EditorResources/ZonesResource.cs" id="49_fduo2"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_a58er"]
@@ -202,6 +204,18 @@ NoiseFactor = 0.0
 Metallic = 0.0
 VisualInstanceLayers = 1
 
+[sub_resource type="Resource" id="Resource_ji8n5"]
+script = ExtResource("45_jnhsd")
+Name = "LeftSide"
+Color = Color(0, 0.439101, 0.842805, 1)
+metadata/_custom_type_script = "uid://1jhl1ptx6ntv"
+
+[sub_resource type="Resource" id="Resource_ph4rl"]
+script = ExtResource("45_jnhsd")
+Name = "RightSide"
+Color = Color(0.647393, 0, 0.133757, 1)
+metadata/_custom_type_script = "uid://1jhl1ptx6ntv"
+
 [sub_resource type="Resource" id="Resource_cwvp6"]
 script = ExtResource("48_gk6oc")
 ZonePosition = Vector2i(0, 0)
@@ -211,6 +225,7 @@ FoliagesTexture = [ExtResource("25_001cp")]
 ObjectsTexture = [ExtResource("43_4bivk")]
 WaterTexture = ExtResource("23_e5br0")
 SnowTexture = ExtResource("25_4k6f3")
+MetaInfoTexture = ExtResource("48_ph4rl")
 
 [sub_resource type="Resource" id="Resource_dp21i"]
 script = ExtResource("49_fduo2")
@@ -218,6 +233,8 @@ Zones = [SubResource("Resource_cwvp6")]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7807j"]
 height = 4.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ph4rl"]
 
 [node name="Demo" type="Node3D"]
 
@@ -237,22 +254,30 @@ Foliages = [SubResource("Resource_msipp")]
 Objects = [SubResource("Resource_0o1vb")]
 WaterDefinition = ExtResource("23_rpaxe")
 SnowDefinition = SubResource("Resource_ibahd")
+ShowMetaInfo = false
+MetaInfoLayers = [SubResource("Resource_ji8n5"), SubResource("Resource_ph4rl")]
 TerrainZones = SubResource("Resource_dp21i")
-metadata/_edit_lock_ = false
+metadata/_edit_lock_ = true
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("Camera", "Terrain", "DebugLabel")]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("Camera", "Terrain", "DebugLabel", "ShapeCast")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.4413, 21.1014, 57.3405)
 floor_max_angle = 1.13446
 script = ExtResource("1_ntfcg")
 Camera = NodePath("Camera3D")
 Terrain = NodePath("../TerraBrush")
 DebugLabel = NodePath("../Debug")
+ShapeCast = NodePath("ShapeCast3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_7807j")
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.313061, 0)
+shape = SubResource("CapsuleShape3D_ph4rl")
+collide_with_areas = true
 
 [node name="Debug" type="Label" parent="."]
 offset_left = 26.0

@@ -514,14 +514,14 @@ public partial class Plugin : EditorPlugin {
     private async void ShowCurrentToolMenu() {
         switch (_currentTerraBrushNode.TerrainTool) {
             case TerrainToolType.TerrainSetHeight:
-                var setHeightTool = (SetHeightTool) _currentTerraBrushNode.CurrentTool;
+                var setHeightTool = (SetHeightTool)_currentTerraBrushNode.CurrentTool;
                 var heightValue = await DialogUtils.ShowNumericSelector(this, setHeightTool.GetSetHeightValue());
                 if (heightValue.HasValue) {
                     setHeightTool.UpdateSetHeightValue(heightValue.Value);
                 }
                 break;
             case TerrainToolType.TerrainSetAngle:
-                var setAngleTool = (SetAngleTool) _currentTerraBrushNode.CurrentTool;
+                var setAngleTool = (SetAngleTool)_currentTerraBrushNode.CurrentTool;
                 var angleValue = await DialogUtils.ShowNumericSelector(this, setAngleTool.GetSetAngleValue(), -89.9f, 89.9f);
                 if (angleValue.HasValue) {
                     setAngleTool.UpdateSetAngleValue(angleValue.Value);
@@ -551,6 +551,16 @@ public partial class Plugin : EditorPlugin {
                 ShowCustomContentPieMenu("Objects", customContentPieMenu => {
                     CustomContentLoader.AddObjectsPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
                         _terrainControlDock.SetSelectedObjectIndex(index);
+                        HideOverlaySelector();
+                    }, true);
+                });
+
+                break;
+            case TerrainToolType.MetaInfoAdd:
+            case TerrainToolType.MetaInfoRemove:
+                ShowCustomContentPieMenu("MetaInfo", customContentPieMenu => {
+                    CustomContentLoader.AddMetaInfoLayersPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
+                        _terrainControlDock.SetSelectedMetaInfoIndex(index);
                         HideOverlaySelector();
                     }, true);
                 });

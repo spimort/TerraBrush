@@ -80,4 +80,7 @@ internal static class StringNames {
     public static readonly StringName Triplanar = "Triplanar";
     public static readonly StringName TexturesTriplanar = "TexturesTriplanar";
     public static readonly StringName UseSharpTransitions = "UseSharpTransitions";
+    public static readonly StringName ApplyMetaInfoTextures = "ApplyMetaInfoTextures";
+    public static readonly StringName MetaInfoTextures = "MetaInfoTextures";
+    public static readonly StringName MetaInfoColors = "MetaInfoColors";
 }

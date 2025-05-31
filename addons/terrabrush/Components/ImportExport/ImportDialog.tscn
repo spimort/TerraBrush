@@ -101,6 +101,12 @@ visible = false
 layout_mode = 2
 ImageTypeName = "Snow"
 
+[node name="MetaInfoRow" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("1_i0uwh")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+ImageTypeName = "MetaInfo"
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
