@@ -93,9 +93,9 @@ public partial class Terrain : Node3D {
             if (Engine.IsEditorHint()) {
                 Clipmap.Shader.SetShaderParameter(StringNames.ApplyLockTextures, true);
                 Clipmap.Shader.SetShaderParameter(StringNames.LockTextures, TerrainZones.LockTextures);
-                Clipmap.Shader.SetShaderParameter(StringNames.ApplyMetaInfoTextures, ShowMetaInfo);
-                Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoTextures, TerrainZones.MetaInfoTextures);
                 if (MetaInfoLayers?.Length > 0) {
+                    Clipmap.Shader.SetShaderParameter(StringNames.ApplyMetaInfoTextures, ShowMetaInfo);
+                    Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoTextures, TerrainZones.MetaInfoTextures);
                     Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoColors, MetaInfoLayers.Select(x => x.Color).ToArray());
                 }
             }
