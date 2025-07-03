@@ -175,7 +175,6 @@ public static class CustomContentLoader {
 
                 parentNode.AddChild(dockPreviewButton);
 
-
                 var currentIndex = i;
                 dockPreviewButton.OnSelect = () => {
                     onSelect(currentIndex);
