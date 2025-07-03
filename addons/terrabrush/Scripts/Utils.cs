@@ -115,13 +115,4 @@ public static class Utils {
 
         return result;
     }
-
-    public static bool CompareColor(Color color1, Color color2, int threshold) {
-        int diffR = Mathf.Abs(color1.R8 - color2.R8);
-        int diffG = Mathf.Abs(color1.G8 - color2.G8);
-        int diffB = Mathf.Abs(color1.B8 - color2.B8);
-        int diffA = Mathf.Abs(color1.A8 - color2.A8);
-
-        return diffR <= threshold && diffG <= threshold && diffB <= threshold && diffA <= threshold;
-    }
 }
