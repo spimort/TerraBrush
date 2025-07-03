@@ -195,6 +195,14 @@ public partial class TerraBrush : TerraBrushTool {
     [Export]
     public override SnowResource SnowDefinition { get;set; }
 
+    [ExportGroup("Meta")]
+
+    [Export]
+    public bool ShowMetaInfo { get;set; } = true;
+
+    [Export]
+    public override MetaInfoLayer[] MetaInfoLayers { get;set; }
+
     [ExportGroup("Zones")]
     [Export]
     public override ZonesResource TerrainZones { get;set; }
@@ -363,6 +371,8 @@ public partial class TerraBrush : TerraBrushTool {
         _terrain.LODInitialCellWidth = LODInitialCellWidth;
         _terrain.CollisionOnly = CollisionOnly;
         _terrain.CreateCollisionInThread = CreateCollisionInThread;
+        _terrain.ShowMetaInfo = ShowMetaInfo;
+        _terrain.MetaInfoLayers = MetaInfoLayers;
 
         AddChild(_terrain);
 
@@ -372,6 +382,8 @@ public partial class TerraBrush : TerraBrushTool {
             await CreateFoliages();
             await CreateSnow();
         }
+
+        CreateMetaInfo();
 
         EmitSignal(StringNames.TerrainLoaded);
     }
@@ -630,6 +642,20 @@ public partial class TerraBrush : TerraBrushTool {
         _snowNodeContainer.AddChild(_snowNode);
     }
 
+    private void CreateMetaInfo() {
+        if (MetaInfoLayers == null || MetaInfoLayers.Length <= 0) {
+            return;
+        }
+
+        for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
+            var zone = TerrainZones.Zones[i];
+
+            zone.MetaInfoTexture ??= ZoneUtils.CreateMetaInfoImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
+        }
+
+        TerrainZones.UpdateMetaInfoTextures();
+    }
+
     public void UpdateObjectsHeight(List<ZoneResource> zones) {
         for (var i = 0; i < Objects?.Length; i++) {
             var objectItem = Objects[i];
@@ -686,6 +712,8 @@ public partial class TerraBrush : TerraBrushTool {
         if (zone != null) {
             float? waterFactor = null;
             float? snowFactor = null;
+            int? metaInfoIndex = null;
+            string metaInfoName = null;
 
             if (zone.WaterTexture != null) {
                 waterFactor = GetImageFromImageTexture(zone.WaterTexture).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
@@ -693,6 +721,16 @@ public partial class TerraBrush : TerraBrushTool {
 
             if (zone.SnowTexture != null) {
                 snowFactor = GetImageFromImageTexture(zone.SnowTexture).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y).R;
+            }
+
+            if (MetaInfoLayers?.Length > 0 && zone.MetaInfoTexture != null) {
+                var metaInfoColor = GetImageFromImageTexture(zone.MetaInfoTexture).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
+                var metaInfoColorIndex = (int) metaInfoColor.R;
+
+                if (metaInfoColorIndex >= 0 && MetaInfoLayers.Length - 1 >= metaInfoColorIndex) {
+                    metaInfoIndex = metaInfoColorIndex;
+                    metaInfoName = MetaInfoLayers[metaInfoColorIndex].Name;
+                }
             }
 
             return new TerrainPositionInformation() {
@@ -707,11 +745,13 @@ public partial class TerraBrush : TerraBrushTool {
                         Name = textureSet.Name,
                         Factor = pixel[colorIndex]
                     };
-                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] {},
+                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] { },
                 WaterFactor = waterFactor ?? 0,
                 WaterDeepness = waterFactor * WaterDefinition?.WaterFactor ?? 0,
                 SnowFactor = snowFactor ?? 0,
-                SnowHeight = snowFactor * SnowDefinition?.SnowFactor ?? 0
+                SnowHeight = snowFactor * SnowDefinition?.SnowFactor ?? 0,
+                MetaInfoIndex = metaInfoIndex ?? -1,
+                MetaInfoName = metaInfoName
             };
         }
 

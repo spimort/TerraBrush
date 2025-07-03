@@ -15,6 +15,7 @@ public partial class ZoneResource : Resource {
     [Export] public ImageTexture[] ObjectsTexture { get;set; }
     [Export] public ImageTexture WaterTexture { get;set; }
     [Export] public ImageTexture SnowTexture { get;set; }
+    [Export] public ImageTexture MetaInfoTexture { get;set; }
 
     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
         HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
@@ -44,6 +45,10 @@ public partial class ZoneResource : Resource {
 
         if (terraBrush.SnowDefinition != null) {
             SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
+        }
+
+        if (terraBrush.MetaInfoLayers?.Length > 0) {
+            MetaInfoTexture = ZoneUtils.CreateMetaInfoImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
         }
     }
 }

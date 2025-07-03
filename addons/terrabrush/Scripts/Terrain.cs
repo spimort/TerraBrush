@@ -46,6 +46,8 @@ public partial class Terrain : Node3D {
     [Export] public float LODInitialCellWidth { get;set; } = 1;
     [Export] public bool CollisionOnly { get;set; } = false;
     [Export] public bool CreateCollisionInThread { get;set; } = true;
+    [Export] public bool ShowMetaInfo { get;set; } = false;
+    [Export] public MetaInfoLayer[] MetaInfoLayers { get;set; }
 
     public StaticBody3D TerrainCollider => _terrainCollider;
     public Clipmap Clipmap => _clipmap;
@@ -91,6 +93,11 @@ public partial class Terrain : Node3D {
             if (Engine.IsEditorHint()) {
                 Clipmap.Shader.SetShaderParameter(StringNames.ApplyLockTextures, true);
                 Clipmap.Shader.SetShaderParameter(StringNames.LockTextures, TerrainZones.LockTextures);
+                if (MetaInfoLayers?.Length > 0) {
+                    Clipmap.Shader.SetShaderParameter(StringNames.ApplyMetaInfoTextures, ShowMetaInfo);
+                    Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoTextures, TerrainZones.MetaInfoTextures);
+                    Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoColors, MetaInfoLayers.Select(x => x.Color).ToArray());
+                }
             }
 
             TerrainUpdated();
@@ -113,7 +120,7 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter(StringNames.Splatmaps, default);
         } else {
             Clipmap.Shader.SetShaderParameter(StringNames.Splatmaps, TerrainZones.SplatmapsTextures);
-        }        
+        }
     }
 
     public void TerrainWaterUpdated() {

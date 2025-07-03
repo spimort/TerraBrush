@@ -10,12 +10,13 @@ public partial class Demo : CharacterBody3D {
 	[Export] private Camera3D Camera { get;set; }
 	[Export] public TerraBrush.TerraBrush Terrain { get;set; }
 	[Export] public Label DebugLabel { get;set; }
+	[Export] public ShapeCast3D ShapeCast { get;set; }
 
-    public override void _Ready(){
-        base._Ready();
+    public override void _Ready() {
+		base._Ready();
 
 		Terrain.Connect(TerraBrush.StringNames.TerrainLoaded, Callable.From(() => GD.Print("TerrainLoaded")));
-    }
+	}
 
 	public override void _Input(InputEvent e) {
 		if (e.IsPressed() && !e.IsEcho() && Input.IsKeyPressed(Key.Escape)) {
@@ -62,17 +63,28 @@ public partial class Demo : CharacterBody3D {
 		var playerZ = GlobalPosition.Z;
 
 		var debugText = $"[Press ESC to grab/release mouse] FPS: {Engine.GetFramesPerSecond()}";
-		if (IsOnFloor() && GetLastSlideCollision() != null) {
-			var collision = GetLastSlideCollision();
 
-			if (collision?.GetCollider() == Terrain?.Terrain?.TerrainCollider) {
+		if (ShapeCast.IsColliding()) {
+			var collision = ShapeCast.GetCollider(0);
+
+			if (collision == Terrain?.Terrain?.TerrainCollider) {
 				var result = Terrain.GetPositionInformation(playerX, playerZ);
 				if (result != null) {
-					debugText = $"{debugText} | Current collision : Water {result.WaterFactor}, Deep : {result.WaterDeepness} | Snow {result.SnowFactor}, Height : {result.SnowHeight} | Main Texture {(result.Textures?.Length > 0 ? result.Textures?[0].Factor : "")} - {(result.Textures?.Length > 0 ? result.Textures?[0].Name : "" )}";
-				} else {
+					debugText = $"""
+						{debugText}
+						Current collision :
+							Water : {result.WaterFactor},
+							Deep : {result.WaterDeepness}
+							Snow : {result.SnowFactor} - Height : {result.SnowHeight}
+							Main Texture : {(result.Textures?.Length > 0 ? result.Textures?[0].Factor : "")} - {(result.Textures?.Length > 0 ? result.Textures?[0].Name : "")}
+							Meta Info : {result.MetaInfoIndex} - {result.MetaInfoName}
+						""".Trim();
+				}
+				else {
 					debugText = $"{debugText} : No zone";
 				}
-			} else {
+			}
+			else {
 				debugText = $"{debugText} : Not colliding with terrain";
 			}
 		}

@@ -36,6 +36,7 @@ public static class ExporterEngine {
         var resultObjectsImages = firstZone.ObjectsTexture?.Select(x => Image.CreateEmpty(width, height, false, x.GetFormat())).ToList();
         var resultWaterImage = firstZone.WaterTexture == null ? null : Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.WaterTexture.GetFormat());
         var resultSnowImage = firstZone.SnowTexture == null ? null : Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.SnowTexture.GetFormat());
+        var resultMetaInfoImage = firstZone.MetaInfoTexture == null ? null : Image.CreateEmpty(resolutionWidth, resolutionHeight, false, firstZone.MetaInfoTexture.GetFormat());
 
         for (var zoneX = minZoneX; zoneX <= maxZoneX; zoneX++) {
             for (var zoneY = minZoneY; zoneY <= maxZoneY; zoneY++) {
@@ -46,6 +47,7 @@ public static class ExporterEngine {
                 List<Image> objectsImages = null;
                 Image waterImage = null;
                 Image snowImage = null;
+                Image metaInfoImage = null;
 
                 if (zone != null) {
                     heightMapImage = zone.HeightMapTexture.GetImage();
@@ -54,6 +56,7 @@ public static class ExporterEngine {
                     objectsImages = zone.ObjectsTexture?.Select(x => x.GetImage()).ToList();
                     waterImage = zone.WaterTexture?.GetImage();
                     snowImage = zone.SnowTexture?.GetImage();
+                    metaInfoImage = zone.MetaInfoTexture?.GetImage();
                 }
 
                 // Process the images that works with resolution
@@ -65,6 +68,7 @@ public static class ExporterEngine {
                         resultHeightmapImage.SetPixel(globalX, globalY, heightMapImage == null ? Colors.Black : heightMapImage.GetPixel(x, y));
                         resultWaterImage?.SetPixel(globalX, globalY, waterImage == null ? new Color(0, 0.5f, 0.5f, 1f) : waterImage.GetPixel(x, y));
                         resultSnowImage?.SetPixel(globalX, globalY, snowImage == null ? Colors.Black : snowImage.GetPixel(x, y));
+                        resultMetaInfoImage?.SetPixel(globalX, globalY, metaInfoImage == null ? new Color(-1, 0, 0, 0) : metaInfoImage.GetPixel(x, y));
                     }
                 }
 
@@ -109,6 +113,7 @@ public static class ExporterEngine {
         });
         resultWaterImage?.SavePng($"{dataPath}/water.png");
         resultSnowImage?.SavePng($"{dataPath}/snow.png");
+        resultMetaInfoImage?.SaveExr($"{dataPath}/metainfo.exr");
     }
 }
 #endif

@@ -8,14 +8,14 @@ namespace TerraBrush;
 public static class Utils {
     public static float GetNextFloatWithSeed(int seed, float minValue, float maxValue) {
         var randomGenerator = new Godot.RandomNumberGenerator();
-        randomGenerator.Seed = (ulong) seed;
+        randomGenerator.Seed = (ulong)seed;
 
         return randomGenerator.RandfRange(minValue, maxValue);
     }
 
     public static int GetNextIntWithSeed(int seed, int minValue, int maxValue) {
         var randomGenerator = new Godot.RandomNumberGenerator();
-        randomGenerator.Seed = (ulong) seed;
+        randomGenerator.Seed = (ulong)seed;
 
         return randomGenerator.RandiRange(minValue, maxValue);
     }
@@ -34,46 +34,46 @@ public static class Utils {
         return directory;
     }
 
-	public static Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
-		var textureArray = new Texture2DArray();
-		var textureImageArray = new Godot.Collections.Array<Image>();
+    public static Texture2DArray TexturesToTextureArray(IEnumerable<Texture2D> textures) {
+        var textureArray = new Texture2DArray();
+        var textureImageArray = new Godot.Collections.Array<Image>();
 
-		int width = 0;
-		int height = 0;
+        int width = 0;
+        int height = 0;
 
-		if (textures != null) {
-			textures.ToList().ForEach(texture => {
-				if (texture != null) {
-					var textureImage = texture.GetImage();
+        if (textures != null) {
+            textures.ToList().ForEach(texture => {
+                if (texture != null) {
+                    var textureImage = texture.GetImage();
 
-					if (width == 0) {
-						width = textureImage.GetWidth();
-						height = textureImage.GetHeight();
-					} else if (textureImage.GetWidth() != width || textureImage.GetHeight() != height) {
-						textureImage.Resize(width, height);
-					}
+                    if (width == 0) {
+                        width = textureImage.GetWidth();
+                        height = textureImage.GetHeight();
+                    } else if (textureImage.GetWidth() != width || textureImage.GetHeight() != height) {
+                        textureImage.Resize(width, height);
+                    }
 
-					textureImageArray.Add(textureImage);
-				}
-			});
-		}
+                    textureImageArray.Add(textureImage);
+                }
+            });
+        }
 
-		textureArray._Images = textureImageArray;
+        textureArray._Images = textureImageArray;
 
-		return textureArray;
-	}
+        return textureArray;
+    }
 
-	public static ShaderMaterial CreateCustomShaderCopy(ShaderMaterial customShader) {
-		var newShader = new ShaderMaterial {
-			Shader = customShader.Shader
-		};
+    public static ShaderMaterial CreateCustomShaderCopy(ShaderMaterial customShader) {
+        var newShader = new ShaderMaterial {
+            Shader = customShader.Shader
+        };
 
-		foreach (Godot.Collections.Dictionary uniform in customShader.Shader.GetShaderUniformList()) {
-			var uniformName = (string) uniform.GetValueOrDefault("name");
-			newShader.SetShaderParameter(uniformName, customShader.GetShaderParameter(uniformName));
-		}
+        foreach (Godot.Collections.Dictionary uniform in customShader.Shader.GetShaderUniformList()) {
+            var uniformName = (string)uniform.GetValueOrDefault("name");
+            newShader.SetShaderParameter(uniformName, customShader.GetShaderParameter(uniformName));
+        }
 
-		return newShader;
+        return newShader;
     }
 
     public static Task<Texture2D> WaitForTextureReady(Texture2D texture) {

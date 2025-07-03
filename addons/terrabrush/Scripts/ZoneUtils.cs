@@ -10,6 +10,7 @@ public static class ZoneUtils {
     private const string ObjectFileName = "Object_{0}_{1}_{2}.res";
     private const string WaterFileName = "Water_{0}_{1}.res";
     private const string SnowFileName = "Snow_{0}_{1}.res";
+    private const string MetaInfoFileName = "MetaInfo_{0}_{1}.res";
 
     public static ImageTexture CreateLockImage(int zoneSize, Vector2I zonePosition, bool lockAll = false) {
         var image = GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf);
@@ -60,6 +61,14 @@ public static class ZoneUtils {
         var imageSize = GetImageSizeForResolution(zoneSize, resolution);
         var snowImage = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rgba8);
         return GetImageTextureResource(snowImage, string.Format(SnowFileName, zonePosition.X, zonePosition.Y), dataPath);
+    }
+
+    public static ImageTexture CreateMetaInfoImage(int zoneSize, float resolution, Vector2I zonePosition, string dataPath) {
+        var imageSize = GetImageSizeForResolution(zoneSize, resolution);
+        var metaInfoImage = GodotAgnostic.ImageCreateEmpty(imageSize, imageSize, false, Image.Format.Rf);
+        metaInfoImage.Fill(new Color(-1, 0, 0, 0));
+
+        return GetImageTextureResource(metaInfoImage, string.Format(MetaInfoFileName, zonePosition.X, zonePosition.Y), dataPath);
     }
 
     private static ImageTexture GetImageTextureResource(Image image, string filePath, string dataPath) {

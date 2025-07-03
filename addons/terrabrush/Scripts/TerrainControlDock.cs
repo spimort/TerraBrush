@@ -11,12 +11,14 @@ public partial class TerrainControlDock : Control {
     private int? _selectedTextureIndex = null;
     private int? _selectedFoliageIndex = null;
     private int? _selectedObjectIndex = null;
+    private int? _selectedMetaInfoIndex = null;
 
     [NodePath] private FlowContainer _brushesContainer;
     [NodePath] private FlowContainer _toolTypesContainer;
     [NodePath] private FlowContainer _texturesContainer;
     [NodePath] private FlowContainer _foliagesContainer;
     [NodePath] private FlowContainer _objectsContainer;
+    [NodePath] private FlowContainer _metaInfoLayersContainer;
     [NodePath] private Slider _brushSizeSlider;
     [NodePath] private Slider _brushStrengthSlider;
 
@@ -36,12 +38,14 @@ public partial class TerrainControlDock : Control {
             _selectedTextureIndex = TerraBrush.TextureSetIndex;
             _selectedFoliageIndex = TerraBrush.FoliageIndex;
             _selectedObjectIndex = TerraBrush.ObjectIndex;
+            _selectedMetaInfoIndex = TerraBrush.MetaInfoIndex;
 
             InitializeBrushes();
             InitializeToolPreview();
             InitializeTextures();
             InitializeFoliages();
             InitializeObjects();
+            InitializeMetaInfoLayers();
         }
 
         _brushSizeSlider.ValueChanged += value => {
@@ -207,6 +211,36 @@ public partial class TerrainControlDock : Control {
         TerraBrush?.SetObject(_selectedObjectIndex);
     }
 
+    private void InitializeMetaInfoLayers() {
+        CustomContentLoader.AddMetaInfoLayersPreviewToParent(TerraBrush, _metaInfoLayersContainer, index => {
+            SetSelectedMetaInfoIndex(index);
+        });
+
+        if (TerraBrush.MetaInfoLayers?.Length > 0 && _selectedMetaInfoIndex == null) {
+            _selectedMetaInfoIndex = 0;
+        }
+
+        UpdateSelectedMetaInfo();
+    }
+
+    public void SetSelectedMetaInfoIndex(int index) {
+        _selectedMetaInfoIndex = index;
+
+        UpdateSelectedMetaInfo();
+    }
+
+    private void UpdateSelectedMetaInfo() {
+        var metaInfoLayersPreview = _metaInfoLayersContainer.GetChildren();
+
+        for (var i = 0; i < metaInfoLayersPreview.Count; i++) {
+            var metaInfoPreview = metaInfoLayersPreview[i];
+
+            ((DockPreviewButton) metaInfoPreview).ButtonPressed = i == _selectedMetaInfoIndex;
+        }
+
+        TerraBrush?.SetMetaInfo(_selectedMetaInfoIndex);
+    }
+
     public void SetShiftPressed(bool pressed) {
         if (pressed) {
             if (_selectedTool == TerrainToolType.TerrainAdd || _selectedTool == TerrainToolType.TerrainRemove || _selectedTool == TerrainToolType.TerrainFlatten) {
@@ -225,6 +259,8 @@ public partial class TerrainControlDock : Control {
                 _temporaryTool = TerrainToolType.HoleRemove;
             } else if (_selectedTool == TerrainToolType.LockAdd) {
                 _temporaryTool = TerrainToolType.LockRemove;
+            } else if (_selectedTool == TerrainToolType.MetaInfoAdd) {
+                _temporaryTool = TerrainToolType.MetaInfoRemove;
             } else {
                 _temporaryTool = TerrainToolType.None;
             }

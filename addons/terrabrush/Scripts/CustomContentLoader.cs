@@ -11,9 +11,9 @@ public static class CustomContentLoader {
     public static void AddBrushesPreviewToParent(Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
         var brushPreviewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
-        var directories = new List<DirAccess>() {DirAccess.Open("res://addons/terrabrush/Assets/Brushes/")};
+        var directories = new List<DirAccess>() { DirAccess.Open("res://addons/terrabrush/Assets/Brushes/") };
 
-        var customBrushesDirectory = (string) ProjectSettings.GetSetting(SettingContants.CustomBrushesFolder);
+        var customBrushesDirectory = (string)ProjectSettings.GetSetting(SettingContants.CustomBrushesFolder);
         if (!string.IsNullOrWhiteSpace(customBrushesDirectory) && DirAccess.DirExistsAbsolute(customBrushesDirectory)) {
             directories.Add(DirAccess.Open(customBrushesDirectory));
         }
@@ -125,7 +125,7 @@ public static class CustomContentLoader {
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
 
-                    var meshResource = (Resource) (objectItem.Definition?.ObjectScenes?.Length > 0 ? objectItem.Definition?.ObjectScenes[0] : objectItem.Definition?.LODMeshes[0].Meshes[0].Mesh);
+                    var meshResource = (Resource)(objectItem.Definition?.ObjectScenes?.Length > 0 ? objectItem.Definition?.ObjectScenes[0] : objectItem.Definition?.LODMeshes[0].Meshes[0].Mesh);
                     dockPreviewButton.LoadResourcePreview(meshResource);
 
                     var packedScenes = objectItem.Definition?.ObjectScenes;
@@ -150,6 +150,35 @@ public static class CustomContentLoader {
                         onSelect(currentIndex);
                     };
                 }
+            }
+        }
+    }
+
+    public static void AddMetaInfoLayersPreviewToParent(TerraBrush terraBrush, Node parentNode, Action<int> onSelect, bool useCircleIcon = false) {
+        if (terraBrush.MetaInfoLayers?.Length > 0) {
+            var previewPrefab = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
+
+            for (var i = 0; i < terraBrush.MetaInfoLayers.Length; i++) {
+                var metaInfoLayer = terraBrush.MetaInfoLayers[i];
+
+                var dockPreviewButton = previewPrefab.Instantiate<DockPreviewButton>();
+                dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
+                dockPreviewButton.Margin = 10;
+
+                var image = Image.CreateEmpty(48, 48, false, Image.Format.Rgba8);
+                image.Fill(metaInfoLayer.Color);
+                var imageTexture = ImageTexture.CreateFromImage(image);
+                dockPreviewButton.SetTextureImage(imageTexture);
+                dockPreviewButton.TooltipText = !string.IsNullOrEmpty(metaInfoLayer.Name)
+                                                ? metaInfoLayer.Name
+                                                : $"MetaInfo {i + 1}";
+
+                parentNode.AddChild(dockPreviewButton);
+
+                var currentIndex = i;
+                dockPreviewButton.OnSelect = () => {
+                    onSelect(currentIndex);
+                };
             }
         }
     }

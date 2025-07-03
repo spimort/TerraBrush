@@ -88,6 +88,7 @@ The demo scene has been updated to Godot 4.4 which makes it break with older ver
 * **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 * **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
 * **Paint locked areas** - Areas on the terrain can be locked so you don't modify completed parts
+* **Paint meta info** - Define meta info on parts of the terrain. This can be retrieved using the `GetPositionInformation` function.
 * **Import and Export** - Import and export terrain from/to various images.
 
 ## How To Use
@@ -243,6 +244,10 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
 |SnowResource.CustomShader|A custom shader for the snow.|
+|**Meta**||
+|ShowMetaInfo|Show the meta layers while in the editor. This has no effect in runtime (outside of the editor).|
+|MetaInfoLayer[x].Name|The name of a meta layer. Useful to get the information about a location using the `GetPositionInformation` function.|
+|MetaInfoLayer[x].Color|The color of a meta layer. This is the color that is gonna be used while in the editor to show the meta layer.|
 |**Zones**||
 |Zones[x].ZonePosition|The position of the zone. This position is multiplied by the zone's size to position it in the world. The zones can be disconnected from each other. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**|
 |Zones[x].HeightMapTexture|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|

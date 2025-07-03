@@ -28,6 +28,8 @@ public enum TerrainToolType {
     [ToolType(typeof(HoleTool))] HoleRemove = 18,
     [ToolType(typeof(LockTool))] LockAdd = 20,
     [ToolType(typeof(LockTool))] LockRemove = 21,
+    [ToolType(typeof(MetaInfoTool))] MetaInfoAdd = 22,
+    [ToolType(typeof(MetaInfoTool))] MetaInfoRemove = 23,
 }
 #endif
 
@@ -44,6 +46,7 @@ public partial class TerraBrushTool : Node3D {
     private int? _textureSetIndex = null;
     private int? _foliageIndex = null;
     private int? _objectIndex = null;
+    private int? _metaInfoIndex = null;
     private ToolBase _currentTool;
     private TerrainToolType _terrainTool = TerrainToolType.TerrainAdd;
 
@@ -61,6 +64,7 @@ public partial class TerraBrushTool : Node3D {
     public int? TextureSetIndex => _textureSetIndex;
     public int? FoliageIndex => _foliageIndex;
     public int? ObjectIndex => _objectIndex;
+    public int? MetaInfoIndex => _metaInfoIndex;
 
     [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnCreateTerrain)}")]
     public bool CreateTerrain {
@@ -180,6 +184,10 @@ public partial class TerraBrushTool : Node3D {
         _objectIndex = objectIndex;
     }
 
+    public void SetMetaInfo(int? metaInfoIndex) {
+        _metaInfoIndex = metaInfoIndex;
+    }
+
     public void UpdateSetHeightValue(float value) {
         _selectedSetHeight = value;
     }
@@ -217,6 +225,7 @@ public partial class TerraBrushTool : Node3D {
     public virtual ObjectResource[] Objects { get;set; }
     public virtual WaterResource WaterDefinition { get;set; }
     public virtual SnowResource SnowDefinition { get;set; }
+    public virtual MetaInfoLayer[] MetaInfoLayers { get;set; }
     public virtual void OnCreateTerrain() {}
     public virtual void OnUpdateTerrainSettings() {}
     public virtual void OnRemoveTerrain() {}

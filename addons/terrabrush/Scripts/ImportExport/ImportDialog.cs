@@ -16,6 +16,7 @@ public partial class ImportDialog : Window {
     [NodePath] private VBoxContainer _objectsContainer;
     [NodePath] private ImportImageRow _waterRow;
     [NodePath] private ImportImageRow _snowRow;
+    [NodePath] private ImportImageRow _metaInfoRow;
     [NodePath] private SpinBox _heightmapScaleSpinBox;
     [NodePath] private CheckBox _useGreenChannelForHolesCheckbox;
     [NodePath] private CheckBox _scaleToResolutionCheckbox;
@@ -81,6 +82,11 @@ public partial class ImportDialog : Window {
             _snowRow.Visible = true;
         }
 
+        // MetaInfo
+        if (OriginialTerraBrush?.MetaInfoLayers != null && OriginialTerraBrush.MetaInfoLayers.Length > 0) {
+            _metaInfoRow.Visible = true;
+        }
+
         _previewButton.Pressed += () => {
             var settings = GetImporterSettings();
             if (settings.Heightmap == null) {
@@ -111,7 +117,7 @@ public partial class ImportDialog : Window {
     private ImporterSettings GetImporterSettings() {
         return new ImporterSettings {
             Heightmap = _heightmapRow.ImageTexture,
-            HeightmapScale = (float) _heightmapScaleSpinBox.Value,
+            HeightmapScale = (float)_heightmapScaleSpinBox.Value,
             UseGreenChannelForHoles = _useGreenChannelForHolesCheckbox.ButtonPressed,
             ScaleToResolution = _scaleToResolutionCheckbox.ButtonPressed,
             Splatmaps = _splatmapsContainer.GetChildren().ToList()
@@ -130,7 +136,8 @@ public partial class ImportDialog : Window {
                 .Select(x => x.ImageTexture)
                 .ToArray(),
             Water = _waterRow.ImageTexture,
-            Snow = _snowRow.ImageTexture
+            Snow = _snowRow.ImageTexture,
+            MetaInfo = _metaInfoRow.ImageTexture
         };
     }
 }

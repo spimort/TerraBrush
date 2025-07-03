@@ -8,6 +8,8 @@ public partial class TerrainPositionInformation : GodotObject {
     [Export] public float WaterDeepness { get;set; }
     [Export] public float SnowFactor { get;set; }
     [Export] public float SnowHeight { get;set; }
+    [Export] public int MetaInfoIndex { get;set; }
+    [Export] public string MetaInfoName { get;set; }
 }
 
 public partial class TerrainPositionTextureInformation : GodotObject {
