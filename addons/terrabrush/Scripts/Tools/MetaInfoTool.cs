@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 
 namespace TerraBrush;
@@ -26,3 +27,4 @@ public partial class MetaInfoTool : ToolBase {
         _terraBrush.TerrainZones.UpdateMetaInfoTextures();
     }
 }
+#endif
