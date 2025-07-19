@@ -1,0 +1,43 @@
+﻿"obj\Release\net9.0\win-x64\native\TerraBrush.win.x64.obj"
+/OUT:"bin\Release\net9.0\win-x64\native\TerraBrush.win.x64.dll"
+/DEF:"obj\Release\net9.0\win-x64\native\TerraBrush.win.x64.def"
+/LIBPATH:"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\ATLMFC\lib\x64"
+/LIBPATH:"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\lib\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.22621.0\ucrt\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\10\\lib\10.0.22621.0\\um\x64"
+/DLL
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\bootstrapperdll.obj"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\Runtime.WorkstationGC.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\eventpipe-disabled.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\Runtime.VxsortEnabled.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\standalonegc-disabled.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\zlibstatic.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\System.Globalization.Native.Aot.lib"
+"C:\Users\yoyo_\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\9.0.2\sdk\System.IO.Compression.Native.Aot.lib"
+"advapi32.lib"
+"bcrypt.lib"
+"crypt32.lib"
+"iphlpapi.lib"
+"kernel32.lib"
+"mswsock.lib"
+"ncrypt.lib"
+"normaliz.lib"
+"ntdll.lib"
+"ole32.lib"
+"oleaut32.lib"
+"secur32.lib"
+"user32.lib"
+"version.lib"
+"ws2_32.lib"
+/NOLOGO /MANIFEST:NO
+/MERGE:.managedcode=.text /MERGE:hydrated=.bss
+/DEBUG
+/INCREMENTAL:NO
+/NATVIS:"C:\Users\yoyo_\.nuget\packages\microsoft.dotnet.ilcompiler\9.0.2\build\NativeAOT.natvis"
+/IGNORE:4104
+/CETCOMPAT
+/NODEFAULTLIB:libucrt.lib
+/DEFAULTLIB:ucrt.lib
+/OPT:REF
+/OPT:ICF

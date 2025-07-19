@@ -1,0 +1,3 @@
+EXPORTS
+   DotNetRuntimeDebugHeader DATA
+   terrabrush_init

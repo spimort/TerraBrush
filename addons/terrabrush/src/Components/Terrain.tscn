@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://0chnym463hcs"]
+
+[ext_resource type="Script" uid="uid://cpvbayyhj3hkj" path="res://addons/terrabrush/Scripts/Terrain.cs" id="1_vjtl3"]
+[ext_resource type="Texture2D" uid="uid://b3w0qgmfitt30" path="res://addons/terrabrush/Assets/placeholder_texture.png" id="2_nnkge"]
+[ext_resource type="PackedScene" uid="uid://2taw1ee4hhf2" path="res://addons/terrabrush/Components/Clipmap.tscn" id="3_225j0"]
+[ext_resource type="Shader" uid="uid://td5sbqs4imd6" path="res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader.gdshader" id="4_1oqlj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g1a2j"]
+render_priority = 0
+shader = ExtResource("4_1oqlj")
+shader_parameter/InitialCellWidth = 1.0
+shader_parameter/OffsetPosition = Vector3(0, 0, 0)
+shader_parameter/ZonesSize = 0.0
+shader_parameter/Resolution = 0.0
+shader_parameter/NumberOfZones = 0.0
+shader_parameter/ApplyLockTextures = false
+shader_parameter/WaterFactor = 1.0
+shader_parameter/TexturesDetail = PackedInt32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/NumberOfTextures = 0
+shader_parameter/HasNormalTextures = false
+shader_parameter/HasRoughnessTextures = false
+shader_parameter/HasHeightTextures = false
+shader_parameter/UseAntitile = true
+shader_parameter/BlendFactor = 0.0
+shader_parameter/NearestFilter = false
+shader_parameter/AlbedoAlphaChannelUsage = 0
+shader_parameter/NormalAlphaChannelUsage = 0
+shader_parameter/Triplanar = true
+shader_parameter/TexturesTriplanar = PackedInt32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[node name="Terrain" type="Node3D"]
+script = ExtResource("1_vjtl3")
+DefaultTexture = ExtResource("2_nnkge")
+
+[node name="Clipmap" parent="." instance=ExtResource("3_225j0")]
+unique_name_in_owner = true
+Levels = 8
+RowsPerLevel = 21
+Shader = SubResource("ShaderMaterial_g1a2j")
+
+[node name="TerrainCollider" type="StaticBody3D" parent="."]
+unique_name_in_owner = true

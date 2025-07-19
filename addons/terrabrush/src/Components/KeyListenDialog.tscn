@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://bh83eseucsstx"]
+
+[ext_resource type="Script" uid="uid://cxq6r767hwiyj" path="res://addons/terrabrush/Scripts/KeyListenDialog.cs" id="1_ybsql"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6pp30"]
+font_size = 14
+font_color = Color(0.815686, 0.815686, 0.815686, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oyxnb"]
+
+[node name="KeyListenDialog" type="Window"]
+title = "Press a Key"
+initial_position = 2
+size = Vector2i(300, 100)
+script = ExtResource("1_ybsql")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Press a Key to Assign to Shortcut"
+horizontal_alignment = 1
+
+[node name="KeyDisplay" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Waiting for Key..."
+label_settings = SubResource("LabelSettings_6pp30")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_oyxnb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="OkButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+disabled = true
+text = "   OK   "
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   Cancel   "

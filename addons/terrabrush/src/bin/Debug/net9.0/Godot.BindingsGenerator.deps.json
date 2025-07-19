@@ -1,0 +1,298 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0/win-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {},
+    ".NETCoreApp,Version=v9.0/win-x64": {
+      "Godot.BindingsGenerator/4.5.0-dev": {
+        "dependencies": {
+          "ClangSharp": "18.1.0",
+          "ClangSharp.PInvokeGenerator": "18.1.0",
+          "Godot.BindingsGenerator.ApiDump": "4.5.0-dev",
+          "Godot.BindingsGenerator.Reflection": "4.5.0-dev",
+          "Microsoft.Build.Utilities.Core": "17.10.4",
+          "Microsoft.CodeAnalysis.ResxSourceGenerator": "3.11.0-beta1.24324.1",
+          "System.CommandLine": "2.0.0-beta5.25306.1"
+        },
+        "runtime": {
+          "Godot.BindingsGenerator.dll": {}
+        }
+      },
+      "ClangSharp/18.1.0": {
+        "dependencies": {
+          "ClangSharp.Interop": "18.1.0"
+        },
+        "runtime": {
+          "lib/net8.0/ClangSharp.dll": {
+            "assemblyVersion": "18.1.0.0",
+            "fileVersion": "18.1.0.0"
+          }
+        }
+      },
+      "ClangSharp.Interop/18.1.0": {
+        "dependencies": {
+          "libclang": "18.1.3.2",
+          "libClangSharp": "18.1.3.1"
+        },
+        "runtime": {
+          "lib/net8.0/ClangSharp.Interop.dll": {
+            "assemblyVersion": "18.1.0.0",
+            "fileVersion": "18.1.0.0"
+          }
+        }
+      },
+      "ClangSharp.PInvokeGenerator/18.1.0": {
+        "dependencies": {
+          "ClangSharp": "18.1.0"
+        },
+        "runtime": {
+          "lib/net8.0/ClangSharp.PInvokeGenerator.dll": {
+            "assemblyVersion": "18.1.0.0",
+            "fileVersion": "18.1.0.0"
+          }
+        }
+      },
+      "libclang/18.1.3.2": {
+        "dependencies": {
+          "libclang.runtime.win-x64": "18.1.3.2"
+        }
+      },
+      "libclang.runtime.win-x64/18.1.3.2": {
+        "native": {
+          "runtimes/win-x64/native/libclang.dll": {
+            "fileVersion": "18.1.3.0"
+          }
+        }
+      },
+      "libClangSharp/18.1.3.1": {
+        "dependencies": {
+          "libClangSharp.runtime.win-x64": "18.1.3.1"
+        }
+      },
+      "libClangSharp.runtime.win-x64/18.1.3.1": {
+        "native": {
+          "runtimes/win-x64/native/libClangSharp.dll": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Build.Framework/17.10.4": {},
+      "Microsoft.Build.Utilities.Core/17.10.4": {
+        "dependencies": {
+          "Microsoft.Build.Framework": "17.10.4",
+          "Microsoft.NET.StringTools": "17.10.4",
+          "System.Collections.Immutable": "8.0.0",
+          "System.Configuration.ConfigurationManager": "8.0.0"
+        }
+      },
+      "Microsoft.CodeAnalysis.ResxSourceGenerator/3.11.0-beta1.24324.1": {},
+      "Microsoft.NET.StringTools/17.10.4": {},
+      "System.Collections.Immutable/8.0.0": {},
+      "System.CommandLine/2.0.0-beta5.25306.1": {
+        "runtime": {
+          "lib/net8.0/System.CommandLine.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.25.30601"
+          }
+        },
+        "resources": {
+          "lib/net8.0/cs/System.CommandLine.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net8.0/de/System.CommandLine.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net8.0/es/System.CommandLine.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net8.0/fr/System.CommandLine.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net8.0/it/System.CommandLine.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net8.0/ja/System.CommandLine.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net8.0/ko/System.CommandLine.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net8.0/pl/System.CommandLine.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net8.0/pt-BR/System.CommandLine.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net8.0/ru/System.CommandLine.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net8.0/tr/System.CommandLine.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net8.0/zh-Hans/System.CommandLine.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net8.0/zh-Hant/System.CommandLine.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "System.Configuration.ConfigurationManager/8.0.0": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "8.0.0",
+          "System.Security.Cryptography.ProtectedData": "8.0.0"
+        }
+      },
+      "System.Diagnostics.EventLog/8.0.0": {},
+      "System.Security.Cryptography.ProtectedData/8.0.0": {},
+      "Godot.BindingsGenerator.ApiDump/4.5.0-dev": {
+        "runtime": {
+          "Godot.BindingsGenerator.ApiDump.dll": {
+            "assemblyVersion": "42.42.42.42",
+            "fileVersion": "42.42.42.42424"
+          }
+        }
+      },
+      "Godot.BindingsGenerator.Reflection/4.5.0-dev": {
+        "runtime": {
+          "Godot.BindingsGenerator.Reflection.dll": {
+            "assemblyVersion": "42.42.42.42",
+            "fileVersion": "42.42.42.42424"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Godot.BindingsGenerator/4.5.0-dev": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ClangSharp/18.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9p5aiPpCN/CkfGcYUvIEYf/5zhb0sRoZK+YjBSEcaELw+1r+SAnBoFyE7ZVR53w97RZoXNCJX0P++WE3K51+qA==",
+      "path": "clangsharp/18.1.0",
+      "hashPath": "clangsharp.18.1.0.nupkg.sha512"
+    },
+    "ClangSharp.Interop/18.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WnOTnAn2DcnL+yPWuMsyrCQyAPBrfIQZqk9rIV7T43rbi3VuCep6VLEE9wuyIjnh2sZGNlRrv0T9Wb1Ng7Fr2A==",
+      "path": "clangsharp.interop/18.1.0",
+      "hashPath": "clangsharp.interop.18.1.0.nupkg.sha512"
+    },
+    "ClangSharp.PInvokeGenerator/18.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DCsrDMrc8J9zf4CAHpxKBU3BOLCcwevXLlgmzGrybRUlGS6Jl5WWl+3oSwTfDFdk+qbEJcP5XA7Daxb9U85mAQ==",
+      "path": "clangsharp.pinvokegenerator/18.1.0",
+      "hashPath": "clangsharp.pinvokegenerator.18.1.0.nupkg.sha512"
+    },
+    "libclang/18.1.3.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ugV1RcbJ50D9QivPWoJ5qF14psjQQqiFmd9bTsUScfpcGUEJBE2qm8eIZzatEZOKUchW3wSHRXryBzTtapibwQ==",
+      "path": "libclang/18.1.3.2",
+      "hashPath": "libclang.18.1.3.2.nupkg.sha512"
+    },
+    "libclang.runtime.win-x64/18.1.3.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-L8bgxTUASasstvQdjpSdOQEjpLtXKpZFSmV4iRNtC3+hyCt87KvOR1v8F5V+sPasdihLkN3160KmtpcAdcUm1A==",
+      "path": "libclang.runtime.win-x64/18.1.3.2",
+      "hashPath": "libclang.runtime.win-x64.18.1.3.2.nupkg.sha512"
+    },
+    "libClangSharp/18.1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HjHcNOxPFYvWk2vgqbLjmRW63b6ZQw2UgwlOAAb4XGWnLmOLDipoV2nWTA3T0orE4dleWw7lemGKhZwtvmFKQw==",
+      "path": "libclangsharp/18.1.3.1",
+      "hashPath": "libclangsharp.18.1.3.1.nupkg.sha512"
+    },
+    "libClangSharp.runtime.win-x64/18.1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Uu9w/jthpuC7uDFKYmkdmU/LIVJAlht5a6QFLzkUxdET7Szo5h/sMezU2oRE7P2ufIyFnPl5KYyFV1z0jGAedQ==",
+      "path": "libclangsharp.runtime.win-x64/18.1.3.1",
+      "hashPath": "libclangsharp.runtime.win-x64.18.1.3.1.nupkg.sha512"
+    },
+    "Microsoft.Build.Framework/17.10.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4qXCwNOXBR1dyCzuks9SwTwFJQO/xmf2wcMislotDWJu7MN/r3xDNoU8Ae5QmKIHPaLG1xmfDkYS7qBVzxmeKw==",
+      "path": "microsoft.build.framework/17.10.4",
+      "hashPath": "microsoft.build.framework.17.10.4.nupkg.sha512"
+    },
+    "Microsoft.Build.Utilities.Core/17.10.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eEB/tcXkSV+nQgvoa/l53UPtn+KVtKZ8zBceDZsXVTrfE4fA+4+/olrx9W8n2tq4XiESsL9UuGJgCKzqBwQCoQ==",
+      "path": "microsoft.build.utilities.core/17.10.4",
+      "hashPath": "microsoft.build.utilities.core.17.10.4.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.ResxSourceGenerator/3.11.0-beta1.24324.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EUd/IyR/Jdum8kDA0G0MubuKdcFkeREm/Suo8mizadwvscgxcBHNjR4gb90xIyREIQ9V041xxEiggecU4Uw+ng==",
+      "path": "microsoft.codeanalysis.resxsourcegenerator/3.11.0-beta1.24324.1",
+      "hashPath": "microsoft.codeanalysis.resxsourcegenerator.3.11.0-beta1.24324.1.nupkg.sha512"
+    },
+    "Microsoft.NET.StringTools/17.10.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wyABaqY+IHCMMSTQmcc3Ca6vbmg5BaEPgicnEgpll+4xyWZWlkQqUwafweUd9VAhBb4jqplMl6voUHQ6yfdUcg==",
+      "path": "microsoft.net.stringtools/17.10.4",
+      "hashPath": "microsoft.net.stringtools.17.10.4.nupkg.sha512"
+    },
+    "System.Collections.Immutable/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
+      "path": "system.collections.immutable/8.0.0",
+      "hashPath": "system.collections.immutable.8.0.0.nupkg.sha512"
+    },
+    "System.CommandLine/2.0.0-beta5.25306.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ce0wuowuh13Cd7GXqLCq77/YWlxQMxrVCMIO/2/QUP6CdP/JWnlYSN/N3/55wwGsUwa9CvPuT8ddjgyypUr5ag==",
+      "path": "system.commandline/2.0.0-beta5.25306.1",
+      "hashPath": "system.commandline.2.0.0-beta5.25306.1.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JlYi9XVvIREURRUlGMr1F6vOFLk7YSY4p1vHo4kX3tQ0AGrjqlRWHDi66ImHhy6qwXBG3BJ6Y1QlYQ+Qz6Xgww==",
+      "path": "system.configuration.configurationmanager/8.0.0",
+      "hashPath": "system.configuration.configurationmanager.8.0.0.nupkg.sha512"
+    },
+    "System.Diagnostics.EventLog/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fdYxcRjQqTTacKId/2IECojlDSFvp7LP5N78+0z/xH7v/Tuw5ZAxu23Y6PTCRinqyu2ePx+Gn1098NC6jM6d+A==",
+      "path": "system.diagnostics.eventlog/8.0.0",
+      "hashPath": "system.diagnostics.eventlog.8.0.0.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+TUFINV2q2ifyXauQXRwy4CiBhqvDEDZeVJU7qfxya4aRYOKzVBpN+4acx25VcPB9ywUN6C0n8drWl110PhZEg==",
+      "path": "system.security.cryptography.protecteddata/8.0.0",
+      "hashPath": "system.security.cryptography.protecteddata.8.0.0.nupkg.sha512"
+    },
+    "Godot.BindingsGenerator.ApiDump/4.5.0-dev": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Godot.BindingsGenerator.Reflection/4.5.0-dev": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

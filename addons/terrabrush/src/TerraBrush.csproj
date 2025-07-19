@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot>true</PublishAot>
+    <PublishDir>..\bin</PublishDir>
+    <StripSymbols>false</StripSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProcessedRuntimeIdentifier>$([System.String]::Copy('$(RuntimeIdentifier)').Replace('-', '.'))</ProcessedRuntimeIdentifier>
+    <ProcessedConfiguration Condition="'$(Configuration)' == 'Debug'">.debug</ProcessedConfiguration>
+    <ProcessedConfiguration Condition="'$(Configuration)' == 'Release'"></ProcessedConfiguration>
+    <AssemblyName>TerraBrush</AssemblyName>
+    <AssemblyName Condition="$(RuntimeIdentifier) != ''">TerraBrush$(ProcessedConfiguration).$(ProcessedRuntimeIdentifier)</AssemblyName>
+
+    <!-- To show generated files -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>.generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <!-- TerraBrush Constants -->
+  <!-- macOS -->
+  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('osx'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_MACOS</DefineConstants>
+  </PropertyGroup>
+  <!-- Linux -->
+  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('linux'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_LINUX</DefineConstants>
+  </PropertyGroup>
+  <!-- Android -->
+  <!-- <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('android'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_ANDROID</DefineConstants>
+    <TargetFramework>net9.0-android</TargetFramework>
+  </PropertyGroup> -->
+  <!-- macOS Catalyst -->
+  <!-- <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('maccatalyst'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_MAC_CATALYST</DefineConstants>
+    <TargetFramework>net9.0-maccatalyst</TargetFramework>
+  </PropertyGroup> -->
+  <!-- iOS -->
+  <!-- <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('ios'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_IOS</DefineConstants>
+    <TargetFramework>net9.0-ios</TargetFramework>
+  </PropertyGroup> -->
+  <!-- Windows -->
+  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('win'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <!-- Web (WASM) -->
+  <!-- <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('browser'))">
+    <DefineConstants>$(DefineConstants);TERRABRUSH_WEB</DefineConstants>
+    <TargetFramework>net9.0-browser</TargetFramework>
+  </PropertyGroup> -->
+
+  <Target Name="LogConstants" AfterTargets="Build">
+    <Message Text="Defined Constants: $(DefineConstants)" Importance="High" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="D:\Prog\Godot\GodotDotnetBuilds\godot-dotnet\src\Godot.Bindings\Godot.Bindings.csproj" />
+    <ProjectReference Include="D:\Prog\Godot\GodotDotnetBuilds\godot-dotnet\src\Godot.SourceGenerators\Godot.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5dhs7kc4xfyg"]
+
+[ext_resource type="Script" uid="uid://bj5cef0d70joh" path="res://addons/terrabrush/Scripts/NumericSelectorDialog.cs" id="1_seyxx"]
+
+[node name="NumericSelectorDialog" type="Window"]
+title = "Select a value"
+initial_position = 2
+size = Vector2i(300, 90)
+exclusive = true
+unresizable = true
+script = ExtResource("1_seyxx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 2
+min_value = -10000.0
+max_value = 10000.0
+step = 0.01
+select_all_on_focus = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="OkButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   OK   "
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "   Cancel   "

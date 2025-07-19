@@ -1,0 +1,4 @@
+D:\Prog\Godot\Projects\TerraBrush\addons\bin\Godot.BindingsGenerator.exe
+D:\Prog\Godot\Projects\TerraBrush\addons\bin\Godot.BindingsGenerator.runtimeconfig.json
+D:\Prog\Godot\Projects\TerraBrush\addons\bin\TerraBrush.win.x64.dll
+D:\Prog\Godot\Projects\TerraBrush\addons\bin\Godot.Bindings.xml
