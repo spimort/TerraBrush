@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TerraBrush.win.x64")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4bd27bc66509e9e785f3bb20fab959d82dc6b62")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61581c9653ab5c499bc04e067d0f7ca1d69e68a4")]
 [assembly: System.Reflection.AssemblyProductAttribute("TerraBrush.win.x64")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TerraBrush.win.x64")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

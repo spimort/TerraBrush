@@ -132,11 +132,11 @@ public partial class Foliage : Node3D {
             _foliageShader.SetShaderParameter(StringNames.LODLevels, Definition.LODLevels);
             _foliageShader.SetShaderParameter(StringNames.FoliageAlbedo, Definition.Albedo);
 
-            if (Definition.AlbedoTextures?.Length > 0) {
+            if (Definition.AlbedoTextures?.Count > 0) {
                 var albedoTextures = new Texture2DArray();
                 albedoTextures.CreateFromImages([.. Definition.AlbedoTextures.Select(x => x.GetImage())]);
                 _foliageShader.SetShaderParameter(Definition.NearestTextureFilter ? StringNames.FoliageAlbedoTexturesNearest : StringNames.FoliageAlbedoTextures, albedoTextures);
-                _foliageShader.SetShaderParameter(StringNames.FoliageNumberOfTexture, Definition.AlbedoTextures.Length);
+                _foliageShader.SetShaderParameter(StringNames.FoliageNumberOfTexture, Definition.AlbedoTextures.Count);
                 _foliageShader.SetShaderParameter(StringNames.NearestFilter, Definition.NearestTextureFilter);
             }
 
@@ -144,8 +144,8 @@ public partial class Foliage : Node3D {
             _foliageShader.SetShaderParameter(StringNames.UseBrushScale, Definition.UseBrushScale);
             _foliageShader.SetShaderParameter(StringNames.ScaleNoiseTexture, Definition.ScaleNoiseTexture);
             _foliageShader.SetShaderParameter(StringNames.RandomPlacementRange, Definition.RandomPlacementRange);
-            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, new GodotArray([..Definition.ApplyOnTextureIndexes ?? new int[] {}]));
-            _foliageShader.SetShaderParameter(StringNames.NumberOfTexturesToApplyOn, Definition.ApplyOnTextureIndexes?.Length ?? 0);
+            _foliageShader.SetShaderParameter(StringNames.ApplyOnTextureIndexes, new GodotArray([..Definition.ApplyOnTextureIndexes.ToArray() ?? new int[] {}]));
+            _foliageShader.SetShaderParameter(StringNames.NumberOfTexturesToApplyOn, Definition.ApplyOnTextureIndexes?.Count ?? 0);
         } else {
             _particles.Visible = true;
 

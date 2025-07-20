@@ -25,7 +25,7 @@ public static class ImporterEngine {
         }
 
         terrabrush.TerrainZones ??= new ZonesResource();
-        terrabrush.TerrainZones.Zones ??= new ZoneResource[] { };
+        terrabrush.TerrainZones.Zones ??= [];
 
         // Heightmap
         if (settings.Heightmap != null) {
@@ -66,9 +66,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.SplatmapsTexture ??= new ImageTexture[] { };
-                    if (zone.SplatmapsTexture.Length < i + 1) {
-                        zone.SplatmapsTexture = zone.SplatmapsTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.SplatmapsTexture ??= [];
+                    if (zone.SplatmapsTexture.Count < i + 1) {
+                        zone.SplatmapsTexture = [..zone.SplatmapsTexture.Append(resultImage.ImageTexture)];
                     }
                     else {
                         zone.SplatmapsTexture[i] = resultImage.ImageTexture;
@@ -95,9 +95,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.FoliagesTexture ??= new ImageTexture[] { };
-                    if (zone.FoliagesTexture.Length < i + 1) {
-                        zone.FoliagesTexture = zone.FoliagesTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.FoliagesTexture ??= [];
+                    if (zone.FoliagesTexture.Count < i + 1) {
+                        zone.FoliagesTexture = [..zone.FoliagesTexture.Append(resultImage.ImageTexture)];
                     }
                     else {
                         zone.FoliagesTexture[i] = resultImage.ImageTexture;
@@ -124,9 +124,9 @@ public static class ImporterEngine {
 
                 foreach (var resultImage in resultImages) {
                     var zone = GetZoneForImageInfo(terrabrush, resultImage);
-                    zone.ObjectsTexture ??= new ImageTexture[] { };
-                    if (zone.ObjectsTexture.Length < i + 1) {
-                        zone.ObjectsTexture = zone.ObjectsTexture.Append(resultImage.ImageTexture).ToArray();
+                    zone.ObjectsTexture ??= [];
+                    if (zone.ObjectsTexture.Count < i + 1) {
+                        zone.ObjectsTexture = [..zone.ObjectsTexture.Append(resultImage.ImageTexture)];
                     }
                     else {
                         zone.ObjectsTexture[i] = resultImage.ImageTexture;
@@ -203,9 +203,9 @@ public static class ImporterEngine {
                 ZonePosition = new Vector2I(imageInfo.ZoneX, imageInfo.ZoneY)
             };
 
-            terraBrush.TerrainZones.Zones = new List<ZoneResource>(terraBrush.TerrainZones.Zones) {
+            terraBrush.TerrainZones.Zones = [..new List<ZoneResource>(terraBrush.TerrainZones.Zones) {
                 zone
-            }.ToArray();
+            }];
         }
 
         return zone;
@@ -246,7 +246,7 @@ public static class ImporterEngine {
                 var toX = x + startingX;
                 var toY = y + startingY;
 
-                var pixel =NamedColors.Black;
+                var pixel = NamedColors.Black;
 
                 // Try to match the next pixel with the one of the previous zone, for better transition
                 if (x == newImageSize - 1) {

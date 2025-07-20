@@ -48,15 +48,15 @@ public partial class FoliageDefinitionResource : Resource {
     [BindProperty] public int LODLevels { get;set; } = 3;
     [BindProperty] public int LODRowsPerLevel { get;set; } = 50;
     [BindProperty] public float LODInitialCellWidth { get;set; } = 1;
-    [BindProperty] public Color Albedo { get;set; } =NamedColors.White;
-    [BindProperty] public Texture2D[] AlbedoTextures { get;set; }
+    [BindProperty] public Color Albedo { get;set; } = NamedColors.White;
+    [BindProperty] public GodotArray<Texture2D> AlbedoTextures { get;set; }
     [BindProperty] public bool NearestTextureFilter { get;set; }
     [BindProperty] public bool UseGroundColor { get;set; }
     [BindProperty] public bool CastShadow { get;set; } = false;
     [BindProperty] public bool UseBrushScale { get;set; } = true;
     [BindProperty] public Texture2D ScaleNoiseTexture { get;set; }
     [BindProperty] public float RandomPlacementRange { get;set; } = 3.0f;
-    [BindProperty] public int[] ApplyOnTextureIndexes { get;set; }
+    [BindProperty] public GodotArray<int> ApplyOnTextureIndexes { get;set; }
     [BindProperty] public ShaderMaterial CustomShader {
         get {
             return _customShader;

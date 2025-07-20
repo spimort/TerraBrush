@@ -265,7 +265,7 @@ public partial class ObjectsOctreeMultiMesh : Node3D, IObjectsNode {
     private async Task InitializeOctree() {
         _octree = new(15, Vector3.Zero, 1);
 
-        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Length; zoneIndex++) {
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count; zoneIndex++) {
             var zone = TerrainZones.Zones[zoneIndex];
 
             var heightmapImage = zone.HeightMapTexture.GetImage();

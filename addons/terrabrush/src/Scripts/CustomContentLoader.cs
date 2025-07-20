@@ -56,7 +56,7 @@ public static class CustomContentLoader {
         if (terraBrush.TextureSets?.TextureSets != null) {
             var texturePreviewPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/DockPreviewButton.tscn");
 
-            for (var i = 0; i < terraBrush.TextureSets.TextureSets.Length; i++) {
+            for (var i = 0; i < terraBrush.TextureSets.TextureSets.Count; i++) {
                 var textureSet = terraBrush.TextureSets.TextureSets[i];
 
                 var dockPreviewButton = texturePreviewPrefab.Instantiate<DockPreviewButton>();
@@ -89,11 +89,11 @@ public static class CustomContentLoader {
                     dockPreviewButton.IconType = useCircleIcon ? IconType.Circle : IconType.Square;
                     dockPreviewButton.Margin = 5;
 
-                    if (foliage.Definition?.MeshMaterial == null && foliage.Definition?.AlbedoTextures?.Length == 0 && foliage.Definition.Mesh != null) {
+                    if (foliage.Definition?.MeshMaterial == null && foliage.Definition?.AlbedoTextures?.Count == 0 && foliage.Definition.Mesh != null) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.Mesh);
                     } else if (foliage.Definition?.MeshMaterial != null) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.MeshMaterial);
-                    } else if (foliage.Definition?.AlbedoTextures?.Length > 0) {
+                    } else if (foliage.Definition?.AlbedoTextures?.Count > 0) {
                         dockPreviewButton.LoadResourcePreview(foliage.Definition.AlbedoTextures[0]);
                     }
 

@@ -12,7 +12,7 @@ public partial class BrushNumericSelector : Control {
     [NodePath] private Label _valueLabel;
 
     [BindProperty] public int BrushSizeFactor { get;set; } = 2;
-    [BindProperty] public Color WidgetColor { get;set; } =NamedColors.White;
+    [BindProperty] public Color WidgetColor { get;set; } = NamedColors.White;
     [BindProperty] public int MinValue { get;set; } = -1;
     [BindProperty] public int MaxValue { get;set; } = -1;
 

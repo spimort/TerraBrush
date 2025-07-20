@@ -7,7 +7,7 @@ namespace TerraBrush;
 
 public static class ExporterEngine {
     public static void ExportTerrain(TerraBrushTool terrabrush, string dataPath) {
-        if ((terrabrush.TerrainZones?.Zones?.Length).GetValueOrDefault() == 0) {
+        if ((terrabrush.TerrainZones?.Zones?.Count).GetValueOrDefault() == 0) {
             return;
         }
 

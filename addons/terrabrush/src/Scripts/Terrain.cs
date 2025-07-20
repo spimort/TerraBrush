@@ -151,7 +151,7 @@ public partial class Terrain : Node3D {
         var updateAction = () => {
             var imagesCache = new Dictionary<ZoneResource, CollisionZoneImages>();
 
-            for (var i = 0; i < TerrainZones.Zones.Length; i++) {
+            for (var i = 0; i < TerrainZones.Zones.Count; i++) {
                 var zone = TerrainZones.Zones[i];
                 var leftNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X - 1 && x.ZonePosition.Y == zone.ZonePosition.Y);
                 var topNeighbourZone = TerrainZones.Zones.FirstOrDefault(x => x.ZonePosition.X == zone.ZonePosition.X && x.ZonePosition.Y == zone.ZonePosition.Y - 1);
@@ -252,7 +252,7 @@ public partial class Terrain : Node3D {
             filterParamName = "Nearest";
         }
 
-        if (this.TextureSets?.TextureSets?.Length > 0) {
+        if (this.TextureSets?.TextureSets?.Count > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
             Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray()]));
             Clipmap.Shader.SetShaderParameter(StringNames.Triplanar, TextureSets.TextureSets.Any(x => x.Triplanar));

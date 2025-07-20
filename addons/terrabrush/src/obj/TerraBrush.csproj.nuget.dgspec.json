@@ -79,6 +79,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
@@ -86,13 +100,18 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
+        }
       }
     },
     "D:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj": {
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "D:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj",
-        "projectName": "TerraBrush",
+        "projectName": "TerraBrush.win.x64",
         "projectPath": "D:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\TerraBrush.csproj",
         "packagesPath": "C:\\Users\\yoyo_\\.nuget\\packages\\",
         "outputPath": "D:\\Prog\\Godot\\Projects\\TerraBrush\\addons\\terrabrush\\src\\obj\\",
@@ -164,6 +183,18 @@
           "warn": true,
           "downloadDependencies": [
             {
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+              "version": "[9.0.2, 9.0.2]"
+            },
+            {
               "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
               "version": "[9.0.2, 9.0.2]"
             }
@@ -174,6 +205,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

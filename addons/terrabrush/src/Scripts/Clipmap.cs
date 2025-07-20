@@ -121,7 +121,7 @@ public partial class Clipmap : Node3D {
         clipmapShader.SetShaderParameter(StringNames.InitialCellWidth, InitialCellWidth);
         clipmapShader.SetShaderParameter(StringNames.ZonesSize, (float) ZonesSize);
         clipmapShader.SetShaderParameter(StringNames.Resolution, (float) Resolution);
-        clipmapShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Length);
+        clipmapShader.SetShaderParameter(StringNames.NumberOfZones, (float) TerrainZones.Zones.Count);
 		clipmapShader.SetShaderParameter(StringNames.ZonesMap, TerrainZones.ZonesMap);
         UpdateShaderOffsetPosition();
     }

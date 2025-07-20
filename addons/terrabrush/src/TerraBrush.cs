@@ -281,11 +281,11 @@ public partial class TerraBrush : TerraBrushTool {
         OnRemoveTerrain();
 
         TerrainZones = new ZonesResource() {
-            Zones = new ZoneResource[] {
-                new ZoneResource() {
+            Zones = [
+                new() {
                     HeightMapTexture = ZoneUtils.CreateHeightmapImage(ZonesSize, Resolution, new Vector2I(0, 0), DataPath)
                 }
-            }
+            ]
         };
 
         await LoadTerrain();
@@ -432,16 +432,16 @@ public partial class TerraBrush : TerraBrushTool {
     }
 
     public void CreateSplatmaps(ZoneResource zone) {
-        var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
+        var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Count ?? 0) / 4.0f);
 
-        if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Length < numberOfSplatmaps) {
-            var newList = new List<ImageTexture>(zone.SplatmapsTexture ?? Array.Empty<ImageTexture>());
+        if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Count < numberOfSplatmaps) {
+            var newList = new GodotArray<ImageTexture>([..zone.SplatmapsTexture.ToArray() ?? Array.Empty<ImageTexture>()]);
 
-            for (var i = zone.SplatmapsTexture?.Length ?? 0; i < numberOfSplatmaps; i++) {
+            for (var i = zone.SplatmapsTexture?.Count ?? 0; i < numberOfSplatmaps; i++) {
                 newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
             }
 
-            zone.SplatmapsTexture = newList.ToArray();
+            zone.SplatmapsTexture = newList;
         }
     }
 
@@ -465,14 +465,14 @@ public partial class TerraBrush : TerraBrushTool {
         for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count(); zoneIndex++) {
             var zone = TerrainZones.Zones[zoneIndex];
             var newList = Foliages.Select((foliage, foliageIndex) => {
-                if (zone.FoliagesTexture?.Length > foliageIndex) {
+                if (zone.FoliagesTexture?.Count > foliageIndex) {
                     return zone.FoliagesTexture[foliageIndex];
                 } else {
                     return ZoneUtils.CreateFoliageImage(ZonesSize, zone.ZonePosition, foliageIndex, DataPath);
                 }
             });
 
-            zone.FoliagesTexture = newList.ToArray();
+            zone.FoliagesTexture = [..newList];
         }
 
         TerrainZones.InitializeFoliageTextures(this);
@@ -509,17 +509,17 @@ public partial class TerraBrush : TerraBrushTool {
             AddChild(_objectsContainerNode);
         }
 
-        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Length; zoneIndex++) {
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count; zoneIndex++) {
             var zone = TerrainZones.Zones[zoneIndex];
             var newList = Objects.Select((objectItem, objectIndex) => {
-                if (zone.ObjectsTexture?.Length > objectIndex) {
+                if (zone.ObjectsTexture?.Count > objectIndex) {
                     return zone.ObjectsTexture[objectIndex];
                 } else {
                     return  ZoneUtils.CreateObjectImage(ZonesSize, zone.ZonePosition, objectIndex, DataPath);
                 }
             });
 
-            zone.ObjectsTexture = newList.ToArray();
+            zone.ObjectsTexture = [..newList];
         }
 
         var loadInThread = ObjectLoadingStrategy == ObjectLoadingStrategy.Threaded || (ObjectLoadingStrategy == ObjectLoadingStrategy.ThreadedInEditorOnly && Engine.Singleton.IsEditorHint());
@@ -615,7 +615,7 @@ public partial class TerraBrush : TerraBrushTool {
             return;
         }
 
-        for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
+        for (var i = 0; i < TerrainZones.Zones?.Count; i++) {
             var zone = TerrainZones.Zones[i];
 
             zone.SnowTexture ??= ZoneUtils.CreateSnowImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
@@ -652,7 +652,7 @@ public partial class TerraBrush : TerraBrushTool {
             return;
         }
 
-        for (var i = 0; i < TerrainZones.Zones?.Length; i++) {
+        for (var i = 0; i < TerrainZones.Zones?.Count; i++) {
             var zone = TerrainZones.Zones[i];
 
             zone.MetaInfoTexture ??= ZoneUtils.CreateMetaInfoImage(ZonesSize, Resolution, zone.ZonePosition, DataPath);
@@ -739,7 +739,7 @@ public partial class TerraBrush : TerraBrushTool {
             }
 
             return new TerrainPositionInformation() {
-                Textures = zone.SplatmapsTexture?.Length > 0 ? TextureSets?.TextureSets?.Select((textureSet, index) => {
+                Textures = [..zone.SplatmapsTexture?.Count > 0 ? TextureSets?.TextureSets?.Select((textureSet, index) => {
                     var splatmapIndex = Mathf.FloorToInt(index / 4);
                     var splatmapImage = zone.SplatmapsTexture[splatmapIndex];
                     var pixel = GetImageFromImageTexture(splatmapImage).GetPixel(zoneInfo.ImagePosition.X, zoneInfo.ImagePosition.Y);
@@ -750,7 +750,7 @@ public partial class TerraBrush : TerraBrushTool {
                         Name = textureSet.Name,
                         Factor = pixel[colorIndex]
                     };
-                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] { },
+                }).OrderByDescending(item => item.Factor).ToArray() : new TerrainPositionTextureInformation[] { }],
                 WaterFactor = waterFactor ?? 0,
                 WaterDeepness = waterFactor * WaterDefinition?.WaterFactor ?? 0,
                 SnowFactor = snowFactor ?? 0,

@@ -58,7 +58,7 @@ public partial class Objects : Node3D, IObjectsNode {
             return;
         }
 
-        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Length; zoneIndex++) {
+        for (var zoneIndex = 0; zoneIndex < TerrainZones.Zones?.Count; zoneIndex++) {
             if (cancellationToken.IsCancellationRequested) {
                 return;
             }
@@ -145,7 +145,7 @@ public partial class Objects : Node3D, IObjectsNode {
         var resolutionZoneSize = ZoneUtils.GetImageSizeForResolution(ZonesSize, Resolution);
 
         foreach (var zone in zones) {
-            var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
+            var zoneIndex = Array.IndexOf([..TerrainZones.Zones], zone);
             var heightmapImage = zone.HeightMapTexture.GetImage();
             var waterImage = zone.WaterTexture?.GetImage();
 
@@ -237,7 +237,7 @@ public partial class Objects : Node3D, IObjectsNode {
     }
 
     public void AddRemoveObjectFromTool(bool add, int x, int y, ZoneResource zone, Image heightmapImage, Image waterImage, Image noiseImage) {
-        var zoneIndex = Array.IndexOf(TerrainZones.Zones, zone);
+        var zoneIndex = Array.IndexOf([..TerrainZones.Zones], zone);
         var containerNode = GetNodeOrNull((NodePath)$"{zoneIndex}");
         if (containerNode == null) {
             containerNode = new Node3D() {

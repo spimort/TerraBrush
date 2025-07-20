@@ -33,7 +33,7 @@ public class TextureTool : ToolBase {
 
         ForEachBrushPixel(brushImage, brushSize, imagePosition, (imageZoneInfo, pixelBrushStrength) => {
             for (int i = 0; i < numberOfSplatmaps; i++) {
-                Color splatmapColor =NamedColors.Transparent;
+                Color splatmapColor = NamedColors.Transparent;
 
                 if (i != splatmapIndex) {
                     splatmapColor = new Color(0, 0, 0, 0);

@@ -30,7 +30,7 @@ public partial class ZonesResource : Resource {
     public Texture2DArray MetaInfoTextures => _metaInfoTextures;
     public ImageTexture ZonesMap => _zonesMap;
 
-    [BindProperty] public ZoneResource[] Zones { get;set; }
+    [BindProperty] public GodotArray<ZoneResource> Zones { get;set; }
 
     public void UpdateLockTexture(int zoneSize) {
         var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf)).ToArray();
@@ -104,7 +104,7 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateZoneWaterTexture(ZoneResource zone) {
-        _waterTextures.UpdateLayer(zone.WaterTexture.GetImage(), Array.IndexOf(Zones, zone));
+        _waterTextures.UpdateLayer(zone.WaterTexture.GetImage(), Array.IndexOf([..Zones], zone));
     }
 
     public void UpdateSnowTextures() {
@@ -116,7 +116,7 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateZoneSnowTexture(ZoneResource zone) {
-        _snowTextures.UpdateLayer(zone.SnowTexture.GetImage(), Array.IndexOf(Zones, zone));
+        _snowTextures.UpdateLayer(zone.SnowTexture.GetImage(), Array.IndexOf([..Zones], zone));
     }
 
     public void UpdateMetaInfoTextures() {
@@ -128,7 +128,7 @@ public partial class ZonesResource : Resource {
     }
 
     public void UpdateZoneMetaInfoTexture(ZoneResource zone) {
-        _metaInfoTextures.UpdateLayer(zone.MetaInfoTexture.GetImage(), Array.IndexOf(Zones, zone));
+        _metaInfoTextures.UpdateLayer(zone.MetaInfoTexture.GetImage(), Array.IndexOf([..Zones], zone));
     }
 
     public void SaveResources() {
@@ -170,7 +170,7 @@ public partial class ZonesResource : Resource {
         var newList = new List<ZoneResource>(Zones) {
             zone
         };
-        Zones = newList.ToArray();
+        Zones = new GodotArray<ZoneResource>([..newList]);
 
         UpdateImageTextures(terraBrush.ZonesSize);
 

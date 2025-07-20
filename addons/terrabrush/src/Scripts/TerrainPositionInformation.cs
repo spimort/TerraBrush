@@ -1,10 +1,11 @@
 using Godot;
+using Godot.Collections;
 
 namespace TerraBrush;
 
 [GodotClass]
 public partial class TerrainPositionInformation : GodotObject {
-    [BindProperty] public TerrainPositionTextureInformation[] Textures { get; set; }
+    [BindProperty] public GodotArray<TerrainPositionTextureInformation> Textures { get; set; }
     [BindProperty] public float WaterFactor { get; set; }
     [BindProperty] public float WaterDeepness { get; set; }
     [BindProperty] public float SnowFactor { get; set; }

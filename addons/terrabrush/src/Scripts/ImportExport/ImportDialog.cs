@@ -39,8 +39,8 @@ public partial class ImportDialog : Window {
         var importRowPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/ImportExport/ImportImageRow.tscn");
 
         // Splatmaps
-        if (OriginialTerraBrush?.TextureSets?.TextureSets?.Length > 0) {
-            var numberOfSplatmaps = Mathf.CeilToInt(OriginialTerraBrush.TextureSets.TextureSets.Length / 4.0f);
+        if (OriginialTerraBrush?.TextureSets?.TextureSets?.Count > 0) {
+            var numberOfSplatmaps = Mathf.CeilToInt(OriginialTerraBrush.TextureSets.TextureSets.Count / 4.0f);
             for (int i = 0; i < numberOfSplatmaps; i++) {
                 var importRow = importRowPrefab.Instantiate<ImportImageRow>();
                 importRow.ImageTypeName = $"Splatmap {i + 1}";
