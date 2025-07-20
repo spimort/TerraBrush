@@ -17,3 +17,5 @@ mono_crash.*.json
 /.idea
 
 **/.vs
+**/bin
+**/.generated
