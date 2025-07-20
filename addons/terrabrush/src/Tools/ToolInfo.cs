@@ -1,0 +1,27 @@
+using Godot;
+
+namespace TerraBrush;
+
+[GodotClass(Tool = true)]
+public partial class ToolInfo : Control {
+    [NodePath] private Label _label;
+    [NodePath] private AnimationPlayer _animationPlayer;
+
+    protected override void _Ready() {
+        base._Ready();
+        this.RegisterNodePaths();
+    }
+
+    public void SetText(string text) {
+        if (_label.Text != text) {
+            _label.Text = text;
+
+            _animationPlayer.Stop();
+            if (string.IsNullOrWhiteSpace(text)) {
+                _animationPlayer.Play((StringName)"RESET");
+            } else {
+                _animationPlayer.Play((StringName)"Show");
+            }
+        }
+    }
+}

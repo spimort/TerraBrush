@@ -1,4 +1,0 @@
-D:\Prog\Godot\Projects\TerraBrush\addons\terrabrush\bin\Godot.BindingsGenerator.exe
-D:\Prog\Godot\Projects\TerraBrush\addons\terrabrush\bin\Godot.BindingsGenerator.runtimeconfig.json
-D:\Prog\Godot\Projects\TerraBrush\addons\terrabrush\bin\TerraBrush.win.x64.dll
-D:\Prog\Godot\Projects\TerraBrush\addons\terrabrush\bin\Godot.Bindings.xml

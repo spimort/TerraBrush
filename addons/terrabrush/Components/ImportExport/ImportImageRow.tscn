@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://brgfdwv5cmbfy"]
+
+[ext_resource type="Script" uid="uid://dase7cxtc2i1h" path="res://addons/terrabrush/Scripts/ImportExport/ImportImageRow.cs" id="1_5ms08"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0e42"]
+bg_color = Color(0, 0.0823529, 0.121569, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7fbma"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Gradient" id="Gradient_lnr3e"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 0.385)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5lgjs"]
+gradient = SubResource("Gradient_lnr3e")
+
+[node name="ImportRow" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_e0e42")
+script = ExtResource("1_5ms08")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7fbma")
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/HBoxContainer/PanelContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+button_mask = 3
+texture_normal = SubResource("GradientTexture1D_5lgjs")
+ignore_texture_size = true
+stretch_mode = 0

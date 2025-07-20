@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://eqx7sntvcxw4"]
+
+[ext_resource type="Script" uid="uid://ckw6hmano0xsf" path="res://addons/terrabrush/Scripts/KeybindSettings.cs" id="1_rua0l"]
+
+[node name="KeybindSettings" type="AcceptDialog"]
+title = "TerraBrush Keybindings"
+initial_position = 2
+size = Vector2i(400, 300)
+visible = true
+ok_button_text = "Close"
+script = ExtResource("1_rua0l")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="KeybindList" type="Tree" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+column_titles_visible = true
+hide_folding = true
+hide_root = true

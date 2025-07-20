@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://btsvsiriitxgm"]
+
+[ext_resource type="Script" uid="uid://cehj2moek1jbo" path="res://addons/terrabrush/Scripts/Objects.cs" id="1_rn4a4"]
+
+[node name="Objects" type="Node3D"]
+script = ExtResource("1_rn4a4")
