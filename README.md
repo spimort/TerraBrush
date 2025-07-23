@@ -323,6 +323,7 @@ In order to use a navigation mesh, make sure to set the **Parsed Geometry Type**
 
 ### Unable to load addon script
 * Make sure to use the .Net version of Godot. See the following issue for more details : https://github.com/spimort/TerraBrush/issues/201
+* If you you delete the folder **.godot**, make sure to rebuilt the project with either the **hammer button** or the `dotnet build` command. See the following issue for more details : https://github.com/spimort/TerraBrush/issues/215
 
 ## Support
 
