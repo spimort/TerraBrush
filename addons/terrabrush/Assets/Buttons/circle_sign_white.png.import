@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqgc1ym8vyqgy"
-path="res://.godot/imported/circle_sign_white.png-6826d7bf95f98de45ee8be2072553f4c.ctex"
+path="res://.godot/imported/circle_sign_white.png-aed6a700cc94cf1111c0fccacdd050a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Buttons/circle_sign_white.png"
-dest_files=["res://.godot/imported/circle_sign_white.png-6826d7bf95f98de45ee8be2072553f4c.ctex"]
+source_file="res://addons/terrabrush/Assets/Buttons/circle_sign_white.png"
+dest_files=["res://.godot/imported/circle_sign_white.png-aed6a700cc94cf1111c0fccacdd050a7.ctex"]
 
 [params]
 

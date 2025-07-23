@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcapglulgvwma"
-path="res://.godot/imported/holes_add.png-aa299e36e84428eb940b66b83074a248.ctex"
+path="res://.godot/imported/holes_add.png-a91de1a935e80b7f22095d91da1a54fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/holes_add.png"
-dest_files=["res://.godot/imported/holes_add.png-aa299e36e84428eb940b66b83074a248.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/holes_add.png"
+dest_files=["res://.godot/imported/holes_add.png-a91de1a935e80b7f22095d91da1a54fa.ctex"]
 
 [params]
 

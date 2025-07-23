@@ -14,7 +14,7 @@ public enum ObjectLoadingStrategy {
     NotThreaded = 3
 }
 
-[GodotClass(Tool = true, Icon = "res://addons/terrabrush/src/icon.png")]
+[GodotClass(Tool = true, Icon = "res://addons/terrabrush/icon.png")]
 public partial class TerraBrush : TerraBrushTool {
     public const int HeightMapFactor = 1;
 
@@ -150,7 +150,7 @@ public partial class TerraBrush : TerraBrushTool {
     public int CollisionLayers { get;set; } = 1;
 
     [BindProperty]
-    // [BindProperty(PropertyHint.Layers3DPhysics)]
+    // [BindProperty(Hint = PropertyHint.Layers3DPhysics)]
     public int CollisionMask { get;set; } = 1;
 
     [PropertyGroup("Textures")]

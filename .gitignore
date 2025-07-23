@@ -18,4 +18,5 @@ mono_crash.*.json
 
 **/.vs
 **/bin
+**/obj
 **/.generated

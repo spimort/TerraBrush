@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ba8m53c31h613"
-path="res://.godot/imported/small_dots.png-efe94a149996091cb5e2d9ebe0988768.ctex"
+path="res://.godot/imported/small_dots.png-05e180ad5a4c5849ea49e347d667eb15.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Brushes/small_dots.png"
-dest_files=["res://.godot/imported/small_dots.png-efe94a149996091cb5e2d9ebe0988768.ctex"]
+source_file="res://addons/terrabrush/Assets/Brushes/small_dots.png"
+dest_files=["res://.godot/imported/small_dots.png-05e180ad5a4c5849ea49e347d667eb15.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci7bhjqexddch"
-path="res://.godot/imported/x_gradient.png-13e07ae0403df03913bc96efae4ea3fd.ctex"
+path="res://.godot/imported/x_gradient.png-0d974ac887be53a994f6d9a33caa44b2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Brushes/x_gradient.png"
-dest_files=["res://.godot/imported/x_gradient.png-13e07ae0403df03913bc96efae4ea3fd.ctex"]
+source_file="res://addons/terrabrush/Assets/Brushes/x_gradient.png"
+dest_files=["res://.godot/imported/x_gradient.png-0d974ac887be53a994f6d9a33caa44b2.ctex"]
 
 [params]
 

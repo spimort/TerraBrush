@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://clglkobyymycn"
-path="res://.godot/imported/flow_add.png-50b10d9338b0e36c8cc9667427af72af.ctex"
+path="res://.godot/imported/flow_add.png-675e2b33737a32a3071ff1487d02775a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/flow_add.png"
-dest_files=["res://.godot/imported/flow_add.png-50b10d9338b0e36c8cc9667427af72af.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/flow_add.png"
+dest_files=["res://.godot/imported/flow_add.png-675e2b33737a32a3071ff1487d02775a.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xchvcx32vuoy"
-path="res://.godot/imported/water_remove.png-2da3ba6326fe35cb5ac101c2b41eb92e.ctex"
+path="res://.godot/imported/water_remove.png-8754ec00f68649179cc5d6e3ad63caa5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/water_remove.png"
-dest_files=["res://.godot/imported/water_remove.png-2da3ba6326fe35cb5ac101c2b41eb92e.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/water_remove.png"
+dest_files=["res://.godot/imported/water_remove.png-8754ec00f68649179cc5d6e3ad63caa5.ctex"]
 
 [params]
 

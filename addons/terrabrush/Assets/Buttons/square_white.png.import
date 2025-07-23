@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dy7hwn8w6ax3a"
-path="res://.godot/imported/square_white.png-adc01aa470e1a164aab04d6e6257bab1.ctex"
+path="res://.godot/imported/square_white.png-ca5250357c4d51e56e12d0d193f16860.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Buttons/square_white.png"
-dest_files=["res://.godot/imported/square_white.png-adc01aa470e1a164aab04d6e6257bab1.ctex"]
+source_file="res://addons/terrabrush/Assets/Buttons/square_white.png"
+dest_files=["res://.godot/imported/square_white.png-ca5250357c4d51e56e12d0d193f16860.ctex"]
 
 [params]
 

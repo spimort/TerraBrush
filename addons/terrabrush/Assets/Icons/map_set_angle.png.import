@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci8h4u8w31qd6"
-path="res://.godot/imported/map_set_angle.png-fc152bec4d7bfc765138bfb769ab8582.ctex"
+path="res://.godot/imported/map_set_angle.png-29ba19db23832f29d4d66fdb9f9696ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/map_set_angle.png"
-dest_files=["res://.godot/imported/map_set_angle.png-fc152bec4d7bfc765138bfb769ab8582.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/map_set_angle.png"
+dest_files=["res://.godot/imported/map_set_angle.png-29ba19db23832f29d4d66fdb9f9696ca.ctex"]
 
 [params]
 

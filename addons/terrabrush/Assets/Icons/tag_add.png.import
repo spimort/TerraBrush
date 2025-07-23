@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqi26t8whl7q"
-path="res://.godot/imported/tag_add.png-774df4855575e84f5498cb8bf0b1c31a.ctex"
+path="res://.godot/imported/tag_add.png-b6bfe94edbe149f52e030a35d5b49a3e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/tag_add.png"
-dest_files=["res://.godot/imported/tag_add.png-774df4855575e84f5498cb8bf0b1c31a.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/tag_add.png"
+dest_files=["res://.godot/imported/tag_add.png-b6bfe94edbe149f52e030a35d5b49a3e.ctex"]
 
 [params]
 

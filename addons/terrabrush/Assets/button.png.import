@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://doncxenbqc6bn"
-path="res://.godot/imported/button.png-72f7040ce76699f42b7f3d49fb3e99b4.ctex"
+path="res://.godot/imported/button.png-32f0b6640d77da825a7a4cb164458580.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/button.png"
-dest_files=["res://.godot/imported/button.png-72f7040ce76699f42b7f3d49fb3e99b4.ctex"]
+source_file="res://addons/terrabrush/Assets/button.png"
+dest_files=["res://.godot/imported/button.png-32f0b6640d77da825a7a4cb164458580.ctex"]
 
 [params]
 

@@ -51,17 +51,10 @@ public class EntryPoint {
         GodotRegistry.RegisterInternalClass<Clipmap>(Clipmap.BindMethods);
         GodotRegistry.RegisterInternalClass<CustomContentPieMenu>(CustomContentPieMenu.BindMethods);
         GodotRegistry.RegisterInternalClass<Foliage>(Foliage.BindMethods);
-        GodotRegistry.RegisterInternalClass<FoliageDefinitionResource>(FoliageDefinitionResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<FoliageResource>(FoliageResource.BindMethods);
         GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
         GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
         GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
-        GodotRegistry.RegisterInternalClass<ObjectResource>(ObjectResource.BindMethods);
         GodotRegistry.RegisterInternalClass<Objects>(Objects.BindMethods);
-        GodotRegistry.RegisterInternalClass<ObjectDefinitionResource>(ObjectDefinitionResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<ObjectOctreeLODMeshDefinitionResource>(ObjectOctreeLODMeshDefinitionResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<ObjectOctreeLODMeshesDefinitionResource>(ObjectOctreeLODMeshesDefinitionResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<ObjectOctreeLODDefinitionResource>(ObjectOctreeLODDefinitionResource.BindMethods);
         GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
         GodotRegistry.RegisterInternalClass<PieMenu>(PieMenu.BindMethods);
         GodotRegistry.RegisterInternalClass<Snow>(Snow.BindMethods);
@@ -71,19 +64,27 @@ public class EntryPoint {
         GodotRegistry.RegisterInternalClass<Water>(Water.BindMethods);
         GodotRegistry.RegisterInternalClass<DockPreviewButton>(DockPreviewButton.BindMethods);
         GodotRegistry.RegisterInternalClass<ToolPreview>(ToolPreview.BindMethods);
-        GodotRegistry.RegisterInternalClass<MetaInfoLayer>(MetaInfoLayer.BindMethods);
-        GodotRegistry.RegisterInternalClass<SnowResource>(SnowResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<TextureSetResource>(TextureSetResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<TextureSetsResource>(TextureSetsResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<WaterResource>(WaterResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<ZoneResource>(ZoneResource.BindMethods);
-        GodotRegistry.RegisterInternalClass<ZonesResource>(ZonesResource.BindMethods);
         GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
         GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
         GodotRegistry.RegisterInternalClass<ToolInfo>(ToolInfo.BindMethods);
 
         GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
         GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
+
+        GodotRegistry.RegisterClass<FoliageResource>(FoliageResource.BindMethods);
+        GodotRegistry.RegisterClass<FoliageDefinitionResource>(FoliageDefinitionResource.BindMethods);
+        GodotRegistry.RegisterClass<MetaInfoLayer>(MetaInfoLayer.BindMethods);
+        GodotRegistry.RegisterClass<ObjectResource>(ObjectResource.BindMethods);
+        GodotRegistry.RegisterClass<ObjectDefinitionResource>(ObjectDefinitionResource.BindMethods);
+        GodotRegistry.RegisterClass<ObjectOctreeLODMeshDefinitionResource>(ObjectOctreeLODMeshDefinitionResource.BindMethods);
+        GodotRegistry.RegisterClass<ObjectOctreeLODMeshesDefinitionResource>(ObjectOctreeLODMeshesDefinitionResource.BindMethods);
+        GodotRegistry.RegisterClass<ObjectOctreeLODDefinitionResource>(ObjectOctreeLODDefinitionResource.BindMethods);
+        GodotRegistry.RegisterClass<SnowResource>(SnowResource.BindMethods);
+        GodotRegistry.RegisterClass<TextureSetResource>(TextureSetResource.BindMethods);
+        GodotRegistry.RegisterClass<TextureSetsResource>(TextureSetsResource.BindMethods);
+        GodotRegistry.RegisterClass<WaterResource>(WaterResource.BindMethods);
+        GodotRegistry.RegisterClass<ZoneResource>(ZoneResource.BindMethods);
+        GodotRegistry.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
 
         GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
         GodotRegistry.RegisterClass<TerraBrush>(TerraBrush.BindMethods);

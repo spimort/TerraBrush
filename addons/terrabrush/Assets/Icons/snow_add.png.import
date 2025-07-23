@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dc43ue31pa6x0"
-path="res://.godot/imported/snow_add.png-4d931adc18751b72d09ad7a82ed3d07d.ctex"
+path="res://.godot/imported/snow_add.png-5fb053126df563b9e40e01f75e88387a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/snow_add.png"
-dest_files=["res://.godot/imported/snow_add.png-4d931adc18751b72d09ad7a82ed3d07d.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/snow_add.png"
+dest_files=["res://.godot/imported/snow_add.png-5fb053126df563b9e40e01f75e88387a.ctex"]
 
 [params]
 

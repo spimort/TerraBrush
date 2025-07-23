@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpxamwbbfspii"
-path="res://.godot/imported/transparency_selected.png-32faac1c79a668b5b173949e2766ec3d.ctex"
+path="res://.godot/imported/transparency_selected.png-7c49b1f9d52e3a3dd6e54cc7b9046da3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/transparency_selected.png"
-dest_files=["res://.godot/imported/transparency_selected.png-32faac1c79a668b5b173949e2766ec3d.ctex"]
+source_file="res://addons/terrabrush/Assets/transparency_selected.png"
+dest_files=["res://.godot/imported/transparency_selected.png-7c49b1f9d52e3a3dd6e54cc7b9046da3.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bciybm80fsm0g"
-path="res://.godot/imported/object_remove.png-470b65c9c0a6be63433f0b2e9c9024b0.ctex"
+path="res://.godot/imported/object_remove.png-5df5712ee8a3331d14d5140cdaa7a617.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/object_remove.png"
-dest_files=["res://.godot/imported/object_remove.png-470b65c9c0a6be63433f0b2e9c9024b0.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/object_remove.png"
+dest_files=["res://.godot/imported/object_remove.png-5df5712ee8a3331d14d5140cdaa7a617.ctex"]
 
 [params]
 

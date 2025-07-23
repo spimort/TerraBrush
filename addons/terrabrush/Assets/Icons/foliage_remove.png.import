@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byom5fa2uoq4y"
-path="res://.godot/imported/foliage_remove.png-334cda44a784900d0a2daa843ea4b73a.ctex"
+path="res://.godot/imported/foliage_remove.png-6973e353b225a0083a7953a833fd87d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/Icons/foliage_remove.png"
-dest_files=["res://.godot/imported/foliage_remove.png-334cda44a784900d0a2daa843ea4b73a.ctex"]
+source_file="res://addons/terrabrush/Assets/Icons/foliage_remove.png"
+dest_files=["res://.godot/imported/foliage_remove.png-6973e353b225a0083a7953a833fd87d0.ctex"]
 
 [params]
 

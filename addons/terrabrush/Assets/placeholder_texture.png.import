@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3w0qgmfitt30"
-path.s3tc="res://.godot/imported/placeholder_texture.png-a7082865ce3acc5ebfa56b0a1590fa9c.s3tc.ctex"
+path.s3tc="res://.godot/imported/placeholder_texture.png-22ac91bfe39f2e761a55e30299141ee6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/terrabrush/src/Assets/placeholder_texture.png"
-dest_files=["res://.godot/imported/placeholder_texture.png-a7082865ce3acc5ebfa56b0a1590fa9c.s3tc.ctex"]
+source_file="res://addons/terrabrush/Assets/placeholder_texture.png"
+dest_files=["res://.godot/imported/placeholder_texture.png-22ac91bfe39f2e761a55e30299141ee6.s3tc.ctex"]
 
 [params]
 
