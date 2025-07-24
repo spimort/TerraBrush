@@ -95,8 +95,7 @@ public partial class TerraBrush : TerraBrushTool {
     [BindProperty]
     public bool CollisionOnly { get;set; }
 
-    [BindProperty]
-    // [BindProperty(PropertyHint.Dir)]
+    [BindProperty(Hint = PropertyHint.Dir)]
     public override string DataPath {
         get {
             return _dataPath;
@@ -107,8 +106,7 @@ public partial class TerraBrush : TerraBrushTool {
         }
     }
 
-    [BindProperty]
-    // [BindProperty(PropertyHint.Layers3DRender)]
+    [BindProperty(Hint = PropertyHint.Layers3DRender)]
     public int VisualInstanceLayers { get;set; } = 1;
 
     [BindProperty]
@@ -145,12 +143,10 @@ public partial class TerraBrush : TerraBrushTool {
     [BindProperty]
     public bool CreateCollisionInThread { get;set; } = true;
 
-    [BindProperty]
-    // [BindProperty(PropertyHint.Layers3DPhysics)]
+    [BindProperty(Hint = PropertyHint.Layers3DPhysics)]
     public int CollisionLayers { get;set; } = 1;
 
-    [BindProperty]
-    // [BindProperty(Hint = PropertyHint.Layers3DPhysics)]
+    [BindProperty(Hint = PropertyHint.Layers3DPhysics)]
     public int CollisionMask { get;set; } = 1;
 
     [PropertyGroup("Textures")]

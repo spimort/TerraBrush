@@ -39,9 +39,9 @@ public partial class Terrain : Node3D {
     [BindProperty] public bool UseSharpTransitions { get;set; } = false;
     [BindProperty] public float WaterFactor { get;set; }
     [BindProperty] public Texture2D DefaultTexture { get;set; }
-    [BindProperty] public int VisualInstanceLayers { get;set; } = 1; // (PropertyHint.Layers3DRender)
-    [BindProperty] public int CollisionLayers { get;set; } = 1; // (PropertyHint.Layers3DPhysics)
-    [BindProperty] public int CollisionMask { get;set; } = 1; // (PropertyHint.Layers3DPhysics)
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    [BindProperty(Hint = PropertyHint.Layers3DPhysics)] public int CollisionLayers { get;set; } = 1;
+    [BindProperty(Hint = PropertyHint.Layers3DPhysics)] public int CollisionMask { get;set; } = 1;
     [BindProperty] public int LODLevels { get;set; } = 8;
     [BindProperty] public int LODRowsPerLevel { get;set; } = 21;
     [BindProperty] public float LODInitialCellWidth { get;set; } = 1;

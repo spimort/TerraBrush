@@ -9,10 +9,10 @@ public partial class WaterResource : Resource {
 
     [BindProperty] public float WaterFactor { get;set; } = 1.0f;
     [BindProperty] public float WaterInnerOffset { get;set; } = 0.2f;
-    [BindProperty] public Color WaterColor { get;set; } = NamedColors.White; // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public Color WaterFresnelColor { get;set; } = NamedColors.White; // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public float WaterMetallic { get;set; } // (PropertyHint.Range, "0,1,0.001")
-    [BindProperty] public float WaterRoughness { get;set; } // (PropertyHint.Range, "0,1,0.001")
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color WaterColor { get;set; } = NamedColors.White;
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color WaterFresnelColor { get;set; } = NamedColors.White;
+    [BindProperty(Hint = PropertyHint.Range, HintString = "0,1,0.001")] public float WaterMetallic { get;set; }
+    [BindProperty(Hint = PropertyHint.Range, HintString = "0,1,0.001")] public float WaterRoughness { get;set; }
     [BindProperty] public Texture2D WaterNormalMap { get;set; }
     [BindProperty] public Texture2D WaterNormalMap2 { get;set; }
     [BindProperty] public float WaterTimeScale { get;set; } = 0.1f;
@@ -27,8 +27,8 @@ public partial class WaterResource : Resource {
     [BindProperty] public float WaterEdgeScale { get;set; } = 0.1f;
     [BindProperty] public float WaterNear { get;set; } = 0.5f;
     [BindProperty] public float WaterFar { get;set; } = 100f;
-    [BindProperty] public Color WaterEdgeColor { get;set; } = NamedColors.White; // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public int VisualInstanceLayers { get;set; } = 1; // (PropertyHint.Layers3DRender)
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color WaterEdgeColor { get;set; } = NamedColors.White;
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
 
     [BindProperty] public ShaderMaterial CustomShader {
         get {

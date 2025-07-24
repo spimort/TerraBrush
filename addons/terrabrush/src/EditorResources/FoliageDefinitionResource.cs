@@ -40,10 +40,10 @@ public partial class FoliageDefinitionResource : Resource {
         }
     }
     [BindProperty] public Mesh Mesh { get;set; }
-    [BindProperty] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1); // (PropertyHint.Link)
+    [BindProperty(Hint = PropertyHint.Link)] public Vector3 MeshScale { get;set; } = new Vector3(1, 1, 1);
     [BindProperty] public float WindStrength { get;set; } = 0.1f;
     [BindProperty] public Texture2D NoiseTexture { get;set; }
-    [BindProperty] public int VisualInstanceLayers { get;set; } = 1; // (PropertyHint.Layers3DRender)
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
     // Multimesh settings
     [BindProperty] public int LODLevels { get;set; } = 3;
     [BindProperty] public int LODRowsPerLevel { get;set; } = 50;

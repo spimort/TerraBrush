@@ -14,8 +14,8 @@ public partial class SnowResource : Resource {
     [BindProperty] public float SnowColorDetail { get;set; } = 20f;
     [BindProperty] public Texture2D Noise { get;set; }
     [BindProperty] public float NoiseFactor { get;set; }
-    [BindProperty] public float Metallic { get;set; } // (PropertyHint.Range, "0,1,0.001")
-    [BindProperty] public int VisualInstanceLayers { get;set; } = 1; // (PropertyHint.Layers3DRender)
+    [BindProperty(Hint = PropertyHint.Range, HintString = "0,1,0.001")] public float Metallic { get;set; }
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
 
     [BindProperty] public ShaderMaterial CustomShader {
         get {

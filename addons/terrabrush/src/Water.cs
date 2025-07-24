@@ -17,10 +17,10 @@ public partial class Water : Node3D {
     [BindProperty] public float WaterFactor { get;set; }
     [BindProperty] public float HeightMapFactor { get;set; }
     [BindProperty] public float WaterInnerOffset { get;set; }
-    [BindProperty] public Color WaterColor { get;set; } // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public Color FresnelColor { get;set; } // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public float Metallic { get;set; } // (PropertyHint.Range, "0,1,0.001")
-    [BindProperty] public float Roughness { get;set; } // (PropertyHint.Range, "0,1,0.001")
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color WaterColor { get;set; }
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color FresnelColor { get;set; }
+    [BindProperty(Hint = PropertyHint.Range, HintString = "0,1,0.001")] public float Metallic { get;set; }
+    [BindProperty(Hint = PropertyHint.Range, HintString = "0,1,0.001")] public float Roughness { get;set; }
     [BindProperty] public Texture2D NormalMap { get;set; }
     [BindProperty] public Texture2D NormalMap2 { get;set; }
     [BindProperty] public float TimeScale { get;set; } = 0.1f;
@@ -35,8 +35,8 @@ public partial class Water : Node3D {
     [BindProperty] public float EdgeScale { get;set; }
     [BindProperty] public float Near { get;set; }
     [BindProperty] public float Far { get;set; }
-    [BindProperty] public Color EdgeColor { get;set; } // (PropertyHint.ColorNoAlpha)
-    [BindProperty] public int VisualInstanceLayers { get;set; } = 1; // (PropertyHint.Layers3DRender)
+    [BindProperty(Hint = PropertyHint.ColorNoAlpha)] public Color EdgeColor { get;set; }
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
     [BindProperty] public int LODLevels { get;set; } = 8;
     [BindProperty] public int LODRowsPerLevel { get;set; } = 21;
     [BindProperty] public float LODInitialCellWidth { get;set; } = 1;

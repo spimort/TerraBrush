@@ -56,7 +56,7 @@ public partial class ObjectDefinitionResource : Resource {
     [BindProperty] public GodotArray<ObjectOctreeLODMeshesDefinitionResource> LODMeshes { get; set; }
     [BindProperty] public float UpdateDistanceThreshold { get; set; } = 1;
     [BindProperty] public float UpdateTimeFrequency { get; set; } = 0.1f;
-    [BindProperty] public int VisualInstanceLayers { get; set; } = 1; // (PropertyHint.Layers3DRender)
+    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get; set; } = 1;
 
     // TODO
     // public override void _ValidateProperty(GodotDictionary property) {
