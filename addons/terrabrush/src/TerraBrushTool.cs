@@ -65,59 +65,63 @@ public partial class TerraBrushTool : Node3D {
     public int? ObjectIndex => _objectIndex;
     public int? MetaInfoIndex => _metaInfoIndex;
 
-    // TODO
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnCreateTerrain)}")]
-    // public bool CreateTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Create Terrain")]
+    public Callable CreateTerrain {
+        get {
+            return Callable.From(OnCreateTerrain);
+        }
+        set { }
+    }
 
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUpdateTerrainSettings)}")]
-    // public bool UpdateTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Update Terrain")]
+    public Callable UpdateTerrain {
+        get {
+            return Callable.From(OnUpdateTerrainSettings);
+        }
+        set { }
+    }
 
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnRemoveTerrain)}")]
-    // public bool RemoveTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Remove Terrain")]
+    public Callable RemoveTerrain {
+        get {
+            return Callable.From(OnRemoveTerrain);
+        }
+        set { }
+    }
 
-    // [ExportGroup("Lock | Unlock")]
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnLockTerrain)}")]
-    // public bool LockAllTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [PropertyGroup("Lock | Unlock")]
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Lock All Terrain")]
+    public Callable LockAllTerrain {
+        get {
+            return Callable.From(OnLockTerrain);
+        }
+        set { }
+    }
 
-    // [ExportGroup("Lock | Unlock")]
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnUnlockTerrain)}")]
-    // public bool UnlockAllTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Unlock All Terrain")]
+    public Callable UnlockAllTerrain {
+        get {
+            return Callable.From(OnUnlockTerrain);
+        }
+        set { }
+    }
 
-    // [ExportGroup("Import | Export")]
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnImportTerrain)}")]
-    // public bool ImportTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [PropertyGroup("Import | Export")]
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "Import Terrain")]
+    public Callable ImportTerrain {
+        get {
+            return Callable.From(OnImportTerrain);
+        }
+        set { }
+    }
 
-    // [ExportGroup("Import | Export")]
-    // [Export(PropertyHint.None, $"{ButtonInspectorPlugin.ButtonInspectorHintString}_{nameof(OnExportTerrain)}")]
-    // public bool ExportTerrain {
-    //     get {
-    //         return false;
-    //     } set {}
-    // }
+    [BindProperty(Hint = PropertyHint.ToolButton, HintString = "ExportTerrain")]
+    public Callable ExportTerrain {
+        get {
+            return Callable.From(OnExportTerrain);
+        }
+        set { }
+    }
 
     protected override void _Ready() {
         base._Ready();

@@ -431,7 +431,7 @@ public partial class TerraBrush : TerraBrushTool {
         var numberOfSplatmaps = Mathf.CeilToInt((TextureSets?.TextureSets?.Count ?? 0) / 4.0f);
 
         if (zone.SplatmapsTexture == null || zone.SplatmapsTexture.Count < numberOfSplatmaps) {
-            var newList = new GodotArray<ImageTexture>([..zone.SplatmapsTexture.ToArray() ?? Array.Empty<ImageTexture>()]);
+            var newList = new GodotArray<ImageTexture>([..zone.SplatmapsTexture?.ToArray() ?? []]);
 
             for (var i = zone.SplatmapsTexture?.Count ?? 0; i < numberOfSplatmaps; i++) {
                 newList.Add(ZoneUtils.CreateSplatmapImage(ZonesSize, zone.ZonePosition, i, DataPath));
