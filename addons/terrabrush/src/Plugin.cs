@@ -570,8 +570,7 @@ public partial class Plugin : EditorPlugin {
         if (previewActionName.ToString() != actionName.ToString()) {
             var activeViewport = GetActiveViewport();
             if (activeViewport != null) {
-                var selectorPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/BrushNumericSelector.tscn");
-                var selector = selectorPrefab.Instantiate<BrushNumericSelector>();
+                var selector = new BrushNumericSelector();
 
                 selector.MinValue = minVale;
                 selector.MaxValue = maxValue;

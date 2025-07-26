@@ -56,6 +56,8 @@ public partial class Terrain : Node3D {
     protected override void _Ready() {
         base._Ready();
 
+        DefaultTexture = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/placeholder_texture.png");
+
         _clipmap = new Clipmap();
         AddChild(_clipmap);
 

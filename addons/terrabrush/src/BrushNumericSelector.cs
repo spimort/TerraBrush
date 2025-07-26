@@ -7,9 +7,9 @@ namespace TerraBrush;
 public partial class BrushNumericSelector : Control {
     private const int BackgroundMargin = 10;
 
-    [NodePath] private TextureRect _background;
-    [NodePath] private TextureRect _brushPreview;
-    [NodePath] private Label _valueLabel;
+    private TextureRect _background;
+    private TextureRect _brushPreview;
+    private Label _valueLabel;
 
     [BindProperty] public int BrushSizeFactor { get;set; } = 2;
     [BindProperty] public Color WidgetColor { get;set; } = NamedColors.White;
@@ -21,7 +21,42 @@ public partial class BrushNumericSelector : Control {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _background = new TextureRect {
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            Texture = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/white_circle.png"),
+            Modulate = Color.FromHtml("#3a3a3a4b")
+        };
+        AddChild(_background);
+
+        _brushPreview = new TextureRect {
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            Texture = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/brush_preview.png"),
+        };
+        _brushPreview.SetAnchorsPreset(LayoutPreset.Center);
+        AddChild(_brushPreview);
+
+        _valueLabel = new Label {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        _valueLabel.SetAnchorsPreset(LayoutPreset.Center);
+        _valueLabel.Set((StringName)"theme_override_colors/font_color", NamedColors.White);
+        _valueLabel.Set((StringName)"theme_override_colors/font_outline_color", Color.FromHtml("#00151f"));
+        _valueLabel.Set((StringName)"theme_override_constants/outline_size", 3);
+        _valueLabel.Set((StringName)"theme_override_font_sizes/font_size", 20);
+        _valueLabel.Set((StringName)"theme_override_styles/normal", new StyleBoxFlat {
+            BgColor = Color.FromHtml("#00151f"),
+            CornerRadiusTopLeft = 5,
+            CornerRadiusTopRight = 5,
+            CornerRadiusBottomLeft = 5,
+            CornerRadiusBottomRight = 5,
+            ExpandMarginTop = 5,
+            ExpandMarginRight = 5,
+            ExpandMarginBottom = 5,
+            ExpandMarginLeft = 5,
+        });
+        AddChild(_valueLabel);
 
         _brushPreview.Modulate = WidgetColor;
 
