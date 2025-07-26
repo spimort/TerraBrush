@@ -33,14 +33,14 @@ public partial class BrushNumericSelector : Control {
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             Texture = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/brush_preview.png"),
         };
-        _brushPreview.SetAnchorsPreset(LayoutPreset.Center);
+        _brushPreview.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
         AddChild(_brushPreview);
 
         _valueLabel = new Label {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        _valueLabel.SetAnchorsPreset(LayoutPreset.Center);
+        _valueLabel.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
         _valueLabel.Set((StringName)"theme_override_colors/font_color", NamedColors.White);
         _valueLabel.Set((StringName)"theme_override_colors/font_outline_color", Color.FromHtml("#00151f"));
         _valueLabel.Set((StringName)"theme_override_constants/outline_size", 3);

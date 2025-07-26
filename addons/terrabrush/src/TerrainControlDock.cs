@@ -284,8 +284,10 @@ public partial class TerrainControlDock : Control {
 
     // This component has some complexe ui some I create a kinda of structure using {} for better visualization
     private void BuildLayout() {
+        SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+
         var marginContainer = new MarginContainer();
-        marginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+        marginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         marginContainer.Set((StringName)"theme_override_constants/margin_left", 5);
         marginContainer.Set((StringName)"theme_override_constants/margin_top", 5);
         marginContainer.Set((StringName)"theme_override_constants/margin_right", 5);
@@ -302,12 +304,12 @@ public partial class TerrainControlDock : Control {
                 vBoxContainer.AddChild(tabContainer1);
                 { // TabContainer
                     var toolsTab = new Control {
-                        Name = (StringName)"Tools"
+                        Name = (StringName)"Tools",
                     };
                     tabContainer1.AddChild(toolsTab);
                     { //Tab
                         var toolsMarginContainer = new MarginContainer();
-                        toolsMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        toolsMarginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                         toolsMarginContainer.Set((StringName)"theme_override_constants/margin_left", 10);
                         toolsMarginContainer.Set((StringName)"theme_override_constants/margin_top", 10);
                         toolsMarginContainer.Set((StringName)"theme_override_constants/margin_right", 10);
@@ -360,7 +362,6 @@ public partial class TerrainControlDock : Control {
                                         _toolTypesContainer.AddChild(new ToolPreview() {
                                             ToolType = TerrainToolType.Paint,
                                             ButtonImage = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/Icons/paint.png"),
-                                            IconType = IconType.Circle,
                                             TooltipText = "Paint texture"
                                         });
 
@@ -489,7 +490,8 @@ public partial class TerrainControlDock : Control {
                 }
 
                 var tabContainer2 = new TabContainer() {
-                    CurrentTab = 0
+                    CurrentTab = 0,
+                    SizeFlagsVertical = SizeFlags.ExpandFill
                 };
                 vBoxContainer.AddChild(tabContainer2);
                 { // TabContainer
@@ -499,7 +501,7 @@ public partial class TerrainControlDock : Control {
                     tabContainer2.AddChild(texturesTab);
                     { // Tab
                         var texturesMarginContainer = new MarginContainer();
-                        texturesMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        texturesMarginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                         texturesTab.AddChild(texturesMarginContainer);
                         { // MarginContainer
                             _texturesContainer = new HFlowContainer();
@@ -513,7 +515,7 @@ public partial class TerrainControlDock : Control {
                     tabContainer2.AddChild(foliagesTab);
                     { // Tab
                         var foliagesMarginContainer = new MarginContainer();
-                        foliagesMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        foliagesMarginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                         foliagesTab.AddChild(foliagesMarginContainer);
                         { // MarginContainer
                             _foliagesContainer = new HFlowContainer();
@@ -527,7 +529,7 @@ public partial class TerrainControlDock : Control {
                     tabContainer2.AddChild(objectsTab);
                     { // Tab
                         var objectsMarginContainer = new MarginContainer();
-                        objectsMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        objectsMarginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                         objectsTab.AddChild(objectsMarginContainer);
                         { // MarginContainer
                             _objectsContainer = new HFlowContainer();
@@ -541,7 +543,7 @@ public partial class TerrainControlDock : Control {
                     tabContainer2.AddChild(metaInfoTab);
                     { // Tab
                         var metaInfoMarginContainer = new MarginContainer();
-                        metaInfoMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        metaInfoMarginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                         metaInfoTab.AddChild(metaInfoMarginContainer);
                         { // MarginContainer
                             _metaInfoLayersContainer = new HFlowContainer();

@@ -22,7 +22,7 @@ public partial class PieMenu : Control {
         _controlsContainer = new Control {
             MouseFilter = MouseFilterEnum.Pass
         };
-        _controlsContainer.SetAnchorsPreset(LayoutPreset.TopLeft);
+        _controlsContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
         AddChild(_controlsContainer);
 
         _pieBackground = new TextureRect {
@@ -30,7 +30,7 @@ public partial class PieMenu : Control {
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             Modulate = Color.FromHtml("#3a3a3a4b")
         };
-        _pieBackground.SetAnchorsPreset(LayoutPreset.TopLeft);
+        _pieBackground.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
         _controlsContainer.AddChild(_pieBackground);
 
         _menuLabel = new Label() {
@@ -61,7 +61,7 @@ public partial class PieMenu : Control {
         _controlsContainer.AddChild(_currentAnglePanel);
 
         var panel = new Panel();
-        panel.SetAnchorsPreset(LayoutPreset.CenterTop);
+        panel.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
         panel.Set((StringName)"theme_override_styles/panel", new StyleBoxFlat() {
             BgColor = Color.FromHtml("#007fc6"),
             CornerRadiusTopLeft = 5,

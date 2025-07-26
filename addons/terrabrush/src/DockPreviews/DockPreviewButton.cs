@@ -19,6 +19,9 @@ public partial class DockPreviewButton : TextureButton {
     private MarginContainer _marginContainer;
     private TextureRect _textureRect;
     private Label _label;
+    private Texture2D _textureSquare;
+    private Texture2D _textureCircle;
+    private Texture2D _textureCircleWithSign;
 
     [BindProperty] public Texture2D ButtonImage { get;set; }
 
@@ -26,15 +29,18 @@ public partial class DockPreviewButton : TextureButton {
     [BindProperty] public int Margin { get;set; }
     [BindProperty] public string Text { get;set; }
 
-    [BindProperty] public Texture2D TextureSquare { get;set; }
-    [BindProperty] public Texture2D TextureCircle { get;set; }
-    [BindProperty] public Texture2D TextureCircleWithSign { get;set; }
 
     protected override void _Ready() {
         base._Ready();
 
+        CustomMinimumSize = new Vector2(48, 48);
+        IgnoreTextureSize = true;
+        StretchMode = StretchModeEnum.Scale;
+        ToggleMode = true;
+        SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+
         _marginContainer = new MarginContainer();
-        _marginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+        _marginContainer.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         AddChild(_marginContainer);
 
         _textureRect = new TextureRect {
@@ -48,6 +54,10 @@ public partial class DockPreviewButton : TextureButton {
         };
         _label.Set((StringName)"theme_override_font_sizes/font_size", 10);
         _marginContainer.AddChild(_label);
+
+        _textureSquare = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/Buttons/square_white.png");
+        _textureCircle = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/Buttons/circle_white.png");
+        _textureCircleWithSign = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/Buttons/circle_sign_white.png");
 
         Connect((StringName)"pressed", new Callable(this, (StringName) nameof(OnItemSelect)));
 
@@ -102,13 +112,13 @@ public partial class DockPreviewButton : TextureButton {
     private void CalculateTextures() {
         switch (IconType) {
             case IconType.Square:
-                TextureNormal = TextureSquare;
+                TextureNormal = _textureSquare;
                 break;
             case IconType.Circle:
-                TextureNormal = TextureCircle;
+                TextureNormal = _textureCircle;
                 break;
             case IconType.CircleWithSign:
-                TextureNormal = TextureCircleWithSign;
+                TextureNormal = _textureCircleWithSign;
                 break;
         }
     }
