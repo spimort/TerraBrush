@@ -587,10 +587,12 @@ public partial class TerraBrushPlugin : EditorPlugin {
         }
     }
 
+    [BindMethod]
     private void UpdateTerrainSettings() {
         _currentTerraBrushNode?.OnUpdateTerrainSettings();
     }
 
+    [BindMethod]
     private void UpdateAutoAddZonesSetting() {
         _currentTerraBrushNode.AutoAddZones = _autoAddZonesCheckbox.ButtonPressed;
     }

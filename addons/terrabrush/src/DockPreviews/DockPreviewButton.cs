@@ -97,6 +97,7 @@ public partial class DockPreviewButton : TextureButton {
         _textureRect.Texture = toolImage;
     }
 
+    [BindMethod]
     public void OnItemSelect() {
         OnSelect?.Invoke();
     }
