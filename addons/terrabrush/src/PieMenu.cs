@@ -9,22 +9,72 @@ public partial class PieMenu : Control {
     private int _startingButtonsIndex;
     private DockPreviewButton _previewDockPreviewOverItem;
 
-    [NodePath] private Control _controlsContainer;
-    [NodePath] private AnimationPlayer _animationPlayer;
-    [NodePath] private Label _menuLabel;
-    [NodePath] private Control _pieBackground;
-    [NodePath] private Control _currentAnglePanel;
+    private Control _controlsContainer;
+    private Label _menuLabel;
+    private TextureRect _pieBackground;
+    private Panel _currentAnglePanel;
 
     [BindProperty] public int ButtonsRadiusRatio { get;set; } = 10;
     [BindProperty] public int ButtonsMinRadius { get;set; } = 150;
     [BindProperty] public string Label { get;set; }
 
     protected override void _Ready() {
-        this.RegisterNodePaths();
+        _controlsContainer = new Control {
+            MouseFilter = MouseFilterEnum.Pass
+        };
+        _controlsContainer.SetAnchorsPreset(LayoutPreset.TopLeft);
+        AddChild(_controlsContainer);
+
+        _pieBackground = new TextureRect {
+            Texture = ResourceLoaderHelper.Load<Texture2D>("res://addons/terrabrush/Assets/white_circle.png"),
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            Modulate = Color.FromHtml("#3a3a3a4b")
+        };
+        _pieBackground.SetAnchorsPreset(LayoutPreset.TopLeft);
+        _controlsContainer.AddChild(_pieBackground);
+
+        _menuLabel = new Label() {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            AutowrapMode = TextServer.AutowrapMode.Word,
+            CustomMinimumSize = new Vector2(100, 20)
+        };
+        _menuLabel.Set((StringName)"theme_override_colors/font_color", NamedColors.White);
+        _menuLabel.Set((StringName)"theme_override_colors/font_outline_color", Color.FromHtml("#00151f"));
+        _menuLabel.Set((StringName)"theme_override_constants/outline_size", 3);
+        _menuLabel.Set((StringName)"theme_override_font_sizes/font_size", 20);
+        _menuLabel.Set((StringName)"theme_override_styles/normal", new StyleBoxFlat {
+            BgColor = Color.FromHtml("#00151f"),
+            CornerRadiusTopLeft = 5,
+            CornerRadiusTopRight = 5,
+            CornerRadiusBottomLeft = 5,
+            CornerRadiusBottomRight = 5,
+            ExpandMarginTop = 5,
+            ExpandMarginRight = 5,
+            ExpandMarginBottom = 5,
+            ExpandMarginLeft = 5,
+        });
+        _controlsContainer.AddChild(_menuLabel);
+
+        _currentAnglePanel = new Panel();
+        _currentAnglePanel.Set((StringName)"theme_override_styles/panel", new StyleBoxEmpty());
+        _controlsContainer.AddChild(_currentAnglePanel);
+
+        var panel = new Panel();
+        panel.SetAnchorsPreset(LayoutPreset.CenterTop);
+        panel.Set((StringName)"theme_override_styles/panel", new StyleBoxFlat() {
+            BgColor = Color.FromHtml("#007fc6"),
+            CornerRadiusTopLeft = 5,
+            CornerRadiusTopRight = 5,
+            CornerRadiusBottomLeft = 5,
+            CornerRadiusBottomRight = 5,
+        });
+        _currentAnglePanel.AddChild(panel);
 
         UpdateContent();
 
-        _animationPlayer.Play((StringName) "EnterTree");
+        var tween = CreateTween();
+        tween.TweenProperty(this, (NodePath)"scale", 1.0, 0.1);
 
         var iconsColor = (Color) ProjectSettings.Singleton.GetSetting(SettingContants.IconsColor);
         _menuLabel.Set((StringName) "theme_override_colors/font_outline_color", iconsColor);
