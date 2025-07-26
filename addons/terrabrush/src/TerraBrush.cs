@@ -348,7 +348,7 @@ public partial class TerraBrush : TerraBrushTool {
             await CreateWater();
         }
 
-        _terrain = (await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Terrain.tscn", CancellationToken.None)).Instantiate<Terrain>();
+        _terrain = new Terrain();
 
         _terrain.TextureSets = TextureSets;
         _terrain.VisualInstanceLayers = VisualInstanceLayers;
@@ -567,8 +567,7 @@ public partial class TerraBrush : TerraBrushTool {
             _waterNodeContainer = new Node3D();
             AddChild(_waterNodeContainer);
 
-            var prefab = await AsyncUtils.LoadResourceAsync<PackedScene>("res://addons/terrabrush/Components/Water.tscn", CancellationToken.None);
-            _waterNode = prefab.Instantiate<Water>();
+            _waterNode = new Water();
 
             _waterNode.TerrainZones = TerrainZones;
             _waterNode.ZonesSize = ZonesSize;

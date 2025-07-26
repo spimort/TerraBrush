@@ -21,8 +21,8 @@ public partial class Terrain : Node3D {
 
     private CancellationTokenSource _collisionCancellationSource = null;
 
-    [NodePath] private Clipmap _clipmap;
-    [NodePath] private StaticBody3D _terrainCollider;
+    private Clipmap _clipmap;
+    private StaticBody3D _terrainCollider;
 
     [BindProperty] public int ZonesSize { get;set; }
     [BindProperty] public int Resolution { get;set; }
@@ -55,7 +55,12 @@ public partial class Terrain : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmap = new Clipmap();
+        AddChild(_clipmap);
+
+        _terrainCollider = new StaticBody3D();
+        AddChild(_terrainCollider);
 
         BuildTerrain();
     }
@@ -222,6 +227,7 @@ public partial class Terrain : Node3D {
         }
     }
 
+    [BindMethod]
     private void AssignCollisionData(HeightMapShape3D shape, PackedFloat32Array data) {
         shape.MapData = data;
     }
