@@ -11,8 +11,6 @@ public partial class Plugin : EditorPlugin {
 
 	private Control _terrainDockContainer;
 	private TerrainControlDock _terrainControlDock;
-    private PackedScene _terrainControlDockPrefab;
-    private PackedScene _toolsPieMenuPrefab;
     private PackedScene _customContentPieMenuPrefab;
     private BrushDecal _brushDecal;
     private TerraBrush _currentTerraBrushNode;
@@ -61,8 +59,6 @@ public partial class Plugin : EditorPlugin {
         };
         AddControlToDock(DockSlot.RightBl, _terrainDockContainer);
 
-		_terrainControlDockPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/TerrainControlDock.tscn");
-        _toolsPieMenuPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/ToolsPieMenu.tscn");
         _customContentPieMenuPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
@@ -386,7 +382,7 @@ public partial class Plugin : EditorPlugin {
     }
 
     private void AddDock() {
-        _terrainControlDock = _terrainControlDockPrefab.Instantiate<TerrainControlDock>();
+        _terrainControlDock = new TerrainControlDock();
         _terrainControlDock.TerraBrush = _currentTerraBrushNode;
         _terrainControlDock.BrushDecal = _brushDecal;
         _terrainControlDock.EditorResourcePreview = EditorInterface.Singleton.GetResourcePreviewer();
@@ -467,7 +463,7 @@ public partial class Plugin : EditorPlugin {
         if (previewActionName.ToString() != actionName.ToString()) {
             var activeViewport = GetActiveViewport();
             if (activeViewport != null) {
-                var pieMenu = _toolsPieMenuPrefab.Instantiate<ToolsPieMenu>();
+                var pieMenu = new ToolsPieMenu();
                 pieMenu.OnToolSelected = toolType => {
                     _terrainControlDock.SelectToolType(toolType);
 

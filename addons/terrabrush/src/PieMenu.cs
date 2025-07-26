@@ -73,6 +73,7 @@ public partial class PieMenu : Control {
 
         UpdateContent();
 
+        Scale = new Vector2(0, 0);
         var tween = CreateTween();
         tween.TweenProperty(this, (NodePath)"scale", 1.0, 0.1);
 
