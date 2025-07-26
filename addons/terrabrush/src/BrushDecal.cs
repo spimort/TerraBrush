@@ -4,11 +4,13 @@ namespace TerraBrush;
 
 [GodotClass(Tool = true)]
 public partial class BrushDecal : Node3D {
-    [NodePath] private Decal _decal;
+    private Decal _decal;
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _decal = new Decal();
+        AddChild(_decal);
     }
 
     public void SetSize(int size) {

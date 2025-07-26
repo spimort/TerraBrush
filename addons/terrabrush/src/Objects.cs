@@ -131,6 +131,7 @@ public partial class Objects : Node3D, IObjectsNode {
         }
     }
 
+    [BindMethod]
     private void AddObjectNode(Node3D parentNode, string nodeName, Vector3 nodePosition, Vector3 nodeRotation, float nodeSizeFactor, int packedSceneIndex) {
         var newNode = Definition.ObjectScenes[packedSceneIndex].Instantiate<Node3D>();
         newNode.Name = (StringName)nodeName;

@@ -51,7 +51,8 @@ public partial class NumericSelectorDialog : Window {
 		}
     }
 
+	[BindMethod]
 	private void SendResult() {
-        EmitSignal(SignalName.NumericSelectorAccepted, new ReadOnlySpan<Variant>([(float)Math.Round(_spinBox.Value, 2)]));
+		EmitSignal(SignalName.NumericSelectorAccepted, new ReadOnlySpan<Variant>([(float)Math.Round(_spinBox.Value, 2)]));
 	}
 }

@@ -358,7 +358,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"BrushDecal")?.QueueFree();
         _brushDecal?.QueueFree();
 
-        _brushDecal = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/BrushDecal.tscn").Instantiate<BrushDecal>();
+        _brushDecal = new BrushDecal();
         _brushDecal.Name = (StringName)"BrushDecal";
         AddChild(_brushDecal);
 
