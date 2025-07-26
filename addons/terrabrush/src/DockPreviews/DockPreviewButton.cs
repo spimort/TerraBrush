@@ -16,11 +16,11 @@ public partial class DockPreviewButton : TextureButton {
     private Color _normalColor;
     private Color _hoverColor;
     private Color _pressedColor;
+    private MarginContainer _marginContainer;
+    private TextureRect _textureRect;
+    private Label _label;
 
     [BindProperty] public Texture2D ButtonImage { get;set; }
-    [BindProperty] public TextureRect TextureRect { get;set; }
-    [BindProperty] public MarginContainer MarginContainer { get;set; }
-    [BindProperty] public Label Label { get;set; }
 
     [BindProperty] public IconType IconType { get;set; } = IconType.Square;
     [BindProperty] public int Margin { get;set; }
@@ -32,7 +32,22 @@ public partial class DockPreviewButton : TextureButton {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _marginContainer = new MarginContainer();
+        _marginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+        AddChild(_marginContainer);
+
+        _textureRect = new TextureRect {
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize
+        };
+        _marginContainer.AddChild(_textureRect);
+
+        _label = new Label() {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        _label.Set((StringName)"theme_override_font_sizes/font_size", 10);
+        _marginContainer.AddChild(_label);
 
         Connect((StringName)"pressed", new Callable(this, (StringName) nameof(OnItemSelect)));
 
@@ -48,15 +63,15 @@ public partial class DockPreviewButton : TextureButton {
         _hoverColor = _normalColor.Lightened(0.4f);
         _pressedColor = _normalColor.Lightened(0.5f);
 
-        if (MarginContainer != null && Margin > 0) {
-            MarginContainer.Set((StringName)"theme_override_constants/margin_left", Margin);
-            MarginContainer.Set((StringName)"theme_override_constants/margin_right", Margin);
-            MarginContainer.Set((StringName)"theme_override_constants/margin_top", Margin);
-            MarginContainer.Set((StringName)"theme_override_constants/margin_bottom", Margin);
+        if (_marginContainer != null && Margin > 0) {
+            _marginContainer.Set((StringName)"theme_override_constants/margin_left", Margin);
+            _marginContainer.Set((StringName)"theme_override_constants/margin_right", Margin);
+            _marginContainer.Set((StringName)"theme_override_constants/margin_top", Margin);
+            _marginContainer.Set((StringName)"theme_override_constants/margin_bottom", Margin);
         }
 
-        if (Label != null && Text != "") {
-            Label.Text = Text;
+        if (_label != null && Text != "") {
+            _label.Text = Text;
         }
     }
 
@@ -69,7 +84,7 @@ public partial class DockPreviewButton : TextureButton {
     }
 
     public void SetTextureImage(Texture2D toolImage) {
-        TextureRect.Texture = toolImage;
+        _textureRect.Texture = toolImage;
     }
 
     public void OnItemSelect() {
@@ -117,9 +132,9 @@ public partial class DockPreviewButton : TextureButton {
 
     private void OnPreviewThumbnailReady(string path, Texture2D preview, Texture2D thumbnail_preview, string resourceName) {
         if (preview == null) {
-            Label.Text = resourceName;
+            _label.Text = resourceName;
         } else {
-            Label.Text = string.Empty;
+            _label.Text = string.Empty;
             SetTextureImage(preview);
         }
     }
