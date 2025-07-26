@@ -10,7 +10,7 @@ namespace TerraBrush;
 public partial class Clipmap : Node3D {
     private ShaderMaterial _clipmapShader;
 
-    [NodePath] private MeshInstance3D _clipmapMesh;
+    private MeshInstance3D _clipmapMesh;
 
     [BindProperty] public int ZonesSize { get;set; }
     [BindProperty] public int Resolution { get;set; }
@@ -24,7 +24,9 @@ public partial class Clipmap : Node3D {
 
     protected override void _Ready() {
         base._Ready();
-        this.RegisterNodePaths();
+
+        _clipmapMesh = new MeshInstance3D();
+        AddChild(_clipmapMesh);
 
         SetNotifyTransform(true);
     }
@@ -100,19 +102,19 @@ public partial class Clipmap : Node3D {
         }
 
         var arrays = new GodotArray();
-        arrays.Resize((int) Mesh.ArrayType.Index + 1);
-        arrays[(int) Mesh.ArrayType.Vertex] = new GodotArray([..vertices]);
-        arrays[(int) Mesh.ArrayType.TexUV] = new GodotArray([..uvs]);
-        arrays[(int) Mesh.ArrayType.Color] = new GodotArray([..colors]);
+        arrays.Resize(((int) Mesh.ArrayType.Index) + 1);
+        arrays[(int) Mesh.ArrayType.Vertex] = new PackedVector3Array([..vertices]);
+        arrays[(int) Mesh.ArrayType.TexUV] = new PackedVector2Array([..uvs]);
+        arrays[(int) Mesh.ArrayType.Color] = new PackedColorArray([..colors]);
 
         var normals = new Vector3[vertices.Count];
         Array.Fill(normals, new Vector3(0, 1, 0));
-        arrays[(int) Mesh.ArrayType.Normal] = new GodotArray([..normals]);
+        arrays[(int) Mesh.ArrayType.Normal] = new PackedVector3Array([..normals]);
 
-        arrays[(int) Mesh.ArrayType.Tangent] = new GodotArray([..CalculateTangents(vertices, uvs)]);
+        arrays[(int) Mesh.ArrayType.Tangent] = new PackedFloat32Array([..CalculateTangents(vertices, uvs)]);
 
         var arrayMesh = new ArrayMesh();
-        arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
+        arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays, []);
 
         _clipmapMesh.Mesh = arrayMesh;
         UpdateAABB();
