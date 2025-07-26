@@ -32,19 +32,19 @@ public class EntryPoint {
 
         GD.Print("Initialize TestAddon extension");
 
-        _ = new GodotArray<int>();
-        _ = new GodotArray<FoliageResource>();
-        _ = new GodotArray<ObjectResource>();
-        _ = new GodotArray<ObjectOctreeLODMeshDefinitionResource>();
-        _ = new GodotArray<ObjectOctreeLODMeshesDefinitionResource>();
-        _ = new GodotArray<ObjectOctreeLODDefinitionResource>();
-        _ = new GodotArray<PackedScene>();
-        _ = new GodotArray<MetaInfoLayer>();
-        _ = new GodotArray<TerrainPositionTextureInformation>();
-        _ = new GodotArray<Texture2D>();
-        _ = new GodotArray<TextureSetResource>();
-        _ = new GodotArray<ImageTexture>();
-        _ = new GodotArray<ZoneResource>();
+        using (var _ = new GodotArray<int>()) {}
+        using (var _ = new GodotArray<FoliageResource>()) {}
+        using (var _ = new GodotArray<ObjectResource>()) {}
+        using (var _ = new GodotArray<ObjectOctreeLODMeshDefinitionResource>()) {}
+        using (var _ = new GodotArray<ObjectOctreeLODMeshesDefinitionResource>()) {}
+        using (var _ = new GodotArray<ObjectOctreeLODDefinitionResource>()) {}
+        using (var _ = new GodotArray<PackedScene>()) {}
+        using (var _ = new GodotArray<MetaInfoLayer>()) {}
+        using (var _ = new GodotArray<TerrainPositionTextureInformation>()) {}
+        using (var _ = new GodotArray<Texture2D>()) {}
+        using (var _ = new GodotArray<TextureSetResource>()) {}
+        using (var _ = new GodotArray<ImageTexture>()) {}
+        using (var _ = new GodotArray<ZoneResource>()) {}
 
         GodotRegistry.RegisterInternalClass<BrushDecal>(BrushDecal.BindMethods);
         GodotRegistry.RegisterInternalClass<BrushNumericSelector>(BrushNumericSelector.BindMethods);
@@ -67,6 +67,7 @@ public class EntryPoint {
         GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
         GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
         GodotRegistry.RegisterInternalClass<ToolInfo>(ToolInfo.BindMethods);
+        GodotRegistry.RegisterInternalClass<KeybindManager>(KeybindManager.BindMethods);
 
         GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
         GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
@@ -89,7 +90,8 @@ public class EntryPoint {
         GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
         GodotRegistry.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
 
-        GodotRegistry.AddEditorPluginByType<Plugin>();
+        GodotRegistry.RegisterInternalClass<TerraBrushPlugin>(TerraBrushPlugin.BindMethods);
+        GodotRegistry.AddEditorPluginByType<TerraBrushPlugin>();
 
         GD.Print("Initialized...");
     }

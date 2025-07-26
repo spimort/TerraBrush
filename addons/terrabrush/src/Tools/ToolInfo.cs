@@ -32,15 +32,14 @@ public partial class ToolInfo : Control {
 
         _label = new Label();
         marginContainer.AddChild(_label);
-
-        _tween = CreateTween();
     }
 
     public void SetText(string text) {
         if (_label.Text != text) {
             _label.Text = text;
 
-            _tween.Stop();
+            _tween?.Kill();
+            _tween = GetTree().CreateTween();
 
             if (!string.IsNullOrWhiteSpace(text)) {
                 _panelContainer.Modulate = Color.FromHtml("#ffffff00");

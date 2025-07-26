@@ -4,14 +4,13 @@ using Godot.Collections;
 namespace TerraBrush;
 
 [GodotClass(Tool = true)]
-public partial class Plugin : EditorPlugin {
+public partial class TerraBrushPlugin : EditorPlugin {
     private const float UpdateDelay = 0.005f;
     private const int ToolInfoOffset = 20;
     private const string OverlayActionNameKey = "ActionName";
 
-	private Control _terrainDockContainer;
-	private TerrainControlDock _terrainControlDock;
-    private PackedScene _customContentPieMenuPrefab;
+    private Control _terrainDockContainer;
+    private TerrainControlDock _terrainControlDock;
     private BrushDecal _brushDecal;
     private TerraBrush _currentTerraBrushNode;
     private ToolInfo _toolInfo;
@@ -45,10 +44,7 @@ public partial class Plugin : EditorPlugin {
 
     protected override void _EnterTree() {
         var keybindManager = new KeybindManager();
-		var script = GD.Load<Script>("res://addons/terrabrush/TerraBrush.cs");
-		var icon = GD.Load<Texture2D>("res://addons/terrabrush/icon.png");
 
-		AddCustomType("TerraBrush", "Node3D", script, icon);
         CreateCustomSetting(SettingContants.DecalColor, new Color(1.0f, 0, 0, 0.5f), VariantType.Color);
         CreateCustomSetting(SettingContants.CustomBrushesFolder, "res://TerraBrush_CustomBrushes", VariantType.String);
         CreateCustomSetting(SettingContants.SculptingMultiplier, 10, VariantType.Int);
@@ -59,7 +55,6 @@ public partial class Plugin : EditorPlugin {
         };
         AddControlToDock(DockSlot.RightBl, _terrainDockContainer);
 
-        _customContentPieMenuPrefab = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/CustomContentPieMenu.tscn");
         _editorViewportsContainer = GetEditorViewportsContainer();
         _editorViewports = _editorViewportsContainer.GetChildren().Select(viewport => (Control) viewport).ToArray();
 
@@ -486,7 +481,7 @@ public partial class Plugin : EditorPlugin {
         if (previewActionName != label) {
             var activeViewport = GetActiveViewport();
             if (activeViewport != null) {
-                var customContentPieMenu = _customContentPieMenuPrefab.Instantiate<CustomContentPieMenu>();
+                var customContentPieMenu = new CustomContentPieMenu();
 
                 _overlaySelector = customContentPieMenu;
                 _overlaySelector.Position = ((Control) activeViewport).GetGlobalMousePosition();

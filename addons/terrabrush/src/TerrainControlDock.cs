@@ -534,6 +534,20 @@ public partial class TerrainControlDock : Control {
                             objectsMarginContainer.AddChild(_objectsContainer);
                         }
                     }
+
+                    var metaInfoTab = new Control() {
+                        Name = (StringName)"MetaInfo"
+                    };
+                    tabContainer2.AddChild(metaInfoTab);
+                    { // Tab
+                        var metaInfoMarginContainer = new MarginContainer();
+                        metaInfoMarginContainer.SetAnchorsPreset(LayoutPreset.FullRect);
+                        metaInfoTab.AddChild(metaInfoMarginContainer);
+                        { // MarginContainer
+                            _metaInfoLayersContainer = new HFlowContainer();
+                            metaInfoMarginContainer.AddChild(_metaInfoLayersContainer);
+                        }
+                    }
                 }
             }
         }

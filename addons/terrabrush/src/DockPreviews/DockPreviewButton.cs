@@ -122,7 +122,7 @@ public partial class DockPreviewButton : TextureButton {
             _ => _normalColor
         };
 
-        var tween = CreateTween();
+        var tween = GetTree().CreateTween();
         tween.TweenProperty(this, (NodePath)"self_modulate", color, 0.1);
     }
 
