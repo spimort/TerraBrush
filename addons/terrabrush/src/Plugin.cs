@@ -372,7 +372,7 @@ public partial class Plugin : EditorPlugin {
         GetNodeOrNull((NodePath)"ToolInfo")?.QueueFree();
         _toolInfo?.QueueFree();
 
-        _toolInfo = ResourceLoaderHelper.Load<PackedScene>("res://addons/terrabrush/Components/ToolInfo.tscn").Instantiate<ToolInfo>();
+        _toolInfo = new ToolInfo();
         _toolInfo.Name = (StringName)"ToolInfo";
         AddChild(_toolInfo);
 
