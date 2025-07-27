@@ -195,8 +195,9 @@ public partial class TerraBrushPlugin : EditorPlugin {
 
                     _currentTerraBrushNode.EndEditTerrain();
 
-                    _undoRedo.AddUndoMethod(this, (StringName)nameof(OnUndoRedo));
-                    _undoRedo.AddDoMethod(this, (StringName)nameof(OnUndoRedo));
+                    // TODO
+                    // _undoRedo.AddUndoMethod(this, (StringName)nameof(OnUndoRedo));
+                    // _undoRedo.AddDoMethod(this, (StringName)nameof(OnUndoRedo));
 
                     _preventInitialDo = true;
                     _undoRedo.CommitAction();

@@ -1,3 +1,3 @@
 @tool
-class_name TerraBrushPlugin
+class_name TerraBrushPluginEmpty
 extends EditorPlugin

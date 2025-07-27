@@ -211,13 +211,15 @@ public abstract class ToolBase {
         if (!_modifiedUndoTextures.Contains(texture)) {
             _modifiedUndoTextures.Add(texture);
 
-            _terraBrush.UndoRedo.AddUndoMethod(texture, (StringName)"update", new ReadOnlySpan<Variant>([GetUndoRedoImageFromTexture(texture)]));
+            // TODO
+            // _terraBrush.UndoRedo.AddUndoMethod(texture, (StringName)"update", new ReadOnlySpan<Variant>([GetUndoRedoImageFromTexture(texture)]));
         }
     }
 
     private void AddImagesToRedo() {
         foreach (var imageTexture in _modifiedUndoTextures) {
-            _terraBrush.UndoRedo.AddDoMethod(imageTexture, (StringName)"update", new ReadOnlySpan<Variant>([GetUndoRedoImageFromTexture(imageTexture)]));
+            // TODO
+            // _terraBrush.UndoRedo.AddDoMethod(imageTexture, (StringName)"update", new ReadOnlySpan<Variant>([GetUndoRedoImageFromTexture(imageTexture)]));
         }
     }
 

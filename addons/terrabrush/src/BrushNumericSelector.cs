@@ -38,9 +38,18 @@ public partial class BrushNumericSelector : Control {
 
         _valueLabel = new Label {
             HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center
+            VerticalAlignment = VerticalAlignment.Center,
+            AnchorLeft = 0.5f,
+            AnchorRight = 0.5f,
+            AnchorTop = 0.5f,
+            AnchorBottom = 0.5f,
+            OffsetLeft = -11.5f,
+            OffsetTop = -14.0f,
+            OffsetRight = 11.5f,
+            OffsetBottom = 14.0f,
+            GrowHorizontal = GrowDirection.Both,
+            GrowVertical = GrowDirection.Both,
         };
-        _valueLabel.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
         _valueLabel.Set((StringName)"theme_override_colors/font_color", NamedColors.White);
         _valueLabel.Set((StringName)"theme_override_colors/font_outline_color", Color.FromHtml("#00151f"));
         _valueLabel.Set((StringName)"theme_override_constants/outline_size", 3);
