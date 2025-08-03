@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 
@@ -24,31 +18,31 @@ public partial class Terrain : Node3D {
     private Clipmap _clipmap;
     private StaticBody3D _terrainCollider;
 
-    [BindProperty] public int ZonesSize { get;set; }
-    [BindProperty] public int Resolution { get;set; }
-    [BindProperty] public ZonesResource TerrainZones { get;set; }
-    [BindProperty] public float HeightMapFactor { get;set; }
-    [BindProperty] public ShaderMaterial CustomShader { get;set; }
-    [BindProperty] public TextureSetsResource TextureSets { get;set;}
-	[BindProperty] public int TextureDetail { get;set; } = 1;
-    [BindProperty] public bool UseAntiTile { get;set; } = true;
-    [BindProperty] public bool NearestTextureFilter { get;set; } = false;
-    [BindProperty] public float HeightBlendFactor { get;set; } = 10f;
-    [BindProperty] public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
-    [BindProperty] public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
-    [BindProperty] public bool UseSharpTransitions { get;set; } = false;
-    [BindProperty] public float WaterFactor { get;set; }
-    [BindProperty] public Texture2D DefaultTexture { get;set; }
-    [BindProperty(Hint = PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
-    [BindProperty(Hint = PropertyHint.Layers3DPhysics)] public int CollisionLayers { get;set; } = 1;
-    [BindProperty(Hint = PropertyHint.Layers3DPhysics)] public int CollisionMask { get;set; } = 1;
-    [BindProperty] public int LODLevels { get;set; } = 8;
-    [BindProperty] public int LODRowsPerLevel { get;set; } = 21;
-    [BindProperty] public float LODInitialCellWidth { get;set; } = 1;
-    [BindProperty] public bool CollisionOnly { get;set; } = false;
-    [BindProperty] public bool CreateCollisionInThread { get;set; } = true;
-    [BindProperty] public bool ShowMetaInfo { get;set; } = false;
-    [BindProperty] public GodotArray<MetaInfoLayer> MetaInfoLayers { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public float HeightMapFactor { get;set; }
+    public ShaderMaterial CustomShader { get;set; }
+    public TextureSetsResource TextureSets { get;set;}
+    public int TextureDetail { get;set; } = 1;
+    public bool UseAntiTile { get;set; } = true;
+    public bool NearestTextureFilter { get;set; } = false;
+    public float HeightBlendFactor { get;set; } = 10f;
+    public AlphaChannelUsage AlbedoAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    public AlphaChannelUsage NormalAlphaChannelUsage { get;set; } = AlphaChannelUsage.None;
+    public bool UseSharpTransitions { get;set; } = false;
+    public float WaterFactor { get;set; }
+    public Texture2D DefaultTexture { get;set; }
+    public int VisualInstanceLayers { get;set; } = 1;
+    public int CollisionLayers { get;set; } = 1;
+    public int CollisionMask { get;set; } = 1;
+    public int LODLevels { get;set; } = 8;
+    public int LODRowsPerLevel { get;set; } = 21;
+    public float LODInitialCellWidth { get;set; } = 1;
+    public bool CollisionOnly { get;set; } = false;
+    public bool CreateCollisionInThread { get;set; } = true;
+    public bool ShowMetaInfo { get;set; } = false;
+    public GodotArray<MetaInfoLayer> MetaInfoLayers { get;set; }
 
     public StaticBody3D TerrainCollider => _terrainCollider;
     public Clipmap Clipmap => _clipmap;
@@ -104,7 +98,7 @@ public partial class Terrain : Node3D {
                 if (MetaInfoLayers?.Count > 0) {
                     Clipmap.Shader.SetShaderParameter(StringNames.ApplyMetaInfoTextures, ShowMetaInfo);
                     Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoTextures, TerrainZones.MetaInfoTextures);
-                    Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoColors, new GodotArray([..MetaInfoLayers.Select(x => x.Color)]));
+                    Clipmap.Shader.SetShaderParameter(StringNames.MetaInfoColors, new GodotArray<Color>(MetaInfoLayers.Select(x => x.Color)));
                 }
             }
 
@@ -148,7 +142,7 @@ public partial class Terrain : Node3D {
             collisionShape.QueueFree();
         }
 
-        var shapes = new List<HeightMapShape3D>();
+        var shapes = new GodotArray<HeightMapShape3D>();
         foreach (var zone in TerrainZones.Zones) {
             var heightMapShape3D = AddZoneCollision(zone);
 
@@ -173,7 +167,7 @@ public partial class Terrain : Node3D {
                     return;
                 }
 
-                var terrainData = new List<float>();
+                var terrainData = new GodotArray<float>();
                 for (var y = 0; y < heightMapImage.GetHeight(); y++) {
                     for (var x = 0; x < heightMapImage.GetWidth(); x++) {
                         if (token.IsCancellationRequested) {
@@ -262,9 +256,9 @@ public partial class Terrain : Node3D {
 
         if (this.TextureSets?.TextureSets?.Count > 0) {
             var textureArray = Utils.TexturesToTextureArray(this.TextureSets.TextureSets.Select(x => x.AlbedoTexture));
-            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail).ToArray()]));
+            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray<int>(TextureSets.TextureSets.Select(x => x.TextureDetail <= 0 ? TextureDetail : x.TextureDetail)));
             Clipmap.Shader.SetShaderParameter(StringNames.Triplanar, TextureSets.TextureSets.Any(x => x.Triplanar));
-            Clipmap.Shader.SetShaderParameter(StringNames.TexturesTriplanar, new GodotArray([..TextureSets.TextureSets.Select(x => x.Triplanar ? 1 : 0).ToArray()]));
+            Clipmap.Shader.SetShaderParameter(StringNames.TexturesTriplanar, new GodotArray<int>(TextureSets.TextureSets.Select(x => x.Triplanar ? 1 : 0)));
             Clipmap.Shader.SetShaderParameter((StringName) $"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
             Clipmap.Shader.SetShaderParameter(StringNames.UseSharpTransitions, UseSharpTransitions);
@@ -292,8 +286,8 @@ public partial class Terrain : Node3D {
             Clipmap.Shader.SetShaderParameter(StringNames.AlbedoAlphaChannelUsage, (int) AlbedoAlphaChannelUsage);
             Clipmap.Shader.SetShaderParameter(StringNames.NormalAlphaChannelUsage, (int) NormalAlphaChannelUsage);
         } else if (DefaultTexture != null) {
-            var textureArray = Utils.TexturesToTextureArray(new Texture2D[] {DefaultTexture});
-            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray([..new int[] {TextureDetail}]));
+            var textureArray = Utils.TexturesToTextureArray([DefaultTexture]);
+            Clipmap.Shader.SetShaderParameter(StringNames.TexturesDetail, new GodotArray<int>([TextureDetail]));
             Clipmap.Shader.SetShaderParameter((StringName) $"Textures{filterParamName}", textureArray);
             Clipmap.Shader.SetShaderParameter(StringNames.NumberOfTextures, textureArray.GetLayers());
             Clipmap.Shader.SetShaderParameter(StringNames.UseAntitile, false);
