@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -12,13 +9,13 @@ public partial class Clipmap : Node3D {
 
     private MeshInstance3D _clipmapMesh;
 
-    [BindProperty] public int ZonesSize { get;set; }
-    [BindProperty] public int Resolution { get;set; }
-    [BindProperty] public ZonesResource TerrainZones { get;set; }
-    [BindProperty] public int Levels { get;set; } = 8;
-    [BindProperty] public int RowsPerLevel { get;set; } = 21;
-    [BindProperty] public float InitialCellWidth { get;set; } = 1;
-    [BindProperty] public ShaderMaterial Shader { get;set; }
+    public int ZonesSize { get;set; }
+    public int Resolution { get;set; }
+    public ZonesResource TerrainZones { get;set; }
+    public int Levels { get;set; } = 8;
+    public int RowsPerLevel { get;set; } = 21;
+    public float InitialCellWidth { get;set; } = 1;
+    public ShaderMaterial Shader { get;set; }
 
     public MeshInstance3D ClipmapMesh => _clipmapMesh;
 
@@ -88,9 +85,9 @@ public partial class Clipmap : Node3D {
         _clipmapShader = clipmapShader;
         _clipmapMesh.MaterialOverride = clipmapShader;
 
-        var vertices = new List<Vector3>();
-        var uvs = new List<Vector2>();
-        var colors = new List<Color>(); // To store information about the zones
+        var vertices = new GodotArray<Vector3>();
+        var uvs = new GodotArray<Vector2>();
+        var colors = new GodotArray<Color>(); // To store information about the zones
 
         var rowsPerLevel = RowsPerLevel;
         if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
@@ -103,15 +100,16 @@ public partial class Clipmap : Node3D {
 
         var arrays = new GodotArray();
         arrays.Resize(((int) Mesh.ArrayType.Index) + 1);
-        arrays[(int) Mesh.ArrayType.Vertex] = new PackedVector3Array([..vertices]);
-        arrays[(int) Mesh.ArrayType.TexUV] = new PackedVector2Array([..uvs]);
-        arrays[(int) Mesh.ArrayType.Color] = new PackedColorArray([..colors]);
+        arrays[(int) Mesh.ArrayType.Vertex] = new PackedVector3Array(vertices);
+        arrays[(int) Mesh.ArrayType.TexUV] = new PackedVector2Array(uvs);
+        arrays[(int) Mesh.ArrayType.Color] = new PackedColorArray(colors);
 
-        var normals = new Vector3[vertices.Count];
-        Array.Fill(normals, new Vector3(0, 1, 0));
-        arrays[(int) Mesh.ArrayType.Normal] = new PackedVector3Array([..normals]);
+        var normals = new GodotArray<Vector3>();
+        normals.Resize(vertices.Count);
+        normals.Fill(new Vector3(0, 1, 0));
+        arrays[(int) Mesh.ArrayType.Normal] = new PackedVector3Array(normals);
 
-        arrays[(int) Mesh.ArrayType.Tangent] = new PackedFloat32Array([..CalculateTangents(vertices, uvs)]);
+        arrays[(int) Mesh.ArrayType.Tangent] = new PackedFloat32Array(CalculateTangents(vertices, uvs));
 
         var arrayMesh = new ArrayMesh();
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays, []);
@@ -128,7 +126,7 @@ public partial class Clipmap : Node3D {
         UpdateShaderOffsetPosition();
     }
 
-    private void GenerateLevel(List<Vector3> vertices, List<Vector2> uvs, List<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {
+    private void GenerateLevel(GodotArray<Vector3> vertices, GodotArray<Vector2> uvs, GodotArray<Color> colors, int level, int rowsPerLevel, float initialCellWidth) {
         var width = initialCellWidth * ((float) Math.Pow(2, level - 1));
 
         var startIndex = -1 - rowsPerLevel;
@@ -167,21 +165,19 @@ public partial class Clipmap : Node3D {
                     var vertex4MidZone = (x == toIndex && z % 2 == 0) || (z == toIndex && x % 2 == 0);
                     var vertex5MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
 
-                   colors.AddRange(new [] {
-                        new Color(vertex0MidZone ? 1 : 0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, level / 100.0f),
-                        new Color(vertex1MidZone ? 1 : 0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, level / 100.0f),
-                        new Color(vertex2MidZone ? 1 : 0, vertex2MidZone && z == toIndex ? 1 : 0, vertex2MidZone && x == startIndex ? 1 : 0, level / 100.0f),
+                    colors.Add(new Color(vertex0MidZone ? 1 : 0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, level / 100.0f));
+                    colors.Add(new Color(vertex1MidZone ? 1 : 0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, level / 100.0f));
+                    colors.Add(new Color(vertex2MidZone ? 1 : 0, vertex2MidZone && z == toIndex ? 1 : 0, vertex2MidZone && x == startIndex ? 1 : 0, level / 100.0f));
 
-                        new Color(vertex3MidZone ? 1 : 0, vertex3MidZone && z == startIndex ? 1 : 0, vertex3MidZone && x == toIndex ? 1 : 0, level / 100.0f),
-                        new Color(vertex4MidZone ? 1 : 0, vertex4MidZone && z == toIndex ? 1 : 0, vertex4MidZone && x == toIndex ? 1 : 0, level / 100.0f),
-                        new Color(vertex5MidZone ? 1 : 0, vertex5MidZone && z == toIndex ? 1 : 0, vertex5MidZone && x == startIndex ? 1 : 0, level / 100.0f),
-                    });
+                    colors.Add(new Color(vertex3MidZone ? 1 : 0, vertex3MidZone && z == startIndex ? 1 : 0, vertex3MidZone && x == toIndex ? 1 : 0, level / 100.0f));
+                    colors.Add(new Color(vertex4MidZone ? 1 : 0, vertex4MidZone && z == toIndex ? 1 : 0, vertex4MidZone && x == toIndex ? 1 : 0, level / 100.0f));
+                    colors.Add(new Color(vertex5MidZone ? 1 : 0, vertex5MidZone && z == toIndex ? 1 : 0, vertex5MidZone && x == startIndex ? 1 : 0, level / 100.0f));
                 }
             }
         }
     }
 
-    private void AddSquareVertices(List<Vector3> vertices, List<Vector2> uvs, float xPosition, float zPosition, float width) {
+    private void AddSquareVertices(GodotArray<Vector3> vertices, GodotArray<Vector2> uvs, float xPosition, float zPosition, float width) {
         /* Square made of 2 triangles
             2  #  #  #
             |  \  #  #
@@ -194,29 +190,27 @@ public partial class Clipmap : Node3D {
             #  #  #  3
         */
 
-        vertices.AddRange(new [] {
-            new Vector3(xPosition, 0, zPosition),
-            new Vector3(xPosition + width, 0, zPosition),
-            new Vector3(xPosition, 0, zPosition + width),
+        // Vertices
+        vertices.Add(new Vector3(xPosition, 0, zPosition));
+        vertices.Add(new Vector3(xPosition + width, 0, zPosition));
+        vertices.Add(new Vector3(xPosition, 0, zPosition + width));
 
-            new Vector3(xPosition + width, 0, zPosition),
-            new Vector3(xPosition + width, 0, zPosition + width),
-            new Vector3(xPosition, 0, zPosition + width)
-        });
+        vertices.Add(new Vector3(xPosition + width, 0, zPosition));
+        vertices.Add(new Vector3(xPosition + width, 0, zPosition + width));
+        vertices.Add(new Vector3(xPosition, 0, zPosition + width));
 
-        uvs.AddRange(new [] {
-            new Vector2(0, 1),
-            new Vector2(1, 1),
-            new Vector2(0, 0),
+        // UVS
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(0, 0));
 
-            new Vector2(1, 1),
-            new Vector2(1, 0),
-            new Vector2(0, 0)
-        });
+        uvs.Add(new Vector2(1, 1));
+        uvs.Add(new Vector2(1, 0));
+        uvs.Add(new Vector2(0, 0));
     }
 
-    private List<float> CalculateTangents(List<Vector3> vertices, List<Vector2> uvs) {
-        var tangents = new List<float>();
+    private GodotArray<float> CalculateTangents(GodotArray<Vector3> vertices, GodotArray<Vector2> uvs) {
+        var tangents = new GodotArray<float>();
         int triangleCount = vertices.Count / 3;
 
         for (int i = 0; i < triangleCount; i++) {

@@ -17,7 +17,7 @@ public static class ZoneUtils {
             image.Fill(NamedColors.White);
         }
 
-        return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), "");
+        return GetImageTextureResource(image, string.Format(HeightmapFileName, zonePosition.X, zonePosition.Y), string.Empty);
     }
 
     public static ImageTexture CreateHeightmapImage(int zoneSize, float resolution, Vector2I zonePosition, string dataPath) {

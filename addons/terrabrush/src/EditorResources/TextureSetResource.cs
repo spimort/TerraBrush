@@ -18,7 +18,7 @@ public partial class TextureSetResource : Resource {
             return _albedoTexture;
         } set {
             if (Engine.Singleton.IsEditorHint() && value != null && !string.IsNullOrWhiteSpace(value.ResourcePath) && value.ResourcePath != _albedoTexture?.ResourcePath) {
-                var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), "");
+                var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), string.Empty);
                 var directoryFiles = DirAccess.GetFilesAt(directory);
 
                 var normalFiles = directoryFiles.Where(file => file.Contains(NormalFilesHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));

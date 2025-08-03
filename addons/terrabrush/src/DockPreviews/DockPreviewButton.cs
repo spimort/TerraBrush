@@ -80,7 +80,7 @@ public partial class DockPreviewButton : TextureButton {
             _marginContainer.Set((StringName)"theme_override_constants/margin_bottom", Margin);
         }
 
-        if (_label != null && Text != "") {
+        if (_label != null && Text != string.Empty) {
             _label.Text = Text;
         }
     }

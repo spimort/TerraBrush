@@ -75,11 +75,11 @@ public static class NodePathUtils {
             member.Name,
             $"%{member.Name}",
             name1,
-            string.IsNullOrEmpty(name1) ? "" : $"%{name1}",
+            string.IsNullOrEmpty(name1) ? string.Empty : $"%{name1}",
             member.MemberType.Name
         };
 
-        if (names.Contains(""))
+        if (names.Contains(string.Empty))
             names.RemoveAll(string.IsNullOrEmpty);
 
         Node value = TryGetNode(node, names);
