@@ -348,32 +348,32 @@ public partial class TerraBrush : TerraBrushTool {
             await CreateWater();
         }
 
-        _terrain = new Terrain();
-
-        _terrain.TextureSets = TextureSets;
-        _terrain.VisualInstanceLayers = VisualInstanceLayers;
-        _terrain.CustomShader = CustomShader;
-        _terrain.CollisionLayers = CollisionLayers;
-        _terrain.CollisionMask = CollisionMask;
-        _terrain.ZonesSize = ZonesSize;
-        _terrain.Resolution = Resolution;
-        _terrain.TerrainZones = TerrainZones;
-        _terrain.HeightMapFactor = HeightMapFactor;
-        _terrain.TextureDetail = TextureDetail;
-        _terrain.UseAntiTile = UseAntiTile;
-        _terrain.NearestTextureFilter = NearestTextureFilter;
-        _terrain.HeightBlendFactor = HeightBlendFactor;
-        _terrain.AlbedoAlphaChannelUsage = AlbedoAlphaChannelUsage;
-        _terrain.NormalAlphaChannelUsage = NormalAlphaChannelUsage;
-        _terrain.UseSharpTransitions = UseSharpTransitions;
-        _terrain.WaterFactor = WaterDefinition?.WaterFactor ?? 0;
-        _terrain.LODLevels = LODLevels;
-        _terrain.LODRowsPerLevel = LODRowsPerLevel;
-        _terrain.LODInitialCellWidth = LODInitialCellWidth;
-        _terrain.CollisionOnly = CollisionOnly;
-        _terrain.CreateCollisionInThread = CreateCollisionInThread;
-        _terrain.ShowMetaInfo = ShowMetaInfo;
-        _terrain.MetaInfoLayers = MetaInfoLayers;
+        _terrain = new Terrain {
+            TextureSets = TextureSets,
+            VisualInstanceLayers = VisualInstanceLayers,
+            CustomShader = CustomShader,
+            CollisionLayers = CollisionLayers,
+            CollisionMask = CollisionMask,
+            ZonesSize = ZonesSize,
+            Resolution = Resolution,
+            TerrainZones = TerrainZones,
+            HeightMapFactor = HeightMapFactor,
+            TextureDetail = TextureDetail,
+            UseAntiTile = UseAntiTile,
+            NearestTextureFilter = NearestTextureFilter,
+            HeightBlendFactor = HeightBlendFactor,
+            AlbedoAlphaChannelUsage = AlbedoAlphaChannelUsage,
+            NormalAlphaChannelUsage = NormalAlphaChannelUsage,
+            UseSharpTransitions = UseSharpTransitions,
+            WaterFactor = WaterDefinition?.WaterFactor ?? 0,
+            LODLevels = LODLevels,
+            LODRowsPerLevel = LODRowsPerLevel,
+            LODInitialCellWidth = LODInitialCellWidth,
+            CollisionOnly = CollisionOnly,
+            CreateCollisionInThread = CreateCollisionInThread,
+            ShowMetaInfo = ShowMetaInfo,
+            MetaInfoLayers = MetaInfoLayers
+        };
 
         AddChild(_terrain);
 
