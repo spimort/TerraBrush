@@ -4,6 +4,7 @@
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
 #include "editor_resources/meta_info_layer_resource.h"
+#include "editor_resources/object_resource.h"
 #include "editor_resources/object_definition_resource.h"
 #include "editor_resources/object_octree_lod_definition_resource.h"
 #include "editor_resources/object_octree_lod_mesh_definition_resource.h"
@@ -52,7 +53,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(FoliageResource);
     GDREGISTER_CLASS(FoliageDefinitionResource);
     GDREGISTER_CLASS(MetaInfoLayerResource);
-    // GodotRegistry.RegisterClass<ObjectResource>(ObjectResource.BindMethods);
+    GDREGISTER_CLASS(ObjectResource);
     GDREGISTER_CLASS(ObjectDefinitionResource);
     GDREGISTER_CLASS(ObjectOctreeLODDefinitionResource);
     GDREGISTER_CLASS(ObjectOctreeLODMeshDefinitionResource);
