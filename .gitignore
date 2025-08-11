@@ -24,3 +24,6 @@ mono_crash.*.json
 
 # vscode
 /.vscode
+
+# SCons
+.sconsign.dblite
