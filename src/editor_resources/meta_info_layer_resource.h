@@ -1,12 +1,12 @@
-#ifndef META_INFO_LAYER_H
-#define META_INFO_LAYER_H
+#ifndef META_INFO_LAYER_RESOURCE_H
+#define META_INFO_LAYER_RESOURCE_H
 
 #include <godot_cpp/classes/resource.hpp>
 
 using namespace godot;
 
-class MetaInfoLayer : public Resource {
-    GDCLASS(MetaInfoLayer, Resource)
+class MetaInfoLayerResource : public Resource {
+    GDCLASS(MetaInfoLayerResource, Resource)
 
 private:
     String _name;
@@ -16,8 +16,8 @@ protected:
     static void _bind_methods();
 
 public:
-    MetaInfoLayer();
-    ~MetaInfoLayer();
+    MetaInfoLayerResource();
+    ~MetaInfoLayerResource();
 
     String get_name() const;
     void set_name(const String value);

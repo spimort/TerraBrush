@@ -3,7 +3,8 @@
 #include "terra_brush.h"
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
-#include "editor_resources/meta_info_layer.h"
+#include "editor_resources/meta_info_layer_resource.h"
+#include "editor_resources/object_definition_resource.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -47,9 +48,9 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
     GDREGISTER_CLASS(FoliageResource);
     GDREGISTER_CLASS(FoliageDefinitionResource);
-    GDREGISTER_CLASS(MetaInfoLayer);
+    GDREGISTER_CLASS(MetaInfoLayerResource);
     // GodotRegistry.RegisterClass<ObjectResource>(ObjectResource.BindMethods);
-    // GodotRegistry.RegisterClass<ObjectDefinitionResource>(ObjectDefinitionResource.BindMethods);
+    GDREGISTER_CLASS(ObjectDefinitionResource);
     // GodotRegistry.RegisterClass<ObjectOctreeLODMeshDefinitionResource>(ObjectOctreeLODMeshDefinitionResource.BindMethods);
     // GodotRegistry.RegisterClass<ObjectOctreeLODMeshesDefinitionResource>(ObjectOctreeLODMeshesDefinitionResource.BindMethods);
     // GodotRegistry.RegisterClass<ObjectOctreeLODDefinitionResource>(ObjectOctreeLODDefinitionResource.BindMethods);
