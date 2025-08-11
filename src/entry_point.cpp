@@ -5,6 +5,7 @@
 #include "editor_resources/foliage_definition_resource.h"
 #include "editor_resources/meta_info_layer_resource.h"
 #include "editor_resources/object_definition_resource.h"
+#include "editor_resources/object_octree_lod_definition_resource.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -51,9 +52,9 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(MetaInfoLayerResource);
     // GodotRegistry.RegisterClass<ObjectResource>(ObjectResource.BindMethods);
     GDREGISTER_CLASS(ObjectDefinitionResource);
+    GDREGISTER_CLASS(ObjectOctreeLODDefinitionResource);
     // GodotRegistry.RegisterClass<ObjectOctreeLODMeshDefinitionResource>(ObjectOctreeLODMeshDefinitionResource.BindMethods);
     // GodotRegistry.RegisterClass<ObjectOctreeLODMeshesDefinitionResource>(ObjectOctreeLODMeshesDefinitionResource.BindMethods);
-    // GodotRegistry.RegisterClass<ObjectOctreeLODDefinitionResource>(ObjectOctreeLODDefinitionResource.BindMethods);
     // GodotRegistry.RegisterClass<SnowResource>(SnowResource.BindMethods);
     // GodotRegistry.RegisterClass<TextureSetResource>(TextureSetResource.BindMethods);
     // GodotRegistry.RegisterClass<TextureSetsResource>(TextureSetsResource.BindMethods);
