@@ -19,5 +19,8 @@ protected:
 public:
     FoliageResource();
     ~FoliageResource();
+
+    Ref<FoliageDefinitionResource> get_definition() const;
+    void set_definition(const Ref<FoliageDefinitionResource> &value);
 };
 #endif

@@ -108,6 +108,7 @@ FoliageDefinitionResource::FoliageDefinitionResource() {
     _randomPlacementRange = 3.0;
     _maximumRenderDistance = 50;
     _editorMaximumRenderDistance = 50;
+    _nearestTextureFilter = false;
 }
 
 FoliageDefinitionResource::~FoliageDefinitionResource() {}
