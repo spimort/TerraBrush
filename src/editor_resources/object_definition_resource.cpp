@@ -39,13 +39,13 @@ void ObjectDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_objectScenes", "value"), &ObjectDefinitionResource::set_objectScenes);
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "objectScenes", PROPERTY_HINT_TYPE_STRING, "24/17:PackedScene"), "set_objectScenes", "get_objectScenes");
 
-    // ClassDB::bind_method(D_METHOD("get_lodList"), &ObjectDefinitionResource::get_lodList);
-    // ClassDB::bind_method(D_METHOD("set_lodList", "value"), &ObjectDefinitionResource::set_lodList)
-    // ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "lodList", PROPERTY_HINT_TYPE_STRING, "24/17:ObjectOctreeLODDefinitionResource"), "set_lodList", "get_lodList");;
+    ClassDB::bind_method(D_METHOD("get_lodList"), &ObjectDefinitionResource::get_lodList);
+    ClassDB::bind_method(D_METHOD("set_lodList", "value"), &ObjectDefinitionResource::set_lodList);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "lodList", PROPERTY_HINT_TYPE_STRING, "24/17:ObjectOctreeLODDefinitionResource"), "set_lodList", "get_lodList");
 
-    // ClassDB::bind_method(D_METHOD("get_lodMeshes"), &ObjectDefinitionResource::get_lodMeshes);
-    // ClassDB::bind_method(D_METHOD("set_lodMeshes", "value"), &ObjectDefinitionResource::set_lodMeshes);
-    // ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "lodMeshes", PROPERTY_HINT_TYPE_STRING, "24/17:ObjectOctreeLODMeshesDefinitionResource"), "set_lodMeshes", "get_lodMeshes");
+    ClassDB::bind_method(D_METHOD("get_lodMeshes"), &ObjectDefinitionResource::get_lodMeshes);
+    ClassDB::bind_method(D_METHOD("set_lodMeshes", "value"), &ObjectDefinitionResource::set_lodMeshes);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "lodMeshes", PROPERTY_HINT_TYPE_STRING, "24/17:ObjectOctreeLODMeshesDefinitionResource"), "set_lodMeshes", "get_lodMeshes");
 
     ClassDB::bind_method(D_METHOD("get_updateDistanceThreshold"), &ObjectDefinitionResource::get_updateDistanceThreshold);
     ClassDB::bind_method(D_METHOD("set_updateDistanceThreshold", "value"), &ObjectDefinitionResource::set_updateDistanceThreshold);
@@ -170,15 +170,19 @@ void ObjectDefinitionResource::set_objectScenes(const TypedArray<Ref<PackedScene
     _objectScenes = value;
 }
 
-// // TypedArray<Ref<ObjectOctreeLODDefinitionResource>> ObjectDefinitionResource::get_lodList() const {
-//     }return _lodList;
-// // void ObjectDefinitionResource::set_lodList(const // TypedArray<Ref<ObjectOctreeLODDefinitionResource>> &value) {
-//     }   _lodList = value;
+TypedArray<Ref<ObjectOctreeLODDefinitionResource>> ObjectDefinitionResource::get_lodList() const {
+    return _lodList;
+}
+void ObjectDefinitionResource::set_lodList(const TypedArray<Ref<ObjectOctreeLODDefinitionResource>> &value) {
+    _lodList = value;
+}
 
-// // TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> ObjectDefinitionResource::get_lodMeshes() const {
-//     }return _lodMeshes;
-// // void ObjectDefinitionResource::set_lodMeshes(const // TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> &value) {
-//     }   _lodMeshes = value;
+TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> ObjectDefinitionResource::get_lodMeshes() const {
+    return _lodMeshes;
+}
+void ObjectDefinitionResource::set_lodMeshes(const TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> &value) {
+    _lodMeshes = value;
+}
 
 float ObjectDefinitionResource::get_updateDistanceThreshold() const {
     return _updateDistanceThreshold;

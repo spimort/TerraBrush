@@ -24,12 +24,16 @@ public:
 
     float get_maxDistance() const;
     void set_maxDistance(const float value);
+
     bool get_addCollision() const;
     void set_addCollision(const bool value);
+
     bool get_automaticLOD() const;
     void set_automaticLOD(const bool value);
+
     int get_automaticLODTargetVertices() const;
     void set_automaticLODTargetVertices(const int value);
+
     int get_objectFrequency() const;
     void set_objectFrequency(const int value);
 };
