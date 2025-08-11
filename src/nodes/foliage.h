@@ -5,11 +5,6 @@
 
 using namespace godot;
 
-enum FoliageStrategy {
-    MultiMesh = 1,
-    GPUParticle = 2
-};
-
 class Foliage : public Node3D {
     GDCLASS(Foliage, Node3D)
 
@@ -19,7 +14,14 @@ protected:
     static void _bind_methods();
 
 public:
+    enum FoliageStrategy : int {
+        MultiMesh = 1,
+        GPUParticle = 2
+    };
+
     Foliage();
     ~Foliage();
 };
+
+VARIANT_ENUM_CAST(Foliage::FoliageStrategy);
 #endif
