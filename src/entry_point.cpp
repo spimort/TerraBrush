@@ -13,6 +13,7 @@
 #include "editor_resources/texture_set_resource.h"
 #include "editor_resources/texture_sets_resource.h"
 #include "editor_resources/water_resource.h"
+#include "editor_resources/zone_resource.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -66,7 +67,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(TextureSetResource);
     GDREGISTER_CLASS(TextureSetsResource);
     GDREGISTER_CLASS(WaterResource);
-    // GodotRegistry.RegisterClass<ZoneResource>(ZoneResource.BindMethods);
+    GDREGISTER_CLASS(ZoneResource);
     // GodotRegistry.RegisterClass<ZonesResource>(ZonesResource.BindMethods);
 
     // GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
