@@ -10,6 +10,7 @@
 #include "editor_resources/object_octree_lod_mesh_definition_resource.h"
 #include "editor_resources/object_octree_lod_meshes_definition_resource.h"
 #include "editor_resources/snow_resource.h"
+#include "editor_resources/texture_set_resource.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -60,7 +61,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(ObjectOctreeLODMeshDefinitionResource);
     GDREGISTER_CLASS(ObjectOctreeLODMeshesDefinitionResource);
     GDREGISTER_CLASS(SnowResource);
-    // GodotRegistry.RegisterClass<TextureSetResource>(TextureSetResource.BindMethods);
+    GDREGISTER_CLASS(TextureSetResource);
     // GodotRegistry.RegisterClass<TextureSetsResource>(TextureSetsResource.BindMethods);
     // GodotRegistry.RegisterClass<WaterResource>(WaterResource.BindMethods);
     // GodotRegistry.RegisterClass<ZoneResource>(ZoneResource.BindMethods);

@@ -75,10 +75,10 @@ ObjectDefinitionResource::ObjectDefinitionResource() {
 ObjectDefinitionResource::~ObjectDefinitionResource() {}
 
 void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const {
-    static TypedArray<StringName> packedScenesProperties = {
+    static const TypedArray<StringName> PackedScenesProperties = {
     };
 
-    static TypedArray<StringName> octreeMultiMeshesProperties = {
+    static const TypedArray<StringName> OctreeMultiMeshesProperties = {
         "lodList",
         "lodMeshes",
         "updateDistanceThreshold",
@@ -87,15 +87,15 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
     };
 
     if (_strategy == Objects::ObjectStrategy::PackedScenes) {
-        if (octreeMultiMeshesProperties.has(property.name)) {
+        if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
-        } else if (packedScenesProperties.has(property.name)) {
+        } else if (PackedScenesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
     } else if (_strategy == Objects::ObjectStrategy::OctreeMultiMeshes) {
-        if (octreeMultiMeshesProperties.has(property.name)) {
+        if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
-        } else if (packedScenesProperties.has(property.name)) {
+        } else if (PackedScenesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
     }

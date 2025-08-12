@@ -114,7 +114,7 @@ FoliageDefinitionResource::FoliageDefinitionResource() {
 FoliageDefinitionResource::~FoliageDefinitionResource() {}
 
 void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const {
-    static TypedArray<StringName> multimeshProperties = {
+    static const TypedArray<StringName> MultimeshProperties = {
         "lodLevels",
         "lodRowsPerLevel",
         "lodInitialCellWidth",
@@ -129,25 +129,25 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
         "customShader",
     };
 
-    static TypedArray<StringName> gpuParticlesProperties = {
+    static const TypedArray<StringName> GPUParticlesProperties = {
         "meshMaterial",
         "maximumRenderDistance",
         "editorMaximumRenderDistance",
     };
 
     if (_strategy == Foliage::FoliageStrategy::MultiMesh) {
-        if (gpuParticlesProperties.has(property.name)) {
+        if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
-        else if (multimeshProperties.has(property.name)) {
+        else if (MultimeshProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
     }
     else if (_strategy == Foliage::FoliageStrategy::GPUParticle) {
-        if (gpuParticlesProperties.has(property.name)) {
+        if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
-        else if (multimeshProperties.has(property.name)) {
+        else if (MultimeshProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
     }
