@@ -15,7 +15,9 @@ env = SConscript("godot-cpp/SConstruct")
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
+sources += Glob("src/editor_nodes/*.cpp")
 sources += Glob("src/editor_resources/*.cpp")
+sources += Glob("src/misc/*.cpp")
 sources += Glob("src/nodes/*.cpp")
 
 if env["platform"] == "macos":
