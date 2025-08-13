@@ -1,0 +1,72 @@
+#ifndef ZONES_RESOURCE_H
+#define ZONES_RESOURCE_H
+
+#include "zone_resource.h"
+
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/texture2d_array.hpp>
+#include <godot_cpp/templates/hash_set.hpp>
+
+using namespace godot;
+
+class ZonesResource : public Resource {
+    GDCLASS(ZonesResource, Resource)
+
+private:
+    HashSet<ImageTexture> _dirtyImageTextures;
+
+    Ref<Texture2DArray> _lockTextures;
+    Ref<Texture2DArray> _heightmapTextures;
+    Ref<Texture2DArray> _splatmapsTextures;
+    TypedArray<Ref<Texture2DArray>> _foliagesTextures;
+    Ref<Texture2DArray> _objectsTextures;
+    Ref<Texture2DArray> _waterTextures;
+    Ref<Texture2DArray> _snowTextures;
+    Ref<Texture2DArray> _metaInfoTextures;
+    Ref<ImageTexture> _zonesMap;
+
+    TypedArray<Ref<ZoneResource>> _zones;
+
+    // void saveImageResource(ImageTexture image);
+
+protected:
+    static void _bind_methods();
+
+public:
+    ZonesResource();
+    ~ZonesResource();
+
+    Ref<Texture2DArray> get_lockTextures() const;
+    Ref<Texture2DArray> get_heightmapTextures() const;
+    Ref<Texture2DArray> get_splatmapsTextures() const;
+    TypedArray<Ref<Texture2DArray>> get_foliagesTextures() const;
+    Ref<Texture2DArray> get_objectsTextures() const;
+    Ref<Texture2DArray> get_waterTextures() const;
+    Ref<Texture2DArray> get_snowTextures() const;
+    Ref<Texture2DArray> get_metaInfoTextures() const;
+    Ref<ImageTexture> get_zonesMap() const;
+
+    TypedArray<Ref<ZoneResource>> get_zones() const;
+    void set_zones(const TypedArray<Ref<ZoneResource>> value);
+
+    // void updateLockTexture(int zoneSize);
+    // void updateHeightmaps();
+    // void updateSplatmapsTextures();
+    // void initializeFoliageTextures(TerraBrush terraBrush);
+    // void updateFoliagesTextures();
+    // void updateFoliagesTextures(int foliageIndex);
+    // void updateObjectsTextures();
+    // void updateWaterTextures();
+    // void updateZoneWaterTexture(ZoneResource zone);
+    // void updateSnowTextures();
+    // void updateZoneSnowTexture(ZoneResource zone);
+    // void updateMetaInfoTextures();
+    // void updateZoneMetaInfoTexture(ZoneResource zone);
+    // void saveResources();
+    // void updateZonesMap();
+    // ZoneResource addNewZone(TerraBrush terraBrush, Vector2I zonePosition);
+    // void addDirtyImageTexture(ImageTexture imageTexture);
+    // void updateImageTextures(int zoneSize);
+    // ZoneResource getZoneForZoneInfo(ZoneInfo zoneInfo);
+};
+#endif
