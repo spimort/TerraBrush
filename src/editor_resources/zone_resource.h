@@ -53,5 +53,7 @@ public:
 
     Ref<ImageTexture> get_metaInfoTexture() const;
     void set_metaInfoTexture(const Ref<ImageTexture> &value);
+
+    void initializeImagesForTerrain();
 };
 #endif
