@@ -16,9 +16,6 @@ BrushNumericSelector::BrushNumericSelector() {
     _widgetColor = Color::named("WHITE");
     _minValue = -1;
     _maxValue = 1;
-
-    _minValue = 0;
-    _maxValue = 200;
 }
 
 BrushNumericSelector::~BrushNumericSelector() {}

@@ -2,6 +2,7 @@
 
 #include "terra_brush.h"
 #include "editor_nodes/brush_decal.h"
+#include "editor_nodes/brush_numeric_selector.h"
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
 #include "editor_resources/meta_info_layer_resource.h"
@@ -32,7 +33,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
 
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
-    // GodotRegistry.RegisterInternalClass<BrushNumericSelector>(BrushNumericSelector.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
     // GodotRegistry.RegisterInternalClass<Clipmap>(Clipmap.BindMethods);
     // GodotRegistry.RegisterInternalClass<CustomContentPieMenu>(CustomContentPieMenu.BindMethods);
     // GodotRegistry.RegisterInternalClass<Foliage>(Foliage.BindMethods);
