@@ -4,6 +4,7 @@
 
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
+#include "editor_nodes/dock_preview_button.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -52,7 +53,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<TerrainControlDock>(TerrainControlDock.BindMethods);
     // GodotRegistry.RegisterInternalClass<ToolsPieMenu>(ToolsPieMenu.BindMethods);
     // GodotRegistry.RegisterInternalClass<Water>(Water.BindMethods);
-    // GodotRegistry.RegisterInternalClass<DockPreviewButton>(DockPreviewButton.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
     // GodotRegistry.RegisterInternalClass<ToolPreview>(ToolPreview.BindMethods);
     // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
