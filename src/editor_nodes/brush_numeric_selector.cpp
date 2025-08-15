@@ -52,7 +52,7 @@ void BrushNumericSelector::_ready() {
     _valueLabel->set((StringName)"theme_override_styles/normal", valueLabelNormalStyle);
     add_child(_valueLabel);
 
-    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::get_iconsColor());
+    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor());
     _valueLabel->set((StringName)"theme_override_colors/font_outline_color", iconsColor);
     Ref<StyleBoxFlat> normalStyle = _valueLabel->get((StringName)"theme_override_styles/normal");
     normalStyle->set_bg_color(iconsColor);

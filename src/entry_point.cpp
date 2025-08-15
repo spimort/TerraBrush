@@ -1,8 +1,10 @@
 #include "entry_point.h"
 
 #include "terra_brush.h"
+
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
+
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
 #include "editor_resources/meta_info_layer_resource.h"
@@ -17,6 +19,8 @@
 #include "editor_resources/water_resource.h"
 #include "editor_resources/zone_resource.h"
 #include "editor_resources/zones_resource.h"
+
+#include "nodes/clipmap.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -34,7 +38,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
-    // GodotRegistry.RegisterInternalClass<Clipmap>(Clipmap.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(Clipmap);
     // GodotRegistry.RegisterInternalClass<CustomContentPieMenu>(CustomContentPieMenu.BindMethods);
     // GodotRegistry.RegisterInternalClass<Foliage>(Foliage.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);

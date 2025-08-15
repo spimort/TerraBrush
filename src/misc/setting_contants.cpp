@@ -2,18 +2,18 @@
 
 using namespace godot;
 
-StringName SettingContants::get_decalColor() {
+StringName SettingContants::DecalColor() {
     return "terraBrush/brushes/decal_color";
 }
 
-StringName SettingContants::get_customBrushesFolder() {
+StringName SettingContants::CustomBrushesFolder() {
     return "terraBrush/brushes/custom_brushes_folder";
 }
 
-StringName SettingContants::get_sculptingMultiplier() {
+StringName SettingContants::SculptingMultiplier() {
     return "terraBrush/brushes/sculpting_multiplier";
 }
 
-StringName SettingContants::get_iconsColor() {
+StringName SettingContants::IconsColor() {
     return "terraBrush/icons_color";
 }

@@ -7,9 +7,9 @@ using namespace godot;
 
 class SettingContants {
     public:
-        static StringName get_decalColor();
-        static StringName get_customBrushesFolder();
-        static StringName get_sculptingMultiplier();
-        static StringName get_iconsColor();
+        static StringName DecalColor();
+        static StringName CustomBrushesFolder();
+        static StringName SculptingMultiplier();
+        static StringName IconsColor();
 };
 #endif
