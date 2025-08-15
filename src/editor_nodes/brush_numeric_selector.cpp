@@ -40,14 +40,6 @@ void BrushNumericSelector::_ready() {
     _valueLabel = memnew(Label);
     _valueLabel->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
     _valueLabel->set_vertical_alignment(VerticalAlignment::VERTICAL_ALIGNMENT_CENTER);
-    _valueLabel->set_anchor(Side::SIDE_LEFT, 0.5);
-    _valueLabel->set_anchor(Side::SIDE_RIGHT, 0.5);
-    _valueLabel->set_anchor(Side::SIDE_TOP, 0.5);
-    _valueLabel->set_anchor(Side::SIDE_BOTTOM, 0.5);
-    _valueLabel->set_offset(Side::SIDE_LEFT, -11.5);
-    _valueLabel->set_offset(Side::SIDE_RIGHT, -14.0);
-    _valueLabel->set_offset(Side::SIDE_TOP, 11.5);
-    _valueLabel->set_offset(Side::SIDE_BOTTOM, 14.0);
     _valueLabel->set_h_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
     _valueLabel->set_v_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
     _valueLabel->set((StringName)"theme_override_colors/font_color", Color::named("WHITE"));
