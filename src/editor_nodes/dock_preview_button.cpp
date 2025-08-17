@@ -34,9 +34,17 @@ void DockPreviewButton::_ready() {
     set_stretch_mode(TextureButton::StretchMode::STRETCH_SCALE);
     set_toggle_mode(true);
     set_anchors_and_offsets_preset(Control::LayoutPreset::PRESET_FULL_RECT);
+    set_anchor(Side::SIDE_RIGHT, 1.0);
+    set_anchor(Side::SIDE_BOTTOM, 1.0);
+    set_h_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
+    set_v_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
 
     _marginContainer = memnew(MarginContainer);
     _marginContainer->set_anchors_and_offsets_preset(Control::LayoutPreset::PRESET_FULL_RECT);
+    _marginContainer->set_anchor(Side::SIDE_RIGHT, 1.0);
+    _marginContainer->set_anchor(Side::SIDE_BOTTOM, 1.0);
+    _marginContainer->set_h_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
+    _marginContainer->set_v_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
     add_child(_marginContainer);
 
     _textureRect = memnew(TextureRect);
@@ -78,7 +86,10 @@ void DockPreviewButton::_ready() {
         _label->set_text(_text);
     }
 
-    loadResourcePreview(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Brushes/circle_gradient.png"));
+    _marginContainer->set("theme_override_constants/margin_left", 0);
+    _marginContainer->set("theme_override_constants/margin_top", 0);
+    _marginContainer->set("theme_override_constants/margin_right", 0);
+    _marginContainer->set("theme_override_constants/margin_bottom", 0);
 }
 
 void DockPreviewButton::set_buttonImage(const Ref<Texture2D> &value) {

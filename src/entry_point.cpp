@@ -5,6 +5,8 @@
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/dock_preview_button.h"
+#include "editor_nodes/pie_menu.h"
+#include "editor_nodes/tool_preview.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -47,14 +49,14 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<Objects>(Objects.BindMethods);
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
-    // GodotRegistry.RegisterInternalClass<PieMenu>(PieMenu.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(PieMenu);
     // GodotRegistry.RegisterInternalClass<Snow>(Snow.BindMethods);
     // GodotRegistry.RegisterInternalClass<Terrain>(Terrain.BindMethods);
     // GodotRegistry.RegisterInternalClass<TerrainControlDock>(TerrainControlDock.BindMethods);
     // GodotRegistry.RegisterInternalClass<ToolsPieMenu>(ToolsPieMenu.BindMethods);
     // GodotRegistry.RegisterInternalClass<Water>(Water.BindMethods);
     GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
-    // GodotRegistry.RegisterInternalClass<ToolPreview>(ToolPreview.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(ToolPreview);
     // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
     // GodotRegistry.RegisterInternalClass<ToolInfo>(ToolInfo.BindMethods);
