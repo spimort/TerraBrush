@@ -24,9 +24,12 @@ PieMenu::PieMenu() {
 PieMenu::~PieMenu() {}
 
 void PieMenu::_ready() {
+    set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
+
     _controlsContainer = memnew(Control);
     _controlsContainer->set_mouse_filter(MouseFilter::MOUSE_FILTER_PASS);
     _controlsContainer->set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
+    _controlsContainer->set_offset(Side::SIDE_BOTTOM, 40.0);
     add_child(_controlsContainer);
 
     _pieBackground = memnew(TextureRect);
@@ -34,11 +37,18 @@ void PieMenu::_ready() {
     _pieBackground->set_expand_mode(TextureRect::ExpandMode::EXPAND_IGNORE_SIZE);
     _pieBackground->set_modulate(Color::html("#3a3a3a4b"));
     _pieBackground->set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
+    _pieBackground->set_offset(Side::SIDE_RIGHT, 496);
+    _pieBackground->set_offset(Side::SIDE_BOTTOM, 496);
     _controlsContainer->add_child(_pieBackground);
 
     _menuLabel = memnew(Label);
     _menuLabel->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
     _menuLabel->set_vertical_alignment(VerticalAlignment::VERTICAL_ALIGNMENT_CENTER);
+    _menuLabel->set_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
+    _menuLabel->set_offset(Side::SIDE_LEFT, -75.0);
+    _menuLabel->set_offset(Side::SIDE_TOP, 30.0);
+    _menuLabel->set_offset(Side::SIDE_RIGHT, 75.0);
+    _menuLabel->set_offset(Side::SIDE_BOTTOM, 58.0);
     _menuLabel->set_autowrap_mode(TextServer::AUTOWRAP_WORD);
     _menuLabel->set_custom_minimum_size(Vector2(100, 20));
     _menuLabel->set((StringName)"theme_override_colors/font_color", Color::named("WHITE"));
@@ -56,11 +66,23 @@ void PieMenu::_ready() {
     _controlsContainer->add_child(_menuLabel);
 
     _currentAnglePanel = memnew(Panel);
+    _currentAnglePanel->set_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
+    _currentAnglePanel->set_offset(Side::SIDE_LEFT, -20);
+    _currentAnglePanel->set_offset(Side::SIDE_TOP, -20);
+    _currentAnglePanel->set_offset(Side::SIDE_RIGHT, 20);
+    _currentAnglePanel->set_offset(Side::SIDE_BOTTOM, 20);
+    _currentAnglePanel->set_pivot_offset(Vector2(20, 20));
     _currentAnglePanel->set((StringName)"theme_override_styles/panel", memnew(StyleBoxEmpty));
     _controlsContainer->add_child(_currentAnglePanel);
 
     Panel *panel = memnew(Panel);
     panel->set_anchors_and_offsets_preset(LayoutPreset::PRESET_CENTER_TOP);
+    panel->set_anchor(Side::SIDE_LEFT, 0.5);
+    panel->set_anchor(Side::SIDE_RIGHT, 0.5);
+    panel->set_offset(Side::SIDE_LEFT, -5.0);
+    panel->set_offset(Side::SIDE_RIGHT, 5.0);
+    panel->set_offset(Side::SIDE_BOTTOM, 10.0);
+    panel->set_h_grow_direction(GrowDirection::GROW_DIRECTION_BOTH);
     Ref<StyleBoxFlat> panelStyle = memnew(StyleBoxFlat);
     panelStyle->set_bg_color(Color::html("#007fc6"));
     panelStyle->set_corner_radius_all(5);
