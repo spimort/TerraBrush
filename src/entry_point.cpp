@@ -9,6 +9,7 @@
 #include "editor_nodes/tool_preview.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/terrain_control_dock.h"
+#include "editor_nodes/tool_info.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -61,7 +62,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(ToolPreview);
     // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
-    // GodotRegistry.RegisterInternalClass<ToolInfo>(ToolInfo.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(ToolInfo);
     // GodotRegistry.RegisterInternalClass<KeybindManager>(KeybindManager.BindMethods);
 
     // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
