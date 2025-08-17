@@ -158,7 +158,7 @@ void DockPreviewButton::onPreviewThumbnailReady(const String path, const Ref<Tex
 }
 
 void DockPreviewButton::onItemSelect() {
-    if (_onSelect != nullptr) {
+    if (!_onSelect.is_null()) {
         _onSelect.call();
     }
 }

@@ -44,4 +44,6 @@ public:
     TerraBrush();
     ~TerraBrush();
 };
+
+VARIANT_ENUM_CAST(TerraBrush::TerrainToolType);
 #endif

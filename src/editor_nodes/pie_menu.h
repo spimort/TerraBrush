@@ -7,7 +7,7 @@
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/classes/panel.hpp>
-#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/input_event.hpp>
 
 using namespace godot;
 

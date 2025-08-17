@@ -97,7 +97,11 @@ void PieMenu::_ready() {
 }
 
 void PieMenu::_process(double delta) {
-    Node *itemForAngle = get_child((int) getMouseOverItemIndex());
+    int mouseOverItemIndex = getMouseOverItemIndex();
+    if (mouseOverItemIndex > get_child_count() - 1) {
+        return;
+    }
+    Node *itemForAngle = get_child(mouseOverItemIndex);
 
     DockPreviewButton *dockPreviewItem = Object::cast_to<DockPreviewButton>(itemForAngle);
     if (dockPreviewItem != nullptr) {
