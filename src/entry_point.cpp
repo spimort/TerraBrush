@@ -26,6 +26,8 @@
 #include "editor_resources/zone_resource.h"
 #include "editor_resources/zones_resource.h"
 
+#include "misc/keybind_manager.h"
+
 #include "nodes/clipmap.h"
 
 #include <gdextension_interface.h>
@@ -63,7 +65,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
     GDREGISTER_INTERNAL_CLASS(ToolInfo);
-    // GodotRegistry.RegisterInternalClass<KeybindManager>(KeybindManager.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(KeybindManager);
 
     // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
     // GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);

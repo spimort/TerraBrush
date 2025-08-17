@@ -2,83 +2,83 @@
 
 using namespace godot;
 
-StringName StringNames::HeightmapTextures() { return "HeightmapTextures"; }
-StringName StringNames::ZonesSize() { return "ZonesSize"; }
-StringName StringNames::NumberOfZones() { return "NumberOfZones"; }
-StringName StringNames::ZonesMap() { return "ZonesMap"; }
-StringName StringNames::GlobalPosition() { return "GlobalPosition"; }
-StringName StringNames::Splatmaps() { return "Splatmaps"; }
-StringName StringNames::Textures() { return "Textures"; }
-StringName StringNames::NumberOfTextures() { return "NumberOfTextures"; }
-StringName StringNames::TextureDetail() { return "TextureDetail"; }
-StringName StringNames::FoliageTextures() { return "FoliageTextures"; }
-StringName StringNames::MeshScale() { return "MeshScale"; }
-StringName StringNames::WindStrength() { return "WindStrength"; }
-StringName StringNames::WaterTextures() { return "WaterTextures"; }
-StringName StringNames::WaterFactor() { return "WaterFactor"; }
-StringName StringNames::NoiseTexture() { return "NoiseTexture"; }
-StringName StringNames::MaximumDistance() { return "MaximumDistance"; }
-StringName StringNames::SnowTextures() { return "SnowTextures"; }
-StringName StringNames::SnowFactor() { return "SnowFactor"; }
-StringName StringNames::SnowInnerOffset() { return "SnowInnerOffset"; }
-StringName StringNames::SnowColorTexture() { return "SnowColorTexture"; }
-StringName StringNames::SnowColorNormal() { return "SnowColorNormal"; }
-StringName StringNames::SnowColorRoughness() { return "SnowColorRoughness"; }
-StringName StringNames::SnowColorDetail() { return "SnowColorDetail"; }
-StringName StringNames::Noise() { return "Noise"; }
-StringName StringNames::NoiseFactor() { return "NoiseFactor"; }
-StringName StringNames::Metallic() { return "Metallic"; }
-StringName StringNames::NearestFilter() { return "NearestFilter"; }
-StringName StringNames::TexturesDetail() { return "TexturesDetail"; }
-StringName StringNames::HasNormalTextures() { return "HasNormalTextures"; }
-StringName StringNames::HasRoughnessTextures() { return "HasRoughnessTextures"; }
-StringName StringNames::HasHeightTextures() { return "HasHeightTextures"; }
-StringName StringNames::UseAntitile() { return "UseAntitile"; }
-StringName StringNames::BlendFactor() { return "BlendFactor"; }
-StringName StringNames::WaterInnerOffset() { return "WaterInnerOffset"; }
-StringName StringNames::WaterColor() { return "WaterColor"; }
-StringName StringNames::FresnelColor() { return "FresnelColor"; }
-StringName StringNames::Roughness() { return "Roughness"; }
-StringName StringNames::NormalMap() { return "NormalMap"; }
-StringName StringNames::NormalMap2() { return "NormalMap2"; }
-StringName StringNames::TimeScale() { return "TimeScale"; }
-StringName StringNames::Strength() { return "Strength"; }
-StringName StringNames::Wave() { return "Wave"; }
-StringName StringNames::NoiseScale() { return "NoiseScale"; }
-StringName StringNames::HeightScale() { return "HeightScale"; }
-StringName StringNames::ColorDeep() { return "ColorDeep"; }
-StringName StringNames::ColorShallow() { return "ColorShallow"; }
-StringName StringNames::BeersLaw() { return "BeersLaw"; }
-StringName StringNames::DepthOffset() { return "DepthOffset"; }
-StringName StringNames::EdgeScale() { return "EdgeScale"; }
-StringName StringNames::Near() { return "Near"; }
-StringName StringNames::Far() { return "Far"; }
-StringName StringNames::EdgeColor() { return "EdgeColor"; }
-StringName StringNames::SetAnglePointContainer() { return "SetAnglePointContainer"; }
-StringName StringNames::InitialCellWidth() { return "InitialCellWidth"; }
-StringName StringNames::LODRowsPerLevel() { return "LODRowsPerLevel"; }
-StringName StringNames::LODLevels() { return "LODLevels"; }
-StringName StringNames::FoliageAlbedo() { return "FoliageAlbedo"; }
-StringName StringNames::FoliageAlbedoTextures() { return "FoliageAlbedoTextures"; }
-StringName StringNames::FoliageAlbedoTexturesNearest() { return "FoliageAlbedoTexturesNearest"; }
-StringName StringNames::UseGroundColor() { return "UseGroundColor"; }
-StringName StringNames::FoliageNumberOfTexture() { return "FoliageNumberOfTexture"; }
-StringName StringNames::UseBrushScale() { return "UseBrushScale"; }
-StringName StringNames::ScaleNoiseTexture() { return "ScaleNoiseTexture"; }
-StringName StringNames::RandomPlacementRange() { return "RandomPlacementRange"; }
-StringName StringNames::InvertedZ() { return "InvertedZ"; }
-StringName StringNames::TerrainLoaded() { return "TerrainLoaded"; }
-StringName StringNames::LockTextures() { return "LockTextures"; }
-StringName StringNames::ApplyLockTextures() { return "ApplyLockTextures"; }
-StringName StringNames::ApplyOnTextureIndexes() { return "ApplyOnTextureIndexes"; }
-StringName StringNames::NumberOfTexturesToApplyOn() { return "NumberOfTexturesToApplyOn"; }
-StringName StringNames::AlbedoAlphaChannelUsage() { return "AlbedoAlphaChannelUsage"; }
-StringName StringNames::NormalAlphaChannelUsage() { return "NormalAlphaChannelUsage"; }
-StringName StringNames::OffsetPosition() { return "OffsetPosition"; }
-StringName StringNames::Resolution() { return "Resolution"; }
-StringName StringNames::Triplanar() { return "Triplanar"; }
-StringName StringNames::TexturesTriplanar() { return "TexturesTriplanar"; }
-StringName StringNames::UseSharpTransitions() { return "UseSharpTransitions"; }
-StringName StringNames::ApplyMetaInfoTextures() { return "ApplyMetaInfoTextures"; }
-StringName StringNames::MetaInfoTextures() { return "MetaInfoTextures"; }
-StringName StringNames::MetaInfoColors() { return "MetaInfoColors"; }
+const StringName StringNames::HeightmapTextures() { return "HeightmapTextures"; }
+const StringName StringNames::ZonesSize() { return "ZonesSize"; }
+const StringName StringNames::NumberOfZones() { return "NumberOfZones"; }
+const StringName StringNames::ZonesMap() { return "ZonesMap"; }
+const StringName StringNames::GlobalPosition() { return "GlobalPosition"; }
+const StringName StringNames::Splatmaps() { return "Splatmaps"; }
+const StringName StringNames::Textures() { return "Textures"; }
+const StringName StringNames::NumberOfTextures() { return "NumberOfTextures"; }
+const StringName StringNames::TextureDetail() { return "TextureDetail"; }
+const StringName StringNames::FoliageTextures() { return "FoliageTextures"; }
+const StringName StringNames::MeshScale() { return "MeshScale"; }
+const StringName StringNames::WindStrength() { return "WindStrength"; }
+const StringName StringNames::WaterTextures() { return "WaterTextures"; }
+const StringName StringNames::WaterFactor() { return "WaterFactor"; }
+const StringName StringNames::NoiseTexture() { return "NoiseTexture"; }
+const StringName StringNames::MaximumDistance() { return "MaximumDistance"; }
+const StringName StringNames::SnowTextures() { return "SnowTextures"; }
+const StringName StringNames::SnowFactor() { return "SnowFactor"; }
+const StringName StringNames::SnowInnerOffset() { return "SnowInnerOffset"; }
+const StringName StringNames::SnowColorTexture() { return "SnowColorTexture"; }
+const StringName StringNames::SnowColorNormal() { return "SnowColorNormal"; }
+const StringName StringNames::SnowColorRoughness() { return "SnowColorRoughness"; }
+const StringName StringNames::SnowColorDetail() { return "SnowColorDetail"; }
+const StringName StringNames::Noise() { return "Noise"; }
+const StringName StringNames::NoiseFactor() { return "NoiseFactor"; }
+const StringName StringNames::Metallic() { return "Metallic"; }
+const StringName StringNames::NearestFilter() { return "NearestFilter"; }
+const StringName StringNames::TexturesDetail() { return "TexturesDetail"; }
+const StringName StringNames::HasNormalTextures() { return "HasNormalTextures"; }
+const StringName StringNames::HasRoughnessTextures() { return "HasRoughnessTextures"; }
+const StringName StringNames::HasHeightTextures() { return "HasHeightTextures"; }
+const StringName StringNames::UseAntitile() { return "UseAntitile"; }
+const StringName StringNames::BlendFactor() { return "BlendFactor"; }
+const StringName StringNames::WaterInnerOffset() { return "WaterInnerOffset"; }
+const StringName StringNames::WaterColor() { return "WaterColor"; }
+const StringName StringNames::FresnelColor() { return "FresnelColor"; }
+const StringName StringNames::Roughness() { return "Roughness"; }
+const StringName StringNames::NormalMap() { return "NormalMap"; }
+const StringName StringNames::NormalMap2() { return "NormalMap2"; }
+const StringName StringNames::TimeScale() { return "TimeScale"; }
+const StringName StringNames::Strength() { return "Strength"; }
+const StringName StringNames::Wave() { return "Wave"; }
+const StringName StringNames::NoiseScale() { return "NoiseScale"; }
+const StringName StringNames::HeightScale() { return "HeightScale"; }
+const StringName StringNames::ColorDeep() { return "ColorDeep"; }
+const StringName StringNames::ColorShallow() { return "ColorShallow"; }
+const StringName StringNames::BeersLaw() { return "BeersLaw"; }
+const StringName StringNames::DepthOffset() { return "DepthOffset"; }
+const StringName StringNames::EdgeScale() { return "EdgeScale"; }
+const StringName StringNames::Near() { return "Near"; }
+const StringName StringNames::Far() { return "Far"; }
+const StringName StringNames::EdgeColor() { return "EdgeColor"; }
+const StringName StringNames::SetAnglePointContainer() { return "SetAnglePointContainer"; }
+const StringName StringNames::InitialCellWidth() { return "InitialCellWidth"; }
+const StringName StringNames::LODRowsPerLevel() { return "LODRowsPerLevel"; }
+const StringName StringNames::LODLevels() { return "LODLevels"; }
+const StringName StringNames::FoliageAlbedo() { return "FoliageAlbedo"; }
+const StringName StringNames::FoliageAlbedoTextures() { return "FoliageAlbedoTextures"; }
+const StringName StringNames::FoliageAlbedoTexturesNearest() { return "FoliageAlbedoTexturesNearest"; }
+const StringName StringNames::UseGroundColor() { return "UseGroundColor"; }
+const StringName StringNames::FoliageNumberOfTexture() { return "FoliageNumberOfTexture"; }
+const StringName StringNames::UseBrushScale() { return "UseBrushScale"; }
+const StringName StringNames::ScaleNoiseTexture() { return "ScaleNoiseTexture"; }
+const StringName StringNames::RandomPlacementRange() { return "RandomPlacementRange"; }
+const StringName StringNames::InvertedZ() { return "InvertedZ"; }
+const StringName StringNames::TerrainLoaded() { return "TerrainLoaded"; }
+const StringName StringNames::LockTextures() { return "LockTextures"; }
+const StringName StringNames::ApplyLockTextures() { return "ApplyLockTextures"; }
+const StringName StringNames::ApplyOnTextureIndexes() { return "ApplyOnTextureIndexes"; }
+const StringName StringNames::NumberOfTexturesToApplyOn() { return "NumberOfTexturesToApplyOn"; }
+const StringName StringNames::AlbedoAlphaChannelUsage() { return "AlbedoAlphaChannelUsage"; }
+const StringName StringNames::NormalAlphaChannelUsage() { return "NormalAlphaChannelUsage"; }
+const StringName StringNames::OffsetPosition() { return "OffsetPosition"; }
+const StringName StringNames::Resolution() { return "Resolution"; }
+const StringName StringNames::Triplanar() { return "Triplanar"; }
+const StringName StringNames::TexturesTriplanar() { return "TexturesTriplanar"; }
+const StringName StringNames::UseSharpTransitions() { return "UseSharpTransitions"; }
+const StringName StringNames::ApplyMetaInfoTextures() { return "ApplyMetaInfoTextures"; }
+const StringName StringNames::MetaInfoTextures() { return "MetaInfoTextures"; }
+const StringName StringNames::MetaInfoColors() { return "MetaInfoColors"; }
