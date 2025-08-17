@@ -4,6 +4,7 @@
 
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
+#include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_nodes/dock_preview_button.h"
 #include "editor_nodes/pie_menu.h"
 #include "editor_nodes/tool_preview.h"
@@ -47,7 +48,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
     GDREGISTER_INTERNAL_CLASS(Clipmap);
-    // GodotRegistry.RegisterInternalClass<CustomContentPieMenu>(CustomContentPieMenu.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
     // GodotRegistry.RegisterInternalClass<Foliage>(Foliage.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
