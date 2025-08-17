@@ -172,7 +172,7 @@ void PieMenu::updateContent() {
         Vector2 buttonSize = firstButton->get_size();
 
         float currentAngle = Math::deg_to_rad(90.0);
-        for(int i = 0; i < _buttonCount; i++) {
+        for (int i = 0; i < _buttonCount; i++) {
             float xPosition = (float) Math::cos(currentAngle) * buttonsRadius;
             float yPosition = (float) Math::sin(currentAngle) * buttonsRadius;
 

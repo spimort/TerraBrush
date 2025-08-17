@@ -92,6 +92,9 @@ void DockPreviewButton::_ready() {
     _marginContainer->set("theme_override_constants/margin_bottom", 0);
 }
 
+Ref<Texture2D> DockPreviewButton::get_buttonImage() const {
+    return _buttonImage;
+}
 void DockPreviewButton::set_buttonImage(const Ref<Texture2D> &value) {
     _buttonImage = value;
 }

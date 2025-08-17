@@ -189,7 +189,7 @@ void ToolsPieMenu::_ready() {
 
     add_child(_pieMenu); // This is done at the end so the menu calculates the content in the _ready function
 
-    for(int i = 0; i < _pieMenu->get_child_count(); i++) {
+    for (int i = 0; i < _pieMenu->get_child_count(); i++) {
         Node *childNode = _pieMenu->get_child(i);
 
         ToolPreview *toolPreview = Object::cast_to<ToolPreview>(childNode);

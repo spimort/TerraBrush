@@ -49,7 +49,9 @@ public:
 
     void _ready() override;
 
+    Ref<Texture2D> get_buttonImage() const;
     void set_buttonImage(const Ref<Texture2D> &value);
+
     void set_iconType(const IconType value);
     void set_margin(const int value);
     void set_text(const String value);
