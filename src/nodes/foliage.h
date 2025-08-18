@@ -9,6 +9,8 @@
 #include <godot_cpp/classes/multi_mesh_instance3d.hpp>
 #include <godot_cpp/classes/gpu_particles3d.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/shader_material.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
 
 using namespace godot;
 
@@ -42,11 +44,6 @@ protected:
     void _notification(const int what);
 
 public:
-    enum FoliageStrategy : int {
-        MultiMesh = 1,
-        GPUParticle = 2
-    };
-
     Foliage();
     ~Foliage();
 
@@ -64,6 +61,4 @@ public:
 
     void updateAABB();
 };
-
-VARIANT_ENUM_CAST(Foliage::FoliageStrategy);
 #endif

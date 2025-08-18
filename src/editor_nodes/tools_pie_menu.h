@@ -3,6 +3,7 @@
 
 #include "pie_menu.h"
 #include "../terra_brush.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/control.hpp>
 
@@ -16,7 +17,7 @@ private:
 
     Callable _onToolSelected;
 
-    void onToolSelected(const TerraBrush::TerrainToolType toolType);
+    void onToolSelected(const TerrainToolType toolType);
 
 protected:
     static void _bind_methods();

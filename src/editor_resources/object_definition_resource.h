@@ -4,6 +4,7 @@
 #include "../nodes/objects.h"
 #include "object_octree_lod_definition_resource.h"
 #include "object_octree_lod_meshes_definition_resource.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
@@ -15,7 +16,7 @@ class ObjectDefinitionResource : public Resource {
     GDCLASS(ObjectDefinitionResource, Resource)
 
 private:
-    Objects::ObjectStrategy _strategy;
+    ObjectStrategy _strategy;
     int _objectFrequency;
     float _randomRange;
     Ref<Texture2D> _noiseTexture;
@@ -38,8 +39,8 @@ public:
     ObjectDefinitionResource();
     ~ObjectDefinitionResource();
 
-    Objects::ObjectStrategy get_strategy() const;
-    void set_strategy(const Objects::ObjectStrategy value);
+    ObjectStrategy get_strategy() const;
+    void set_strategy(const ObjectStrategy value);
 
     int get_objectFrequency() const;
     void set_objectFrequency(const int value);

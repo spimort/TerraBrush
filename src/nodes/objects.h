@@ -14,14 +14,7 @@ protected:
     static void _bind_methods();
 
 public:
-    enum ObjectStrategy {
-        PackedScenes = 1,
-        OctreeMultiMeshes = 2
-    };
-
     Objects();
     ~Objects();
 };
-
-VARIANT_ENUM_CAST(Objects::ObjectStrategy);
 #endif

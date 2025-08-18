@@ -1,5 +1,4 @@
 #include "foliage_definition_resource.h"
-#include "../nodes/foliage.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/core/class_db.hpp>
@@ -97,7 +96,7 @@ void FoliageDefinitionResource::_bind_methods() {
 }
 
 FoliageDefinitionResource::FoliageDefinitionResource() {
-    _strategy = Foliage::FoliageStrategy::MultiMesh;
+    _strategy = FoliageStrategy::MultiMesh;
     _meshScale = Vector3(1.0, 1.0, 1.0);
     _windStrength = 0.1;
     _visualInstanceLayers = 1;
@@ -135,7 +134,7 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
         "editorMaximumRenderDistance",
     };
 
-    if (_strategy == Foliage::FoliageStrategy::MultiMesh) {
+    if (_strategy == FoliageStrategy::MultiMesh) {
         if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
@@ -143,7 +142,7 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
     }
-    else if (_strategy == Foliage::FoliageStrategy::GPUParticle) {
+    else if (_strategy == FoliageStrategy::GPUParticle) {
         if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
@@ -153,10 +152,10 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
     }
 }
 
-Foliage::FoliageStrategy FoliageDefinitionResource::get_strategy() const {
+FoliageStrategy FoliageDefinitionResource::get_strategy() const {
     return _strategy;
 }
-void FoliageDefinitionResource::set_strategy(const Foliage::FoliageStrategy value) {
+void FoliageDefinitionResource::set_strategy(const FoliageStrategy value) {
     _strategy = value;
     notify_property_list_changed();
 }

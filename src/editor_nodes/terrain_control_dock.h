@@ -3,6 +3,7 @@
 
 #include "brush_decal.h"
 #include "../terra_brush.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/flow_container.hpp>
@@ -16,8 +17,8 @@ class TerrainControlDock : public Control {
 
 private:
     int _selectedBrushIndex;
-    TerraBrush::TerrainToolType _selectedTool;
-    TerraBrush::TerrainToolType _temporaryTool;
+    TerrainToolType _selectedTool;
+    TerrainToolType _temporaryTool;
     int _selectedTextureIndex;
     int _selectedFoliageIndex;
     int _selectedObjectIndex;
@@ -68,7 +69,7 @@ public:
     void setBrushSize(int value);
     void setBrushStrength(float value);
     void setSelectedBrushIndex(const int index);
-    void selectToolType(const TerraBrush::TerrainToolType toolType);
+    void selectToolType(const TerrainToolType toolType);
     void setSelectedTextureIndex(const int index);
     void setSelectedFoliageIndex(const int index);
     void setSelectedObjectIndex(const int index);

@@ -2,6 +2,7 @@
 #include "../misc/utils.h"
 #include "../misc/string_names.h"
 #include "../editor_resources/zone_resource.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/shader_material.hpp>

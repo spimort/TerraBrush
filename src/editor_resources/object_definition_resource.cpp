@@ -61,7 +61,7 @@ void ObjectDefinitionResource::_bind_methods() {
 }
 
 ObjectDefinitionResource::ObjectDefinitionResource() {
-    _strategy = Objects::ObjectStrategy::PackedScenes;
+    _strategy = ObjectStrategy::PackedScenes;
     _objectFrequency = -1;
     _randomRange = 1;
     _randomSizeFactorMin = 0.2;
@@ -86,13 +86,13 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
         "visualInstanceLayers",
     };
 
-    if (_strategy == Objects::ObjectStrategy::PackedScenes) {
+    if (_strategy == ObjectStrategy::PackedScenes) {
         if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         } else if (PackedScenesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
-    } else if (_strategy == Objects::ObjectStrategy::OctreeMultiMeshes) {
+    } else if (_strategy == ObjectStrategy::OctreeMultiMeshes) {
         if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         } else if (PackedScenesProperties.has(property.name)) {
@@ -105,10 +105,10 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
     }
 }
 
-Objects::ObjectStrategy ObjectDefinitionResource::get_strategy() const {
+ObjectStrategy ObjectDefinitionResource::get_strategy() const {
     return _strategy;
 }
-void ObjectDefinitionResource::set_strategy(const Objects::ObjectStrategy value) {
+void ObjectDefinitionResource::set_strategy(const ObjectStrategy value) {
     _strategy = value;
     notify_property_list_changed();
 }

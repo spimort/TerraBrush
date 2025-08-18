@@ -1,4 +1,5 @@
 #include "tool_preview.h"
+#include "../misc/enums.h"
 
 using namespace godot;
 
@@ -12,9 +13,9 @@ ToolPreview::ToolPreview() {
 
 ToolPreview::~ToolPreview() {}
 
-TerraBrush::TerrainToolType ToolPreview::get_toolType() const {
+TerrainToolType ToolPreview::get_toolType() const {
     return _toolType;
 }
-void ToolPreview::set_toolType(const TerraBrush::TerrainToolType value) {
+void ToolPreview::set_toolType(const TerrainToolType value) {
     _toolType = value;
 }

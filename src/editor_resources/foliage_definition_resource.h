@@ -1,7 +1,7 @@
 #ifndef FOLIAGE_DEFINITION_RESOURCE_H
 #define FOLIAGE_DEFINITION_RESOURCE_H
 
-#include "../nodes/foliage.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
@@ -15,7 +15,7 @@ class FoliageDefinitionResource : public Resource {
     GDCLASS(FoliageDefinitionResource, Resource)
 
 private:
-    Foliage::FoliageStrategy _strategy;
+    FoliageStrategy _strategy;
     Ref<Mesh> _mesh;
     Vector3 _meshScale;
     float _windStrength;
@@ -50,8 +50,8 @@ public:
     FoliageDefinitionResource();
     ~FoliageDefinitionResource();
 
-    Foliage::FoliageStrategy get_strategy() const;
-    void set_strategy(const Foliage::FoliageStrategy value);
+    FoliageStrategy get_strategy() const;
+    void set_strategy(const FoliageStrategy value);
 
     Ref<Mesh> get_mesh() const;
     void set_mesh(const Ref<Mesh> &value);
