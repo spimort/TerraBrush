@@ -71,7 +71,7 @@ void CustomContentLoader::addTexturesPreviewToParent(TerraBrush *terraBrush, Nod
         // for (var i = 0; i < terraBrush.TextureSets.TextureSets.Count; i++) {
         //     var textureSet = terraBrush.TextureSets.TextureSets[i];
 
-        //     DockPreviewButton *dockPreviewButton = memnew (DockPreviewButton);
+        //     DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
         //     dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
         //     dockPreviewButton->set_margin(10);
         //     dockPreviewButton->setTextureImage(textureSet->get_albedoTexture);
