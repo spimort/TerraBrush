@@ -1,5 +1,10 @@
 #include "zones_resource.h"
 
+#include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/file_access.hpp>
+#include <godot_cpp/classes/resource_saver.hpp>
+#include <godot_cpp/classes/engine.hpp>
+
 using namespace godot;
 
 void ZonesResource::_bind_methods() {
@@ -9,7 +14,7 @@ void ZonesResource::_bind_methods() {
 }
 
 ZonesResource::ZonesResource() {
-    _dirtyImageTextures = HashSet<ImageTexture>();
+    _dirtyImageTextures = HashSet<Ref<ImageTexture>>();
 
     _lockTextures = memnew(Ref<Texture2DArray>);
     _heightmapTextures = memnew(Ref<Texture2DArray>);
@@ -58,135 +63,178 @@ void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
     _zones = value;
 }
 
+void ZonesResource::updateLockTexture(int zoneSize) {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (zone->get_lockTexture().is_null() || zone->get_lockTexture()->get_image().is_null()) {
+            images.append(Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RF));
+        } else {
+            images.append(zone->get_lockTexture()->get_image());
+        }
+    }
+
+    if (images.size() > 0) {
+        _lockTextures->create_from_images(images);
+    }
+}
+
+void ZonesResource::updateHeightmaps() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        images.append(zone->get_heightMapTexture()->get_image());
+    }
+
+    if (images.size() > 0) {
+        _heightmapTextures->create_from_images(images);
+    }
+}
+
+void ZonesResource::updateSplatmapsTextures() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (zone->get_splatmapsTexture().size() > 0) {
+            for (Ref<Texture2D> splatmap : zone->get_splatmapsTexture()) {
+                images.append(splatmap->get_image());
+            }
+        }
+    }
+
+    if (images.size() > 0) {
+        _splatmapsTextures->create_from_images(images);
+    }
+}
+
 // TODO : GDExtension
-// void ZonesResource::updateLockTexture(int zoneSize) {
-//     var images = Zones.Select(zone => zone.LockTexture?.GetImage() ?? GodotAgnostic.ImageCreateEmpty(zoneSize, zoneSize, false, Image.Format.Rf)).ToArray();
-
-//     if (images.Length != 0) {
-//         _lockTextures.CreateFromImages(new GodotArray<Image>([..images]));
-//     }
-// }
-
-// void ZonesResource::updateHeightmaps() {
-//     var images = Zones.Select(zone => zone.HeightMapTexture.GetImage()).ToArray();
-//     if (images.Length != 0) {
-//         _heightmapTextures.CreateFromImages(new GodotArray<Image>([..images]));
-//     }
-// }
-
-// void ZonesResource::updateSplatmapsTextures() {
-//     var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
-//         if (zone.SplatmapsTexture != null) {
-//             source.AddRange(zone.SplatmapsTexture.Select(texture => texture.GetImage()));
-//         }
-
-//         return source;
-//     });
-
-//     if (images.Count > 0) {
-//         _splatmapsTextures.CreateFromImages(new GodotArray<Image>([..images]));
-//     }
-// }
-
 // void ZonesResource::initializeFoliageTextures(TerraBrush terraBrush) {
 //     _foliagesTextures = terraBrush.Foliages?.Select(_ => new Texture2DArray()).ToArray();
 // }
 
-// void ZonesResource::updateFoliagesTextures() {
-//     if (_foliagesTextures?.Length <= 0) return;
+void ZonesResource::updateFoliagesTextures() {
+    if (_foliagesTextures.size() <= 0) return;
 
-//     for (var i = 0; i < _foliagesTextures?.Length; i++) {
-//         UpdateFoliagesTextures(i);
-//     }
-// }
+    for (int i = 0; i < _foliagesTextures.size(); i++) {
+        updateFoliagesTextures(i);
+    }
+}
 
-// void ZonesResource::updateFoliagesTextures(int foliageIndex) {
-//     var images = Zones.Select(zone => zone.FoliagesTexture[foliageIndex].GetImage()).ToArray();
+void ZonesResource::updateFoliagesTextures(int foliageIndex) {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        TypedArray<Ref<Texture2D>> foliagesTexture = zone->get_foliagesTexture();
+        images.append(Ref<Texture2D>(foliagesTexture[foliageIndex])->get_image());
+    }
 
-//     if (images.Length > 0) {
-//         _foliagesTextures[foliageIndex].CreateFromImages(new GodotArray<Image>([..images]));
-//     }
-// }
+    if (images.size() > 0) {
+        Ref<Texture2DArray>(_foliagesTextures[foliageIndex])->create_from_images(images);
+    }
+}
 
-// void ZonesResource::updateObjectsTextures() {
-//     var images = Zones.Aggregate(new List<Image>(), (source, zone) => {
-//         if (zone.ObjectsTexture != null) {
-//             source.AddRange(zone.ObjectsTexture.Select(texture => texture.GetImage()));
-//         }
+void ZonesResource::updateObjectsTextures() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (zone->get_objectsTexture().size() > 0) {
+            for (Ref<Texture2D> objectTexture : zone->get_objectsTexture()) {
+                images.append(objectTexture->get_image());
+            }
+        }
+    }
 
-//         return source;
-//     });
+    if (images.size() > 0) {
+        _objectsTextures->create_from_images(images);
+    }
+}
 
-//     if (images.Count > 0) {
-//         _objectsTextures.CreateFromImages(new GodotArray<Image>([..images]));
-//     }
-// }
+void ZonesResource::updateWaterTextures() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (!zone->get_waterTexture().is_null()) {
+            images.append(zone->get_waterTexture()->get_image());
+        }
+    }
 
-// void ZonesResource::updateWaterTextures() {
-//     if (Zones.Any(zone => zone.WaterTexture == null)) {
-//         return;
-//     }
+    if (images.size() > 0) {
+        _waterTextures->create_from_images(images);
+    }
+}
 
-//     _waterTextures.CreateFromImages(new GodotArray<Image>([..Zones.Select(zone => zone.WaterTexture.GetImage())]));
-// }
+void ZonesResource::updateZoneWaterTexture(Ref<ZoneResource> zone) {
+    int zoneIndex = _zones.find(zone);
+    _waterTextures->update_layer(zone->get_waterTexture()->get_image(), zoneIndex);
+}
 
-// void ZonesResource::updateZoneWaterTexture(ZoneResource zone) {
-//     _waterTextures.UpdateLayer(zone.WaterTexture.GetImage(), Array.IndexOf([..Zones], zone));
-// }
+void ZonesResource::updateSnowTextures() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (!zone->get_snowTexture().is_null()) {
+            images.append(zone->get_snowTexture()->get_image());
+        }
+    }
 
-// void ZonesResource::updateSnowTextures() {
-//     if (Zones.Any(zone => zone.SnowTexture == null)) {
-//         return;
-//     }
+    if (images.size() > 0) {
+        _snowTextures->create_from_images(images);
+    }
+}
 
-//     _snowTextures.CreateFromImages(new GodotArray<Image>([..Zones.Select(zone => zone.SnowTexture.GetImage())]));
-// }
+void ZonesResource::updateZoneSnowTexture(Ref<ZoneResource> zone) {
+    int zoneIndex = _zones.find(zone);
+    _snowTextures->update_layer(zone->get_snowTexture()->get_image(), zoneIndex);
+}
 
-// void ZonesResource::updateZoneSnowTexture(ZoneResource zone) {
-//     _snowTextures.UpdateLayer(zone.SnowTexture.GetImage(), Array.IndexOf([..Zones], zone));
-// }
+void ZonesResource::updateMetaInfoTextures() {
+    TypedArray<Image> images = TypedArray<Image>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (!zone->get_metaInfoTexture().is_null()) {
+            images.append(zone->get_metaInfoTexture()->get_image());
+        }
+    }
 
-// void ZonesResource::updateMetaInfoTextures() {
-//     if (Zones.Any(zone => zone.MetaInfoTexture == null)) {
-//         return;
-//     }
+    if (images.size() > 0) {
+        _metaInfoTextures->create_from_images(images);
+    }
+}
 
-//     _metaInfoTextures.CreateFromImages(new GodotArray<Image>([..Zones.Select(zone => zone.MetaInfoTexture.GetImage())]));
-// }
+void ZonesResource::updateZoneMetaInfoTexture(Ref<ZoneResource> zone) {
+    int zoneIndex = _zones.find(zone);
+    _metaInfoTextures->update_layer(zone->get_metaInfoTexture()->get_image(), zoneIndex);
+}
 
-// void ZonesResource::updateZoneMetaInfoTexture(ZoneResource zone) {
-//     _metaInfoTextures.UpdateLayer(zone.MetaInfoTexture.GetImage(), Array.IndexOf([..Zones], zone));
-// }
+void ZonesResource::saveResources() {
+    for (Ref<ImageTexture> dirtyImageResource : _dirtyImageTextures) {
+        saveImageResource(dirtyImageResource);
+    }
 
-// void ZonesResource::saveResources() {
-//     foreach (var dirtyImageResource in _dirtyImageTextures) {
-//         SaveImageResource(dirtyImageResource);
-//     }
+    _dirtyImageTextures.clear();
+}
 
-//     _dirtyImageTextures.Clear();
-// }
+void ZonesResource::saveImageResource(Ref<ImageTexture> image) {
+    if (!image->get_path().is_empty() && FileAccess::file_exists(image->get_path())) {
+        ResourceSaver::get_singleton()->save(image, image->get_path());
+    }
+}
 
-// void ZonesResource::saveImageResource(ImageTexture image) {
-//     if (!string.IsNullOrWhiteSpace(image.ResourcePath) && Godot.FileAccess.FileExists(image.ResourcePath)) {
-//         ResourceSaver.Singleton.Save(image, image.ResourcePath);
-//     }
-// }
+void ZonesResource::updateZonesMap() {
+    TypedArray<Vector2> zonePositions = TypedArray<Vector2>();
+    int maxX = 0;
+    int maxY = 0;
+    for (Ref<ZoneResource> zone : _zones) {
+        Vector2 zonePosition = zone->get_zonePosition();
+        zonePositions.append(zonePosition);
 
-// void ZonesResource::updateZonesMap() {
-//     var zonePositions = Zones.Select(zone => zone.ZonePosition).ToArray();
-//     var maxX = zonePositions.Max(x => Math.Abs(x.X));
-//     var maxY = zonePositions.Max(x => Math.Abs(x.Y));
+        maxX = Math::max(maxX, (int) Math::abs(zonePosition.x));
+        maxY = Math::max(maxY, (int) Math::abs(zonePosition.y));
+    }
 
-//     var zonesMap = GodotAgnostic.ImageCreateEmpty((maxX * 2) + 1, (maxY * 2) + 1, false, Image.Format.Rf);
-//     zonesMap.Fill(new Color(-1, 0, 0, 0));
-//     for (var i = 0; i < zonePositions.Length; i++) {
-//         var position = zonePositions[i];
-//         zonesMap.SetPixel(position.X + maxX, position.Y + maxY, new Color(i, 0, 0, 0));
-//     }
+    Ref<Image> zonesMap = Image::create_empty((maxX * 2) + 1, (maxY * 2) + 1, false, Image::Format::FORMAT_RF);
+    zonesMap->fill(Color(-1, 0, 0, 0));
+    for (int i = 0; i < zonePositions.size(); i++) {
+        Vector2 position = zonePositions[i];
+        zonesMap->set_pixel(position.x + maxX, position.y + maxY, Color(i, 0, 0, 0));
+    }
 
-//     _zonesMap.SetImage(zonesMap);
-// }
+    _zonesMap->set_image(zonesMap);
+}
 
+// TODO : GDExtension
 // ZoneResource ZonesResource::addNewZone(TerraBrush terraBrush, Vector2I zonePosition) {
 //     var zone = new ZoneResource() {
 //         ZonePosition = zonePosition
@@ -208,24 +256,25 @@ void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
 //     return zone;
 // }
 
-// void ZonesResource::addDirtyImageTexture(ImageTexture imageTexture) {
-//     _dirtyImageTextures.Add(imageTexture);
-// }
+void ZonesResource::addDirtyImageTexture(Ref<ImageTexture> imageTexture) {
+    _dirtyImageTextures.insert(imageTexture);
+}
 
-// void ZonesResource::updateImageTextures(int zoneSize) {
-//     if (Engine.Singleton.IsEditorHint()) {
-//         UpdateLockTexture(zoneSize);
-//     }
-//     UpdateHeightmaps();
-//     UpdateSplatmapsTextures();
-//     UpdateFoliagesTextures();
-//     UpdateObjectsTextures();
-//     UpdateWaterTextures();
-//     UpdateSnowTextures();
-//     UpdateMetaInfoTextures();
-//     UpdateZonesMap();
-// }
+void ZonesResource::updateImageTextures(int zoneSize) {
+    if (Engine::get_singleton()->is_editor_hint()) {
+        updateLockTexture(zoneSize);
+    }
+    updateHeightmaps();
+    updateSplatmapsTextures();
+    updateFoliagesTextures();
+    updateObjectsTextures();
+    updateWaterTextures();
+    updateSnowTextures();
+    updateMetaInfoTextures();
+    updateZonesMap();
+}
 
-// ZoneResource ZonesResource::getZoneForZoneInfo(ZoneInfo zoneInfo) {
+// TODO : GDExtension
+// ZoneResource ZonesResource::getZoneForZoneInfo(Ref<ZoneInfo> zoneInfo) {
 //     return Zones?.FirstOrDefault(x => x.ZonePosition.X == zoneInfo.ZonePosition.X && x.ZonePosition.Y == zoneInfo.ZonePosition.Y);
 // }

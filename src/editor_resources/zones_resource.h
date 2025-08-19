@@ -13,7 +13,7 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource)
 
 private:
-    HashSet<ImageTexture> _dirtyImageTextures;
+    HashSet<Ref<ImageTexture>> _dirtyImageTextures;
 
     Ref<Texture2DArray> _lockTextures;
     Ref<Texture2DArray> _heightmapTextures;
@@ -27,7 +27,7 @@ private:
 
     TypedArray<Ref<ZoneResource>> _zones;
 
-    // void saveImageResource(ImageTexture image);
+    void saveImageResource(Ref<ImageTexture> image);
 
 protected:
     static void _bind_methods();
@@ -49,24 +49,24 @@ public:
     TypedArray<Ref<ZoneResource>> get_zones() const;
     void set_zones(const TypedArray<Ref<ZoneResource>> value);
 
-    // void updateLockTexture(int zoneSize);
-    // void updateHeightmaps();
-    // void updateSplatmapsTextures();
+    void updateLockTexture(int zoneSize);
+    void updateHeightmaps();
+    void updateSplatmapsTextures();
     // void initializeFoliageTextures(TerraBrush terraBrush);
-    // void updateFoliagesTextures();
-    // void updateFoliagesTextures(int foliageIndex);
-    // void updateObjectsTextures();
-    // void updateWaterTextures();
-    // void updateZoneWaterTexture(ZoneResource zone);
-    // void updateSnowTextures();
-    // void updateZoneSnowTexture(ZoneResource zone);
-    // void updateMetaInfoTextures();
-    // void updateZoneMetaInfoTexture(ZoneResource zone);
-    // void saveResources();
-    // void updateZonesMap();
+    void updateFoliagesTextures();
+    void updateFoliagesTextures(int foliageIndex);
+    void updateObjectsTextures();
+    void updateWaterTextures();
+    void updateZoneWaterTexture(Ref<ZoneResource> zone);
+    void updateSnowTextures();
+    void updateZoneSnowTexture(Ref<ZoneResource> zone);
+    void updateMetaInfoTextures();
+    void updateZoneMetaInfoTexture(Ref<ZoneResource> zone);
+    void saveResources();
+    void updateZonesMap();
     // ZoneResource addNewZone(TerraBrush terraBrush, Vector2I zonePosition);
-    // void addDirtyImageTexture(ImageTexture imageTexture);
-    // void updateImageTextures(int zoneSize);
-    // ZoneResource getZoneForZoneInfo(ZoneInfo zoneInfo);
+    void addDirtyImageTexture(Ref<ImageTexture> imageTexture);
+    void updateImageTextures(int zoneSize);
+    // ZoneResource getZoneForZoneInfo(Ref<ZoneInfo> zoneInfo);
 };
 #endif
