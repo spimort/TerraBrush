@@ -2,6 +2,7 @@
 #include "../misc/utils.h"
 #include "../misc/string_names.h"
 #include "../editor_resources/zone_resource.h"
+#include "../editor_resources/zones_resource.h"
 #include "../misc/enums.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
@@ -12,6 +13,10 @@
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/multi_mesh.hpp>
+#include <godot_cpp/classes/box_mesh.hpp>
+#include <godot_cpp/classes/image_texture.hpp>
+#include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/texture2d_array.hpp>
 
 void Foliage::_bind_methods() {
 
@@ -24,6 +29,7 @@ void Foliage::_notification(const int what) {
 }
 
 Foliage::Foliage() {
+    _foliageIndex = 0;
     _textureDetail = 1;
 }
 
@@ -218,7 +224,7 @@ void Foliage::updateFoliage() {
     _foliageShader->set_shader_parameter(StringNames::NumberOfZones(), (float) _terrainZones->get_zones().size());
     _foliageShader->set_shader_parameter(StringNames::ZonesMap(), _terrainZones->get_zonesMap());
 
-    if (!_textureSets->get_textureSets().is_empty()) {
+    if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         _foliageShader->set_shader_parameter(StringNames::Splatmaps(), _terrainZones->get_splatmapsTextures());
 
         TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();

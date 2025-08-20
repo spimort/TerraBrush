@@ -30,6 +30,7 @@
 #include "misc/keybind_manager.h"
 
 #include "nodes/clipmap.h"
+#include "nodes/foliage.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -49,7 +50,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
     GDREGISTER_INTERNAL_CLASS(Clipmap);
     GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
-    // GodotRegistry.RegisterInternalClass<Foliage>(Foliage.BindMethods);
+    GDREGISTER_CLASS(Foliage);
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);

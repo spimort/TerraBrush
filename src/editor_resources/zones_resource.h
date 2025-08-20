@@ -19,7 +19,7 @@ private:
     Ref<Texture2DArray> _heightmapTextures;
     Ref<Texture2DArray> _splatmapsTextures;
     TypedArray<Ref<Texture2DArray>> _foliagesTextures;
-    Ref<Texture2DArray> _objectsTextures;
+    Ref<Texture2DArray> _objectsTextures; // This should be TypedArray<Ref<Texture2DArray>> like foliages but it's unused for now. Might remove it later.
     Ref<Texture2DArray> _waterTextures;
     Ref<Texture2DArray> _snowTextures;
     Ref<Texture2DArray> _metaInfoTextures;

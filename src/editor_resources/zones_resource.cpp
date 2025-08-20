@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/texture2d_array.hpp>
 
 using namespace godot;
 
@@ -16,14 +17,14 @@ void ZonesResource::_bind_methods() {
 ZonesResource::ZonesResource() {
     _dirtyImageTextures = HashSet<Ref<ImageTexture>>();
 
-    _lockTextures = memnew(Ref<Texture2DArray>);
-    _heightmapTextures = memnew(Ref<Texture2DArray>);
-    _splatmapsTextures = memnew(Ref<Texture2DArray>);
-    _objectsTextures = memnew(Ref<Texture2DArray>);
-    _waterTextures = memnew(Ref<Texture2DArray>);
-    _snowTextures = memnew(Ref<Texture2DArray>);
-    _metaInfoTextures = memnew(Ref<Texture2DArray>);
-    _zonesMap = memnew(Ref<ImageTexture>);
+    _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _splatmapsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _objectsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _waterTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _snowTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _metaInfoTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _zonesMap = Ref<ImageTexture>(memnew(ImageTexture));
 }
 
 ZonesResource::~ZonesResource() {}
@@ -64,7 +65,7 @@ void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
 }
 
 void ZonesResource::updateLockTexture(int zoneSize) {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (zone->get_lockTexture().is_null() || zone->get_lockTexture()->get_image().is_null()) {
             images.append(Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RF));
@@ -79,7 +80,7 @@ void ZonesResource::updateLockTexture(int zoneSize) {
 }
 
 void ZonesResource::updateHeightmaps() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         images.append(zone->get_heightMapTexture()->get_image());
     }
@@ -90,7 +91,7 @@ void ZonesResource::updateHeightmaps() {
 }
 
 void ZonesResource::updateSplatmapsTextures() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (zone->get_splatmapsTexture().size() > 0) {
             for (Ref<Texture2D> splatmap : zone->get_splatmapsTexture()) {
@@ -118,7 +119,7 @@ void ZonesResource::updateFoliagesTextures() {
 }
 
 void ZonesResource::updateFoliagesTextures(int foliageIndex) {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         TypedArray<Ref<Texture2D>> foliagesTexture = zone->get_foliagesTexture();
         images.append(Ref<Texture2D>(foliagesTexture[foliageIndex])->get_image());
@@ -130,7 +131,7 @@ void ZonesResource::updateFoliagesTextures(int foliageIndex) {
 }
 
 void ZonesResource::updateObjectsTextures() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (zone->get_objectsTexture().size() > 0) {
             for (Ref<Texture2D> objectTexture : zone->get_objectsTexture()) {
@@ -145,7 +146,7 @@ void ZonesResource::updateObjectsTextures() {
 }
 
 void ZonesResource::updateWaterTextures() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_waterTexture().is_null()) {
             images.append(zone->get_waterTexture()->get_image());
@@ -163,7 +164,7 @@ void ZonesResource::updateZoneWaterTexture(Ref<ZoneResource> zone) {
 }
 
 void ZonesResource::updateSnowTextures() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_snowTexture().is_null()) {
             images.append(zone->get_snowTexture()->get_image());
@@ -181,7 +182,7 @@ void ZonesResource::updateZoneSnowTexture(Ref<ZoneResource> zone) {
 }
 
 void ZonesResource::updateMetaInfoTextures() {
-    TypedArray<Image> images = TypedArray<Image>();
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_metaInfoTexture().is_null()) {
             images.append(zone->get_metaInfoTexture()->get_image());
