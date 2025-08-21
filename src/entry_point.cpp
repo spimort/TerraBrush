@@ -32,6 +32,7 @@
 #include "nodes/clipmap.h"
 #include "nodes/foliage.h"
 #include "nodes/snow.h"
+#include "nodes/water.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -62,7 +63,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<Terrain>(Terrain.BindMethods);
     GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
     GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);
-    // GodotRegistry.RegisterInternalClass<Water>(Water.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(Water);
     GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
     GDREGISTER_INTERNAL_CLASS(ToolPreview);
     // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
