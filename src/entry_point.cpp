@@ -31,6 +31,7 @@
 
 #include "nodes/clipmap.h"
 #include "nodes/foliage.h"
+#include "nodes/snow.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -50,14 +51,14 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
     GDREGISTER_INTERNAL_CLASS(Clipmap);
     GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
-    GDREGISTER_CLASS(Foliage);
+    GDREGISTER_INTERNAL_CLASS(Foliage);
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<Objects>(Objects.BindMethods);
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
-    // GodotRegistry.RegisterInternalClass<Snow>(Snow.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(Snow);
     // GodotRegistry.RegisterInternalClass<Terrain>(Terrain.BindMethods);
     GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
     GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);

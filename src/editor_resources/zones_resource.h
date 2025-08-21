@@ -2,6 +2,7 @@
 #define ZONES_RESOURCE_H
 
 #include "zone_resource.h"
+#include "../misc/zone_info.h"
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/texture2d_array.hpp>
@@ -67,6 +68,6 @@ public:
     // ZoneResource addNewZone(TerraBrush terraBrush, Vector2I zonePosition);
     void addDirtyImageTexture(Ref<ImageTexture> imageTexture);
     void updateImageTextures(int zoneSize);
-    // ZoneResource getZoneForZoneInfo(Ref<ZoneInfo> zoneInfo);
+    Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
 };
 #endif
