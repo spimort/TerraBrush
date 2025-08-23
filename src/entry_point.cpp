@@ -32,6 +32,7 @@
 #include "nodes/clipmap.h"
 #include "nodes/foliage.h"
 #include "nodes/snow.h"
+#include "nodes/terrain.h"
 #include "nodes/water.h"
 
 #include <gdextension_interface.h>
@@ -60,7 +61,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
     GDREGISTER_INTERNAL_CLASS(Snow);
-    // GodotRegistry.RegisterInternalClass<Terrain>(Terrain.BindMethods);
+    GDREGISTER_CLASS(Terrain);
     GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
     GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);
     GDREGISTER_INTERNAL_CLASS(Water);

@@ -44,4 +44,11 @@ enum ObjectStrategy {
     OctreeMultiMeshes = 2
 };
 VARIANT_ENUM_CAST(ObjectStrategy);
+
+enum AlphaChannelUsage {
+    None = 0,
+    Roughness = 1,
+    Height = 2
+};
+VARIANT_ENUM_CAST(AlphaChannelUsage);
 #endif
