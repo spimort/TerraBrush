@@ -61,7 +61,7 @@ void ObjectDefinitionResource::_bind_methods() {
 }
 
 ObjectDefinitionResource::ObjectDefinitionResource() {
-    _strategy = ObjectStrategy::PackedScenes;
+    _strategy = ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES;
     _objectFrequency = -1;
     _randomRange = 1;
     _randomSizeFactorMin = 0.2;
@@ -86,13 +86,13 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
         "visualInstanceLayers",
     };
 
-    if (_strategy == ObjectStrategy::PackedScenes) {
+    if (_strategy == ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES) {
         if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         } else if (PackedScenesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
-    } else if (_strategy == ObjectStrategy::OctreeMultiMeshes) {
+    } else if (_strategy == ObjectStrategy::OBJECTSTRATEGY_OCTREEMULTIMESHES) {
         if (OctreeMultiMeshesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         } else if (PackedScenesProperties.has(property.name)) {

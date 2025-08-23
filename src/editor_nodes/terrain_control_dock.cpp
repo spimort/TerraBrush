@@ -31,8 +31,8 @@ void TerrainControlDock::_bind_methods() {
 
 TerrainControlDock::TerrainControlDock() {
     _selectedBrushIndex = 0;
-    _selectedTool = TerrainToolType::TerrainAdd;
-    _temporaryTool = TerrainToolType::None;
+    _selectedTool = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
+    _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
     _selectedTextureIndex = -1;
     _selectedFoliageIndex = -1;
     _selectedObjectIndex = -1;
@@ -158,7 +158,7 @@ void TerrainControlDock::updateSelectedTerrainTool() {
     for (int i = 0; i < _toolTypesContainer->get_child_count(); i++) {
         Node *childNode = _toolTypesContainer->get_child(i);
         ToolPreview *toolPreview = Object::cast_to<ToolPreview>(childNode);
-        toolPreview->set_pressed(toolPreview->get_toolType() == (_temporaryTool == TerrainToolType::None ? _selectedTool : _temporaryTool));
+        toolPreview->set_pressed(toolPreview->get_toolType() == (_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool));
     }
 }
 
@@ -270,43 +270,43 @@ void TerrainControlDock::setSelectedMetaInfoIndex(const int index) {
 
 void TerrainControlDock::setShiftPressed(bool pressed) {
     if (pressed) {
-        if (_selectedTool == TerrainToolType::TerrainAdd || _selectedTool == TerrainToolType::TerrainRemove || _selectedTool == TerrainToolType::TerrainFlatten) {
-            _temporaryTool = TerrainToolType::TerrainSmooth;
+        if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINADD || _selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE || _selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH;
         }
-        else if (_selectedTool == TerrainToolType::FoliageAdd) {
-            _temporaryTool = TerrainToolType::FoliageRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::ObjectAdd) {
-            _temporaryTool = TerrainToolType::ObjectRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_OBJECTADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::WaterAdd) {
-            _temporaryTool = TerrainToolType::WaterRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_WATERADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::WaterFlowAdd) {
-            _temporaryTool = TerrainToolType::WaterFlowRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::SnowAdd) {
-            _temporaryTool = TerrainToolType::SnowRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_SNOWADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::HoleAdd) {
-            _temporaryTool = TerrainToolType::HoleRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_HOLEADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::LockAdd) {
-            _temporaryTool = TerrainToolType::LockRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_LOCKADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE;
         }
-        else if (_selectedTool == TerrainToolType::MetaInfoAdd) {
-            _temporaryTool = TerrainToolType::MetaInfoRemove;
+        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_METAINFOADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE;
         }
         else {
-            _temporaryTool = TerrainToolType::None;
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
         }
     }
     else {
-        _temporaryTool = TerrainToolType::None;
+        _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
     }
 
     // TODO : GDExtension
-    // _terraBrush->set_terrainTool(_temporaryTool == TerrainToolType::None ? _selectedTool : _temporaryTool);
+    // _terraBrush->set_terrainTool(_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool);
     updateSelectedTerrainTool();
 }
 
@@ -354,128 +354,128 @@ void TerrainControlDock::buildLayout() {
                                 toolsVBoxContainer->add_child(_toolTypesContainer);
                                 { // HFlowContainer
                                     ToolPreview *toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_add.png"));
                                     toolPreview->set_tooltip_text("Raise terrain");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_remove.png"));
                                     toolPreview->set_tooltip_text("Lower terrain");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainSmooth);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_smooth.png"));
                                     toolPreview->set_tooltip_text("Smooth terrain");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainFlatten);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_flatten.png"));
                                     toolPreview->set_tooltip_text("Flatten terrain");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainSetHeight);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_height.png"));
                                     toolPreview->set_tooltip_text("Set terrain height");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TerrainSetAngle);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_angle.png"));
                                     toolPreview->set_tooltip_text("Set terrain angle");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::Paint);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_PAINT);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/paint.png"));
                                     toolPreview->set_tooltip_text("Paint texture");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::FoliageAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/foliage_add.png"));
                                     toolPreview->set_tooltip_text("Add foliage");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::FoliageRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/foliage_remove.png"));
                                     toolPreview->set_tooltip_text("Remove foliage");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::ObjectAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_OBJECTADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/object_add.png"));
                                     toolPreview->set_tooltip_text("Add objects");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::ObjectRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/object_remove.png"));
                                     toolPreview->set_tooltip_text("Remove objects");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::WaterAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/water_add.png"));
                                     toolPreview->set_tooltip_text("Add water");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::WaterRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/water_remove.png"));
                                     toolPreview->set_tooltip_text("Remove water");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::WaterFlowAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/flow_add.png"));
                                     toolPreview->set_tooltip_text("Add water flow");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::WaterFlowRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/flow_remove.png"));
                                     toolPreview->set_tooltip_text("Remove water flow");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::SnowAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_SNOWADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/snow_add.png"));
                                     toolPreview->set_tooltip_text("Add snow");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::SnowRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/snow_remove.png"));
                                     toolPreview->set_tooltip_text("Remove snow");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::HoleAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_HOLEADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/holes_add.png"));
                                     toolPreview->set_tooltip_text("Add hole");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::HoleRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/holes_remove.png"));
                                     toolPreview->set_tooltip_text("Remove hole");
                                     _toolTypesContainer->add_child(toolPreview);
 
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::LockAdd);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_add.png"));
                                     toolPreview->set_tooltip_text("Lock");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::LockRemove);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_remove.png"));
                                     toolPreview->set_tooltip_text("Unlock");
                                     _toolTypesContainer->add_child(toolPreview);

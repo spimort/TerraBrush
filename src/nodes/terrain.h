@@ -60,7 +60,7 @@ private:
     void updateCollisionShape();
     void assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data);
     void updateTextures();
-    float getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, TypedDictionary<String, Ref<Texture2D>>> imagesCache);
+    float getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache);
     void onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> shapes);
     Ref<ZoneResource> getZoneForPosition(int x, int y);
 

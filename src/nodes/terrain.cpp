@@ -4,6 +4,7 @@
 #include "../misc/utils.h"
 #include "../misc/string_names.h"
 #include "../misc/zone_utils.h"
+#include "../misc/enums.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/static_body3d.hpp>
@@ -37,8 +38,8 @@ void Terrain::_notification(int what) {
 Terrain::Terrain() {
     _textureDetail = 1;
     _heightBlendFactor = 10;
-    _albedoAlphaChannelUsage = AlphaChannelUsage::None;
-    _normalAlphaChannelUsage = AlphaChannelUsage::None;
+    _albedoAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
+    _normalAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     _useSharpTransitions = false;
     _visualInstanceLayers = 1;
     _collisionLayers = 1;
@@ -211,7 +212,7 @@ void Terrain::updateCollisionShape() {
 void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> shapes) {
     CancellationToken token = _collisionCancellationSource.token;
 
-    TypedDictionary<String, Ref<Texture2D>> imagesCache = TypedDictionary<String, Ref<Texture2D>>();
+    TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache = TypedDictionary<Ref<ZoneResource>, Dictionary>();
 
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
@@ -373,7 +374,7 @@ void Terrain::updateTextures() {
     }
 }
 
-float Terrain::getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, TypedDictionary<String, Ref<Texture2D>>> imagesCache) {
+float Terrain::getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache) {
     TypedDictionary<String, Ref<Texture2D>> zoneImages;
     if (imagesCache.has(zone)) {
         zoneImages = imagesCache[zone];

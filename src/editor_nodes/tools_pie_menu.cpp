@@ -26,42 +26,42 @@ void ToolsPieMenu::_ready() {
     _pieMenu->set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
 
     ToolPreview *toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Raise terrain");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Lower terrain");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainSmooth);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_smooth.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Smooth terrain");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainFlatten);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_flatten.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Flatten terrain");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainSetHeight);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_height.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Set terrain height");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::TerrainSetAngle);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_angle.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Set terrain angle");
@@ -70,7 +70,7 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::Paint);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_PAINT);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/paint.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::Circle);
     toolPreview->set_tooltip_text("Paint texture");
@@ -79,14 +79,14 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::FoliageAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/foliage_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add foliage");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::FoliageRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/foliage_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove foliage");
@@ -95,14 +95,14 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::ObjectAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_OBJECTADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/object_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add objects");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::ObjectRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/object_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove objects");
@@ -111,28 +111,28 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::WaterAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/water_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add water");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::WaterRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/water_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove water");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::WaterFlowAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/flow_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add water flow");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::WaterFlowRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/flow_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove water flow");
@@ -141,14 +141,14 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::SnowAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_SNOWADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/snow_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add snow");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::SnowRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/snow_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove snow");
@@ -157,14 +157,14 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::HoleAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_HOLEADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/holes_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Add hole");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::HoleRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/holes_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Remove hole");
@@ -173,14 +173,14 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::LockAdd);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKADD);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_add.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Lock");
     _pieMenu->add_child(toolPreview);
 
     toolPreview = memnew(ToolPreview);
-    toolPreview->set_toolType(TerrainToolType::LockRemove);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_remove.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
     toolPreview->set_tooltip_text("Unlock");

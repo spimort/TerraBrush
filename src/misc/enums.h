@@ -6,49 +6,49 @@
 using namespace godot;
 
 enum FoliageStrategy : int {
-    MultiMesh = 1,
-    GPUParticle = 2
+    FOLIAGESTRATEGY_MULTIMESH = 1,
+    FOLIAGESTRATEGY_GPUPARTICLE = 2
 };
 VARIANT_ENUM_CAST(FoliageStrategy);
 
 enum TerrainToolType {
-    None = 0,
-    TerrainAdd = 1,
-    TerrainRemove = 2,
-    TerrainSmooth = 3,
-    TerrainFlatten = 4,
-    TerrainSetHeight = 5,
-    TerrainSetAngle = 19,
-    Paint = 6,
-    FoliageAdd = 7,
-    FoliageRemove = 8,
-    ObjectAdd = 9,
-    ObjectRemove = 10,
-    WaterAdd = 11,
-    WaterRemove = 12,
-    WaterFlowAdd = 13,
-    WaterFlowRemove = 14,
-    SnowAdd = 15,
-    SnowRemove = 16,
-    HoleAdd = 17,
-    HoleRemove = 18,
-    LockAdd = 20,
-    LockRemove = 21,
-    MetaInfoAdd = 22,
-    MetaInfoRemove = 23,
+    TERRAINTOOLTYPE_NONE = 0,
+    TERRAINTOOLTYPE_TERRAINADD = 1,
+    TERRAINTOOLTYPE_TERRAINREMOVE = 2,
+    TERRAINTOOLTYPE_TERRAINSMOOTH = 3,
+    TERRAINTOOLTYPE_TERRAINFLATTEN = 4,
+    TERRAINTOOLTYPE_TERRAINSETHEIGHT = 5,
+    TERRAINTOOLTYPE_TERRAINSETANGLE = 19,
+    TERRAINTOOLTYPE_PAINT = 6,
+    TERRAINTOOLTYPE_FOLIAGEADD = 7,
+    TERRAINTOOLTYPE_FOLIAGEREMOVE = 8,
+    TERRAINTOOLTYPE_OBJECTADD = 9,
+    TERRAINTOOLTYPE_OBJECTREMOVE = 10,
+    TERRAINTOOLTYPE_WATERADD = 11,
+    TERRAINTOOLTYPE_WATERREMOVE = 12,
+    TERRAINTOOLTYPE_WATERFLOWADD = 13,
+    TERRAINTOOLTYPE_WATERFLOWREMOVE = 14,
+    TERRAINTOOLTYPE_SNOWADD = 15,
+    TERRAINTOOLTYPE_SNOWREMOVE = 16,
+    TERRAINTOOLTYPE_HOLEADD = 17,
+    TERRAINTOOLTYPE_HOLEREMOVE = 18,
+    TERRAINTOOLTYPE_LOCKADD = 20,
+    TERRAINTOOLTYPE_LOCKREMOVE = 21,
+    TERRAINTOOLTYPE_METAINFOADD = 22,
+    TERRAINTOOLTYPE_METAINFOREMOVE = 23,
 };
 VARIANT_ENUM_CAST(TerrainToolType);
 
 enum ObjectStrategy {
-    PackedScenes = 1,
-    OctreeMultiMeshes = 2
+    OBJECTSTRATEGY_PACKEDSCENES = 1,
+    OBJECTSTRATEGY_OCTREEMULTIMESHES = 2
 };
 VARIANT_ENUM_CAST(ObjectStrategy);
 
 enum AlphaChannelUsage {
-    None = 0,
-    Roughness = 1,
-    Height = 2
+    ALPHACHANNELUSAGE_NONE = 0,
+    ALPHACHANNELUSAGE_ROUGHNESS = 1,
+    ALPHACHANNELUSAGE_HEIGHT = 2
 };
 VARIANT_ENUM_CAST(AlphaChannelUsage);
 #endif

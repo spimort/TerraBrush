@@ -96,7 +96,7 @@ void FoliageDefinitionResource::_bind_methods() {
 }
 
 FoliageDefinitionResource::FoliageDefinitionResource() {
-    _strategy = FoliageStrategy::MultiMesh;
+    _strategy = FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH;
     _meshScale = Vector3(1.0, 1.0, 1.0);
     _windStrength = 0.1;
     _visualInstanceLayers = 1;
@@ -134,7 +134,7 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
         "editorMaximumRenderDistance",
     };
 
-    if (_strategy == FoliageStrategy::MultiMesh) {
+    if (_strategy == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH) {
         if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
@@ -142,7 +142,7 @@ void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const
             property.usage = PROPERTY_USAGE_DEFAULT;
         }
     }
-    else if (_strategy == FoliageStrategy::GPUParticle) {
+    else if (_strategy == FoliageStrategy::FOLIAGESTRATEGY_GPUPARTICLE) {
         if (GPUParticlesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_DEFAULT;
         }

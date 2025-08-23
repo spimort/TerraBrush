@@ -42,7 +42,7 @@ void Foliage::_ready() {
         return;
     }
 
-    if (_definition->get_strategy() == FoliageStrategy::MultiMesh)  {
+    if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH)  {
         _multiMeshInstance3D = memnew(MultiMeshInstance3D);
         add_child(_multiMeshInstance3D);
 
@@ -150,7 +150,7 @@ void Foliage::updateFoliage() {
 
     int numberOfPoints = center + topBottom + sides;
 
-    if (_definition->get_strategy() == FoliageStrategy::MultiMesh) {
+    if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH) {
         _multiMeshInstance3D->set_layer_mask(_definition->get_visualInstanceLayers());
 
         Ref<godot::MultiMesh> multiMesh = memnew(godot::MultiMesh);
@@ -309,7 +309,7 @@ void Foliage::updateAABB() {
     int aabbYPoint = -(aabbYSize / 2);
 
     AABB aabb = AABB(Vector3(aabbXPoint, Math::max(aabbXPoint, aabbYPoint), aabbYPoint), Vector3(aabbXSize, Math::max(aabbXSize, aabbYSize), aabbYSize));
-    if (_definition->get_strategy() == FoliageStrategy::MultiMesh) {
+    if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH) {
         _multiMeshInstance3D->set_custom_aabb(aabb);
     } else {
         _particles->set_custom_aabb(aabb);
