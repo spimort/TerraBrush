@@ -24,7 +24,6 @@ void Terrain::_bind_methods() {
 void Terrain::_notification(int what) {
     switch (what) {
         case NOTIFICATION_EXIT_TREE: {
-            // Wait until it exits.
             if (_collisionThread.is_valid()) {
                 _collisionCancellationSource.cancel();
                 _collisionThread->wait_to_finish();
@@ -179,14 +178,12 @@ void Terrain::terrainSplatmapsUpdated() {
 }
 
 void Terrain::updateCollisionShape() {
-    CancellationToken token = _createCollisionInThread ? _collisionCancellationSource.token : CancellationToken();
-
     if (_createCollisionInThread) {
         if (_collisionThread.is_valid()) {
             _collisionCancellationSource.cancel();
             _collisionThread->wait_to_finish();
         }
-        _collisionCancellationSource = CancellationSource(token);
+        _collisionCancellationSource = CancellationSource();
     }
 
     for (int i = 0; i < _terrainCollider->get_child_count(); i++) {

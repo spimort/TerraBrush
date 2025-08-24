@@ -31,6 +31,7 @@
 
 #include "nodes/clipmap.h"
 #include "nodes/foliage.h"
+#include "nodes/objects.h"
 #include "nodes/snow.h"
 #include "nodes/terrain.h"
 #include "nodes/water.h"
@@ -57,7 +58,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
-    // GodotRegistry.RegisterInternalClass<Objects>(Objects.BindMethods);
+    GDREGISTER_CLASS(Objects);
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
     GDREGISTER_INTERNAL_CLASS(Snow);
