@@ -28,7 +28,7 @@ void Objects::_notification(int what) {
 }
 
 Objects::Objects() {
-
+    _defaultObjectFrequency = 10;
 }
 
 Objects::~Objects() {}
@@ -169,6 +169,7 @@ void Objects::updateObjectsAsync() {
 void Objects::addObjectNode(const Node3D *parentNode, const String nodeName, const Vector3 nodePosition, const Vector3 nodeRotation, const float nodeSizeFactor, const int packedSceneIndex) {
     Ref<PackedScene> objectPackedScene = _definition->get_objectScenes()[packedSceneIndex];
     Node3D *newNode = (Node3D*)(objectPackedScene->instantiate());
+
     newNode->set_name(nodeName);
     newNode->set_position(nodePosition);
     newNode->set_rotation_degrees(nodeRotation);
@@ -197,7 +198,7 @@ void Objects::calculateObjectPresenceForPixel(Node3D *parentNode, Ref<Image> hei
                 Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360), 0) : Vector3(0, 0, 0);
                 float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
 
-                call_deferred("addObjectNode", parentNode, x + "_" + y, resultPosition, resultRotation, resultSizeFactor, randomItemIndex);
+                call_deferred("addObjectNode", parentNode, String(String::num_int64(x) + "_" + String::num_int64(y)), resultPosition, resultRotation, resultSizeFactor, randomItemIndex);
             }
         }
     }
@@ -291,7 +292,7 @@ void Objects::addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> 
         add_child(containerNode);
     }
 
-    String nodeName = x + "_" + y;
+    String nodeName = String(String::num_int64(x) + "_" + String::num_int64(y));
     Node3D *existingNode = (Node3D*)(containerNode->get_node_or_null(nodeName));
     if (add && existingNode == nullptr) {
         calculateObjectPresenceForPixel(
