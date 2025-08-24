@@ -240,7 +240,7 @@ void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> s
                     return;
                 }
 
-                Ref<ZonesResource> currentZone = zone;
+                Ref<ZoneResource> currentZone = zone;
                 int lookupX = x;
                 int lookupY = y;
                 // TODO : This does not always work but it does most of the time.
@@ -303,7 +303,7 @@ void Terrain::updateTextures() {
         filterParamName = "Nearest";
     }
 
-    if (_textureSets->get_textureSets().size() > 0) {
+    if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();
         TypedArray<int> textureDetails = TypedArray<int>();
         TypedArray<int> texturesTriplanar = TypedArray<int>();
@@ -375,12 +375,11 @@ void Terrain::updateTextures() {
 }
 
 float Terrain::getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache) {
-    TypedDictionary<String, Ref<Texture2D>> zoneImages;
+    Dictionary zoneImages;
     if (imagesCache.has(zone)) {
         zoneImages = imagesCache[zone];
     } else {
-        TypedDictionary<String, Ref<Texture2D>> zoneImages = TypedDictionary<String, Ref<Texture2D>>();
-
+        zoneImages = Dictionary();
         zoneImages[HeightMapTextureKey] = zone->get_heightMapTexture()->get_image();
         if (!zone->get_waterTexture().is_null()) {
             zoneImages[WaterTextureKey] = zone->get_waterTexture()->get_image();
