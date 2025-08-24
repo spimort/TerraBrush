@@ -58,7 +58,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
-    GDREGISTER_CLASS(Objects);
+    GDREGISTER_INTERNAL_CLASS(Objects);
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
     GDREGISTER_INTERNAL_CLASS(Snow);
