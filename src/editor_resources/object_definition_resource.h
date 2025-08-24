@@ -1,7 +1,6 @@
 #ifndef OBJECT_DEFINITION_RESOURCE_H
 #define OBJECT_DEFINITION_RESOURCE_H
 
-#include "../nodes/objects.h"
 #include "object_octree_lod_definition_resource.h"
 #include "object_octree_lod_meshes_definition_resource.h"
 #include "../misc/enums.h"

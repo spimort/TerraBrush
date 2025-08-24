@@ -58,8 +58,8 @@ public:
     void set_loadInThread(const bool value);
     void set_defaultObjectFrequency(const int value);
 
-    virtual void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones);
-    virtual void updateMeshesFromTool();
-    virtual void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage);
+    void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
+    void updateMeshesFromTool() override;
+    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage) override;
 };
 #endif
