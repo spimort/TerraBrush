@@ -61,7 +61,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
     GDREGISTER_INTERNAL_CLASS(Snow);
-    GDREGISTER_CLASS(Terrain);
+    GDREGISTER_INTERNAL_CLASS(Terrain);
     GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
     GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);
     GDREGISTER_INTERNAL_CLASS(Water);
