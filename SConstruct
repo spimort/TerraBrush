@@ -19,6 +19,7 @@ sources += Glob("src/editor_nodes/*.cpp")
 sources += Glob("src/editor_resources/*.cpp")
 sources += Glob("src/misc/*.cpp")
 sources += Glob("src/nodes/*.cpp")
+sources += Glob("src/octree/*.cpp")
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
