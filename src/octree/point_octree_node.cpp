@@ -73,7 +73,7 @@ void PointOctreeNode::subAdd(Ref<RefCounted> obj, Vector3 objPos) {
 
     // We always put things in the deepest possible child
     // So we can skip checks and simply move down if there are children aleady
-    if (!hasChildren)
+    if (!hasChildren())
     {
         // Just add if few objects are here, or children would be below min size
         if (_objects.size() < NumObjectsAllowed || (_sideLength / 2) < _minSize)
