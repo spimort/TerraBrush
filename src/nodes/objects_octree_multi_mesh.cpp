@@ -145,7 +145,7 @@ void ObjectsOctreeMultiMesh::initializeSortedLODs() {
 
 void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
     if (_definition->get_lodMeshes().size() > 0) {
-        _multiMeshIntances = TypedDictionary<int, TypedArray<Dictionary>>();
+        _multiMeshIntances = TypedDictionary<int, Array>();
 
         for (int i = 0; i < _definition->get_lodMeshes().size(); i++) {
             Ref<ObjectOctreeLODMeshesDefinitionResource> lodMeshDefinition = _definition->get_lodMeshes()[i];
@@ -215,7 +215,7 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
                     add_child(multiMeshInstance);
 
                     if (_multiMeshIntances.size() == 0) {
-                        _multiMeshIntances = TypedDictionary<int, TypedArray<Dictionary>>();
+                        _multiMeshIntances = TypedDictionary<int, Array>();
                     }
 
                     // Create a "fake" ObjectOctreeLODMeshDefinitionResource with the mesh values
@@ -228,16 +228,16 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
                     multiMeshInstanceInfo[MultiMeshInstanceInfo_LODMeshDefinitionKey] = objectOctreeLodMeshDefinition;
                     multiMeshInstanceInfo[MultiMeshInstanceInfo_MultiMeshInstanceKey] = multiMeshInstance;
 
-                    TypedArray<Dictionary> multiMeshInstances = TypedArray<Dictionary>();
+                    Array multiMeshInstances = Array();
                     multiMeshInstances.append(multiMeshInstanceInfo);
 
                     _multiMeshIntances[i] = multiMeshInstances;
                 } else {
                     if (_multiMeshIntances.size() == 0) {
-                        _multiMeshIntances = TypedDictionary<int, TypedArray<Dictionary>>();
+                        _multiMeshIntances = TypedDictionary<int, Array>();
                     }
 
-                    TypedArray<Dictionary> lodMultiMeshInstances = TypedArray<Dictionary>();
+                    Array lodMultiMeshInstances = Array();
                     int minimumSurfaceVerticesCount = 0;
                     for (int surfaceIndex = 0; surfaceIndex < meshInstance->get_mesh()->get_surface_count(); surfaceIndex++) {
                         Array surfaceArrays = meshInstance->get_mesh()->surface_get_arrays(surfaceIndex);
@@ -344,7 +344,7 @@ void ObjectsOctreeMultiMesh::initializeOctree() {
     }
 }
 
-bool sortLODs(const Ref<ObjectOctreeLODDefinitionResource> lodA, const Ref<ObjectOctreeLODDefinitionResource> lodB) {
+bool ObjectsOctreeMultiMesh::sortLODs(const Ref<ObjectOctreeLODDefinitionResource> &lodA, const Ref<ObjectOctreeLODDefinitionResource> &lodB) {
     return lodA->get_maxDistance() < lodB->get_maxDistance();
 }
 
@@ -383,14 +383,14 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
         return;
     }
 
-    TypedDictionary<int, TypedDictionary<int, TypedArray<float>>> multiMeshNodes = TypedDictionary<int, TypedDictionary<int, TypedArray<float>>>();
+    TypedDictionary<int, Dictionary> multiMeshNodes = TypedDictionary<int, Dictionary>();
     for (int i = 0; i < _multiMeshIntances.size(); i++) {
         int multiMeshInstanceKey = _multiMeshIntances.keys()[i];
-        TypedArray<Dictionary> multiMeshInstanceInfos = _multiMeshIntances[i];
+        Array multiMeshInstanceInfos = _multiMeshIntances[i];
 
-        TypedDictionary<int, TypedArray<float>> lodMultiMeshNodesBuffer = TypedDictionary<int, TypedArray<float>>();
+        Dictionary lodMultiMeshNodesBuffer = Dictionary();
         for (int y = 0; y < multiMeshInstanceInfos.size(); y++) {
-            lodMultiMeshNodesBuffer[y] = TypedArray<float>();
+            lodMultiMeshNodesBuffer[y] = Array();
         }
         multiMeshNodes[multiMeshInstanceKey] = lodMultiMeshNodesBuffer;
     }
@@ -407,7 +407,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             int lodDefinitionIndex = _sortedLODDefinitions.find(lodDefinition);
 
             // It means that the mesh for the lod level has not been provided, we skip it
-            if (TypedArray<Dictionary>(_multiMeshIntances[nodeInfo->get_meshIndex()]).size() <= lodDefinitionIndex) {
+            if (Array(_multiMeshIntances[nodeInfo->get_meshIndex()]).size() <= lodDefinitionIndex) {
                 continue;
             }
 
@@ -417,13 +417,13 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                 continue;
             }
 
-            TypedDictionary<int, TypedArray<float>> multiMeshNodesForMeshIndex = multiMeshNodes[nodeInfo->get_meshIndex()];
+            Dictionary multiMeshNodesForMeshIndex = multiMeshNodes[nodeInfo->get_meshIndex()];
             if (!multiMeshNodesForMeshIndex.has(lodDefinitionIndex)) {
-                multiMeshNodesForMeshIndex[lodDefinitionIndex] = TypedArray<float>();
+                multiMeshNodesForMeshIndex[lodDefinitionIndex] = Array();
             }
-            TypedArray<float> lodMultiMeshNodesBuffer = multiMeshNodesForMeshIndex[lodDefinitionIndex];
+            Array lodMultiMeshNodesBuffer = multiMeshNodesForMeshIndex[lodDefinitionIndex];
 
-            Dictionary multiMeshInstanceInfo = TypedArray<Dictionary>(_multiMeshIntances[nodeInfo->get_meshIndex()])[lodDefinitionIndex];
+            Dictionary multiMeshInstanceInfo = Array(_multiMeshIntances[nodeInfo->get_meshIndex()])[lodDefinitionIndex];
             Ref<ObjectOctreeLODMeshDefinitionResource> lodMeshDefinition = multiMeshInstanceInfo[MultiMeshInstanceInfo_LODMeshDefinitionKey];
 
             Basis basis = Basis(Quaternion::from_euler(nodeInfo->get_meshRotation()));
@@ -478,13 +478,13 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
 
     for (int meshIndex = 0; meshIndex < multiMeshNodes.size(); meshIndex++) {
         int multiMeshNodeKey = multiMeshNodes.keys()[meshIndex];
-        TypedDictionary<int, TypedArray<float>> multiMeshNode = multiMeshNodes[multiMeshNodeKey];
+        Dictionary multiMeshNode = multiMeshNodes[multiMeshNodeKey];
 
         for (int lodIndex = 0; lodIndex < multiMeshNode.size(); lodIndex++) {
             int multiMeshNodeBufferKey = multiMeshNode.keys()[lodIndex];
-            TypedArray<float> multiMeshNodeBuffer = multiMeshNode[multiMeshNodeBufferKey];
+            Array multiMeshNodeBuffer = multiMeshNode[multiMeshNodeBufferKey];
 
-            Dictionary multiMeshInstanceInfo = TypedArray<Dictionary>(_multiMeshIntances[multiMeshNodeKey])[multiMeshNodeBufferKey];
+            Dictionary multiMeshInstanceInfo = Array(_multiMeshIntances[multiMeshNodeKey])[multiMeshNodeBufferKey];
             MultiMeshInstance3D *multiMeshInstance = Object::cast_to<MultiMeshInstance3D>(multiMeshInstanceInfo[MultiMeshInstanceInfo_MultiMeshInstanceKey]);
             if (multiMeshNodeBuffer.size() == 0) {
                 multiMeshInstance->get_multimesh()->call_deferred("set_instance_count", 0);
@@ -495,17 +495,21 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
     }
 }
 
-void ObjectsOctreeMultiMesh::assignMultiMesheInstances(const Ref<MultiMesh> multiMesh, const PackedFloat32Array instances) {
+void ObjectsOctreeMultiMesh::assignMultiMesheInstances(const Ref<MultiMesh> &multiMesh, const PackedFloat32Array instances) {
     multiMesh->set_instance_count(instances.size() / 12);
     multiMesh->set_buffer(instances);
 }
 
 MeshInstance3D* ObjectsOctreeMultiMesh::getMeshForSceneNode(Node *node) {
+    if (node == nullptr) {
+        return nullptr;
+    }
+
     if (Object::cast_to<MeshInstance3D>(node) != nullptr) {
         return Object::cast_to<MeshInstance3D>(node);
     }
 
-    for (int i = 0; node->get_child_count(); i++) {
+    for (int i = 0; i < node->get_child_count(); i++) {
         Node *childNode = node->get_child(i);
         MeshInstance3D *childMesh = getMeshForSceneNode(childNode);
 
@@ -518,11 +522,15 @@ MeshInstance3D* ObjectsOctreeMultiMesh::getMeshForSceneNode(Node *node) {
 }
 
 CollisionShape3D* ObjectsOctreeMultiMesh::getCollisionForSceneNode(Node *node) {
+    if (node == nullptr) {
+        return nullptr;
+    }
+
     if (Object::cast_to<CollisionShape3D>(node) != nullptr) {
         return Object::cast_to<CollisionShape3D>(node);
     }
 
-    for (int i = 0; node->get_child_count(); i++) {
+    for (int i = 0; i < node->get_child_count(); i++) {
         Node *childNode = node->get_child(i);
         CollisionShape3D *childCollision = getCollisionForSceneNode(childNode);
 

@@ -29,9 +29,16 @@
 
 #include "misc/keybind_manager.h"
 
+#include "octree/point_octree.h"
+#include "octree/point_octree_bounding_box.h"
+#include "octree/point_octree_node.h"
+#include "octree/point_octree_object.h"
+#include "octree/point_octree_ray.h"
+
 #include "nodes/clipmap.h"
 #include "nodes/foliage.h"
 #include "nodes/objects.h"
+#include "nodes/objects_octree_multi_mesh.h"
 #include "nodes/snow.h"
 #include "nodes/terrain.h"
 #include "nodes/water.h"
@@ -49,6 +56,13 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
     // GDREGISTER_CLASS(TerraBrush);
 
+    // Octree stuff
+    GDREGISTER_INTERNAL_CLASS(PointOctree);
+    GDREGISTER_INTERNAL_CLASS(PointOctreeBoundingBox);
+    GDREGISTER_INTERNAL_CLASS(PointOctreeNode);
+    GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
+    GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
+    GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
 
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
@@ -59,7 +73,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
     GDREGISTER_INTERNAL_CLASS(Objects);
-    // GodotRegistry.RegisterInternalClass<ObjectsOctreeMultiMesh>(ObjectsOctreeMultiMesh.BindMethods);
+    GDREGISTER_CLASS(ObjectsOctreeMultiMesh);
     GDREGISTER_INTERNAL_CLASS(PieMenu);
     GDREGISTER_INTERNAL_CLASS(Snow);
     GDREGISTER_INTERNAL_CLASS(Terrain);

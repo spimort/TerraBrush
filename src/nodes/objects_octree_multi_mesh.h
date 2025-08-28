@@ -37,6 +37,9 @@ protected:
     static void _bind_methods();
 
 public:
+    ObjectsOctreeNodeInfo();
+    ~ObjectsOctreeNodeInfo();
+
     Vector2i get_imagePosition() const;
     void set_imagePosition(const Vector2i value);
 
@@ -65,9 +68,21 @@ class ObjectsOctreeMultiMesh : public Node3D {
 private:
     const int DecimateFactor = 5;
 
+    // Sadly, we gotta use dictionary key here instead of complexe objects (that makes it really more simple instead of creating a complexe type to hold two properties internally)
+    // The original Definition of this object was :
+    // internal class MultiMeshInstanceInfo {
+    //     public ObjectOctreeLODMeshDefinitionResource LODMeshDefinition { get;set; }
+    //     public MultiMeshInstance3D MultiMeshInstance { get;set; }
+    // }
     static constexpr const char* MultiMeshInstanceInfo_LODMeshDefinitionKey = "LODMeshDefinition";
     static constexpr const char* MultiMeshInstanceInfo_MultiMeshInstanceKey = "MultiMeshInstance";
 
+    // Sadly, we gotta use dictionary key here instead of complexe objects (that makes it really more simple instead of creating a complexe type to hold two properties internally)
+    // The original Definition of this object was :
+    // internal class CollisionShapeInfoInfo {
+    //     public Vector3 Offset { get;set; } = Vector3.Zero;
+    //     public Shape3D Shape { get;set; }
+    // }
     static constexpr const char* CollisionShapeInfoInfo_OffsetKey = "Offset";
     static constexpr const char* CollisionShapeInfoInfo_ShapeKey = "Shape";
 
@@ -79,8 +94,8 @@ private:
     Ref<PointOctree> _octree;
     float _maxDistance;
     TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _sortedLODDefinitions;
-    TypedDictionary<int, Dictionary> _collisionShapes;
-    TypedDictionary<int, TypedArray<Dictionary>> _multiMeshIntances;
+    TypedDictionary<int, Dictionary> _collisionShapes; // Sadly, we gotta use generic Dictonary here beacuse the way Variant/Godot works. The origianl definition was : private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
+    TypedDictionary<int, Array> _multiMeshIntances; // Sadly, we gotta use generic Array/Dictionary here beacuse the way Variant/Godot works. The origianl definition was : private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
     HashSet<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision;
     CancellationSource _cancellationTokenSource;
     Ref<Thread> _objectsThread;
@@ -99,11 +114,11 @@ private:
     void initializeSortedLODs();
     void initializeMeshesAndCollision();
     void initializeOctree();
-    bool sortLODs(const Ref<ObjectOctreeLODDefinitionResource> lodA, const Ref<ObjectOctreeLODDefinitionResource> lodB);
+    bool sortLODs(const Ref<ObjectOctreeLODDefinitionResource> &lodA, const Ref<ObjectOctreeLODDefinitionResource> &lodB);
     Ref<ObjectOctreeLODDefinitionResource> getLODDefinitionForDistance(float distance);
     void updateMeshes();
     void updateMeshesAsync();
-    void assignMultiMesheInstances(const Ref<MultiMesh> multiMesh, const PackedFloat32Array instances);
+    void assignMultiMesheInstances(const Ref<MultiMesh> &multiMesh, const PackedFloat32Array instances);
     MeshInstance3D* getMeshForSceneNode(Node *node);
     CollisionShape3D* getCollisionForSceneNode(Node *node);
     void calculateObjectPresenceForPixel(Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage, int x, int y, Color pixelValue, bool add, bool checkExistingNode);
