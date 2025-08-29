@@ -596,8 +596,7 @@ void TerraBrush::createFoliages() {
         zone->set_foliagesTexture(newList);
     }
 
-    // TODO : GDExtension
-    // _terrainZones->initializeFoliageTextures(this);
+    _terrainZones->initializeFoliageTextures(_foliages.size());
     _terrainZones->updateFoliagesTextures();
 
     for (int i = 0; i < _foliages.size(); i++) {
@@ -986,4 +985,30 @@ void TerraBrush::onUnlockTerrain() {
 
         _terrainZones->updateLockTexture(_zonesSize);
     }
+}
+
+Ref<ZoneResource> TerraBrush::addNewZone(Vector2i zonePosition) {
+    Ref<ZoneResource> zone = memnew(ZoneResource);
+    zone->set_zonePosition(zonePosition);
+
+    zone->initializeImagesForTerrain();
+
+    TypedArray<Ref<ZoneResource>> newList = TypedArray<Ref<ZoneResource>>();
+    newList.append_array(_terrainZones->get_zones());
+    newList.append(zone);
+    _terrainZones->set_zones(newList);
+
+    _terrainZones->updateImageTextures(_zonesSize);
+
+    if (_terrain != nullptr) {
+        _terrain->get_clipmap()->updateAABB();
+    }
+    if (_waterNode != nullptr) {
+        _waterNode->get_clipmap()->updateAABB();
+    }
+    if (_snowNode != nullptr) {
+        _snowNode->get_clipmap()->updateAABB();
+    }
+
+    return zone;
 }

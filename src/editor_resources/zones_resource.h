@@ -53,7 +53,7 @@ public:
     void updateLockTexture(int zoneSize);
     void updateHeightmaps();
     void updateSplatmapsTextures();
-    // void initializeFoliageTextures(TerraBrush terraBrush);
+    void initializeFoliageTextures(int foliageCount);
     void updateFoliagesTextures();
     void updateFoliagesTextures(int foliageIndex);
     void updateObjectsTextures();
@@ -65,7 +65,6 @@ public:
     void updateZoneMetaInfoTexture(Ref<ZoneResource> zone);
     void saveResources();
     void updateZonesMap();
-    // ZoneResource addNewZone(TerraBrush terraBrush, Vector2I zonePosition);
     void addDirtyImageTexture(Ref<ImageTexture> imageTexture);
     void updateImageTextures(int zoneSize);
     Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);

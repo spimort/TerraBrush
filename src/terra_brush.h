@@ -202,5 +202,6 @@ public:
     // Ref<TerrainPositionInformation> getPositionInformation(float x, float y); TODO : GDExtension
     void onLockTerrain();
     void onUnlockTerrain();
+    Ref<ZoneResource> addNewZone(Vector2i zonePosition);
 };
 #endif

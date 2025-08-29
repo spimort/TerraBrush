@@ -109,10 +109,12 @@ void ZonesResource::updateSplatmapsTextures() {
     }
 }
 
-// TODO : GDExtension
-// void ZonesResource::initializeFoliageTextures(TerraBrush terraBrush) {
-//     _foliagesTextures = terraBrush.Foliages?.Select(_ => new Texture2DArray()).ToArray();
-// }
+void ZonesResource::initializeFoliageTextures(int foliageCount) {
+    _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
+    for (int i = 0; i < foliageCount; i++) {
+        _foliagesTextures.append(memnew(Texture2DArray));
+    }
+}
 
 void ZonesResource::updateFoliagesTextures() {
     if (_foliagesTextures.size() <= 0) return;
@@ -238,28 +240,6 @@ void ZonesResource::updateZonesMap() {
 
     _zonesMap->set_image(zonesMap);
 }
-
-// TODO : GDExtension
-// ZoneResource ZonesResource::addNewZone(TerraBrush terraBrush, Vector2I zonePosition) {
-//     var zone = new ZoneResource() {
-//         ZonePosition = zonePosition
-//     };
-
-//     zone.InitializeImagesForTerrain(terraBrush);
-
-//     var newList = new List<ZoneResource>(Zones) {
-//         zone
-//     };
-//     Zones = new GodotArray<ZoneResource>([..newList]);
-
-//     UpdateImageTextures(terraBrush.ZonesSize);
-
-//     terraBrush.Terrain?.Clipmap?.UpdateAABB();
-//     terraBrush.Water?.Clipmap?.UpdateAABB();
-//     terraBrush.Snow?.Clipmap?.UpdateAABB();
-
-//     return zone;
-// }
 
 void ZonesResource::addDirtyImageTexture(Ref<ImageTexture> imageTexture) {
     _dirtyImageTextures.insert(imageTexture);
