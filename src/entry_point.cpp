@@ -54,8 +54,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         return;
     }
 
-    // GDREGISTER_CLASS(TerraBrush);
-
     // Octree stuff
     GDREGISTER_INTERNAL_CLASS(PointOctree);
     GDREGISTER_INTERNAL_CLASS(PointOctreeBoundingBox);
@@ -64,6 +62,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
     GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
 
+    // Internal nodes
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
     GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
     GDREGISTER_INTERNAL_CLASS(Clipmap);
@@ -90,6 +89,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
     // GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
 
+    // Resources
     GDREGISTER_CLASS(FoliageResource);
     GDREGISTER_CLASS(FoliageDefinitionResource);
     GDREGISTER_CLASS(MetaInfoLayerResource);
@@ -106,7 +106,8 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(ZonesResource);
 
     // GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
-    // GodotRegistry.RegisterClass<TerraBrush>(TerraBrush.BindMethods);
+    // Public nodes
+    GDREGISTER_CLASS(TerraBrush);
 
     print_line("Init TerraBrush");
 }
