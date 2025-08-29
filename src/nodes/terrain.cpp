@@ -175,7 +175,7 @@ void Terrain::terrainTextureUpdated() {
 
 void Terrain::terrainSplatmapsUpdated() {
     if (_terrainZones->get_splatmapsTextures()->get_layers() == 0) {
-        _clipmap->get_shader()->set_shader_parameter(StringNames::Splatmaps(), memnew(Texture2DArray));
+        _clipmap->get_shader()->set_shader_parameter(StringNames::Splatmaps(), nullptr);
     } else {
         _clipmap->get_shader()->set_shader_parameter(StringNames::Splatmaps(), _terrainZones->get_splatmapsTextures());
     }
