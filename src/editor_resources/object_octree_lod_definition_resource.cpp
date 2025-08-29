@@ -25,8 +25,10 @@ void ObjectOctreeLODDefinitionResource::_bind_methods() {
 }
 
 ObjectOctreeLODDefinitionResource::ObjectOctreeLODDefinitionResource() {
+    _maxDistance = 0;
     _automaticLODTargetVertices = -1;
     _objectFrequency = -1;
+    _automaticLOD = false;
     _addCollision = false;
 }
 

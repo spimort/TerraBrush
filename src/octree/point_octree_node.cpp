@@ -15,7 +15,16 @@ using namespace godot;
 
 void PointOctreeNode::_bind_methods() {}
 
-PointOctreeNode::PointOctreeNode() {}
+PointOctreeNode::PointOctreeNode() {
+    _center = Vector3();
+    _sideLength = 0;
+    _minSize = 0;
+    _bounds = Ref<PointOctreeBoundingBox>(nullptr);
+    _objects = TypedArray<Ref<PointOctreeObject>>();
+    _children = TypedArray<Ref<PointOctreeNode>>();
+    _childBounds = TypedArray<Ref<PointOctreeBoundingBox>>();
+    _actualBoundsSize = Vector3();
+}
 
 PointOctreeNode::~PointOctreeNode() {}
 

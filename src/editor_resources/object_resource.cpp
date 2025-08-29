@@ -13,7 +13,8 @@ void ObjectResource::_bind_methods() {
 }
 
 ObjectResource::ObjectResource() {
-
+    _definition = Ref<ObjectDefinitionResource>(nullptr);
+    _hide = false;
 }
 
 ObjectResource::~ObjectResource() {}

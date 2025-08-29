@@ -8,7 +8,9 @@ void TextureSetsResource::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "textureSets", PROPERTY_HINT_TYPE_STRING, "24/17:TextureSetResource"), "set_textureSets", "get_textureSets");
 }
 
-TextureSetsResource::TextureSetsResource() {}
+TextureSetsResource::TextureSetsResource() {
+    TypedArray<Ref<TextureSetResource>> _textureSets = TypedArray<Ref<TextureSetResource>>();
+}
 
 TextureSetsResource::~TextureSetsResource() {}
 

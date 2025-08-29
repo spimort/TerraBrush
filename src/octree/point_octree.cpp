@@ -14,7 +14,12 @@ using namespace godot;
 
 void PointOctree::_bind_methods() {}
 
-PointOctree::PointOctree() {}
+PointOctree::PointOctree() {
+    _rootNode = Ref<PointOctreeNode>(nullptr);
+    _initialSize = 0;
+    _minSize = 0;
+    _count = 0;
+}
 
 PointOctree::~PointOctree() {}
 

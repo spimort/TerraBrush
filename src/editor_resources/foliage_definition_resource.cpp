@@ -97,17 +97,27 @@ void FoliageDefinitionResource::_bind_methods() {
 
 FoliageDefinitionResource::FoliageDefinitionResource() {
     _strategy = FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH;
+    _mesh = Ref<Mesh>(nullptr);
     _meshScale = Vector3(1.0, 1.0, 1.0);
     _windStrength = 0.1;
+    _noiseTexture = Ref<Texture2D>(nullptr);
     _visualInstanceLayers = 1;
     _lodLevels = 3;
     _lodRowsPerLevel = 50;
     _lodInitialCellWidth = 1;
     _albedo = Color::named("WHITE");
+    _albedoTextures = TypedArray<Ref<Texture2D>>();
+    _nearestTextureFilter = false;
+    _useGroundColor = false;
+    _castShadow = false;
+    _useBrushScale = false;
+    _scaleNoiseTexture = Ref<Texture2D>(nullptr);
     _randomPlacementRange = 3.0;
+    _applyOnTextureIndexes = TypedArray<int>();
+    _customShader = Ref<ShaderMaterial>(nullptr);
+    _meshMaterial = Ref<Material>(nullptr);
     _maximumRenderDistance = 50;
     _editorMaximumRenderDistance = 50;
-    _nearestTextureFilter = false;
 }
 
 FoliageDefinitionResource::~FoliageDefinitionResource() {}

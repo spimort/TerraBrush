@@ -14,7 +14,10 @@ using namespace godot;
 
 void PointOctreeRay::_bind_methods() {}
 
-PointOctreeRay::PointOctreeRay() {}
+PointOctreeRay::PointOctreeRay() {
+    _origin = Vector3();
+    _direction = Vector3();
+}
 
 PointOctreeRay::~PointOctreeRay() {}
 

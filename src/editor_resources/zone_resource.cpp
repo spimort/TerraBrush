@@ -36,7 +36,17 @@ void ZoneResource::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "metaInfoTexture", PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"), "set_metaInfoTexture", "get_metaInfoTexture");
 }
 
-ZoneResource::ZoneResource() {}
+ZoneResource::ZoneResource() {
+    _lockTexture = Ref<ImageTexture>(nullptr);
+    _zonePosition = Vector2i();
+    _heightMapTexture = Ref<ImageTexture>(nullptr);
+    _splatmapsTexture = TypedArray<Ref<ImageTexture>>();
+    _foliagesTexture = TypedArray<Ref<ImageTexture>>();
+    _objectsTexture = TypedArray<Ref<ImageTexture>>();
+    _waterTexture = Ref<ImageTexture>(nullptr);
+    _snowTexture = Ref<ImageTexture>(nullptr);
+    _metaInfoTexture = Ref<ImageTexture>(nullptr);
+}
 
 ZoneResource::~ZoneResource() {}
 

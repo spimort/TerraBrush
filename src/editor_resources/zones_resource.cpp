@@ -21,11 +21,14 @@ ZonesResource::ZonesResource() {
     _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _splatmapsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
     _objectsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _waterTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _snowTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _metaInfoTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _zonesMap = Ref<ImageTexture>(memnew(ImageTexture));
+
+    _zones = TypedArray<Ref<ZoneResource>>();
 }
 
 ZonesResource::~ZonesResource() {}

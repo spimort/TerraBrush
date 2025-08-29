@@ -55,6 +55,13 @@ SnowResource::SnowResource() {
     _snowInnerOffset = 0.3;
     _snowColorDetail = 20;
     _visualInstanceLayers = 1;
+    _snowColorTexture = Ref<Texture2D>(nullptr);
+    _snowColorNormal = Ref<Texture2D>(nullptr);
+    _snowColorRoughness = Ref<Texture2D>(nullptr);
+    _noise = Ref<Texture2D>(nullptr);
+    _noiseFactor = 0;
+    _metallic = 0;
+    _customShader = Ref<ShaderMaterial>(nullptr);
 }
 
 SnowResource::~SnowResource() {

@@ -39,6 +39,12 @@ void TextureSetResource::_bind_methods() {
 
 TextureSetResource::TextureSetResource() {
     _textureDetail = -1;
+    _name = String("");
+    _albedoTexture = Ref<Texture2D>(nullptr);
+    _normalTexture = Ref<Texture2D>(nullptr);
+    _roughnessTexture = Ref<Texture2D>(nullptr);
+    _heightTexture = Ref<Texture2D>(nullptr);
+    _triplanar = false;
 }
 
 TextureSetResource::~TextureSetResource() {}

@@ -14,7 +14,10 @@ using namespace godot;
 
 void PointOctreeObject::_bind_methods() {}
 
-PointOctreeObject::PointOctreeObject() {}
+PointOctreeObject::PointOctreeObject() {
+    _obj = Ref<RefCounted>(nullptr);
+    _pos = Vector3();
+}
 
 PointOctreeObject::~PointOctreeObject() {}
 

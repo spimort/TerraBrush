@@ -186,6 +186,12 @@ TerraBrush::TerraBrush() {
     _normalAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     _useSharpTransitions = false;
 
+    // Foliages settings
+    _foliages = TypedArray<Ref<FoliageResource>>();
+
+    // Objcets settings
+    _objects = TypedArray<Ref<ObjectResource>>();
+
     // Water settings
     _waterDefinition = Ref<WaterResource>(nullptr);
 

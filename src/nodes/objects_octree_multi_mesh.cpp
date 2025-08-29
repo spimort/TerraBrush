@@ -648,7 +648,15 @@ Vector2 ObjectsOctreeMultiMesh::getHeightPositionForResolution(Vector2 position,
 
 void ObjectsOctreeNodeInfo::_bind_methods() {}
 
-ObjectsOctreeNodeInfo::ObjectsOctreeNodeInfo() {}
+ObjectsOctreeNodeInfo::ObjectsOctreeNodeInfo() {
+    _imagePosition = Vector2i();
+    _position = Vector3();
+    _meshIndex = 0;
+    _meshRotation = Vector3();
+    _meshSizeFactor = 0;
+    _collisionShape = nullptr;
+    _previousLodIndex = 0;
+}
 
 ObjectsOctreeNodeInfo::~ObjectsOctreeNodeInfo() {}
 

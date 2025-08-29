@@ -12,7 +12,10 @@ void MetaInfoLayerResource::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 }
 
-MetaInfoLayerResource::MetaInfoLayerResource() {}
+MetaInfoLayerResource::MetaInfoLayerResource() {
+    _name = String("");
+    _color = Color();
+}
 
 MetaInfoLayerResource::~MetaInfoLayerResource() {}
 

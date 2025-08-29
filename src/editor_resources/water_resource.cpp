@@ -103,8 +103,13 @@ WaterResource::WaterResource() {
     _waterInnerOffset = 0.2;
     _waterColor = Color::named("WHITE");
     _waterFresnelColor = Color::named("WHITE");
+    _waterMetallic = 0;
+    _waterRoughness = 0;
+    _waterNormalMap = Ref<Texture2D>(nullptr);
+    _waterNormalMap2 = Ref<Texture2D>(nullptr);
     _waterTimeScale = 0.1;
     _waterStrength = 0.4;
+    _waterWave = Ref<Texture2D>(nullptr);
     _waterNoiseScale = 10;
     _waterHeightScale = 0.15;
     _waterColorDeep = Color::named("WHITE");
@@ -116,6 +121,7 @@ WaterResource::WaterResource() {
     _waterFar = 100;
     _waterEdgeColor = Color::named("WHITE");
     _visualInstanceLayers = 1;
+    _customShader = Ref<ShaderMaterial>(nullptr);
 }
 
 WaterResource::~WaterResource() {}

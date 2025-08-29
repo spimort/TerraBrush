@@ -64,12 +64,17 @@ ObjectDefinitionResource::ObjectDefinitionResource() {
     _strategy = ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES;
     _objectFrequency = -1;
     _randomRange = 1;
+    _randomSize = false;
     _randomSizeFactorMin = 0.2;
     _randomSizeFactorMax = 1.2;
     _updateDistanceThreshold = 1;
     _updateTimeFrequency = 0.1;
     _visualInstanceLayers = 1;
     _randomYRotation = false;
+    _noiseTexture = Ref<Texture2D>(nullptr);
+    _objectScenes = TypedArray<Ref<PackedScene>>();
+    _lodList = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
+    _lodMeshes = TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>>();
 }
 
 ObjectDefinitionResource::~ObjectDefinitionResource() {}

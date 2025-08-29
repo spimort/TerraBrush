@@ -12,7 +12,10 @@ void ObjectOctreeLODMeshesDefinitionResource::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "collisionShape", PROPERTY_HINT_RESOURCE_TYPE, "Shape3D"), "set_collisionShape", "get_collisionShape");
 }
 
-ObjectOctreeLODMeshesDefinitionResource::ObjectOctreeLODMeshesDefinitionResource() {}
+ObjectOctreeLODMeshesDefinitionResource::ObjectOctreeLODMeshesDefinitionResource() {
+    _meshes = TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>>();
+    _collisionShape = Ref<Shape3D>(nullptr);
+}
 
 ObjectOctreeLODMeshesDefinitionResource::~ObjectOctreeLODMeshesDefinitionResource() {}
 

@@ -14,7 +14,10 @@ using namespace godot;
 
 void PointOctreeBoundingBox::_bind_methods() {}
 
-PointOctreeBoundingBox::PointOctreeBoundingBox() {}
+PointOctreeBoundingBox::PointOctreeBoundingBox() {
+    _center = Vector3(0, 0, 0);
+    _extents = Vector3(0, 0, 0);
+}
 
 PointOctreeBoundingBox::~PointOctreeBoundingBox() {}
 

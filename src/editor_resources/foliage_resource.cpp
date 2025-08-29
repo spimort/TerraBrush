@@ -8,7 +8,9 @@ void FoliageResource::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "definition", PROPERTY_HINT_RESOURCE_TYPE, "FoliageDefinitionResource"), "set_definition", "get_definition");
 }
 
-FoliageResource::FoliageResource() {}
+FoliageResource::FoliageResource() {
+    _definition = Ref<FoliageDefinitionResource>(nullptr);
+}
 
 FoliageResource::~FoliageResource() {}
 

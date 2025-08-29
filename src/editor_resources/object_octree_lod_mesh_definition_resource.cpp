@@ -23,6 +23,8 @@ void ObjectOctreeLODMeshDefinitionResource::_bind_methods() {
 ObjectOctreeLODMeshDefinitionResource::ObjectOctreeLODMeshDefinitionResource() {
     _scale = Vector3(1, 1, 1);
     _castShadow = GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_ON;
+    _mesh = Ref<Mesh>(nullptr);
+    _materialOverride = Ref<Material>(nullptr);
 }
 
 ObjectOctreeLODMeshDefinitionResource::~ObjectOctreeLODMeshDefinitionResource() {}
