@@ -103,6 +103,10 @@ Vector3 Clipmap::getCameraPosition() {
     return camera->get_global_position();
 }
 
+void Clipmap::updateEditorCameraPosition(Camera3D *viewportCamera) {
+    updateClipmapMeshPosition(viewportCamera->get_global_position());
+}
+
 void Clipmap::updateClipmapMeshPosition(Vector3 position) {
     auto offset = 0.0f;
     auto isEven = _zonesSize % 2 == 0;

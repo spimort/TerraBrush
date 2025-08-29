@@ -164,6 +164,10 @@ void Terrain::set_metaInfoLayers(const TypedArray<Ref<MetaInfoLayerResource>> va
     _metaInfoLayers = value;
 }
 
+Clipmap *Terrain::get_clipmap() const {
+    return _clipmap;
+}
+
 void Terrain::terrainTextureUpdated() {
     updateTextures();
     terrainSplatmapsUpdated();

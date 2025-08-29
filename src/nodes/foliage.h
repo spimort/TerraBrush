@@ -35,7 +35,6 @@ private:
     Ref<FoliageDefinitionResource> _definition;
 
     void updateFoliage();
-    void updateEditorCameraPosition(Camera3D *viewportCamera);
     void updateFoliagePosition(Vector3 position);
     void updateShaderOffsetPosition();
 
@@ -60,5 +59,6 @@ public:
     void set_definition(const Ref<FoliageDefinitionResource> &value);
 
     void updateAABB();
+    void updateEditorCameraPosition(Camera3D *viewportCamera);
 };
 #endif

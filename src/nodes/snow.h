@@ -64,6 +64,8 @@ public:
     float get_lodInitialCellWidth() const;
     void set_lodInitialCellWidth(const float value);
 
+    Clipmap *get_clipmap() const;
+
     void updateSnow();
     void addCompressedSnow(float x, float y);
 };

@@ -96,6 +96,8 @@ public:
     void set_lodInitialCellWidth(const float value);
     void set_customShader(const Ref<ShaderMaterial> &value);
 
+    Clipmap *get_clipmap() const;
+
     void updateWater();
     void addRippleEffect(float x, float y);
 };

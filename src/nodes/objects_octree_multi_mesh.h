@@ -7,6 +7,7 @@
 #include "../editor_resources/object_definition_resource.h"
 #include "../misc/thread_utils.h"
 #include "octree/point_octree.h"
+#include "objects_base.h"
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
@@ -62,8 +63,8 @@ public:
     void set_previousLodIndex(const int value);
 };
 
-class ObjectsOctreeMultiMesh : public Node3D {
-    GDCLASS(ObjectsOctreeMultiMesh, Node3D)
+class ObjectsOctreeMultiMesh : public ObjectsBase {
+    GDCLASS(ObjectsOctreeMultiMesh, ObjectsBase)
 
 private:
     const int DecimateFactor = 5;
@@ -101,15 +102,6 @@ private:
     Ref<Thread> _objectsThread;
     bool _initialized;
 
-    int _objectsIndex;
-    Ref<ObjectDefinitionResource> _definition;
-    Ref<ZonesResource> _terrainZones;
-    int _zonesSize;
-    int _resolution;
-    float _waterFactor;
-    bool _loadInThread;
-    int _defaultObjectFrequency;
-
     void initialize();
     void initializeSortedLODs();
     void initializeMeshesAndCollision();
@@ -136,15 +128,6 @@ public:
 
     void _ready() override;
     void _physics_process(double delta) override;
-
-    void set_objectsIndex(const int value);
-    void set_definition(const Ref<ObjectDefinitionResource> &value);
-    void set_terrainZones(const Ref<ZonesResource> &value);
-    void set_zonesSize(const int value);
-    void set_resolution(const int value);
-    void set_waterFactor(const float value);
-    void set_loadInThread(const bool value);
-    void set_defaultObjectFrequency(const int value);
 
     void updateMeshesFromTool();
     void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones);

@@ -39,6 +39,7 @@
 #include "nodes/foliage.h"
 #include "nodes/objects.h"
 #include "nodes/objects_octree_multi_mesh.h"
+#include "nodes/objects_base.h"
 #include "nodes/snow.h"
 #include "nodes/terrain.h"
 #include "nodes/water.h"
@@ -71,6 +72,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
     // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
     // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
+    GDREGISTER_INTERNAL_CLASS(ObjectsBase);
     GDREGISTER_INTERNAL_CLASS(Objects);
     GDREGISTER_INTERNAL_CLASS(ObjectsOctreeMultiMesh);
     GDREGISTER_INTERNAL_CLASS(PieMenu);

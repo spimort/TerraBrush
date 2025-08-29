@@ -13,22 +13,13 @@
 
 using namespace godot;
 
-class Objects : public Node3D, public ObjectsBase {
-    GDCLASS(Objects, Node3D)
+class Objects : public ObjectsBase {
+    GDCLASS(Objects, ObjectsBase)
 
 private:
     Ref<Texture2D> _defaultNoise;
     CancellationSource _objectsCreationCancellationTokenSource;
     Ref<Thread> _objectsThread;
-
-    int _objectsIndex;
-    Ref<ObjectDefinitionResource> _definition;
-    Ref<ZonesResource> _terrainZones;
-    int _zonesSize;
-    int _resolution;
-    float _waterFactor;
-    bool _loadInThread;
-    int _defaultObjectFrequency;
 
     void updateObjects();
     void updateObjectsAsync();
@@ -48,15 +39,6 @@ public:
     ~Objects();
 
     void _ready() override;
-
-    void set_objectsIndex(const int value);
-    void set_definition(const Ref<ObjectDefinitionResource> &value);
-    void set_terrainZones(const Ref<ZonesResource> &value);
-    void set_zonesSize(const int value);
-    void set_resolution(const int value);
-    void set_waterFactor(const float value);
-    void set_loadInThread(const bool value);
-    void set_defaultObjectFrequency(const int value);
 
     void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
     void updateMeshesFromTool() override;

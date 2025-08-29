@@ -132,6 +132,10 @@ void Snow::set_lodInitialCellWidth(const float value) {
     _lodInitialCellWidth = value;
 }
 
+Clipmap *Snow::get_clipmap() const {
+    return _clipmap;
+}
+
 void Snow::updateSnow() {
     if (_clipmap == nullptr || _snowDefinition.is_null()) {
         return;

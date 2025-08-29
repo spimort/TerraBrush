@@ -100,6 +100,8 @@ public:
     void set_showMetaInfo(const bool value);
     void set_metaInfoLayers(const TypedArray<Ref<MetaInfoLayerResource>> value);
 
+    Clipmap *get_clipmap() const;
+
     void buildTerrain();
     void terrainUpdated();
     void terrainWaterUpdated();

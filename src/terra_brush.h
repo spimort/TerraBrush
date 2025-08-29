@@ -85,12 +85,22 @@ private:
     // Zones
     Ref<ZonesResource> _terrainZones;
 
+    void loadTerrain();
+    void createFoliages();
+    void createWater();
+    void createSnow();
+    void createMetaInfo();
+    Ref<Image> getImageFromImageTexture(Ref<ImageTexture> texture);
+
 protected:
     static void _bind_methods();
 
 public:
     TerraBrush();
     ~TerraBrush();
+
+    void _ready() override;
+    PackedStringArray _get_configuration_warnings() const override;
 
     String get_dataPath() const;
     void set_dataPath(const String value);
@@ -179,5 +189,18 @@ public:
     Ref<ZonesResource> get_terrainZones() const;
     void set_terrainZones(const Ref<ZonesResource> &value);
 
+    void onCreateTerrain();
+    void onRemoveTerrain();
+    void onUpdateTerrainSettings();
+    void clearObjects();
+    void createSplatmaps(Ref<ZoneResource> zone);
+    void createObjects();
+    void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones);
+    void updateCameraPosition(Camera3D *viewportCamera);
+    void saveResources();
+    void addInteractionPoint(float x, float y);
+    // Ref<TerrainPositionInformation> getPositionInformation(float x, float y); TODO : GDExtension
+    void onLockTerrain();
+    void onUnlockTerrain();
 };
 #endif

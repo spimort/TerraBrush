@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
 
 using namespace godot;
 
@@ -68,5 +69,6 @@ public:
     void clearMesh();
     void createMesh();
     void updateAABB();
+    void updateEditorCameraPosition(Camera3D *viewportCamera);
 };
 #endif

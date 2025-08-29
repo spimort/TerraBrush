@@ -192,6 +192,10 @@ void Water::set_customShader(const Ref<ShaderMaterial> &value) {
     _customShader = value;
 }
 
+Clipmap *Water::get_clipmap() const {
+    return _clipmap;
+}
+
 void Water::updateWater() {
     if (_clipmap == nullptr) {
         return;

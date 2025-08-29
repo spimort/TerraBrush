@@ -76,38 +76,6 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
     }
 }
 
-void ObjectsOctreeMultiMesh::set_objectsIndex(const int value) {
-    _objectsIndex = value;
-}
-
-void ObjectsOctreeMultiMesh::set_definition(const Ref<ObjectDefinitionResource> &value) {
-    _definition = value;
-}
-
-void ObjectsOctreeMultiMesh::set_terrainZones(const Ref<ZonesResource> &value) {
-    _terrainZones = value;
-}
-
-void ObjectsOctreeMultiMesh::set_zonesSize(const int value) {
-    _zonesSize = value;
-}
-
-void ObjectsOctreeMultiMesh::set_resolution(const int value) {
-    _resolution = value;
-}
-
-void ObjectsOctreeMultiMesh::set_waterFactor(const float value) {
-    _waterFactor = value;
-}
-
-void ObjectsOctreeMultiMesh::set_loadInThread(const bool value) {
-    _loadInThread = value;
-}
-
-void ObjectsOctreeMultiMesh::set_defaultObjectFrequency(const int value) {
-    _defaultObjectFrequency = value;
-}
-
 void ObjectsOctreeMultiMesh::initialize() {
     initializeSortedLODs();
     initializeMeshesAndCollision();

@@ -43,38 +43,6 @@ void Objects::_ready() {
     updateObjects();
 }
 
-void Objects::set_objectsIndex(const int value) {
-    _objectsIndex = value;
-}
-
-void Objects::set_definition(const Ref<ObjectDefinitionResource> &value) {
-    _definition = value;
-}
-
-void Objects::set_terrainZones(const Ref<ZonesResource> &value) {
-    _terrainZones = value;
-}
-
-void Objects::set_zonesSize(const int value) {
-    _zonesSize = value;
-}
-
-void Objects::set_resolution(const int value) {
-    _resolution = value;
-}
-
-void Objects::set_waterFactor(const float value) {
-    _waterFactor = value;
-}
-
-void Objects::set_loadInThread(const bool value) {
-    _loadInThread = value;
-}
-
-void Objects::set_defaultObjectFrequency(const int value) {
-    _defaultObjectFrequency = value;
-}
-
 void Objects::updateObjects() {
     if (_loadInThread) {
         if (_objectsThread.is_valid()) {
