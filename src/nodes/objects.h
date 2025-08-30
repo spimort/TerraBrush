@@ -14,7 +14,7 @@
 using namespace godot;
 
 class Objects : public ObjectsBase {
-    GDCLASS(Objects, ObjectsBase)
+    GDCLASS(Objects, ObjectsBase);
 
 private:
     Ref<Texture2D> _defaultNoise;

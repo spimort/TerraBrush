@@ -15,7 +15,7 @@
 using namespace godot;
 
 class Foliage : public Node3D {
-    GDCLASS(Foliage, Node3D)
+    GDCLASS(Foliage, Node3D);
 
 private:
     Ref<ShaderMaterial> _foliageShader;

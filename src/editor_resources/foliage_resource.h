@@ -8,7 +8,7 @@
 using namespace godot;
 
 class FoliageResource : public Resource {
-    GDCLASS(FoliageResource, Resource)
+    GDCLASS(FoliageResource, Resource);
 
 private:
     Ref<FoliageDefinitionResource> _definition;

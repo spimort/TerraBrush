@@ -20,7 +20,7 @@
 using namespace godot;
 
 class TerraBrush : public Node3D {
-    GDCLASS(TerraBrush, Node3D)
+    GDCLASS(TerraBrush, Node3D);
 
 private:
     const int HeightMapFactor = 1;

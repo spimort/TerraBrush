@@ -9,7 +9,7 @@
 using namespace godot;
 
 class DockPreviewButton : public TextureButton {
-    GDCLASS(DockPreviewButton, TextureButton)
+    GDCLASS(DockPreviewButton, TextureButton);
 
 public:
     enum IconType {

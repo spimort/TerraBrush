@@ -12,7 +12,7 @@
 using namespace godot;
 
 class FoliageDefinitionResource : public Resource {
-    GDCLASS(FoliageDefinitionResource, Resource)
+    GDCLASS(FoliageDefinitionResource, Resource);
 
 private:
     FoliageStrategy _strategy;

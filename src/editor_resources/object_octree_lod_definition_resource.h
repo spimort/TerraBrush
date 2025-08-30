@@ -6,7 +6,7 @@
 using namespace godot;
 
 class ObjectOctreeLODDefinitionResource : public Resource {
-    GDCLASS(ObjectOctreeLODDefinitionResource, Resource)
+    GDCLASS(ObjectOctreeLODDefinitionResource, Resource);
 
 private:
     float _maxDistance;

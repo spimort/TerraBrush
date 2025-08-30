@@ -23,7 +23,7 @@
 using namespace godot;
 
 class ObjectsOctreeNodeInfo : public RefCounted {
-    GDCLASS(ObjectsOctreeNodeInfo, RefCounted)
+    GDCLASS(ObjectsOctreeNodeInfo, RefCounted);
 
 private:
     Vector2i _imagePosition;
@@ -64,7 +64,7 @@ public:
 };
 
 class ObjectsOctreeMultiMesh : public ObjectsBase {
-    GDCLASS(ObjectsOctreeMultiMesh, ObjectsBase)
+    GDCLASS(ObjectsOctreeMultiMesh, ObjectsBase);
 
 private:
     const int DecimateFactor = 5;

@@ -12,7 +12,7 @@
 using namespace godot;
 
 class Snow : public Node3D {
-    GDCLASS(Snow, Node3D)
+    GDCLASS(Snow, Node3D);
 
 private:
     const float DeCompressSpeed = 0.5f;

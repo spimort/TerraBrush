@@ -8,7 +8,7 @@
 using namespace godot;
 
 class TextureSetsResource : public Resource {
-    GDCLASS(TextureSetsResource, Resource)
+    GDCLASS(TextureSetsResource, Resource);
 
 private:
     TypedArray<Ref<TextureSetResource>> _textureSets;

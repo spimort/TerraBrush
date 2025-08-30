@@ -6,7 +6,7 @@
 using namespace godot;
 
 class MetaInfoLayerResource : public Resource {
-    GDCLASS(MetaInfoLayerResource, Resource)
+    GDCLASS(MetaInfoLayerResource, Resource);
 
 private:
     String _name;

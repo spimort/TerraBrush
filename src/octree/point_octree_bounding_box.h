@@ -18,7 +18,7 @@
 using namespace godot;
 
 class PointOctreeBoundingBox : public RefCounted {
-    GDCLASS(PointOctreeBoundingBox, RefCounted)
+    GDCLASS(PointOctreeBoundingBox, RefCounted);
 
 private:
         /// <summary>

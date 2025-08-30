@@ -9,7 +9,7 @@
 using namespace godot;
 
 class ObjectOctreeLODMeshesDefinitionResource : public Resource {
-    GDCLASS(ObjectOctreeLODMeshesDefinitionResource, Resource)
+    GDCLASS(ObjectOctreeLODMeshesDefinitionResource, Resource);
 
 private:
     TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>> _meshes;

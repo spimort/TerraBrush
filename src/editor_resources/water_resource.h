@@ -8,7 +8,7 @@
 using namespace godot;
 
 class WaterResource : public Resource {
-    GDCLASS(WaterResource, Resource)
+    GDCLASS(WaterResource, Resource);
 
 private:
     float _waterFactor;

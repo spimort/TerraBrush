@@ -8,7 +8,7 @@
 using namespace godot;
 
 class BrushDecal : public Node3D {
-    GDCLASS(BrushDecal, Node3D)
+    GDCLASS(BrushDecal, Node3D);
 
 private:
     Decal *_decal;

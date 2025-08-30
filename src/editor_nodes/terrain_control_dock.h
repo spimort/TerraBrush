@@ -13,7 +13,7 @@
 using namespace godot;
 
 class TerrainControlDock : public Control {
-    GDCLASS(TerrainControlDock, Control)
+    GDCLASS(TerrainControlDock, Control);
 
 private:
     int _selectedBrushIndex;

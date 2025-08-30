@@ -11,7 +11,7 @@
 using namespace godot;
 
 class Clipmap : public Node3D {
-    GDCLASS(Clipmap, Node3D)
+    GDCLASS(Clipmap, Node3D);
 
 private:
     Ref<ShaderMaterial> _clipmapShader;

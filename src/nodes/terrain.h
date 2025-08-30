@@ -16,7 +16,7 @@
 using namespace godot;
 
 class Terrain : public Node3D {
-    GDCLASS(Terrain, Node3D)
+    GDCLASS(Terrain, Node3D);
 
 private:
     static constexpr const char* HeightMapTextureKey = "HeightMapTexture";

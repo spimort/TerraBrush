@@ -26,7 +26,7 @@ struct PixelLockedInfo {
 };
 
 class ImageZoneInfo : public RefCounted {
-    GDCLASS(ImageZoneInfo, RefCounted)
+    GDCLASS(ImageZoneInfo, RefCounted);
 
 private:
     Ref<Image> _image;
@@ -55,7 +55,7 @@ public:
 };
 
 class ToolBase : public RefCounted {
-    GDCLASS(ToolBase, RefCounted)
+    GDCLASS(ToolBase, RefCounted);
 
 private:
     TerraBrush *_terraBrush;

@@ -9,7 +9,7 @@
 using namespace godot;
 
 class BrushNumericSelector : public Control {
-    GDCLASS(BrushNumericSelector, Control)
+    GDCLASS(BrushNumericSelector, Control);
 
 private:
     const int BackgroundMargin = 10;

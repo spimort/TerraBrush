@@ -9,7 +9,7 @@
 using namespace godot;
 
 class KeybindManager : public RefCounted {
-    GDCLASS(KeybindManager, RefCounted)
+    GDCLASS(KeybindManager, RefCounted);
 
 private:
     static constexpr const char* SettingsGroup = "terrabrush";

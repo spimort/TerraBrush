@@ -11,7 +11,7 @@
 using namespace godot;
 
 class ObjectsBase: public Node3D {
-    GDCLASS(ObjectsBase, Node3D)
+    GDCLASS(ObjectsBase, Node3D);
 
 protected:
     static void _bind_methods();

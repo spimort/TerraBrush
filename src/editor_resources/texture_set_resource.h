@@ -7,7 +7,7 @@
 using namespace godot;
 
 class TextureSetResource : public Resource {
-    GDCLASS(TextureSetResource, Resource)
+    GDCLASS(TextureSetResource, Resource);
 
 private:
     String _name;

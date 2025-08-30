@@ -7,7 +7,7 @@
 using namespace godot;
 
 class ZoneResource : public Resource {
-    GDCLASS(ZoneResource, Resource)
+    GDCLASS(ZoneResource, Resource);
 
 private:
     Ref<ImageTexture> _lockTexture;

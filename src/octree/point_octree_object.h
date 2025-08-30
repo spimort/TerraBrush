@@ -19,7 +19,7 @@ using namespace godot;
 /// An object in the octree
 /// </summary>
 class PointOctreeObject : public RefCounted {
-    GDCLASS(PointOctreeObject, RefCounted)
+    GDCLASS(PointOctreeObject, RefCounted);
 
 private:
     /// <summary>

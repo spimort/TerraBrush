@@ -12,7 +12,7 @@
 using namespace godot;
 
 class ObjectDefinitionResource : public Resource {
-    GDCLASS(ObjectDefinitionResource, Resource)
+    GDCLASS(ObjectDefinitionResource, Resource);
 
 private:
     ObjectStrategy _strategy;

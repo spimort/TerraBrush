@@ -12,7 +12,7 @@
 using namespace godot;
 
 class PieMenu : public Control {
-    GDCLASS(PieMenu, Control)
+    GDCLASS(PieMenu, Control);
 
 private:
     float _angleOffset;

@@ -1,6 +1,7 @@
 #include "entry_point.h"
 
 #include "terra_brush.h"
+#include "terra_brush_plugin.h"
 
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
@@ -50,78 +51,86 @@
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/editor_plugin_registration.hpp>
 
 using namespace godot;
 
 void initialize_terrabrush_module(ModuleInitializationLevel level) {
-    if (level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+    if (level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+        // Octree stuff
+        GDREGISTER_INTERNAL_CLASS(PointOctree);
+        GDREGISTER_INTERNAL_CLASS(PointOctreeBoundingBox);
+        GDREGISTER_INTERNAL_CLASS(PointOctreeNode);
+        GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
+        GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
+        GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
+
+        // Internal classes
+        GDREGISTER_INTERNAL_CLASS(ZoneInfo);
+
+        // Internal nodes
+        GDREGISTER_INTERNAL_CLASS(BrushDecal);
+        GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
+        GDREGISTER_INTERNAL_CLASS(Clipmap);
+        GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
+        GDREGISTER_INTERNAL_CLASS(Foliage);
+        // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
+        // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
+        // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
+        GDREGISTER_INTERNAL_CLASS(ObjectsBase);
+        GDREGISTER_INTERNAL_CLASS(Objects);
+        GDREGISTER_INTERNAL_CLASS(ObjectsOctreeMultiMesh);
+        GDREGISTER_INTERNAL_CLASS(PieMenu);
+        GDREGISTER_INTERNAL_CLASS(Snow);
+        GDREGISTER_INTERNAL_CLASS(Terrain);
+        GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
+        GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);
+        GDREGISTER_INTERNAL_CLASS(Water);
+        GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
+        GDREGISTER_INTERNAL_CLASS(ToolPreview);
+        // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
+        // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
+        GDREGISTER_INTERNAL_CLASS(ToolInfo);
+        GDREGISTER_INTERNAL_CLASS(KeybindManager);
+
+        // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
+        // GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
+
+        // Resources
+        GDREGISTER_CLASS(FoliageResource);
+        GDREGISTER_CLASS(FoliageDefinitionResource);
+        GDREGISTER_CLASS(MetaInfoLayerResource);
+        GDREGISTER_CLASS(ObjectResource);
+        GDREGISTER_CLASS(ObjectDefinitionResource);
+        GDREGISTER_CLASS(ObjectOctreeLODDefinitionResource);
+        GDREGISTER_CLASS(ObjectOctreeLODMeshDefinitionResource);
+        GDREGISTER_CLASS(ObjectOctreeLODMeshesDefinitionResource);
+        GDREGISTER_CLASS(SnowResource);
+        GDREGISTER_CLASS(TextureSetResource);
+        GDREGISTER_CLASS(TextureSetsResource);
+        GDREGISTER_CLASS(WaterResource);
+        GDREGISTER_CLASS(ZoneResource);
+        GDREGISTER_CLASS(ZonesResource);
+
+        // GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
+        // Public nodes
+        GDREGISTER_CLASS(TerraBrush);
+
+        print_line("Init TerraBrush scene plugin");
         return;
     }
 
-    // Octree stuff
-    GDREGISTER_INTERNAL_CLASS(PointOctree);
-    GDREGISTER_INTERNAL_CLASS(PointOctreeBoundingBox);
-    GDREGISTER_INTERNAL_CLASS(PointOctreeNode);
-    GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
-    GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
-    GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
+    if (level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+        // Editor tools
+        GDREGISTER_INTERNAL_CLASS(ImageZoneInfo);
+        GDREGISTER_INTERNAL_CLASS(ToolBase);
 
-    // Internal classes
-    GDREGISTER_INTERNAL_CLASS(ZoneInfo);
+        GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
+        EditorPlugins::add_by_type<TerraBrushPlugin>();
 
-    // Internal nodes
-    GDREGISTER_INTERNAL_CLASS(BrushDecal);
-    GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
-    GDREGISTER_INTERNAL_CLASS(Clipmap);
-    GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
-    GDREGISTER_INTERNAL_CLASS(Foliage);
-    // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
-    // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
-    // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
-    GDREGISTER_INTERNAL_CLASS(ObjectsBase);
-    GDREGISTER_INTERNAL_CLASS(Objects);
-    GDREGISTER_INTERNAL_CLASS(ObjectsOctreeMultiMesh);
-    GDREGISTER_INTERNAL_CLASS(PieMenu);
-    GDREGISTER_INTERNAL_CLASS(Snow);
-    GDREGISTER_INTERNAL_CLASS(Terrain);
-    GDREGISTER_INTERNAL_CLASS(TerrainControlDock);
-    GDREGISTER_INTERNAL_CLASS(ToolsPieMenu);
-    GDREGISTER_INTERNAL_CLASS(Water);
-    GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
-    GDREGISTER_INTERNAL_CLASS(ToolPreview);
-    // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
-    // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
-    GDREGISTER_INTERNAL_CLASS(ToolInfo);
-    GDREGISTER_INTERNAL_CLASS(KeybindManager);
-
-    // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
-    // GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
-
-    // Resources
-    GDREGISTER_CLASS(FoliageResource);
-    GDREGISTER_CLASS(FoliageDefinitionResource);
-    GDREGISTER_CLASS(MetaInfoLayerResource);
-    GDREGISTER_CLASS(ObjectResource);
-    GDREGISTER_CLASS(ObjectDefinitionResource);
-    GDREGISTER_CLASS(ObjectOctreeLODDefinitionResource);
-    GDREGISTER_CLASS(ObjectOctreeLODMeshDefinitionResource);
-    GDREGISTER_CLASS(ObjectOctreeLODMeshesDefinitionResource);
-    GDREGISTER_CLASS(SnowResource);
-    GDREGISTER_CLASS(TextureSetResource);
-    GDREGISTER_CLASS(TextureSetsResource);
-    GDREGISTER_CLASS(WaterResource);
-    GDREGISTER_CLASS(ZoneResource);
-    GDREGISTER_CLASS(ZonesResource);
-
-    // Editor tools
-    GDREGISTER_INTERNAL_CLASS(ImageZoneInfo);
-    GDREGISTER_INTERNAL_CLASS(ToolBase);
-
-    // GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
-    // Public nodes
-    GDREGISTER_CLASS(TerraBrush);
-
-    print_line("Init TerraBrush");
+        print_line("Init TerraBrush editor plugin");
+        return;
+    }
 }
 
 void uninitialize_terrabrush_module(ModuleInitializationLevel level) {

@@ -8,7 +8,7 @@
 using namespace godot;
 
 class CustomContentPieMenu : public Control {
-    GDCLASS(CustomContentPieMenu, Control)
+    GDCLASS(CustomContentPieMenu, Control);
 
 private:
     PieMenu *_pieMenu;

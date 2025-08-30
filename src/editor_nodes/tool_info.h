@@ -9,7 +9,7 @@
 using namespace godot;
 
 class ToolInfo : public Control {
-    GDCLASS(ToolInfo, Control)
+    GDCLASS(ToolInfo, Control);
 
 private:
     PanelContainer *_panelContainer;

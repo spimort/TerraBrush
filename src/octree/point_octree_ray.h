@@ -16,7 +16,7 @@
 using namespace godot;
 
 class PointOctreeRay : public RefCounted {
-    GDCLASS(PointOctreeRay, RefCounted)
+    GDCLASS(PointOctreeRay, RefCounted);
 
 private:
     /// <summary>

@@ -10,7 +10,7 @@
 using namespace godot;
 
 class ToolsPieMenu : public Control {
-    GDCLASS(ToolsPieMenu, Control)
+    GDCLASS(ToolsPieMenu, Control);
 
 private:
     PieMenu *_pieMenu;

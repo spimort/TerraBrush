@@ -12,7 +12,7 @@
 using namespace godot;
 
 class Water : public Node3D {
-    GDCLASS(Water, Node3D)
+    GDCLASS(Water, Node3D);
 
 private:
     const float RippleResetSpeed = 0.9f;

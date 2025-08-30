@@ -8,7 +8,7 @@
 using namespace godot;
 
 class SnowResource : public Resource {
-    GDCLASS(SnowResource, Resource)
+    GDCLASS(SnowResource, Resource);
 
 private:
     float _snowFactor;

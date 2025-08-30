@@ -11,7 +11,7 @@
 using namespace godot;
 
 class ZonesResource : public Resource {
-    GDCLASS(ZonesResource, Resource)
+    GDCLASS(ZonesResource, Resource);
 
 private:
     HashSet<Ref<ImageTexture>> _dirtyImageTextures;

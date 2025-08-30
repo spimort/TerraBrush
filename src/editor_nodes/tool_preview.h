@@ -8,7 +8,7 @@
 using namespace godot;
 
 class ToolPreview : public DockPreviewButton {
-    GDCLASS(ToolPreview, DockPreviewButton)
+    GDCLASS(ToolPreview, DockPreviewButton);
 
 private:
     TerrainToolType _toolType;

@@ -8,7 +8,7 @@
 using namespace godot;
 
 class ObjectResource : public Resource {
-    GDCLASS(ObjectResource, Resource)
+    GDCLASS(ObjectResource, Resource);
 
 private:
     Ref<ObjectDefinitionResource> _definition;
