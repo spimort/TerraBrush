@@ -252,12 +252,12 @@ void Water::updateWater() {
 }
 
 void Water::addRippleEffect(float x, float y) {
-    ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(x, y, _zonesSize, _resolution);
+    Ref<ZoneInfo> zoneInfo = ZoneUtils::getPixelToZoneInfo(x, y, _zonesSize, _resolution);
     Ref<ZoneResource> zone = _terrainZones->getZoneForZoneInfo(zoneInfo);
 
     if (!zone.is_null()) {
         Ref<Image> image = getImageForZone(zone);
-        Vector2i pixelPosition = Vector2i(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+        Vector2i pixelPosition = Vector2i(zoneInfo->get_imagePosition().x, zoneInfo->get_imagePosition().y);
         Color currentPixel = image->get_pixel(pixelPosition.x, pixelPosition.y);
 
         if (currentPixel.r > 0) {

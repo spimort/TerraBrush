@@ -27,7 +27,10 @@
 #include "editor_resources/zone_resource.h"
 #include "editor_resources/zones_resource.h"
 
+#include "editor_tools/tool_base.h"
+
 #include "misc/keybind_manager.h"
+#include "misc/zone_info.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -62,6 +65,9 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
     GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
     GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
+
+    // Internal classes
+    GDREGISTER_INTERNAL_CLASS(ZoneInfo);
 
     // Internal nodes
     GDREGISTER_INTERNAL_CLASS(BrushDecal);
@@ -106,6 +112,10 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
     GDREGISTER_CLASS(WaterResource);
     GDREGISTER_CLASS(ZoneResource);
     GDREGISTER_CLASS(ZonesResource);
+
+    // Editor tools
+    GDREGISTER_INTERNAL_CLASS(ImageZoneInfo);
+    GDREGISTER_INTERNAL_CLASS(ToolBase);
 
     // GodotRegistry.RegisterInternalClass<TerraBrushTool>(TerraBrushTool.BindMethods);
     // Public nodes

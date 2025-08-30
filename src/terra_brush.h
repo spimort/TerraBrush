@@ -189,6 +189,8 @@ public:
     Ref<ZonesResource> get_terrainZones() const;
     void set_terrainZones(const Ref<ZonesResource> &value);
 
+    Terrain *get_terrain();
+
     void onCreateTerrain();
     void onRemoveTerrain();
     void onUpdateTerrainSettings();

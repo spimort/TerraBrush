@@ -58,4 +58,11 @@ enum AlphaChannelUsage {
     ALPHACHANNELUSAGE_HEIGHT = 2
 };
 VARIANT_ENUM_CAST(AlphaChannelUsage);
+
+enum LockedAxis {
+    LOCKEDAXIS_NONE = 0,
+    LOCKEDAXIS_X = 1,
+    LOCKEDAXIS_Z = 2
+};
+VARIANT_ENUM_CAST(LockedAxis);
 #endif
