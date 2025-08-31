@@ -27,6 +27,15 @@ void TerrainControlDock::_bind_methods() {
     ClassDB::bind_method(D_METHOD("setSelectedFoliageIndex", "index"), &TerrainControlDock::setSelectedFoliageIndex);
     ClassDB::bind_method(D_METHOD("setSelectedObjectIndex", "index"), &TerrainControlDock::setSelectedObjectIndex);
     ClassDB::bind_method(D_METHOD("setSelectedMetaInfoIndex", "index"), &TerrainControlDock::setSelectedMetaInfoIndex);
+
+    ADD_SIGNAL(MethodInfo("toolTypeSelected", PropertyInfo(Variant::INT, "toolType")));
+    ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::OBJECT, "image", PROPERTY_HINT_RESOURCE_TYPE, "Image")));
+    ADD_SIGNAL(MethodInfo("brushSizeChanged", PropertyInfo(Variant::INT, "value")));
+    ADD_SIGNAL(MethodInfo("brushStrengthChanged", PropertyInfo(Variant::FLOAT, "value")));
+    ADD_SIGNAL(MethodInfo("textureSelected", PropertyInfo(Variant::INT, "index")));
+    ADD_SIGNAL(MethodInfo("foliageSelected", PropertyInfo(Variant::INT, "index")));
+    ADD_SIGNAL(MethodInfo("objectSelected", PropertyInfo(Variant::INT, "index")));
+    ADD_SIGNAL(MethodInfo("metaInfoSelected", PropertyInfo(Variant::INT, "index")));
 }
 
 TerrainControlDock::TerrainControlDock() {
@@ -45,16 +54,6 @@ void TerrainControlDock::_ready() {
     buildLayout();
 
     if (_terraBrush != nullptr) {
-    //     TODO : GDExtension
-    //     _brushSizeSlider.Value = TerraBrush.BrushSize;
-    //     _brushStrengthSlider.Value = TerraBrush.BrushStrength;
-    //     _selectedTool = TerraBrush.TerrainTool;
-    //     _selectedBrushIndex = TerraBrush.SelectedBrushIndex.GetValueOrDefault();
-    //     _selectedTextureIndex = TerraBrush.TextureSetIndex;
-    //     _selectedFoliageIndex = TerraBrush.FoliageIndex;
-    //     _selectedObjectIndex = TerraBrush.ObjectIndex;
-    //     _selectedMetaInfoIndex = TerraBrush.MetaInfoIndex;
-
         initializeBrushes();
         initializeToolPreview();
         initializeTextures();
@@ -146,9 +145,10 @@ void TerrainControlDock::updateSelectedBrush() {
     DockPreviewButton *selectedDockButton = Object::cast_to<DockPreviewButton>(selectedNode);
 
     Ref<Image> brushImage = selectedDockButton->get_buttonImage()->get_image();
-    // TODO : GDExtension
-    // _terraBrush?.SetCurrentBrush(_selectedBrushIndex, brushImage);
-    // _brushDecal?.SetBrushImage(brushImage);
+    emit_signal("brushSelected", _selectedBrushIndex, brushImage);
+    if (_brushDecal != nullptr) {
+        _brushDecal->setBrushImage(brushImage);
+    }
 }
 
 void TerrainControlDock::updateSelectedTerrainTool() {
@@ -167,8 +167,7 @@ void TerrainControlDock::upateSelectedTextureSet() {
         previewButton->set_pressed(i == _selectedTextureIndex);
     }
 
-    // TODO : GDExtension
-    // _terraBrush->set_textureSet(_selectedTextureIndex);
+    emit_signal("textureSelected", _selectedTextureIndex);
 }
 
 void TerrainControlDock::updateSelectedFoliage() {
@@ -179,8 +178,7 @@ void TerrainControlDock::updateSelectedFoliage() {
         previewButton->set_pressed(i == _selectedFoliageIndex);
     }
 
-    // TODO : GDExtension
-    // _terraBrush->set_foliage(_selectedFoliageIndex);
+    emit_signal("foliageSelected", _selectedFoliageIndex);
 }
 
 void TerrainControlDock::updateSelectedObject() {
@@ -188,11 +186,10 @@ void TerrainControlDock::updateSelectedObject() {
         Node *childNode = _objectsContainer->get_child(i);
         DockPreviewButton *previewButton = Object::cast_to<DockPreviewButton>(childNode);
 
-        previewButton->set_pressed(i == _selectedFoliageIndex);
+        previewButton->set_pressed(i == _selectedObjectIndex);
     }
 
-    // TODO : GDExtension
-    // _terraBrush->set_object(_selectedObjectIndex);
+    emit_signal("objectSelected", _selectedObjectIndex);
 }
 
 void TerrainControlDock::updateSelectedMetaInfo() {
@@ -203,8 +200,7 @@ void TerrainControlDock::updateSelectedMetaInfo() {
         previewButton->set_pressed(i == _selectedMetaInfoIndex);
     }
 
-    // TODO : GDExtension
-    // _terraBrush->set_metaInfo(_selectedMetaInfoIndex);
+    emit_signal("metaInfoSelected", _selectedMetaInfoIndex);
 }
 
 void TerrainControlDock::onBrushSizeValueChange(const float value) {
@@ -217,15 +213,15 @@ void TerrainControlDock::onBrushStrengthValueChange(const float value) {
 
 void TerrainControlDock::setBrushSize(int value) {
     _brushSizeSlider->set_value(value);
-    // TODO : GDExtension
-    // _terraBrush->setBrushSize(value);
-    // _brushDecal->setSize(value);
+    emit_signal("brushSizeChanged", value);
+    if (_brushDecal != nullptr) {
+        _brushDecal->setSize(value);
+    }
 }
 
 void TerrainControlDock::setBrushStrength(float value) {
     _brushStrengthSlider->set_value(value);
-    // TODO : GDExtension
-    // _terraBrush->setBrushStrength(value);
+    emit_signal("brushStrengthChanged", value);
 }
 
 void TerrainControlDock::setSelectedBrushIndex(const int index) {
@@ -237,8 +233,7 @@ void TerrainControlDock::setSelectedBrushIndex(const int index) {
 void TerrainControlDock::selectToolType(const TerrainToolType toolType) {
     _selectedTool = toolType;
     updateSelectedTerrainTool();
-    // TODO : GDExtension
-    // _terraBrush->set_terrainTool(_selectedTool);
+    emit_signal("toolTypeSelected", toolType);
 }
 
 void TerrainControlDock::setSelectedTextureIndex(const int index) {
@@ -302,8 +297,7 @@ void TerrainControlDock::setShiftPressed(bool pressed) {
         _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
     }
 
-    // TODO : GDExtension
-    // _terraBrush->set_terrainTool(_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool);
+    emit_signal("toolTypeSelected", _temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool);
     updateSelectedTerrainTool();
 }
 

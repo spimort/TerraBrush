@@ -44,6 +44,27 @@ TerraBrushPlugin::TerraBrushPlugin() {
     _updateTime = 0;
     _autoAddZones = false;
     _preventInitialDo = false;
+    _currentTool = Ref<ToolBase>(nullptr);
+    _currentToolType = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
+    _brushImage = Ref<Image>(nullptr);
+    _brushSize = 100;
+    _brushStrength = 0.1;
+    _brushIndex = 0;
+    _textureIndex = -1;
+    _foliageIndex = -1;
+    _objectIndex = -1;
+    _metaInfoLayerIndex = -1;
+
+    _terrainDockContainer = nullptr;
+    _terrainControlDock = nullptr;
+    _brushDecal = nullptr;
+    _currentTerraBrushNode = nullptr;
+    _toolInfo = nullptr;
+    _undoRedo = nullptr;
+    _editorViewportsContainer = nullptr;
+    _overlaySelector = nullptr;
+    _updateTerrainSettingsButton = nullptr;
+    _autoAddZonesCheckbox = nullptr;
 }
 
 TerraBrushPlugin::~TerraBrushPlugin() {}
@@ -436,6 +457,24 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->set_editorResourcePreview(EditorInterface::get_singleton()->get_resource_previewer());
     _terrainDockContainer->add_child(_terrainControlDock);
 
+    _terrainControlDock->setBrushSize(_brushSize);
+    _terrainControlDock->setBrushStrength(_brushStrength);
+    _terrainControlDock->setSelectedBrushIndex(_brushIndex);
+    _terrainControlDock->selectToolType(_currentToolType);
+    _terrainControlDock->setSelectedTextureIndex(_textureIndex);
+    _terrainControlDock->setSelectedFoliageIndex(_foliageIndex);
+    _terrainControlDock->setSelectedObjectIndex(_objectIndex);
+    _terrainControlDock->setSelectedMetaInfoIndex(_metaInfoLayerIndex);
+
+    _terrainControlDock->connect("toolTypeSelected", Callable(this, "onDockToolTypeSelected"));
+    _terrainControlDock->connect("brushSelected", Callable(this, "onDockBrushSelected"));
+    _terrainControlDock->connect("brushSizeChanged", Callable(this, "onDockBrushSizeChanged"));
+    _terrainControlDock->connect("brushStrengthChanged", Callable(this, "onDockBrushStrengthChanged"));
+    _terrainControlDock->connect("textureSelected", Callable(this, "onDockTextureSelected"));
+    _terrainControlDock->connect("foliageSelected", Callable(this, "onDockFoliageSelected"));
+    _terrainControlDock->connect("objectSelected", Callable(this, "onDockObjectSelected"));
+    _terrainControlDock->connect("metaInfoSelected", Callable(this, "onDockMetaInfoSelected"));
+
     _updateTerrainSettingsButton = memnew(Button);
     _updateTerrainSettingsButton->set_text("Update terrain");
     _updateTerrainSettingsButton->connect("pressed", Callable(this, "updateTerrainSettings"));
@@ -671,4 +710,37 @@ void TerraBrushPlugin::onToolSelected(const TerrainToolType value) {
     _terrainControlDock->selectToolType(value);
 
     hideOverlaySelector();
+}
+
+void TerraBrushPlugin::onDockToolTypeSelected(const TerrainToolType toolType) {
+    _currentToolType = toolType;
+}
+
+void TerraBrushPlugin::onDockBrushSelected(const int index, const Ref<Image> &image) {
+    _brushIndex = index;
+    _brushImage = image;
+}
+
+void TerraBrushPlugin::onDockBrushSizeChanged(const int value) {
+    _brushSize = value;
+}
+
+void TerraBrushPlugin::onDockBrushStrengthChanged(const float value) {
+    _brushStrength = value;
+}
+
+void TerraBrushPlugin::onDockTextureSelected(const int index) {
+    _textureIndex = index;
+}
+
+void TerraBrushPlugin::onDockFoliageSelected(const int index) {
+    _foliageIndex = index;
+}
+
+void TerraBrushPlugin::onDockObjectSelected(const int index) {
+    _objectIndex = index;
+}
+
+void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
+    _metaInfoLayerIndex = index;
 }

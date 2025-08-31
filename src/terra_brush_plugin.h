@@ -40,7 +40,12 @@ private:
     TerrainToolType _currentToolType;
     Ref<Image> _brushImage;
     int _brushSize;
-    int _brushStrength;
+    float _brushStrength;
+    int _brushIndex;
+    int _textureIndex;
+    int _foliageIndex;
+    int _objectIndex;
+    int _metaInfoLayerIndex;
     bool _isMousePressed;
     Vector3 _mouseHitPosition;
     float _updateTime;
@@ -72,6 +77,14 @@ private:
     void onBrushSizeSelected(const int value);
     void onBrushStrengthSelected(const int value);
     void onToolSelected(const TerrainToolType value);
+    void onDockToolTypeSelected(const TerrainToolType toolType);
+    void onDockBrushSelected(const int index, const Ref<Image> &image);
+    void onDockBrushSizeChanged(const int value);
+    void onDockBrushStrengthChanged(const float value);
+    void onDockTextureSelected(const int index);
+    void onDockFoliageSelected(const int index);
+    void onDockObjectSelected(const int index);
+    void onDockMetaInfoSelected(const int index);
 
 protected:
     static void _bind_methods();
