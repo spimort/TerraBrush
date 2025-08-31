@@ -24,12 +24,12 @@ private:
         /// <summary>
         /// Gets or sets the center of the bounding box.
         /// </summary>
-        Vector3 _center;
+        Vector3 _center = Vector3();
 
         /// <summary>
         /// Gets or sets the extents of the bounding box. This is always half of the <see cref="Size"/>.
         /// </summary>
-        Vector3 _extents;
+        Vector3 _extents = Vector3();
 
 protected:
     static void _bind_methods();

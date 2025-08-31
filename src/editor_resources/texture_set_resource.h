@@ -10,13 +10,13 @@ class TextureSetResource : public Resource {
     GDCLASS(TextureSetResource, Resource);
 
 private:
-    String _name;
-    Ref<Texture2D> _albedoTexture;
-    Ref<Texture2D> _normalTexture;
-    Ref<Texture2D> _roughnessTexture;
-    Ref<Texture2D> _heightTexture;
-    int _textureDetail;
-    bool _triplanar;
+    String _name = "";
+    Ref<Texture2D> _albedoTexture = nullptr;
+    Ref<Texture2D> _normalTexture = nullptr;
+    Ref<Texture2D> _roughnessTexture = nullptr;
+    Ref<Texture2D> _heightTexture = nullptr;
+    int _textureDetail = 0;
+    bool _triplanar = false;
 
 protected:
     static void _bind_methods();

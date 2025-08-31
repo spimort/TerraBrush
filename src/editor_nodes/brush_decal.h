@@ -11,7 +11,7 @@ class BrushDecal : public Node3D {
     GDCLASS(BrushDecal, Node3D);
 
 private:
-    Decal *_decal;
+    Decal *_decal = nullptr;
 
 protected:
     static void _bind_methods();

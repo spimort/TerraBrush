@@ -12,9 +12,9 @@ class ToolInfo : public Control {
     GDCLASS(ToolInfo, Control);
 
 private:
-    PanelContainer *_panelContainer;
-    Label *_label;
-    Ref<Tween> _tween;
+    PanelContainer *_panelContainer = nullptr;
+    Label *_label = nullptr;
+    Ref<Tween> _tween = nullptr;
 
 protected:
     static void _bind_methods();

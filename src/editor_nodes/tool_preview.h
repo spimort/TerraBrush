@@ -11,7 +11,7 @@ class ToolPreview : public DockPreviewButton {
     GDCLASS(ToolPreview, DockPreviewButton);
 
 private:
-    TerrainToolType _toolType;
+    TerrainToolType _toolType = TerrainToolType::TERRAINTOOLTYPE_NONE;
 
 protected:
     static void _bind_methods();

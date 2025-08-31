@@ -19,21 +19,21 @@ public:
     };
 
 private:
-    Color _normalColor;
-    Color _hoverColor;
-    Color _pressedColor;
-    MarginContainer *_marginContainer;
-    TextureRect *_textureRect;
-    Label *_label;
-    Ref<Texture2D> _textureSquare;
-    Ref<Texture2D> _textureCircle;
-    Ref<Texture2D> _textureCircleWithSign;
+    Color _normalColor = Color();
+    Color _hoverColor = Color();
+    Color _pressedColor = Color();
+    MarginContainer *_marginContainer = nullptr;
+    TextureRect *_textureRect = nullptr;
+    Label *_label = nullptr;
+    Ref<Texture2D> _textureSquare = nullptr;
+    Ref<Texture2D> _textureCircle = nullptr;
+    Ref<Texture2D> _textureCircleWithSign = nullptr;
 
-    Ref<Texture2D> _buttonImage;
-    IconType _iconType;
-    int _margin;
-    String _text;
-    Callable _onSelect;
+    Ref<Texture2D> _buttonImage = nullptr;
+    IconType _iconType = IconType::Square;
+    int _margin = 0;
+    String _text = "";
+    Callable _onSelect = Callable();
 
     void calculateTextures();
     void setTextureColor(DrawMode drawMode);

@@ -2,11 +2,11 @@
 #define THREAD_UTILS_H
 
 struct CancellationToken {
-    bool isCancellationRequested;
+    bool isCancellationRequested = false;
 };
 
 struct CancellationSource {
-    CancellationToken token;
+    CancellationToken token = CancellationToken();
 
     CancellationSource() {
         token = CancellationToken();

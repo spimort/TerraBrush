@@ -14,15 +14,15 @@ class Clipmap : public Node3D {
     GDCLASS(Clipmap, Node3D);
 
 private:
-    Ref<ShaderMaterial> _clipmapShader;
-    MeshInstance3D *_clipmapMesh;
-    int _zonesSize;
-    int _resolution;
-    Ref<ZonesResource> _terrainZones;
-    int _levels;
-    int _rowsPerLevel;
-    float _initialCellWidth;
-    Ref<ShaderMaterial> _shader;
+    Ref<ShaderMaterial> _clipmapShader = nullptr;
+    MeshInstance3D *_clipmapMesh = nullptr;
+    int _zonesSize = 0;
+    int _resolution = 0;
+    Ref<ZonesResource> _terrainZones = nullptr;
+    int _levels = 0;
+    int _rowsPerLevel = 0;
+    float _initialCellWidth = 0;
+    Ref<ShaderMaterial> _shader = nullptr;
 
     Vector3 getCameraPosition();
     void updateClipmapMeshPosition(Vector3 position);

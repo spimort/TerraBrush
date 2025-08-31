@@ -15,20 +15,20 @@ class ObjectDefinitionResource : public Resource {
     GDCLASS(ObjectDefinitionResource, Resource);
 
 private:
-    ObjectStrategy _strategy;
-    int _objectFrequency;
-    float _randomRange;
-    Ref<Texture2D> _noiseTexture;
-    bool _randomYRotation;
-    bool _randomSize;
-    float _randomSizeFactorMin;
-    float _randomSizeFactorMax;
-    TypedArray<Ref<PackedScene>> _objectScenes;
-    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _lodList;
-    TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> _lodMeshes;
-    float _updateDistanceThreshold;
-    float _updateTimeFrequency;
-    int _visualInstanceLayers;
+    ObjectStrategy _strategy = ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES;
+    int _objectFrequency = 0;
+    float _randomRange = 0;
+    Ref<Texture2D> _noiseTexture = nullptr;
+    bool _randomYRotation = false;
+    bool _randomSize = false;
+    float _randomSizeFactorMin = 0;
+    float _randomSizeFactorMax = 0;
+    TypedArray<Ref<PackedScene>> _objectScenes = TypedArray<Ref<PackedScene>>();
+    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _lodList = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
+    TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> _lodMeshes = TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>>();
+    float _updateDistanceThreshold = 0;
+    float _updateTimeFrequency = 0;
+    int _visualInstanceLayers = 0;
 
 protected:
     static void _bind_methods();

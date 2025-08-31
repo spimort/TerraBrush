@@ -11,7 +11,7 @@ class TextureSetsResource : public Resource {
     GDCLASS(TextureSetsResource, Resource);
 
 private:
-    TypedArray<Ref<TextureSetResource>> _textureSets;
+    TypedArray<Ref<TextureSetResource>> _textureSets = TypedArray<Ref<TextureSetResource>>();
 
 protected:
     static void _bind_methods();

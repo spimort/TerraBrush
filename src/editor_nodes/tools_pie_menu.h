@@ -13,9 +13,9 @@ class ToolsPieMenu : public Control {
     GDCLASS(ToolsPieMenu, Control);
 
 private:
-    PieMenu *_pieMenu;
+    PieMenu *_pieMenu = nullptr;
 
-    Callable _onToolSelected;
+    Callable _onToolSelected = Callable();
 
     void onToolSelected(const TerrainToolType toolType);
 

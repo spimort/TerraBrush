@@ -15,19 +15,19 @@ private:
     static constexpr const char* SettingsGroup = "terrabrush";
 
     #pragma region InputMap Actions and associated Default Key Events
-	Ref<InputEventKey> _toolPieKey;
-	Ref<InputEventKey> _brushPieKey;
-	Ref<InputEventKey> _toolContentKey;
-	Ref<InputEventKey> _brushSizeKey;
-	Ref<InputEventKey> _brushStrengthKey;
-	Ref<InputEventKey> _escapeKey;
-	Ref<InputEventKey> _toggleAutoAddZonesKey;
-	Ref<InputEventKey> _lockXAxis;
-	Ref<InputEventKey> _lockZAxis;
+	Ref<InputEventKey> _toolPieKey = nullptr;
+	Ref<InputEventKey> _brushPieKey = nullptr;
+	Ref<InputEventKey> _toolContentKey = nullptr;
+	Ref<InputEventKey> _brushSizeKey = nullptr;
+	Ref<InputEventKey> _brushStrengthKey = nullptr;
+	Ref<InputEventKey> _escapeKey = nullptr;
+	Ref<InputEventKey> _toggleAutoAddZonesKey = nullptr;
+	Ref<InputEventKey> _lockXAxis = nullptr;
+	Ref<InputEventKey> _lockZAxis = nullptr;
     #pragma endregion
 
-    TypedArray<StringName> _actionNames;
-    TypedDictionary<StringName, Ref<InputEventKey>> _defaultKeys;
+    TypedArray<StringName> _actionNames = TypedArray<StringName>();
+    TypedDictionary<StringName, Ref<InputEventKey>> _defaultKeys = TypedDictionary<StringName, Ref<InputEventKey>>();
 
 protected:
     static void _bind_methods();

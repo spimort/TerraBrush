@@ -18,21 +18,21 @@ class Foliage : public Node3D {
     GDCLASS(Foliage, Node3D);
 
 private:
-    Ref<ShaderMaterial> _foliageShader;
-    Vector3 _lastUpdatedPosition;
-    Ref<Texture2D> _defaultNoise;
+    Ref<ShaderMaterial> _foliageShader = nullptr;
+    Vector3 _lastUpdatedPosition = Vector3();
+    Ref<Texture2D> _defaultNoise = nullptr;
 
-    MultiMeshInstance3D *_multiMeshInstance3D;
-    GPUParticles3D *_particles;
+    MultiMeshInstance3D *_multiMeshInstance3D = nullptr;
+    GPUParticles3D *_particles = nullptr;
 
-    int _foliageIndex;
-    int _zonesSize;
-    int _resolution;
-    Ref<ZonesResource> _terrainZones;
-    Ref<TextureSetsResource> _textureSets;
-	int _textureDetail;
-    float _waterFactor;
-    Ref<FoliageDefinitionResource> _definition;
+    int _foliageIndex = 0;
+    int _zonesSize = 0;
+    int _resolution = 0;
+    Ref<ZonesResource> _terrainZones = nullptr;
+    Ref<TextureSetsResource> _textureSets = nullptr;
+	int _textureDetail = 0;
+    float _waterFactor = 0;
+    Ref<FoliageDefinitionResource> _definition = nullptr;
 
     void updateFoliage();
     void updateFoliagePosition(Vector3 position);

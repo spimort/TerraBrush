@@ -11,8 +11,8 @@ class ObjectResource : public Resource {
     GDCLASS(ObjectResource, Resource);
 
 private:
-    Ref<ObjectDefinitionResource> _definition;
-    bool _hide;
+    Ref<ObjectDefinitionResource> _definition = nullptr;
+    bool _hide = false;
 
 protected:
     static void _bind_methods();

@@ -17,41 +17,41 @@ class Water : public Node3D {
 private:
     const float RippleResetSpeed = 0.9f;
 
-    TypedDictionary<Ref<ZoneResource>, Dictionary> _ripplePositions;
-    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache;
+    TypedDictionary<Ref<ZoneResource>, Dictionary> _ripplePositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
+    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
-    Clipmap *_clipmap;
+    Clipmap *_clipmap = nullptr;
 
-    int _zonesSize;
-    int _resolution;
-    Ref<ZonesResource> _terrainZones;
-    float _waterFactor;
-    float _heightMapFactor;
-    float _waterInnerOffset;
-    Color _waterColor;
-    Color _fresnelColor;
-    float _metallic;
-    float _roughness;
-    Ref<Texture2D> _normalMap;
-    Ref<Texture2D> _normalMap2;
-    float _timeScale;
-    float _strength;
-    Ref<Texture2D> _wave;
-    float _noiseScale;
-    float _heightScale;
-    Color _colorDeep;
-    Color _colorShallow;
-    float _beersLaw;
-    float _depthOffset;
-    float _edgeScale;
-    float _near;
-    float _far;
-    Color _edgeColor;
-    int _visualInstanceLayers;
-    int _lodLevels;
-    int _lodRowsPerLevel;
+    int _zonesSize = 0;
+    int _resolution = 0;
+    Ref<ZonesResource> _terrainZones = nullptr;
+    float _waterFactor = 0;
+    float _heightMapFactor = 0;
+    float _waterInnerOffset = 0;
+    Color _waterColor = Color();
+    Color _fresnelColor = Color();
+    float _metallic = 0;
+    float _roughness = 0;
+    Ref<Texture2D> _normalMap = nullptr;
+    Ref<Texture2D> _normalMap2 = nullptr;
+    float _timeScale = 0;
+    float _strength = 0;
+    Ref<Texture2D> _wave = nullptr;
+    float _noiseScale = 0;
+    float _heightScale = 0;
+    Color _colorDeep = Color();
+    Color _colorShallow = Color();
+    float _beersLaw = 0;
+    float _depthOffset = 0;
+    float _edgeScale = 0;
+    float _near = 0;
+    float _far = 0;
+    Color _edgeColor = Color();
+    int _visualInstanceLayers = 0;
+    int _lodLevels = 0;
+    int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth;
-    Ref<ShaderMaterial> _customShader;
+    Ref<ShaderMaterial> _customShader = nullptr;
 
     Ref<Image> getImageForZone(Ref<ZoneResource> &zone);
 

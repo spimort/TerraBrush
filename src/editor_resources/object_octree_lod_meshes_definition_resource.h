@@ -12,8 +12,8 @@ class ObjectOctreeLODMeshesDefinitionResource : public Resource {
     GDCLASS(ObjectOctreeLODMeshesDefinitionResource, Resource);
 
 private:
-    TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>> _meshes;
-    Ref<Shape3D> _collisionShape;
+    TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>> _meshes = TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>>();
+    Ref<Shape3D> _collisionShape = nullptr;
 
 protected:
     static void _bind_methods();

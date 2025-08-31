@@ -16,14 +16,14 @@ class ObjectsBase: public Node3D {
 protected:
     static void _bind_methods();
 
-    int _objectsIndex;
-    Ref<ObjectDefinitionResource> _definition;
-    Ref<ZonesResource> _terrainZones;
-    int _zonesSize;
-    int _resolution;
-    float _waterFactor;
-    bool _loadInThread;
-    int _defaultObjectFrequency;
+    int _objectsIndex = 0;
+    Ref<ObjectDefinitionResource> _definition = nullptr;
+    Ref<ZonesResource> _terrainZones = nullptr;
+    int _zonesSize = 0;
+    int _resolution = 0;
+    float _waterFactor = 0;
+    bool _loadInThread = false;
+    int _defaultObjectFrequency = 0;
 
 public:
     ObjectsBase::ObjectsBase();

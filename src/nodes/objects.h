@@ -17,9 +17,9 @@ class Objects : public ObjectsBase {
     GDCLASS(Objects, ObjectsBase);
 
 private:
-    Ref<Texture2D> _defaultNoise;
-    CancellationSource _objectsCreationCancellationTokenSource;
-    Ref<Thread> _objectsThread;
+    Ref<Texture2D> _defaultNoise = nullptr;
+    CancellationSource _objectsCreationCancellationTokenSource = CancellationSource();
+    Ref<Thread> _objectsThread = nullptr;
 
     void updateObjects();
     void updateObjectsAsync();

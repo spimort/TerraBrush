@@ -25,65 +25,65 @@ class TerraBrush : public Node3D {
 private:
     const int HeightMapFactor = 1;
 
-    Terrain *_terrain;
-    Node3D *_foliagesNode;
-    Node3D *_objectsContainerNode;
-    Node3D *_waterNodeContainer;
-    Water *_waterNode;
-    Node3D *_snowNodeContainer;
-    Snow *_snowNode;
+    Terrain *_terrain = nullptr;
+    Node3D *_foliagesNode = nullptr;
+    Node3D *_objectsContainerNode = nullptr;
+    Node3D *_waterNodeContainer = nullptr;
+    Water *_waterNode = nullptr;
+    Node3D *_snowNodeContainer = nullptr;
+    Snow *_snowNode = nullptr;
 
-    TypedDictionary<Ref<ImageTexture>, Ref<Image>> _imageTexturesCache;
-    Ref<Texture2D> _defaultNoise;
+    TypedDictionary<Ref<ImageTexture>, Ref<Image>> _imageTexturesCache = TypedDictionary<Ref<ImageTexture>, Ref<Image>>();
+    Ref<Texture2D> _defaultNoise = nullptr;
 
     // General settings
-    String _dataPath;
-    int _zonesSize;
-    int _resolution;
-    bool _collisionOnly;
-    int _visualInstanceLayers;
-    Ref<ShaderMaterial> _customShader;
+    String _dataPath = "";
+    int _zonesSize = 0;
+    int _resolution = 0;
+    bool _collisionOnly = false;
+    int _visualInstanceLayers = 0;
+    Ref<ShaderMaterial> _customShader = nullptr;
 
     // LOD Settings
-    int _lodLevels;
-    int _lodRowsPerLevel;
-    float _lodInitialCellWidth;
+    int _lodLevels = 0;
+    int _lodRowsPerLevel = 0;
+    float _lodInitialCellWidth = 0;
 
     // Collision settings
-    bool _createCollisionInThread;
-    int _collisionLayers;
-    int _collisionMask;
+    bool _createCollisionInThread = false;
+    int _collisionLayers = 0;
+    int _collisionMask = 0;
 
     // Texture settings
-    Ref<TextureSetsResource> _textureSets;
-    int _textureDetail;
-    bool _useAntiTile;
-    bool _nearestTextureFilter;
-    float _heightBlendFactor;
-    AlphaChannelUsage _albedoAlphaChannelUsage;
-    AlphaChannelUsage _normalAlphaChannelUsage;
-    bool _useSharpTransitions;
+    Ref<TextureSetsResource> _textureSets = nullptr;
+    int _textureDetail = 0;
+    bool _useAntiTile = false;
+    bool _nearestTextureFilter = false;
+    float _heightBlendFactor = 0;
+    AlphaChannelUsage _albedoAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
+    AlphaChannelUsage _normalAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
+    bool _useSharpTransitions = false;
 
     // Foliage settings
-    TypedArray<Ref<FoliageResource>> _foliages;
+    TypedArray<Ref<FoliageResource>> _foliages = TypedArray<Ref<FoliageResource>>();
 
     // Object settings
-    int _defaultObjectFrequency;
-    ObjectLoadingStrategy _objectLoadingStrategy;
-    TypedArray<Ref<ObjectResource>> _objects;
+    int _defaultObjectFrequency = 0;
+    ObjectLoadingStrategy _objectLoadingStrategy = ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADEDINEDITORONLY;
+    TypedArray<Ref<ObjectResource>> _objects = TypedArray<Ref<ObjectResource>>();
 
     // Water settings
-    Ref<WaterResource> _waterDefinition;
+    Ref<WaterResource> _waterDefinition = nullptr;
 
     // Snow settings
-    Ref<SnowResource> _snowDefinition;
+    Ref<SnowResource> _snowDefinition = nullptr;
 
     // Meta info settings
-    bool _showMetaInfo;
-    TypedArray<Ref<MetaInfoLayerResource>> _metaInfoLayers;
+    bool _showMetaInfo = false;
+    TypedArray<Ref<MetaInfoLayerResource>> _metaInfoLayers = TypedArray<Ref<MetaInfoLayerResource>>();
 
     // Zones
-    Ref<ZonesResource> _terrainZones;
+    Ref<ZonesResource> _terrainZones = nullptr;
 
     void loadTerrain();
     void createFoliages();

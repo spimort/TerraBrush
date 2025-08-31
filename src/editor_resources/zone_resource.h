@@ -10,15 +10,15 @@ class ZoneResource : public Resource {
     GDCLASS(ZoneResource, Resource);
 
 private:
-    Ref<ImageTexture> _lockTexture;
-    Vector2i _zonePosition;
-    Ref<ImageTexture> _heightMapTexture;
-    TypedArray<Ref<ImageTexture>> _splatmapsTexture;
-    TypedArray<Ref<ImageTexture>> _foliagesTexture;
-    TypedArray<Ref<ImageTexture>> _objectsTexture;
-    Ref<ImageTexture> _waterTexture;
-    Ref<ImageTexture> _snowTexture;
-    Ref<ImageTexture> _metaInfoTexture;
+    Ref<ImageTexture> _lockTexture = 0;
+    Vector2i _zonePosition = Vector2i();
+    Ref<ImageTexture> _heightMapTexture = nullptr;
+    TypedArray<Ref<ImageTexture>> _splatmapsTexture = TypedArray<Ref<ImageTexture>>();
+    TypedArray<Ref<ImageTexture>> _foliagesTexture = TypedArray<Ref<ImageTexture>>();
+    TypedArray<Ref<ImageTexture>> _objectsTexture = TypedArray<Ref<ImageTexture>>();
+    Ref<ImageTexture> _waterTexture = nullptr;
+    Ref<ImageTexture> _snowTexture = nullptr;
+    Ref<ImageTexture> _metaInfoTexture = nullptr;
 
 protected:
     static void _bind_methods();

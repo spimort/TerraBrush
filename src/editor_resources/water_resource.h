@@ -11,29 +11,29 @@ class WaterResource : public Resource {
     GDCLASS(WaterResource, Resource);
 
 private:
-    float _waterFactor;
-    float _waterInnerOffset;
-    Color _waterColor;
-    Color _waterFresnelColor;
-    float _waterMetallic;
-    float _waterRoughness;
-    Ref<Texture2D> _waterNormalMap;
-    Ref<Texture2D> _waterNormalMap2;
-    float _waterTimeScale;
-    float _waterStrength;
-    Ref<Texture2D> _waterWave;
-    float _waterNoiseScale;
-    float _waterHeightScale;
-    Color _waterColorDeep;
-    Color _waterColorShallow;
-    float _waterBeersLaw;
-    float _waterDepthOffset;
-    float _waterEdgeScale;
-    float _waterNear;
-    float _waterFar;
-    Color _waterEdgeColor;
-    int _visualInstanceLayers;
-    Ref<ShaderMaterial> _customShader;
+    float _waterFactor = 0;
+    float _waterInnerOffset = 0;
+    Color _waterColor = Color();
+    Color _waterFresnelColor = Color();
+    float _waterMetallic = 0;
+    float _waterRoughness = 0;
+    Ref<Texture2D> _waterNormalMap = nullptr;
+    Ref<Texture2D> _waterNormalMap2 = nullptr;
+    float _waterTimeScale = 0;
+    float _waterStrength = 0;
+    Ref<Texture2D> _waterWave = nullptr;
+    float _waterNoiseScale = 0;
+    float _waterHeightScale = 0;
+    Color _waterColorDeep = Color();
+    Color _waterColorShallow = Color();
+    float _waterBeersLaw = 0;
+    float _waterDepthOffset = 0;
+    float _waterEdgeScale = 0;
+    float _waterNear = 0;
+    float _waterFar = 0;
+    Color _waterEdgeColor = Color();
+    int _visualInstanceLayers = 0;
+    Ref<ShaderMaterial> _customShader = nullptr;
 
 protected:
     static void _bind_methods();

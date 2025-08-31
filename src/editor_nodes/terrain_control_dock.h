@@ -16,26 +16,26 @@ class TerrainControlDock : public Control {
     GDCLASS(TerrainControlDock, Control);
 
 private:
-    int _selectedBrushIndex;
-    TerrainToolType _selectedTool;
-    TerrainToolType _temporaryTool;
-    int _selectedTextureIndex;
-    int _selectedFoliageIndex;
-    int _selectedObjectIndex;
-    int _selectedMetaInfoIndex;
+    int _selectedBrushIndex = 0;
+    TerrainToolType _selectedTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
+    TerrainToolType _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
+    int _selectedTextureIndex = 0;
+    int _selectedFoliageIndex = 0;
+    int _selectedObjectIndex = 0;
+    int _selectedMetaInfoIndex = 0;
 
-    FlowContainer *_brushesContainer;
-    FlowContainer *_toolTypesContainer;
-    FlowContainer *_texturesContainer;
-    FlowContainer *_foliagesContainer;
-    FlowContainer *_objectsContainer;
-    FlowContainer *_metaInfoLayersContainer;
-    Slider *_brushSizeSlider;
-    Slider *_brushStrengthSlider;
+    FlowContainer *_brushesContainer = nullptr;
+    FlowContainer *_toolTypesContainer = nullptr;
+    FlowContainer *_texturesContainer = nullptr;
+    FlowContainer *_foliagesContainer = nullptr;
+    FlowContainer *_objectsContainer = nullptr;
+    FlowContainer *_metaInfoLayersContainer = nullptr;
+    Slider *_brushSizeSlider = nullptr;
+    Slider *_brushStrengthSlider = nullptr;
 
-    TerraBrush *_terraBrush;
-    BrushDecal *_brushDecal;
-    EditorResourcePreview *_editorResourcePreview;
+    TerraBrush *_terraBrush = nullptr;
+    BrushDecal *_brushDecal = nullptr;
+    EditorResourcePreview *_editorResourcePreview = nullptr;
 
     void buildLayout();
     void initializeBrushes();

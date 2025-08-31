@@ -54,17 +54,6 @@ TerraBrushPlugin::TerraBrushPlugin() {
     _foliageIndex = -1;
     _objectIndex = -1;
     _metaInfoLayerIndex = -1;
-
-    _terrainDockContainer = nullptr;
-    _terrainControlDock = nullptr;
-    _brushDecal = nullptr;
-    _currentTerraBrushNode = nullptr;
-    _toolInfo = nullptr;
-    _undoRedo = nullptr;
-    _editorViewportsContainer = nullptr;
-    _overlaySelector = nullptr;
-    _updateTerrainSettingsButton = nullptr;
-    _autoAddZonesCheckbox = nullptr;
 }
 
 TerraBrushPlugin::~TerraBrushPlugin() {}

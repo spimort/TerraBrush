@@ -15,32 +15,32 @@ class FoliageDefinitionResource : public Resource {
     GDCLASS(FoliageDefinitionResource, Resource);
 
 private:
-    FoliageStrategy _strategy;
-    Ref<Mesh> _mesh;
-    Vector3 _meshScale;
-    float _windStrength;
-    Ref<Texture2D> _noiseTexture;
-    int _visualInstanceLayers;
+    FoliageStrategy _strategy = FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH;
+    Ref<Mesh> _mesh = nullptr;
+    Vector3 _meshScale = Vector3();
+    float _windStrength = 0;
+    Ref<Texture2D> _noiseTexture = nullptr;
+    int _visualInstanceLayers = 0;
 
     // _multimesh settings
-    int _lodLevels;
-    int _lodRowsPerLevel;
-    float _lodInitialCellWidth;
-    Color _albedo;
-    TypedArray<Ref<Texture2D>> _albedoTextures;
-    bool _nearestTextureFilter;
-    bool _useGroundColor;
-    bool _castShadow;
-    bool _useBrushScale;
-    Ref<Texture2D> _scaleNoiseTexture;
-    float _randomPlacementRange;
-    TypedArray<int> _applyOnTextureIndexes;
-    Ref<ShaderMaterial> _customShader;
+    int _lodLevels = 0;
+    int _lodRowsPerLevel = 0;
+    float _lodInitialCellWidth = 0;
+    Color _albedo = Color();
+    TypedArray<Ref<Texture2D>> _albedoTextures = TypedArray<Ref<Texture2D>>();
+    bool _nearestTextureFilter = false;
+    bool _useGroundColor = false;
+    bool _castShadow = false;
+    bool _useBrushScale = false;
+    Ref<Texture2D> _scaleNoiseTexture = nullptr;
+    float _randomPlacementRange = 0;
+    TypedArray<int> _applyOnTextureIndexes = TypedArray<int>();
+    Ref<ShaderMaterial> _customShader = nullptr;
 
     // _particles settings
-    Ref<Material> _meshMaterial;
-    int _maximumRenderDistance;
-    int _editorMaximumRenderDistance;
+    Ref<Material> _meshMaterial = nullptr;
+    int _maximumRenderDistance = 0;
+    int _editorMaximumRenderDistance = 0;
 
 protected:
     static void _bind_methods();

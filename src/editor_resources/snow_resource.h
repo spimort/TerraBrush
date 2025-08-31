@@ -11,17 +11,17 @@ class SnowResource : public Resource {
     GDCLASS(SnowResource, Resource);
 
 private:
-    float _snowFactor;
-    float _snowInnerOffset;
-    Ref<Texture2D> _snowColorTexture;
-    Ref<Texture2D> _snowColorNormal;
-    Ref<Texture2D> _snowColorRoughness;
-    float _snowColorDetail;
-    Ref<Texture2D> _noise;
-    float _noiseFactor;
-    float _metallic;
-    int _visualInstanceLayers;
-    Ref<ShaderMaterial> _customShader;
+    float _snowFactor = 0;
+    float _snowInnerOffset = 0;
+    Ref<Texture2D> _snowColorTexture = nullptr;
+    Ref<Texture2D> _snowColorNormal = nullptr;
+    Ref<Texture2D> _snowColorRoughness = nullptr;
+    float _snowColorDetail = 0;
+    Ref<Texture2D> _noise = nullptr;
+    float _noiseFactor = 0;
+    float _metallic = 0;
+    int _visualInstanceLayers = 0;
+    Ref<ShaderMaterial> _customShader = nullptr;
 
 protected:
     static void _bind_methods();

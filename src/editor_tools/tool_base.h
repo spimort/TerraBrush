@@ -29,10 +29,10 @@ class ImageZoneInfo : public RefCounted {
     GDCLASS(ImageZoneInfo, RefCounted);
 
 private:
-    Ref<Image> _image;
-    Ref<ZoneInfo> _zoneInfo;
-    Ref<ZoneResource> _zone;
-    float _lockedStrength;
+    Ref<Image> _image = nullptr;
+    Ref<ZoneInfo> _zoneInfo = nullptr;
+    Ref<ZoneResource> _zone = nullptr;
+    float _lockedStrength = 0;
 
 protected:
     static void _bind_methods();

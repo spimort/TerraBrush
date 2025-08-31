@@ -34,42 +34,42 @@ private:
     /// <summary>
     /// Center of this node
     /// </summary>
-    Vector3 _center;
+    Vector3 _center = Vector3();
 
     /// <summary>
     /// Length of the sides of this node
     /// </summary>
-    float _sideLength;
+    float _sideLength = 0;
 
     /// <summary>
     /// Minimum size for a node in this octree
     /// </summary>
-    float _minSize;
+    float _minSize = 0;
 
     /// <summary>
     /// Bounding box that represents this node
     /// </summary>
-    Ref<PointOctreeBoundingBox> _bounds;
+    Ref<PointOctreeBoundingBox> _bounds = nullptr;
 
     /// <summary>
     /// Objects in this node
     /// </summary>
-    TypedArray<Ref<PointOctreeObject>> _objects;
+    TypedArray<Ref<PointOctreeObject>> _objects = TypedArray<Ref<PointOctreeObject>>();
 
     /// <summary>
     /// Child nodes, if any
     /// </summary>
-    TypedArray<Ref<PointOctreeNode>> _children;
+    TypedArray<Ref<PointOctreeNode>> _children = TypedArray<Ref<PointOctreeNode>>();
 
     /// <summary>
     /// Bounds of potential children to this node. These are actual size (with looseness taken into account), not base size
     /// </summary>
-    TypedArray<Ref<PointOctreeBoundingBox>> _childBounds;
+    TypedArray<Ref<PointOctreeBoundingBox>> _childBounds = TypedArray<Ref<PointOctreeBoundingBox>>();
 
     /// <summary>
     /// For reverting the bounds size after temporary changes
     /// </summary>
-    Vector3 _actualBoundsSize;
+    Vector3 _actualBoundsSize = Vector3();
 
     /// <summary>
     /// Gets a value indicating whether this node has children

@@ -14,17 +14,17 @@ class BrushNumericSelector : public Control {
 private:
     const int BackgroundMargin = 10;
 
-    TextureRect *_background;
-    TextureRect *_brushPreview;
-    Label *_valueLabel;
+    TextureRect *_background = nullptr;
+    TextureRect *_brushPreview = nullptr;
+    Label *_valueLabel = nullptr;
 
-    int _brushSizeFactor;
-    Color _widgetColor;
-    int _minValue;
-    int _maxValue;
+    int _brushSizeFactor = 0;
+    Color _widgetColor = Color();
+    int _minValue = 0;
+    int _maxValue = 0;
 
-    Callable _onValueSelected;
-    Callable _onCancel;
+    Callable _onValueSelected = Callable();
+    Callable _onCancel = Callable();
 
     int getMouseDistance();
 

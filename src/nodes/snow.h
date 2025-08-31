@@ -18,18 +18,18 @@ private:
     const float DeCompressSpeed = 0.5f;
     const float DeCompressOffsetSpeed = 2.0f;
 
-    TypedDictionary<Ref<ZoneResource>, Dictionary> _compressedPositions;
-    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache;
+    TypedDictionary<Ref<ZoneResource>, Dictionary> _compressedPositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
+    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
-    Clipmap *_clipmap;
+    Clipmap *_clipmap = nullptr;
 
-    int _zonesSize;
-    int _resolution;
-    Ref<ZonesResource> _terrainZones;
-    Ref<SnowResource> _snowDefinition;
-    int _lodLevels;
-    int _lodRowsPerLevel;
-    float _lodInitialCellWidth;
+    int _zonesSize = 0;
+    int _resolution = 0;
+    Ref<ZonesResource> _terrainZones = nullptr;
+    Ref<SnowResource> _snowDefinition = nullptr;
+    int _lodLevels = 0;
+    int _lodRowsPerLevel = 0;
+    float _lodInitialCellWidth = 0;
 
     Ref<Image> getImageForZone(Ref<ZoneResource> &zone);
 

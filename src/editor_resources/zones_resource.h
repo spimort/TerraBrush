@@ -14,19 +14,19 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource);
 
 private:
-    HashSet<Ref<ImageTexture>> _dirtyImageTextures;
+    HashSet<Ref<ImageTexture>> _dirtyImageTextures = HashSet<Ref<ImageTexture>>();
 
-    Ref<Texture2DArray> _lockTextures;
-    Ref<Texture2DArray> _heightmapTextures;
-    Ref<Texture2DArray> _splatmapsTextures;
-    TypedArray<Ref<Texture2DArray>> _foliagesTextures;
-    Ref<Texture2DArray> _objectsTextures; // This should be TypedArray<Ref<Texture2DArray>> like foliages but it's unused for now. Might remove it later.
-    Ref<Texture2DArray> _waterTextures;
-    Ref<Texture2DArray> _snowTextures;
-    Ref<Texture2DArray> _metaInfoTextures;
-    Ref<ImageTexture> _zonesMap;
+    Ref<Texture2DArray> _lockTextures = nullptr;
+    Ref<Texture2DArray> _heightmapTextures = nullptr;
+    Ref<Texture2DArray> _splatmapsTextures = nullptr;
+    TypedArray<Ref<Texture2DArray>> _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
+    Ref<Texture2DArray> _objectsTextures = nullptr; // This should be TypedArray<Ref<Texture2DArray>> like foliages but it's unused for now. Might remove it later.
+    Ref<Texture2DArray> _waterTextures = nullptr;
+    Ref<Texture2DArray> _snowTextures = nullptr;
+    Ref<Texture2DArray> _metaInfoTextures = nullptr;
+    Ref<ImageTexture> _zonesMap = nullptr;
 
-    TypedArray<Ref<ZoneResource>> _zones;
+    TypedArray<Ref<ZoneResource>> _zones = TypedArray<Ref<ZoneResource>>();
 
     void saveImageResource(Ref<ImageTexture> image);
 

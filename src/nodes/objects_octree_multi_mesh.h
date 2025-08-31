@@ -26,13 +26,13 @@ class ObjectsOctreeNodeInfo : public RefCounted {
     GDCLASS(ObjectsOctreeNodeInfo, RefCounted);
 
 private:
-    Vector2i _imagePosition;
-    Vector3 _position;
-    int _meshIndex;
-    Vector3 _meshRotation;
-    float _meshSizeFactor;
-    CollisionShape3D* _collisionShape;
-    int _previousLodIndex;
+    Vector2i _imagePosition = Vector2i();
+    Vector3 _position = Vector3();
+    int _meshIndex = 0;
+    Vector3 _meshRotation = Vector3();
+    float _meshSizeFactor = 0;
+    CollisionShape3D* _collisionShape = nullptr;
+    int _previousLodIndex = 0;
 
 protected:
     static void _bind_methods();

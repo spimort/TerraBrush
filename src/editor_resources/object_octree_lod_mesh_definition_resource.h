@@ -12,10 +12,10 @@ class ObjectOctreeLODMeshDefinitionResource : public Resource {
     GDCLASS(ObjectOctreeLODMeshDefinitionResource, Resource);
 
 private:
-    Ref<Mesh> _mesh;
-    Ref<Material> _materialOverride;
-    Vector3 _scale;
-    GeometryInstance3D::ShadowCastingSetting _castShadow;
+    Ref<Mesh> _mesh = nullptr;
+    Ref<Material> _materialOverride = nullptr;
+    Vector3 _scale = Vector3();
+    GeometryInstance3D::ShadowCastingSetting _castShadow = GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_ON;
 
 protected:
     static void _bind_methods();

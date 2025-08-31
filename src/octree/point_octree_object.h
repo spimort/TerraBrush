@@ -25,12 +25,12 @@ private:
     /// <summary>
     /// Object content
     /// </summary>
-    Ref<RefCounted> _obj;
+    Ref<RefCounted> _obj = nullptr;
 
     /// <summary>
     /// Object position
     /// </summary>
-    Vector3 _pos;
+    Vector3 _pos = Vector3();
 
 protected:
     static void _bind_methods();

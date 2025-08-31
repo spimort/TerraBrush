@@ -11,7 +11,7 @@ class FoliageResource : public Resource {
     GDCLASS(FoliageResource, Resource);
 
 private:
-    Ref<FoliageDefinitionResource> _definition;
+    Ref<FoliageDefinitionResource> _definition = nullptr;
 
 protected:
     static void _bind_methods();

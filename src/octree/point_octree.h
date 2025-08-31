@@ -26,22 +26,22 @@ private:
     /// <summary>
     /// Root node of the octree
     /// </summary>
-    Ref<PointOctreeNode> _rootNode;
+    Ref<PointOctreeNode> _rootNode = nullptr;
 
     /// <summary>
     /// Size that the octree was on creation
     /// </summary>
-    float _initialSize;
+    float _initialSize = 0;
 
     /// <summary>
     /// Minimum side length that a node can be - essentially an alternative to having a max depth
     /// </summary>
-    float _minSize;
+    float _minSize = 0;
 
     /// <summary>
     /// The total amount of objects currently in the tree
     /// </summary>
-    int _count;
+    int _count = 0;
 
     /// <summary>
     /// Grow the octree to fit in all objects.

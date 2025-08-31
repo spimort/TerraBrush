@@ -22,12 +22,12 @@ private:
     /// <summary>
     /// Gets or sets the origin of the ray.
     /// </summary>
-    Vector3 _origin;
+    Vector3 _origin = Vector3();
 
     /// <summary>
     /// The direction of the ray.
     /// </summary>
-    Vector3 _direction;
+    Vector3 _direction = Vector3();
 
 protected:
     static void _bind_methods();

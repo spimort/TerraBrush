@@ -11,7 +11,7 @@ class CustomContentPieMenu : public Control {
     GDCLASS(CustomContentPieMenu, Control);
 
 private:
-    PieMenu *_pieMenu;
+    PieMenu *_pieMenu = nullptr;
 
 protected:
     static void _bind_methods();

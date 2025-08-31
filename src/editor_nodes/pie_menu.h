@@ -15,18 +15,18 @@ class PieMenu : public Control {
     GDCLASS(PieMenu, Control);
 
 private:
-    float _angleOffset;
-    int _buttonCount;
-    int _startingButtonsIndex;
-    DockPreviewButton *_previewDockPreviewOverItem;
-    Control *_controlsContainer;
-    Label *_menuLabel;
-    TextureRect *_pieBackground;
-    Panel *_currentAnglePanel;
+    float _angleOffset = 0;
+    int _buttonCount = 0;
+    int _startingButtonsIndex = 0;
+    DockPreviewButton *_previewDockPreviewOverItem = nullptr;
+    Control *_controlsContainer = nullptr;
+    Label *_menuLabel = nullptr;
+    TextureRect *_pieBackground = nullptr;
+    Panel *_currentAnglePanel = nullptr;
 
-    int _buttonsRadiusRatio;
-    int _buttonsMinRadius;
-    String _label;
+    int _buttonsRadiusRatio = 0;
+    int _buttonsMinRadius = 0;
+    String _label = "";
 
     TypedArray<Control> getButtons();
     float getMouseCurrentAngle();

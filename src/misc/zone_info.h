@@ -9,9 +9,9 @@ class ZoneInfo : public RefCounted{
     GDCLASS(ZoneInfo, RefCounted);
 
 private:
-    int _zoneKey;
-    Vector2i _zonePosition;
-    Vector2i _imagePosition;
+    int _zoneKey = 0;
+    Vector2i _zonePosition = Vector2i();
+    Vector2i _imagePosition = Vector2i();
 
 protected:
     static void _bind_methods();

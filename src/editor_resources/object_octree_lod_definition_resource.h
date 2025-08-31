@@ -9,11 +9,11 @@ class ObjectOctreeLODDefinitionResource : public Resource {
     GDCLASS(ObjectOctreeLODDefinitionResource, Resource);
 
 private:
-    float _maxDistance;
-    bool _addCollision;
-    bool _automaticLOD;
-    int _automaticLODTargetVertices;
-    int _objectFrequency;
+    float _maxDistance = 0;
+    bool _addCollision = false;
+    bool _automaticLOD = false;
+    int _automaticLODTargetVertices = 0;
+    int _objectFrequency = 0;
 
 protected:
     static void _bind_methods();

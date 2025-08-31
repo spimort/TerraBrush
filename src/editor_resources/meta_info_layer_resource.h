@@ -9,8 +9,8 @@ class MetaInfoLayerResource : public Resource {
     GDCLASS(MetaInfoLayerResource, Resource);
 
 private:
-    String _name;
-    Color _color;
+    String _name = "";
+    Color _color = Color();
 
 protected:
     static void _bind_methods();
