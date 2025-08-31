@@ -17,6 +17,10 @@ void BrushDecal::_ready() {
     add_child(_decal);
 }
 
+void BrushDecal::setSize(const int size) {
+    _decal->set_size(Vector3(size, 1000, size));
+}
+
 void BrushDecal::setBrushImage(const Ref<Image> image) {
     Ref<Image> imageCopy = memnew(Image);
     imageCopy->copy_from(image);

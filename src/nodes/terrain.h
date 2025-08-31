@@ -101,6 +101,7 @@ public:
     void set_metaInfoLayers(const TypedArray<Ref<MetaInfoLayerResource>> value);
 
     Clipmap *get_clipmap() const;
+    StaticBody3D *get_terrainCollider() const;
 
     void buildTerrain();
     void terrainUpdated();

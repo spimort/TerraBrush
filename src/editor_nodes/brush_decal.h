@@ -22,6 +22,7 @@ public:
 
     void _ready() override;
 
+    void setSize(const int size);
     void setBrushImage(const Ref<Image> image);
 };
 #endif

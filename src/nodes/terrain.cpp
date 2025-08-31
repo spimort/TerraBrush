@@ -168,6 +168,10 @@ Clipmap *Terrain::get_clipmap() const {
     return _clipmap;
 }
 
+StaticBody3D *Terrain::get_terrainCollider() const {
+    return _terrainCollider;
+}
+
 void Terrain::terrainTextureUpdated() {
     updateTextures();
     terrainSplatmapsUpdated();
