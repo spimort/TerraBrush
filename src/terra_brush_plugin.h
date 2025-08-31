@@ -52,7 +52,7 @@ private:
     bool _preventInitialDo = false;
     bool _autoAddZones = false;
 
-    void createCustomSetting(String name, Variant defaultValue, GDExtensionVariantType type, PropertyHint hint = PropertyHint::PROPERTY_HINT_NONE, String hintString = "");
+    void createCustomSetting(String name, Variant defaultValue, Variant::Type type, PropertyHint hint = PropertyHint::PROPERTY_HINT_NONE, String hintString = "");
     void handleKeyBindings();
     void onUndoTexture(Ref<ImageTexture> imageTexture, PackedByteArray previousImageData);
     void onUndoRedo();

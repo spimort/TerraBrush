@@ -86,10 +86,10 @@ void TerraBrushPlugin::_physics_process(double delta) {
 void TerraBrushPlugin::_enter_tree() {
     Ref<KeybindManager> keybindManager = memnew(KeybindManager);
 
-    createCustomSetting(SettingContants::DecalColor(), Color(1.0f, 0, 0, 0.5f), GDExtensionVariantType::GDEXTENSION_VARIANT_TYPE_COLOR);
-    createCustomSetting(SettingContants::CustomBrushesFolder(), "res://TerraBrush_CustomBrushes", GDExtensionVariantType::GDEXTENSION_VARIANT_TYPE_STRING);
-    createCustomSetting(SettingContants::SculptingMultiplier(), 10, GDExtensionVariantType::GDEXTENSION_VARIANT_TYPE_INT);
-    createCustomSetting(SettingContants::IconsColor(), Color::html("#00151F"), GDExtensionVariantType::GDEXTENSION_VARIANT_TYPE_COLOR);
+    createCustomSetting(SettingContants::DecalColor(), Color(1.0f, 0, 0, 0.5f), Variant::Type::COLOR);
+    createCustomSetting(SettingContants::CustomBrushesFolder(), "res://TerraBrush_CustomBrushes", Variant::Type::STRING);
+    createCustomSetting(SettingContants::SculptingMultiplier(), 10, Variant::Type::INT);
+    createCustomSetting(SettingContants::IconsColor(), Color::html("#00151F"), Variant::Type::COLOR);
 
     _terrainDockContainer = memnew(Control);
     _terrainDockContainer->set_name("Terrain Editor");
@@ -270,7 +270,7 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
     }
 }
 
-void TerraBrushPlugin::createCustomSetting(String name, Variant defaultValue, GDExtensionVariantType type, PropertyHint hint, String hintString) {
+void TerraBrushPlugin::createCustomSetting(String name, Variant defaultValue, Variant::Type type, PropertyHint hint, String hintString) {
     if (ProjectSettings::get_singleton()->has_setting(name)) {
         return;
     }
