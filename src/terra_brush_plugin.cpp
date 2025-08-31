@@ -38,6 +38,15 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("updateAutoAddZonesSetting"), &TerraBrushPlugin::updateAutoAddZonesSetting);
     ClassDB::bind_method(D_METHOD("onToolSelected", "value"), &TerraBrushPlugin::onToolSelected);
     ClassDB::bind_method(D_METHOD("hideOverlaySelector"), &TerraBrushPlugin::hideOverlaySelector);
+
+    ClassDB::bind_method(D_METHOD("onDockToolTypeSelected", "toolType"), &TerraBrushPlugin::onDockToolTypeSelected);
+    ClassDB::bind_method(D_METHOD("onDockBrushSelected", "index", "image"), &TerraBrushPlugin::onDockBrushSelected);
+    ClassDB::bind_method(D_METHOD("onDockBrushSizeChanged", "value"), &TerraBrushPlugin::onDockBrushSizeChanged);
+    ClassDB::bind_method(D_METHOD("onDockBrushStrengthChanged", "value"), &TerraBrushPlugin::onDockBrushStrengthChanged);
+    ClassDB::bind_method(D_METHOD("onDockTextureSelected", "index"), &TerraBrushPlugin::onDockTextureSelected);
+    ClassDB::bind_method(D_METHOD("onDockFoliageSelected", "index"), &TerraBrushPlugin::onDockFoliageSelected);
+    ClassDB::bind_method(D_METHOD("onDockObjectSelected", "index"), &TerraBrushPlugin::onDockObjectSelected);
+    ClassDB::bind_method(D_METHOD("onDockMetaInfoSelected", "index"), &TerraBrushPlugin::onDockMetaInfoSelected);
 }
 
 TerraBrushPlugin::TerraBrushPlugin() {
