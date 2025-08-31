@@ -44,8 +44,8 @@ TerrainControlDock::~TerrainControlDock() {}
 void TerrainControlDock::_ready() {
     buildLayout();
 
-    // TODO : GDExtension
-    // if (_terraBrush != nullptr) {
+    if (_terraBrush != nullptr) {
+    //     TODO : GDExtension
     //     _brushSizeSlider.Value = TerraBrush.BrushSize;
     //     _brushStrengthSlider.Value = TerraBrush.BrushStrength;
     //     _selectedTool = TerraBrush.TerrainTool;
@@ -57,11 +57,11 @@ void TerrainControlDock::_ready() {
 
         initializeBrushes();
         initializeToolPreview();
-    //     initializeTextures();
-    //     initializeFoliages();
-    //     initializeObjects();
-    //     initializeMetaInfoLayers();
-    // }
+        initializeTextures();
+        initializeFoliages();
+        initializeObjects();
+        initializeMetaInfoLayers();
+    }
 
     _brushSizeSlider->connect("value_changed", Callable(this, "onBrushSizeValueChange"));
     _brushStrengthSlider->connect("value_changed", Callable(this, "onBrushStrengthValueChange"));
@@ -107,10 +107,9 @@ void TerrainControlDock::initializeTextures() {
 void TerrainControlDock::initializeFoliages() {
     CustomContentLoader::addFoliagesPreviewToParent(_terraBrush, _foliagesContainer, Callable(this, "setSelectedFoliageIndex"));
 
-    // TODO : GDExtension
-    // if (_terraBrush->get_foliages().size() > 0 && _selectedFoliageIndex < 0) {
-    //     _selectedFoliageIndex = 0;
-    // }
+    if (_terraBrush->get_foliages().size() > 0 && _selectedFoliageIndex < 0) {
+        _selectedFoliageIndex = 0;
+    }
 
     updateSelectedFoliage();
 }
@@ -118,10 +117,9 @@ void TerrainControlDock::initializeFoliages() {
 void TerrainControlDock::initializeObjects() {
     CustomContentLoader::addObjectsPreviewToParent(_terraBrush, _objectsContainer, Callable(this, "setSelectedObjectIndex"));
 
-    // TODO : GDExtension
-    // if (_terraBrush->get_objects().size() > 0 && _selectedObjectIndex < 0) {
-    //     _selectedObjectIndex = 0;
-    // }
+    if (_terraBrush->get_objects().size() > 0 && _selectedObjectIndex < 0) {
+        _selectedObjectIndex = 0;
+    }
 
     updateSelectedObject();
 }
@@ -129,10 +127,9 @@ void TerrainControlDock::initializeObjects() {
 void TerrainControlDock::initializeMetaInfoLayers() {
     CustomContentLoader::addMetaInfoLayersPreviewToParent(_terraBrush, _metaInfoLayersContainer, Callable(this, "setSelectedMetaInfoIndex"));
 
-    // TODO : GDExtension
-    // if (_terraBrush->get_metaInfoLayers().size() > 0 && _selectedMetaInfoIndex < 0) {
-    //     _selectedMetaInfoIndex = 0;
-    // }
+    if (_terraBrush->get_metaInfoLayers().size() > 0 && _selectedMetaInfoIndex < 0) {
+        _selectedMetaInfoIndex = 0;
+    }
 
     updateSelectedMetaInfo();
 }

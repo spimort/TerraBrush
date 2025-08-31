@@ -226,7 +226,6 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
                     _currentTool->endPaint();
                 }
 
-                // TODO
                 _undoRedo->add_undo_method(this, "onUndoRedo");
                 _undoRedo->add_do_method(this, "onUndoRedo");
 
@@ -403,7 +402,9 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     add_child(_brushDecal);
 
     _brushDecal->setSize(_brushSize);
-    _brushDecal->setBrushImage(_brushImage);
+    if (!_brushImage.is_null()) {
+        _brushDecal->setBrushImage(_brushImage);
+    }
 
     _currentTerraBrushNode = terraBrush;
     // TODO : GDExtension

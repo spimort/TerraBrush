@@ -2,6 +2,8 @@
 #include "setting_contants.h"
 #include "../editor_nodes/dock_preview_button.h"
 #include "../editor_resources/object_definition_resource.h"
+#include "../editor_resources/object_resource.h"
+#include "../editor_resources/foliage_resource.h"
 #include "../editor_resources/foliage_definition_resource.h"
 #include "../editor_resources/texture_set_resource.h"
 #include "../editor_resources/meta_info_layer_resource.h"
@@ -66,128 +68,128 @@ void CustomContentLoader::addBrushesPreviewToParent(Node *parentNode, Callable o
 }
 
 void CustomContentLoader::addTexturesPreviewToParent(TerraBrush *terraBrush, Node *parentNode, Callable onSelect, bool useCircleIcon) {
-    // TODO : GDExtension
-    // if (terraBrush.TextureSets?.TextureSets != null) {
-        // for (var i = 0; i < terraBrush.TextureSets.TextureSets.Count; i++) {
-        //     var textureSet = terraBrush.TextureSets.TextureSets[i];
+    if (!terraBrush->get_textureSets().is_null() && terraBrush->get_textureSets()->get_textureSets().size() > 0) {
+        for (int i = 0; i < terraBrush->get_textureSets()->get_textureSets().size(); i++) {
+            Ref<TextureSetResource> textureSet = terraBrush->get_textureSets()->get_textureSets()[i];
 
-        //     DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
-        //     dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
-        //     dockPreviewButton->set_margin(10);
-        //     dockPreviewButton->setTextureImage(textureSet->get_albedoTexture);
-        //     dockPreviewButton->set_tooltip_text(
-        //         !textureSet.Name.is_empty()
-        //             ? textureSet.Name
-        //             : "Texture " + (i + 1)
-        //     );
+            DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
-        //     parentNode->add_child(dockPreviewButton);
+            dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
+            dockPreviewButton->set_margin(10);
 
+            parentNode->add_child(dockPreviewButton);
 
-        //     int currentIndex = i;
-        //     dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
-        // }
-    // }
+            dockPreviewButton->setTextureImage(textureSet->get_albedoTexture());
+            dockPreviewButton->set_tooltip_text(
+                !textureSet->get_name().is_empty()
+                    ? textureSet->get_name()
+                    : "Texture " + String::num_int64(i + 1)
+            );
+
+            int currentIndex = i;
+            dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
+        }
+    }
 }
 
 void CustomContentLoader::addFoliagesPreviewToParent(TerraBrush *terraBrush, Node *parentNode, Callable onSelect, bool useCircleIcon) {
-    // TODO : GDExtension
-    // if (terraBrush.Foliages != null) {
-    //     for (var i = 0; i < terraBrush.Foliages.Count; i++) {
-    //         var foliage = terraBrush.Foliages[i];
-    //         if (!foliage.Definition.is_null()) {
-    //             DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
-    //             dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
-    //             dockPreviewButton->set_margin(5);
+    if (terraBrush->get_foliages().size() > 0) {
+        for (int i = 0; i < terraBrush->get_foliages().size(); i++) {
+            Ref<FoliageResource> foliage = terraBrush->get_foliages()[i];
+            if (!foliage->get_definition().is_null()) {
+                DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
-    //             if (foliage->get_definition()->get_meshMaterial().is_null() && foliage->get_definition()->get_albedoTextures().size() == 0 && !foliage->get_definition()->get_mesh().is_null()) {
-    //                 dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_mesh());
-    //             } else if (!foliage->get_definition()->get_meshMaterial().is_null()) {
-    //                 dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_meshMaterial());
-    //             } else if (foliage->get_definition()->get_albedoTextures().size() > 0) {
-    //                 dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_albedoTextures()[0]);
-    //             }
+                dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
+                dockPreviewButton->set_margin(5);
 
-    //             dockPreviewButton->set_tooltip_text(
-    //                 !foliage->get_definition()->get_mesh()->get_path().is_empty()
-    //                     ? foliage->get_definition()->get_mesh()->get_path().get_file_name()
-    //                     : "Foliage " + (i + 1)
-    //             );
+                parentNode->add_child(dockPreviewButton);
 
-    //             parentNode->add_child(dockPreviewButton);
+                if (foliage->get_definition()->get_meshMaterial().is_null() && foliage->get_definition()->get_albedoTextures().size() == 0 && !foliage->get_definition()->get_mesh().is_null()) {
+                    dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_mesh());
+                } else if (!foliage->get_definition()->get_meshMaterial().is_null()) {
+                    dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_meshMaterial());
+                } else if (foliage->get_definition()->get_albedoTextures().size() > 0) {
+                    dockPreviewButton->loadResourcePreview(foliage->get_definition()->get_albedoTextures()[0]);
+                }
 
-    //             int currentIndex = i;
-    //             dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
-    //         }
-    //     }
-    // }
+                dockPreviewButton->set_tooltip_text(
+                    !foliage->get_definition()->get_mesh()->get_path().is_empty()
+                        ? foliage->get_definition()->get_mesh()->get_path().get_file()
+                        : "Foliage " + String::num_int64(i + 1)
+                );
+
+                int currentIndex = i;
+                dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
+            }
+        }
+    }
 }
 
 void CustomContentLoader::addObjectsPreviewToParent(TerraBrush *terraBrush, Node *parentNode, Callable onSelect, bool useCircleIcon) {
-    // TODO : GDExtension
-    // if (terraBrush.Objects != null) {
-    //     for (var i = 0; i < terraBrush.Objects.Count; i++) {
-    //         var objectItem = terraBrush.Objects[i];
+    if (terraBrush->get_objects().size() > 0) {
+        for (int i = 0; i < terraBrush->get_objects().size(); i++) {
+            Ref<ObjectResource> objectItem = terraBrush->get_objects()[i];
 
-    //         if (objectItem->get_definition()->get_objectScenes().size() > 0 || objectItem->get_definition()->get_lodMeshes().size() > 0) {
-    //             DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
-    //             dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
-    //             dockPreviewButton->set_margin(5);
+            if (objectItem->get_definition()->get_objectScenes().size() > 0 || objectItem->get_definition()->get_lodMeshes().size() > 0) {
+                DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
-    //             Ref<Resource> meshResource = objectItem->get_definition()->get_objectScenes().size() > 0 ? objectItem->get_definition()->get_objectScenes()[0] : objectItem->get_definition()->get_lodMeshes()[0]->get_meshes()[0]->get_Mesh();
-    //             dockPreviewButton->loadResourcePreview(meshResource);
+                dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
+                dockPreviewButton->set_margin(5);
 
-    //             TypedArray<Ref<PackedScene>> packedScenes = objectItem->get_definition()->get_bbjectScenes();
-    //             String tooltipText = "Object " + (i + 1);
-    //             if (packedScenes.size() > 0) {
-    //                 PackedStringArray sceneNames = TypedArray<String>();
-    //                 for (Ref<PackedScene> packedScene : packedScenes) {
-    //                     if (!packedScene.is_null() && !packedScene->get_path().get_file().is_empty()) {
-    //                         sceneNames.append(packedScene->get_path().get_file());
-    //                     }
-    //                 }
+                parentNode->add_child(dockPreviewButton);
 
-    //                 String joinedNames = String(",").join(sceneNames);
-    //                 if (!joinedNames.is_empty()) {
-    //                     tooltipText = joinedNames;
-    //                 }
-    //             }
+                Ref<Resource> meshResource = objectItem->get_definition()->get_objectScenes().size() > 0 ? objectItem->get_definition()->get_objectScenes()[0] : (Ref<ObjectOctreeLODMeshDefinitionResource>((Ref<ObjectOctreeLODMeshesDefinitionResource>(objectItem->get_definition()->get_lodMeshes()[0]))->get_meshes()[0]))->get_mesh();
+                dockPreviewButton->loadResourcePreview(meshResource);
 
-    //             dockPreviewButton->set_tooltip_text(tooltipText);
+                TypedArray<Ref<PackedScene>> packedScenes = objectItem->get_definition()->get_objectScenes();
+                String tooltipText = "Object " + String::num_int64(i + 1);
+                if (packedScenes.size() > 0) {
+                    PackedStringArray sceneNames = TypedArray<String>();
+                    for (Ref<PackedScene> packedScene : packedScenes) {
+                        if (!packedScene.is_null() && !packedScene->get_path().get_file().is_empty()) {
+                            sceneNames.append(packedScene->get_path().get_file());
+                        }
+                    }
 
-    //             parentNode->add_child(dockPreviewButton);
+                    String joinedNames = String(",").join(sceneNames);
+                    if (!joinedNames.is_empty()) {
+                        tooltipText = joinedNames;
+                    }
+                }
 
-    //             int currentIndex = i;
-    //             dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
-    //         }
-    //     }
-    // }
+                dockPreviewButton->set_tooltip_text(tooltipText);
+
+                int currentIndex = i;
+                dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
+            }
+        }
+    }
 }
 
 void CustomContentLoader::addMetaInfoLayersPreviewToParent(TerraBrush *terraBrush, Node *parentNode, Callable onSelect, bool useCircleIcon) {
-    // TODO : GDExtension
-    // if (terraBrush.MetaInfoLayers?.Count > 0) {
-    //     for (var i = 0; i < terraBrush.MetaInfoLayers.Count; i++) {
-    //         Ref<MetaInfoLayerResource> metaInfoLayer = terraBrush->get_metaInfoLayers()[i];
+    if (terraBrush->get_metaInfoLayers().size() > 0) {
+        for (int i = 0; i < terraBrush->get_metaInfoLayers().size(); i++) {
+            Ref<MetaInfoLayerResource> metaInfoLayer = terraBrush->get_metaInfoLayers()[i];
 
-    //         DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
-    //         dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
-    //         dockPreviewButton->set_margin(10);
+            DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
-    //         Ref<Image> image = Image::create_empty(48, 48, false, Image::Format::FORMAT_RGBA8);
-    //         image->fill(metaInfoLayer->get_color());
-    //         Ref<ImageTexture> imageTexture = ImageTexture::create_from_image(image);
-    //         dockPreviewButton->setTextureImage(imageTexture);
-    //         dockPreviewButton->set_tooltip_text(
-    //             !metaInfoLayer->get_name()
-    //                 ? metaInfoLayer->get_name()
-    //                 : "MetaInfo " + (i + 1)
-    //         );
+            dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
+            dockPreviewButton->set_margin(10);
 
-    //         parentNode->add_child(dockPreviewButton);
+            parentNode->add_child(dockPreviewButton);
 
-    //         int currentIndex = i;
-    //         dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
-    //     }
-    // }
+            Ref<Image> image = Image::create_empty(48, 48, false, Image::Format::FORMAT_RGBA8);
+            image->fill(metaInfoLayer->get_color());
+            Ref<ImageTexture> imageTexture = ImageTexture::create_from_image(image);
+            dockPreviewButton->setTextureImage(imageTexture);
+            dockPreviewButton->set_tooltip_text(
+                !metaInfoLayer->get_name()
+                    ? metaInfoLayer->get_name()
+                    : "MetaInfo " + String::num_int64(i + 1)
+            );
+
+            int currentIndex = i;
+            dockPreviewButton->set_onSelect(onSelect.bind(currentIndex));
+        }
+    }
 }

@@ -24,6 +24,7 @@ void DockPreviewButton::_notification(int what) {
 
 DockPreviewButton::DockPreviewButton() {
     _iconType = IconType::Square;
+    _margin = 0;
 }
 
 DockPreviewButton::~DockPreviewButton() {}
@@ -75,21 +76,23 @@ void DockPreviewButton::_ready() {
     _hoverColor = _normalColor.lightened(0.4f);
     _pressedColor = _normalColor.lightened(0.5f);
 
-    if (_marginContainer != nullptr && _margin > 0) {
-        _marginContainer->set((StringName)"theme_override_constants/margin_left", _margin);
-        _marginContainer->set((StringName)"theme_override_constants/margin_right", _margin);
-        _marginContainer->set((StringName)"theme_override_constants/margin_top", _margin);
-        _marginContainer->set((StringName)"theme_override_constants/margin_bottom", _margin);
+    if (_marginContainer != nullptr) {
+        if (_margin > 0) {
+            _marginContainer->set((StringName)"theme_override_constants/margin_left", _margin);
+            _marginContainer->set((StringName)"theme_override_constants/margin_right", _margin);
+            _marginContainer->set((StringName)"theme_override_constants/margin_top", _margin);
+            _marginContainer->set((StringName)"theme_override_constants/margin_bottom", _margin);
+        } else {
+            _marginContainer->set("theme_override_constants/margin_left", 0);
+            _marginContainer->set("theme_override_constants/margin_top", 0);
+            _marginContainer->set("theme_override_constants/margin_right", 0);
+            _marginContainer->set("theme_override_constants/margin_bottom", 0);
+        }
     }
 
     if (_label != nullptr && !_text.is_empty()) {
         _label->set_text(_text);
     }
-
-    _marginContainer->set("theme_override_constants/margin_left", 0);
-    _marginContainer->set("theme_override_constants/margin_top", 0);
-    _marginContainer->set("theme_override_constants/margin_right", 0);
-    _marginContainer->set("theme_override_constants/margin_bottom", 0);
 }
 
 Ref<Texture2D> DockPreviewButton::get_buttonImage() const {
