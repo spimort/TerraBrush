@@ -39,6 +39,7 @@ private:
     Ref<ToolBase> _currentTool = nullptr;
     TerrainToolType _currentToolType = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
     Ref<Image> _brushImage = nullptr;
+    Ref<Image> _originalBrushImage = nullptr;
     int _brushSize = 0;
     float _brushStrength = 0;
     int _brushIndex = 0;
@@ -85,6 +86,8 @@ private:
     void onDockFoliageSelected(const int index);
     void onDockObjectSelected(const int index);
     void onDockMetaInfoSelected(const int index);
+    void updateCurrentTool();
+    Ref<ToolBase> getToolForType(TerrainToolType toolType);
 
 protected:
     static void _bind_methods();

@@ -68,7 +68,7 @@ Ref<ImageTexture> ToolBase::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return nullptr;
 }
 
-void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, Callable onBrushPixel, bool ignoreLockedZone) {
+void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(Ref<ImageZoneInfo>, float)> onBrushPixel, bool ignoreLockedZone) {
     if (_lockedAxis != LockedAxis::LOCKEDAXIS_NONE) {
         if (_lockedAxisValue == Vector2(0, 0)) {
             _lockedAxisValue = Vector2(imagePosition.x, imagePosition.y);
@@ -111,7 +111,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                     Color brushPixelValue = brushImage->get_pixel(x, y);
                     float brushPixelStrength = brushPixelValue.a * (1.0f - imageZoneInfo->get_lockedStrength());
 
-                    onBrushPixel.call(imageZoneInfo, brushPixelStrength);
+                    onBrushPixel(imageZoneInfo, brushPixelStrength);
                 }
             }
         }

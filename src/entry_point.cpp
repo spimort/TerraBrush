@@ -29,6 +29,7 @@
 #include "editor_resources/zones_resource.h"
 
 #include "editor_tools/tool_base.h"
+#include "editor_tools/sculpt_tool.h"
 
 #include "misc/keybind_manager.h"
 #include "misc/zone_info.h"
@@ -124,6 +125,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         // Editor tools
         GDREGISTER_INTERNAL_CLASS(ImageZoneInfo);
         GDREGISTER_INTERNAL_CLASS(ToolBase);
+        GDREGISTER_INTERNAL_CLASS(SculptTool);
 
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();

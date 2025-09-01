@@ -12,6 +12,8 @@
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
+#include <functional>
+
 using namespace godot;
 
 struct PixelLockedInfo {
@@ -58,7 +60,6 @@ class ToolBase : public RefCounted {
     GDCLASS(ToolBase, RefCounted);
 
 private:
-    TerraBrush *_terraBrush;
     EditorUndoRedoManager *_undoRedoManager;
 
     LockedAxis _lockedAxis;
@@ -74,11 +75,13 @@ private:
     int getResolution();
 
 protected:
+    TerraBrush *_terraBrush;
+
     static void _bind_methods();
 
     virtual bool getApplyResolution();
     virtual Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone);
-    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, Callable onBrushPixel, bool ignoreLockedZone = false);
+    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(Ref<ImageZoneInfo>, float)> onBrushPixel, bool ignoreLockedZone = false);
     void addTextureToUndo(Ref<ImageTexture> texture);
     Ref<ImageZoneInfo> getImageZoneInfoForPosition(Ref<ZoneInfo> startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
 

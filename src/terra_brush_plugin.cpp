@@ -8,6 +8,7 @@
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_resources/zone_resource.h"
+#include "editor_tools/sculpt_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -72,7 +73,7 @@ void TerraBrushPlugin::_physics_process(double delta) {
         _updateTime = 0;
     } else if (_updateTime > 0) {
         _updateTime -= (float) delta;
-    } else if (_isMousePressed && _mouseHitPosition.is_finite() && !_currentTool.is_null()) {
+    } else if (_isMousePressed && _mouseHitPosition != Vector3(InfinityValue, InfinityValue, InfinityValue) && !_currentTool.is_null()) {
         int zoneSize = _currentTerraBrushNode->get_zonesSize();
         Vector3 meshToImagePosition = _mouseHitPosition + Vector3(zoneSize / 2, 0, zoneSize / 2);
         Vector2 imagePosition = Vector2(meshToImagePosition.x, meshToImagePosition.z);
@@ -152,7 +153,7 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
     if (Object::cast_to<InputEventMouseMotion>(event.ptr()) != nullptr) {
         Ref<InputEventMouseMotion> inputMotion = Object::cast_to<InputEventMouseMotion>(event.ptr());
         Vector3 meshPosition = getRayCastWithTerrain(viewportCamera);
-        if (!meshPosition.is_finite()) {
+        if (meshPosition == Vector3(InfinityValue, InfinityValue, InfinityValue)) {
             _brushDecal->set_visible(false);
         } else {
             _brushDecal->set_visible(true);
@@ -221,7 +222,7 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
 
         if (inputButton->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT) {
             if (inputButton->is_pressed()) {
-                if (!_mouseHitPosition.is_finite()) {
+                if (_mouseHitPosition != Vector3(InfinityValue, InfinityValue, InfinityValue)) {
                     _undoRedo->create_action("Modify terrain");
 
                     // Trigger a dirty state
@@ -432,6 +433,7 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     //     AddDock();
     // };
     _undoRedo = get_undo_redo();
+    updateCurrentTool();
     // TODO : GDExtension
     // _currentTerraBrushNode.UndoRedo = _undoRedo;
 
@@ -455,15 +457,6 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->set_editorResourcePreview(EditorInterface::get_singleton()->get_resource_previewer());
     _terrainDockContainer->add_child(_terrainControlDock);
 
-    _terrainControlDock->setBrushSize(_brushSize);
-    _terrainControlDock->setBrushStrength(_brushStrength);
-    _terrainControlDock->setSelectedBrushIndex(_brushIndex);
-    _terrainControlDock->selectToolType(_currentToolType);
-    _terrainControlDock->setSelectedTextureIndex(_textureIndex);
-    _terrainControlDock->setSelectedFoliageIndex(_foliageIndex);
-    _terrainControlDock->setSelectedObjectIndex(_objectIndex);
-    _terrainControlDock->setSelectedMetaInfoIndex(_metaInfoLayerIndex);
-
     _terrainControlDock->connect("toolTypeSelected", Callable(this, "onDockToolTypeSelected"));
     _terrainControlDock->connect("brushSelected", Callable(this, "onDockBrushSelected"));
     _terrainControlDock->connect("brushSizeChanged", Callable(this, "onDockBrushSizeChanged"));
@@ -472,6 +465,15 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->connect("foliageSelected", Callable(this, "onDockFoliageSelected"));
     _terrainControlDock->connect("objectSelected", Callable(this, "onDockObjectSelected"));
     _terrainControlDock->connect("metaInfoSelected", Callable(this, "onDockMetaInfoSelected"));
+
+    _terrainControlDock->setBrushSize(_brushSize);
+    _terrainControlDock->setBrushStrength(_brushStrength);
+    _terrainControlDock->setSelectedBrushIndex(_brushIndex);
+    _terrainControlDock->selectToolType(_currentToolType);
+    _terrainControlDock->setSelectedTextureIndex(_textureIndex);
+    _terrainControlDock->setSelectedFoliageIndex(_foliageIndex);
+    _terrainControlDock->setSelectedObjectIndex(_objectIndex);
+    _terrainControlDock->setSelectedMetaInfoIndex(_metaInfoLayerIndex);
 
     _updateTerrainSettingsButton = memnew(Button);
     _updateTerrainSettingsButton->set_text("Update terrain");
@@ -683,6 +685,9 @@ void TerraBrushPlugin::updateTerrainSettings() {
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {
     _autoAddZones = _autoAddZonesCheckbox->is_pressed();
+    if (!_currentTool.is_null()) {
+        _currentTool->set_autoAddZones(_autoAddZones);
+    }
 }
 
 void TerraBrushPlugin::onPieMenuBrushSelected(const CustomContentPieMenu *customContentPieMenu) {
@@ -712,15 +717,25 @@ void TerraBrushPlugin::onToolSelected(const TerrainToolType value) {
 
 void TerraBrushPlugin::onDockToolTypeSelected(const TerrainToolType toolType) {
     _currentToolType = toolType;
+    updateCurrentTool();
 }
 
 void TerraBrushPlugin::onDockBrushSelected(const int index, const Ref<Image> &image) {
     _brushIndex = index;
-    _brushImage = image;
+    _originalBrushImage = image;
+
+    // This is to trigger the resize of the brush image
+    onDockBrushSizeChanged(_brushSize);
 }
 
 void TerraBrushPlugin::onDockBrushSizeChanged(const int value) {
     _brushSize = value;
+
+    if (!_originalBrushImage.is_null()) {
+        _brushImage = Ref<Image>(memnew(Image));
+        _brushImage->copy_from(_originalBrushImage);
+        _brushImage->resize(_brushSize, _brushSize);
+    }
 }
 
 void TerraBrushPlugin::onDockBrushStrengthChanged(const float value) {
@@ -741,4 +756,63 @@ void TerraBrushPlugin::onDockObjectSelected(const int index) {
 
 void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
     _metaInfoLayerIndex = index;
+}
+
+void TerraBrushPlugin::updateCurrentTool() {
+    Ref<ToolBase> newTool = getToolForType(_currentToolType);
+    if (newTool.is_null()) {
+        if (!_currentTool.is_null()) {
+            _currentTool->beforeDeselect();
+        }
+        _currentTool = Ref<ToolBase>(nullptr);
+    } else if (_currentTool.is_null() || _currentTool->get_class() != newTool->get_class()) {
+        if (!_currentTool.is_null()) {
+            _currentTool->beforeDeselect();
+        }
+        _currentTool = newTool;
+
+        _currentTool->init(_currentTerraBrushNode, _undoRedo, _autoAddZones);
+    }
+}
+
+Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
+    switch (toolType) {
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINADD:
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE:
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH:
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN:
+            return memnew(SculptTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
+        //     return memnew(SetHeightTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
+        //     return memnew(SetAngleTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_PAINT:
+        //     return memnew(TextureTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE:
+        //     return memnew(FoliageTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE:
+        //     return memnew(ObjectTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_WATERADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE:
+        //     return memnew(WaterTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE:
+        //     return memnew(WaterFlowTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_SNOWADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE:
+        //     return memnew(SnowTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_HOLEADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE:
+        //     return memnew(HoleTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_LOCKADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE:
+        //     return memnew(LockTool);
+        // case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
+        // case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE:
+        //     return memnew(MetaInfoTool);
+    }
+
+    return nullptr;
 }
