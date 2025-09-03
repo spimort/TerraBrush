@@ -60,8 +60,8 @@ void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
 }
 
 void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](Ref<ImageZoneInfo> imageZoneInfo, float pixelBrushStrength) {
-        Color currentPixel = imageZoneInfo->get_image()->get_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y);
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         float newValue = pixelBrushStrength * brushStrength * _sculptingMultiplier;
         if (toolType == TerrainToolType::TERRAINTOOLTYPE_TERRAINADD) {
             newValue = currentPixel.r + newValue;
@@ -70,8 +70,8 @@ void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int bru
         }
 
         Color newPixel = Color(newValue, currentPixel.g, currentPixel.b, currentPixel.a);
-        imageZoneInfo->get_image()->set_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y, newPixel);
-        _sculptedZones.insert(imageZoneInfo->get_zone());
+        imageZoneInfo.image->set_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y, newPixel);
+        _sculptedZones.insert(imageZoneInfo.zone);
     }));
 }
 
@@ -79,8 +79,8 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
     Color smoothValue = Color::named("TRANSPARENT");
     int numberOfSamples = 0;
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](Ref<ImageZoneInfo> imageZoneInfo, float pixelBrushStrength) {
-        Color currentPixel = imageZoneInfo->get_image()->get_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y);
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         smoothValue += currentPixel;
         numberOfSamples += 1;
@@ -88,8 +88,8 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
 
     smoothValue = smoothValue / numberOfSamples;
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](Ref<ImageZoneInfo> imageZoneInfo, float pixelBrushStrength) {
-        Color currentPixel = imageZoneInfo->get_image()->get_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y);
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         Color newValue = Color(
             Math::lerp(currentPixel.r, smoothValue.r, pixelBrushStrength * brushStrength),
             currentPixel.g,
@@ -97,36 +97,36 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
             currentPixel.a
         );
 
-        imageZoneInfo->get_image()->set_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y, newValue);
-        _sculptedZones.insert(imageZoneInfo->get_zone());
+        imageZoneInfo.image->set_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y, newValue);
+        _sculptedZones.insert(imageZoneInfo.zone);
     }));
 }
 
 void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](Ref<ImageZoneInfo> imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
         TypedArray<float> directions = TypedArray<float>();
 
-        Ref<ImageZoneInfo> neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo->get_zoneInfo(), -1, 0, true);
-        if (!neighbourImageZoneInfo.is_null()) {
-            directions.append(neighbourImageZoneInfo->get_image()->get_pixel(neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().x, neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().y).r);
+        ImageZoneInfo neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, -1, 0, true);
+        if (!neighbourImageZoneInfo.image.is_null()) {
+            directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
-        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo->get_zoneInfo(), 1, 0, true);
-        if (!neighbourImageZoneInfo.is_null()) {
-            directions.append(neighbourImageZoneInfo->get_image()->get_pixel(neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().x, neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().y).r);
+        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 1, 0, true);
+        if (!neighbourImageZoneInfo.image.is_null()) {
+            directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
-        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo->get_zoneInfo(), 0, -1, true);
-        if (!neighbourImageZoneInfo.is_null()) {
-            directions.append(neighbourImageZoneInfo->get_image()->get_pixel(neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().x, neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().y).r);
+        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 0, -1, true);
+        if (!neighbourImageZoneInfo.image.is_null()) {
+            directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
-        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo->get_zoneInfo(), 0, 1, true);
-        if (!neighbourImageZoneInfo.is_null()) {
-            directions.append(neighbourImageZoneInfo->get_image()->get_pixel(neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().x, neighbourImageZoneInfo->get_zoneInfo()->get_imagePosition().y).r);
+        neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 0, 1, true);
+        if (!neighbourImageZoneInfo.image.is_null()) {
+            directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
-        Color currentPixel = imageZoneInfo->get_image()->get_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y);
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         directions.append(currentPixel.r);
 
         float average = 0;
@@ -138,7 +138,7 @@ void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrengt
         float resultValue = Math::lerp(currentPixel.r, average, pixelBrushStrength * brushStrength);
 
         Color newPixel = Color(resultValue, currentPixel.g, currentPixel.b, currentPixel.a);
-        imageZoneInfo->get_image()->set_pixel(imageZoneInfo->get_zoneInfo()->get_imagePosition().x, imageZoneInfo->get_zoneInfo()->get_imagePosition().y, newPixel);
-        _sculptedZones.insert(imageZoneInfo->get_zone());
+        imageZoneInfo.image->set_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y, newPixel);
+        _sculptedZones.insert(imageZoneInfo.zone);
     }));
 }

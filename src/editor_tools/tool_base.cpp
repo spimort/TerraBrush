@@ -25,9 +25,9 @@ void ToolBase::init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManag
     _autoAddZones = autoAddZones;
 }
 
-PixelLockedInfo ToolBase::isZonePixelLocked(Ref<ZoneResource> zone, Ref<ZoneInfo> zoneInfo) {
+PixelLockedInfo ToolBase::isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo zoneInfo) {
     Ref<Image> image = zone->get_lockTexture()->get_image();
-    Color pixel = image->get_pixel(zoneInfo->get_imagePosition().x, zoneInfo->get_imagePosition().y);
+    Color pixel = image->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
     return PixelLockedInfo(pixel.r == 1.0, pixel.r);
 }
 
@@ -68,7 +68,7 @@ Ref<ImageTexture> ToolBase::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return nullptr;
 }
 
-void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(Ref<ImageZoneInfo>, float)> onBrushPixel, bool ignoreLockedZone) {
+void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo, float)> onBrushPixel, bool ignoreLockedZone) {
     if (_lockedAxis != LockedAxis::LOCKEDAXIS_NONE) {
         if (_lockedAxisValue == Vector2(0, 0)) {
             _lockedAxisValue = Vector2(imagePosition.x, imagePosition.y);
@@ -83,7 +83,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
 
     float startingX = imagePosition.x - (brushSize / 2);
     float startingY = imagePosition.y - (brushSize / 2);
-    Ref<ZoneInfo> startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
+    ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
     HashSet<String> pointsCache = HashSet<String>();
     for (int x = 0; x < brushSize; x++) {
@@ -94,11 +94,11 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                 offsetX = (int) Math::floor(Math::remap((float) x, 0, brushSize, 0, (int) Math::ceil(((float) brushSize) / _terraBrush->get_resolution())));
                 offsetY = (int) Math::floor(Math::remap((float) y, 0, brushSize, 0, (int) Math::ceil(((float) brushSize) / _terraBrush->get_resolution())));
             }
-            Ref<ImageZoneInfo> imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
+            ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
 
-            if (!imageZoneInfo.is_null()) {
-                int zoneKey = imageZoneInfo->get_zoneInfo()->get_zoneKey();
-                Vector2i zoneImagePosition = imageZoneInfo->get_zoneInfo()->get_imagePosition();
+            if (!imageZoneInfo.image.is_null()) {
+                int zoneKey = imageZoneInfo.zoneInfo.zoneKey;
+                Vector2i zoneImagePosition = imageZoneInfo.zoneInfo.imagePosition;
                 int positionKey = (zoneImagePosition.x << 8) + zoneImagePosition.y;
                 // Create a cache key with the zone and the position
                 String zonePositionKey = String::num_int64(zoneKey) + "_" + String::num_int64(positionKey);
@@ -109,7 +109,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                     }
 
                     Color brushPixelValue = brushImage->get_pixel(x, y);
-                    float brushPixelStrength = brushPixelValue.a * (1.0f - imageZoneInfo->get_lockedStrength());
+                    float brushPixelStrength = brushPixelValue.a * (1.0f - imageZoneInfo.lockedStrength);
 
                     onBrushPixel(imageZoneInfo, brushPixelStrength);
                 }
@@ -118,37 +118,37 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
     }
 }
 
-Ref<ImageZoneInfo> ToolBase::getImageZoneInfoForPosition(Ref<ZoneInfo> startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
-    Ref<ZoneInfo> zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
+ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
+    ZoneInfo zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
     Ref<ZoneResource> zone;
-    if (_zonesPositionCache.has(zoneInfo->get_zoneKey())) {
-        zone = _zonesPositionCache[zoneInfo->get_zoneKey()];
+    if (_zonesPositionCache.has(zoneInfo.zoneKey)) {
+        zone = _zonesPositionCache[zoneInfo.zoneKey];
     }
 
     if (zone.is_null()) {
         zone = _terraBrush->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
 
         if (!zone.is_null()) {
-            _zonesPositionCache[zoneInfo->get_zoneKey()] = zone;
+            _zonesPositionCache[zoneInfo.zoneKey] = zone;
         }
     }
 
     if (zone.is_null() && _autoAddZones) {
-        zone = _terraBrush->addNewZone(zoneInfo->get_zonePosition());
+        zone = _terraBrush->addNewZone(zoneInfo.zonePosition);
 
         if (!zone.is_null()) {
             _terraBrush->get_terrain()->addZoneCollision(zone);
-            _zonesPositionCache[zoneInfo->get_zoneKey()] = zone;
+            _zonesPositionCache[zoneInfo.zoneKey] = zone;
         }
     }
 
     if (!zone.is_null()) {
         PixelLockedInfo lockInfo = PixelLockedInfo(false, 0.0f);
         if (!ignoreLockedZone && !zone->get_lockTexture().is_null()) {
-            Ref<ZoneInfo> lockZoneInfo = zoneInfo;
+            ZoneInfo lockZoneInfo = zoneInfo;
             if (_terraBrush->get_resolution() != 1 && getApplyResolution()) {
-                Ref<ZoneInfo> resolutionZoneInfo = memnew(ZoneInfo);
-                resolutionZoneInfo->set_imagePosition(startingZoneInfo->get_imagePosition() * _terraBrush->get_resolution());
+                ZoneInfo resolutionZoneInfo = ZoneInfo();
+                resolutionZoneInfo.imagePosition = startingZoneInfo.imagePosition * _terraBrush->get_resolution();
 
                 lockZoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(
                     resolutionZoneInfo,
@@ -165,29 +165,26 @@ Ref<ImageZoneInfo> ToolBase::getImageZoneInfoForPosition(Ref<ZoneInfo> startingZ
             if (_imagesCache.has(zone)) {
                 image = _imagesCache[zone];
             }
-            Ref<ImageTexture> imageTexture = getToolCurrentImageTexture(zone);
 
-            if (!imageTexture.is_null()) {
-                if (image.is_null()) {
-                    image = imageTexture->get_image();
-                    _imagesCache[zone] = image;
+            if (image.is_null()) {
+                Ref<ImageTexture> imageTexture = getToolCurrentImageTexture(zone);
+
+                if (!imageTexture.is_null()) {
+                    if (image.is_null()) {
+                        image = imageTexture->get_image();
+                        _imagesCache[zone] = image;
+                    }
+
+                    _terraBrush->get_terrainZones()->addDirtyImageTexture(imageTexture);
+                    addTextureToUndo(imageTexture);
                 }
-
-                _terraBrush->get_terrainZones()->addDirtyImageTexture(imageTexture);
-                addTextureToUndo(imageTexture);
             }
 
-            Ref<ImageZoneInfo> imageZoneInfo = memnew(ImageZoneInfo);
-            imageZoneInfo->set_image(image);
-            imageZoneInfo->set_zoneInfo(zoneInfo);
-            imageZoneInfo->set_zone(zone);
-            imageZoneInfo->set_lockedStrength(lockInfo.lockedStrength);
-
-            return imageZoneInfo;
+            return ImageZoneInfo(image, zoneInfo, zone, lockInfo.lockedStrength);
         }
     }
 
-    return nullptr;
+    return ImageZoneInfo();
 }
 
 void ToolBase::beforeDeselect() {
@@ -252,40 +249,4 @@ void ToolBase::endPaint() {
 
 void ToolBase::set_autoAddZones(bool value) {
     _autoAddZones = value;
-}
-
-// ImageZoneInfo class
-
-void ImageZoneInfo::_bind_methods() {}
-
-ImageZoneInfo::ImageZoneInfo() {}
-
-ImageZoneInfo::~ImageZoneInfo() {}
-
-Ref<Image> ImageZoneInfo::get_image() const {
-    return _image;
-}
-void ImageZoneInfo::set_image(const Ref<Image> &value) {
-    _image = value;
-}
-
-Ref<ZoneInfo> ImageZoneInfo::get_zoneInfo() const {
-    return _zoneInfo;
-}
-void ImageZoneInfo::set_zoneInfo(const Ref<ZoneInfo> &value) {
-    _zoneInfo = value;
-}
-
-Ref<ZoneResource> ImageZoneInfo::get_zone() const {
-    return _zone;
-}
-void ImageZoneInfo::set_zone(const Ref<ZoneResource> &value) {
-    _zone = value;
-}
-
-float ImageZoneInfo::get_lockedStrength() const {
-    return _lockedStrength;
-}
-void ImageZoneInfo::set_lockedStrength(const float value) {
-    _lockedStrength = value;
 }

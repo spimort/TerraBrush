@@ -87,7 +87,7 @@ Ref<ImageTexture> ZoneUtils::getImageTextureResource(Ref<Image> image, String fi
     return imageTexture;
 }
 
-Ref<ZoneInfo> ZoneUtils::getPixelToZoneInfo(float x, float y, int zonesSize, int resolution) {
+ZoneInfo ZoneUtils::getPixelToZoneInfo(float x, float y, int zonesSize, int resolution) {
     if (zonesSize % 2 == 0) {
         x -= 0.5f;
         y -= 0.5f;
@@ -113,15 +113,12 @@ Ref<ZoneInfo> ZoneUtils::getPixelToZoneInfo(float x, float y, int zonesSize, int
     // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
     int zoneKey = (zonePosition.x << 8) + zonePosition.y;
 
-    Ref<ZoneInfo> zoneInfo = memnew(ZoneInfo);
-    zoneInfo->init(zoneKey, zonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
-    return zoneInfo;
+    return ZoneInfo(zoneKey, zonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
 }
 
-Ref<ZoneInfo> ZoneUtils::getZoneInfoFromZoneOffset(Ref<ZoneInfo> startingZone, Vector2i offset, int zonesSize, int resolution) {
+ZoneInfo ZoneUtils::getZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2i offset, int zonesSize, int resolution) {
     int resolutionSize = getImageSizeForResolution(zonesSize, resolution);
-
-    Vector2 pixelPosition = Vector2(startingZone->get_imagePosition().x + offset.x, startingZone->get_imagePosition().y + offset.y);
+    Vector2 pixelPosition = Vector2(startingZone.imagePosition.x + offset.x, startingZone.imagePosition.y + offset.y);
     int zoneXPosition = (int) Math::floor(pixelPosition.x / resolutionSize);
     int zoneYPosition = (int) Math::floor(pixelPosition.y / resolutionSize);
 
@@ -132,12 +129,10 @@ Ref<ZoneInfo> ZoneUtils::getZoneInfoFromZoneOffset(Ref<ZoneInfo> startingZone, V
     int resolutionZoneBrushYPosition = zoneBrushYPosition;
 
     // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
-    Vector2i absoluteZonePosition = Vector2i(startingZone->get_zonePosition().x + zoneXPosition, startingZone->get_zonePosition().y + zoneYPosition);
+    Vector2i absoluteZonePosition = Vector2i(startingZone.zonePosition.x + zoneXPosition, startingZone.zonePosition.y + zoneYPosition);
     int zoneKey = (absoluteZonePosition.x << 8) + absoluteZonePosition.y;
 
-    Ref<ZoneInfo> zoneInfo = memnew(ZoneInfo);
-    zoneInfo->init(zoneKey, absoluteZonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
-    return zoneInfo;
+    return ZoneInfo(zoneKey, absoluteZonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
 }
 
 int ZoneUtils::getImageSizeForResolution(int zoneSize, float resolution) {

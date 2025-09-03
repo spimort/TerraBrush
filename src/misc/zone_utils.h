@@ -28,8 +28,8 @@ class ZoneUtils {
         static Ref<ImageTexture> createSnowImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
         static Ref<ImageTexture> createMetaInfoImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
         static Ref<ImageTexture> getImageTextureResource(Ref<Image> image, String filePath, String dataPath);
-        static Ref<ZoneInfo> getPixelToZoneInfo(float x, float y, int zonesSize, int resolution);
-        static Ref<ZoneInfo> getZoneInfoFromZoneOffset(Ref<ZoneInfo> startingZone, Vector2i offset, int zonesSize, int resolution);
+        static ZoneInfo getPixelToZoneInfo(float x, float y, int zonesSize, int resolution);
+        static ZoneInfo getZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2i offset, int zonesSize, int resolution);
         static int getImageSizeForResolution(int zoneSize, float resolution);
 };
 #endif

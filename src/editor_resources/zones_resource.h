@@ -67,6 +67,6 @@ public:
     void updateZonesMap();
     void addDirtyImageTexture(Ref<ImageTexture> imageTexture);
     void updateImageTextures(int zoneSize);
-    Ref<ZoneResource> getZoneForZoneInfo(Ref<ZoneInfo> zoneInfo);
+    Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
 };
 #endif

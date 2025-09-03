@@ -1,32 +1,20 @@
 #ifndef ZONE_INFO_H
 #define ZONE_INFO_H
 
-#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/core/class_db.hpp>
 
 using namespace godot;
 
-class ZoneInfo : public RefCounted{
-    GDCLASS(ZoneInfo, RefCounted);
+struct ZoneInfo {
+    int zoneKey = 0;
+    Vector2i zonePosition = Vector2i();
+    Vector2i imagePosition = Vector2i();
 
-private:
-    int _zoneKey = 0;
-    Vector2i _zonePosition = Vector2i();
-    Vector2i _imagePosition = Vector2i();
-
-protected:
-    static void _bind_methods();
-
-public:
-    ZoneInfo();
-    ~ZoneInfo();
-
-    void init(int zoneKey, Vector2i zonePosition, Vector2i imagePosition);
-
-    int get_zoneKey() const;
-    void set_zoneKey(const int value);
-    Vector2i get_zonePosition() const;
-    void set_zonePosition(const Vector2i value);
-    Vector2i get_imagePosition() const;
-    void set_imagePosition(const Vector2i value);
+    ZoneInfo() {}
+    ZoneInfo(int p_zoneKey, Vector2i p_zonePosition, Vector2i p_imagePosition) {
+        zoneKey = p_zoneKey;
+        zonePosition = p_zonePosition;
+        imagePosition = p_imagePosition;
+    }
 };
 #endif

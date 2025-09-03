@@ -32,7 +32,6 @@
 #include "editor_tools/sculpt_tool.h"
 
 #include "misc/keybind_manager.h"
-#include "misc/zone_info.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -65,9 +64,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
         GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
         GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
-
-        // Internal classes
-        GDREGISTER_INTERNAL_CLASS(ZoneInfo);
 
         // Internal nodes
         GDREGISTER_INTERNAL_CLASS(BrushDecal);
@@ -123,7 +119,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
     if (level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
         // Editor tools
-        GDREGISTER_INTERNAL_CLASS(ImageZoneInfo);
         GDREGISTER_INTERNAL_CLASS(ToolBase);
         GDREGISTER_INTERNAL_CLASS(SculptTool);
 

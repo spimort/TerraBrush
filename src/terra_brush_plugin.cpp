@@ -359,7 +359,7 @@ Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direct
     for (int i = 0; i < 20000; i++) {
         Vector3 position = from + (direction * i * 0.1f) - _currentTerraBrushNode->get_global_position();
 
-        Ref<ZoneInfo> zoneInfo = ZoneUtils::getPixelToZoneInfo(position.x + (_currentTerraBrushNode->get_zonesSize() / 2), position.z + (_currentTerraBrushNode->get_zonesSize() / 2), _currentTerraBrushNode->get_zonesSize(), _currentTerraBrushNode->get_resolution());
+        ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(position.x + (_currentTerraBrushNode->get_zonesSize() / 2), position.z + (_currentTerraBrushNode->get_zonesSize() / 2), _currentTerraBrushNode->get_zonesSize(), _currentTerraBrushNode->get_resolution());
         Ref<ZoneResource> zone;
         if (!_currentTerraBrushNode->get_terrainZones().is_null()) {
             zone = _currentTerraBrushNode->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
@@ -376,7 +376,7 @@ Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direct
                 heightmapsCache[zone->get_heightMapTexture()] = heightMapImage;
             }
 
-            float zoneHeight = heightMapImage->get_pixel(zoneInfo->get_imagePosition().x, zoneInfo->get_imagePosition().y).r;
+            float zoneHeight = heightMapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
 
             if (zoneHeight >= position.y) {
                 return Vector3(position.x, zoneHeight, position.z) + _currentTerraBrushNode->get_global_position();

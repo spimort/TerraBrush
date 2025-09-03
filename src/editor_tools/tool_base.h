@@ -27,33 +27,19 @@ struct PixelLockedInfo {
     }
 };
 
-class ImageZoneInfo : public RefCounted {
-    GDCLASS(ImageZoneInfo, RefCounted);
+struct ImageZoneInfo {
+    Ref<Image> image = nullptr;
+    ZoneInfo zoneInfo = ZoneInfo();
+    Ref<ZoneResource> zone = nullptr;
+    float lockedStrength = 0;
 
-private:
-    Ref<Image> _image = nullptr;
-    Ref<ZoneInfo> _zoneInfo = nullptr;
-    Ref<ZoneResource> _zone = nullptr;
-    float _lockedStrength = 0;
-
-protected:
-    static void _bind_methods();
-
-public:
-    ImageZoneInfo();
-    ~ImageZoneInfo();
-
-    Ref<Image> get_image() const;
-    void set_image(const Ref<Image> &value);
-
-    Ref<ZoneInfo> get_zoneInfo() const;
-    void set_zoneInfo(const Ref<ZoneInfo> &value);
-
-    Ref<ZoneResource> get_zone() const;
-    void set_zone(const Ref<ZoneResource> &value);
-
-    float get_lockedStrength() const;
-    void set_lockedStrength(const float value);
+    ImageZoneInfo() {}
+    ImageZoneInfo(Ref<Image> p_image, ZoneInfo p_zoneInfo, Ref<ZoneResource> p_zone, float p_lockedStrength) {
+        image = p_image;
+        zoneInfo = p_zoneInfo;
+        zone = p_zone;
+        lockedStrength = p_lockedStrength;
+    }
 };
 
 class ToolBase : public RefCounted {
@@ -69,7 +55,7 @@ private:
     TypedArray<Ref<ImageTexture>> _modifiedUndoTextures;
     bool _autoAddZones;
 
-    PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, Ref<ZoneInfo> zoneInfo);
+    PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo zoneInfo);
     void addImagesToRedo();
     Ref<Image> getUndoRedoImageFromTexture(Ref<ImageTexture> imageTexture);
     int getResolution();
@@ -81,9 +67,9 @@ protected:
 
     virtual bool getApplyResolution();
     virtual Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone);
-    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(Ref<ImageZoneInfo>, float)> onBrushPixel, bool ignoreLockedZone = false);
+    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo, float)> onBrushPixel, bool ignoreLockedZone = false);
     void addTextureToUndo(Ref<ImageTexture> texture);
-    Ref<ImageZoneInfo> getImageZoneInfoForPosition(Ref<ZoneInfo> startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
+    ImageZoneInfo getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
 
 public:
     ToolBase();

@@ -259,9 +259,9 @@ void ZonesResource::updateImageTextures(int zoneSize) {
     updateZonesMap();
 }
 
-Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(Ref<ZoneInfo> zoneInfo) {
+Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(ZoneInfo zoneInfo) {
     for (Ref<ZoneResource> zone : _zones) {
-        if (zone->get_zonePosition().x == zoneInfo->get_zonePosition().x && zone->get_zonePosition().y == zoneInfo->get_zonePosition().y) {
+        if (zone->get_zonePosition().x == zoneInfo.zonePosition.x && zone->get_zonePosition().y == zoneInfo.zonePosition.y) {
             return zone;
         }
     }
