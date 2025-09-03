@@ -121,7 +121,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
 ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
     ZoneInfo zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
     Ref<ZoneResource> zone;
-    if (_zonesPositionCache.has(zoneInfo.zoneKey)) {
+    if (_zonesPositionCache.count(zoneInfo.zoneKey)) {
         zone = _zonesPositionCache[zoneInfo.zoneKey];
     }
 
@@ -162,7 +162,7 @@ ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, i
 
         if (!lockInfo.locked) {
             Ref<Image> image;
-            if (_imagesCache.has(zone)) {
+            if (_imagesCache.count(zone)) {
                 image = _imagesCache[zone];
             }
 
@@ -228,8 +228,8 @@ bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
 }
 
 void ToolBase::beginPaint() {
-    _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
-    _zonesPositionCache = TypedDictionary<int, Ref<ZoneResource>>();
+    _imagesCache = std::map<Ref<ZoneResource>, Ref<Image>>();
+    _zonesPositionCache = std::map<int, Ref<ZoneResource>>();
     _modifiedUndoTextures = TypedArray<Ref<ImageTexture>>();
 }
 

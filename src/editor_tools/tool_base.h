@@ -12,6 +12,7 @@
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
+#include <map>
 #include <functional>
 
 using namespace godot;
@@ -50,8 +51,8 @@ private:
 
     LockedAxis _lockedAxis;
     Vector2 _lockedAxisValue;
-    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache;
-    TypedDictionary<int, Ref<ZoneResource>> _zonesPositionCache;
+    std::map<Ref<ZoneResource>, Ref<Image>> _imagesCache;
+    std::map<int, Ref<ZoneResource>> _zonesPositionCache;
     TypedArray<Ref<ImageTexture>> _modifiedUndoTextures;
     bool _autoAddZones;
 
