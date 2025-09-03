@@ -85,7 +85,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
     float startingY = imagePosition.y - (brushSize / 2);
     ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
-    HashSet<String> pointsCache = HashSet<String>();
+    HashSet<int> pointsCache = HashSet<int>();
     for (int x = 0; x < brushSize; x++) {
         for (int y = 0; y < brushSize; y++) {
             int offsetX = x;
@@ -101,7 +101,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                 Vector2i zoneImagePosition = imageZoneInfo.zoneInfo.imagePosition;
                 int positionKey = (zoneImagePosition.x << 8) + zoneImagePosition.y;
                 // Create a cache key with the zone and the position
-                String zonePositionKey = String::num_int64(zoneKey) + "_" + String::num_int64(positionKey);
+                int zonePositionKey = (zoneKey << 8) + positionKey;
 
                 if (_terraBrush->get_resolution() == 1 || !getApplyResolution() || !pointsCache.has(zonePositionKey)) {
                     if (_terraBrush->get_resolution() != 1) {
