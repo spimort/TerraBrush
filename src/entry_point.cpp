@@ -30,6 +30,7 @@
 
 #include "editor_tools/tool_base.h"
 #include "editor_tools/sculpt_tool.h"
+#include "editor_tools/set_height_tool.h"
 
 #include "misc/keybind_manager.h"
 
@@ -121,6 +122,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         // Editor tools
         GDREGISTER_INTERNAL_CLASS(ToolBase);
         GDREGISTER_INTERNAL_CLASS(SculptTool);
+        GDREGISTER_INTERNAL_CLASS(SetHeightTool);
 
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();

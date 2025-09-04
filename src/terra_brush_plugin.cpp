@@ -9,6 +9,7 @@
 #include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_resources/zone_resource.h"
 #include "editor_tools/sculpt_tool.h"
+#include "editor_tools/set_height_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -782,8 +783,8 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH:
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN:
             return memnew(SculptTool);
-        // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
-        //     return memnew(SetHeightTool);
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
+            return memnew(SetHeightTool);
         // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
         //     return memnew(SetAngleTool);
         // case TerrainToolType::TERRAINTOOLTYPE_PAINT:
