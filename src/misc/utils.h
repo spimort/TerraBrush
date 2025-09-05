@@ -10,6 +10,8 @@ using namespace godot;
 
 class Utils {
     public:
+        static float InfinityValue;
+
         static float getNextFloatWithSeed(int seed, float minValue, float maxValue);
         static int getNextIntWithSeed(int seed, int minValue, int maxValue);
         static String pathCombineForwardSlash(String directory, String path);

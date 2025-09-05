@@ -4,12 +4,14 @@
 #include "misc/zone_info.h"
 #include "misc/zone_utils.h"
 #include "misc/custom_content_loader.h"
+#include "misc/utils.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_resources/zone_resource.h"
 #include "editor_tools/sculpt_tool.h"
 #include "editor_tools/set_height_tool.h"
+#include "editor_tools/set_angle_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -74,7 +76,7 @@ void TerraBrushPlugin::_physics_process(double delta) {
         _updateTime = 0;
     } else if (_updateTime > 0) {
         _updateTime -= (float) delta;
-    } else if (_isMousePressed && _mouseHitPosition != Vector3(InfinityValue, InfinityValue, InfinityValue) && !_currentTool.is_null()) {
+    } else if (_isMousePressed && _mouseHitPosition != Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue) && !_currentTool.is_null()) {
         int zoneSize = _currentTerraBrushNode->get_zonesSize();
         Vector3 meshToImagePosition = _mouseHitPosition + Vector3(zoneSize / 2, 0, zoneSize / 2);
         Vector2 imagePosition = Vector2(meshToImagePosition.x, meshToImagePosition.z);
@@ -154,7 +156,7 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
     if (Object::cast_to<InputEventMouseMotion>(event.ptr()) != nullptr) {
         Ref<InputEventMouseMotion> inputMotion = Object::cast_to<InputEventMouseMotion>(event.ptr());
         Vector3 meshPosition = getRayCastWithTerrain(viewportCamera);
-        if (meshPosition == Vector3(InfinityValue, InfinityValue, InfinityValue)) {
+        if (meshPosition == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
             _brushDecal->set_visible(false);
         } else {
             _brushDecal->set_visible(true);
@@ -223,7 +225,7 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
 
         if (inputButton->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT) {
             if (inputButton->is_pressed()) {
-                if (_mouseHitPosition != Vector3(InfinityValue, InfinityValue, InfinityValue)) {
+                if (_mouseHitPosition != Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
                     _undoRedo->create_action("Modify terrain");
 
                     // Trigger a dirty state
@@ -351,7 +353,7 @@ Vector3 TerraBrushPlugin::getRayCastWithTerrain(Camera3D *editorCamera) {
         }
     }
 
-    return Vector3(InfinityValue, InfinityValue, InfinityValue);
+    return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 }
 
 Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direction) {
@@ -386,7 +388,7 @@ Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direct
 
     }
 
-    return Vector3(InfinityValue, InfinityValue, InfinityValue);
+    return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 }
 
 void TerraBrushPlugin::removeDock() {
@@ -780,6 +782,10 @@ void TerraBrushPlugin::beforeDeselectTool() {
     if (Object::cast_to<SetHeightTool>(_currentTool.ptr()) != nullptr) {
         Ref<SetHeightTool> setHeightTool = Object::cast_to<SetHeightTool>(_currentTool.ptr());
         _selectedSetHeight = setHeightTool->getSetHeightValue();
+    } else if (Object::cast_to<SetAngleTool>(_currentTool.ptr()) != nullptr) {
+        Ref<SetAngleTool> setAngleTool = Object::cast_to<SetAngleTool>(_currentTool.ptr());
+        _selectedSetAngle = setAngleTool->getSetAngleValue();
+        _selectedSetAngleInitialPoint = setAngleTool->getSetAngleInitialPoint();
     }
 
     _currentTool->beforeDeselect();
@@ -792,12 +798,17 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH:
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN:
             return memnew(SculptTool);
-        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT: {
             Ref<SetHeightTool> setHeightTool = memnew(SetHeightTool);
             setHeightTool->updateSetHeightValue(_selectedSetHeight);
             return setHeightTool;
-        // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
-        //     return memnew(SetAngleTool);
+        }
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE: {
+            Ref<SetAngleTool> setAngleTool = memnew(SetAngleTool);
+            setAngleTool->updateSetAngleValue(_selectedSetAngle);
+            setAngleTool->updateSetAngleInitialPoint(_selectedSetAngleInitialPoint);
+            return setAngleTool;
+        }
         // case TerrainToolType::TERRAINTOOLTYPE_PAINT:
         //     return memnew(TextureTool);
         // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:

@@ -7,6 +7,7 @@
 #include "editor_nodes/tool_info.h"
 #include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_tools/tool_base.h"
+#include "misc/utils.h"
 
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/control.hpp>
@@ -19,7 +20,6 @@ class TerraBrushPlugin : public EditorPlugin {
     GDCLASS(TerraBrushPlugin, EditorPlugin);
 
 private:
-    const float InfinityValue = std::numeric_limits<float>::infinity();
     const float UpdateDelay = 0.005f;
     const int ToolInfoOffset = 20;
     static constexpr const char* OverlayActionNameKey = "ActionName";
@@ -48,6 +48,8 @@ private:
     int _objectIndex = 0;
     int _metaInfoLayerIndex = 0;
     float _selectedSetHeight = 0;
+    float _selectedSetAngle = 0;
+    Vector3 _selectedSetAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 
     bool _isMousePressed = false;
     Vector3 _mouseHitPosition = Vector3();

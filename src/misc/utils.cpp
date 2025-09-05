@@ -8,6 +8,8 @@
 
 using namespace godot;
 
+float Utils::InfinityValue = std::numeric_limits<float>::infinity();
+
 float Utils::getNextFloatWithSeed(int seed, float minValue, float maxValue) {
     Ref<RandomNumberGenerator> randomGenerator = memnew(RandomNumberGenerator);
     randomGenerator->set_seed(seed);
