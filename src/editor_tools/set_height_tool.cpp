@@ -24,7 +24,7 @@ String SetHeightTool::getToolInfo(TerrainToolType toolType) {
         initialValue = "Select height with CTRL + (click or mouse wheel or +/-)\nUse CTRL + ALT to set the increment to 0.1";
     }
 
-    return initialValue + "\nHeight : " + String::num_real(_setHeightValue);
+    return (initialValue + "\nHeight : " + String::num_real(_setHeightValue)).strip_edges();
 }
 
 bool SetHeightTool::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {

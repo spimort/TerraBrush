@@ -47,6 +47,8 @@ private:
     int _foliageIndex = 0;
     int _objectIndex = 0;
     int _metaInfoLayerIndex = 0;
+    float _selectedSetHeight = 0;
+
     bool _isMousePressed = false;
     Vector3 _mouseHitPosition = Vector3();
     float _updateTime = 0;
@@ -88,6 +90,7 @@ private:
     void onDockMetaInfoSelected(const int index);
     void updateCurrentTool();
     Ref<ToolBase> getToolForType(TerrainToolType toolType);
+    void beforeDeselectTool();
 
 protected:
     static void _bind_methods();

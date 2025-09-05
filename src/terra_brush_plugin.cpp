@@ -763,17 +763,26 @@ void TerraBrushPlugin::updateCurrentTool() {
     Ref<ToolBase> newTool = getToolForType(_currentToolType);
     if (newTool.is_null()) {
         if (!_currentTool.is_null()) {
-            _currentTool->beforeDeselect();
+            beforeDeselectTool();
         }
         _currentTool = Ref<ToolBase>(nullptr);
     } else if (_currentTool.is_null() || _currentTool->get_class() != newTool->get_class()) {
         if (!_currentTool.is_null()) {
-            _currentTool->beforeDeselect();
+            beforeDeselectTool();
         }
         _currentTool = newTool;
 
         _currentTool->init(_currentTerraBrushNode, _undoRedo, _autoAddZones);
     }
+}
+
+void TerraBrushPlugin::beforeDeselectTool() {
+    if (Object::cast_to<SetHeightTool>(_currentTool.ptr()) != nullptr) {
+        Ref<SetHeightTool> setHeightTool = Object::cast_to<SetHeightTool>(_currentTool.ptr());
+        _selectedSetHeight = setHeightTool->getSetHeightValue();
+    }
+
+    _currentTool->beforeDeselect();
 }
 
 Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
@@ -784,7 +793,9 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN:
             return memnew(SculptTool);
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
-            return memnew(SetHeightTool);
+            Ref<SetHeightTool> setHeightTool = memnew(SetHeightTool);
+            setHeightTool->updateSetHeightValue(_selectedSetHeight);
+            return setHeightTool;
         // case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
         //     return memnew(SetAngleTool);
         // case TerrainToolType::TERRAINTOOLTYPE_PAINT:
