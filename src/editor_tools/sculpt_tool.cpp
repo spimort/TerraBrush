@@ -107,22 +107,22 @@ void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrengt
         TypedArray<float> directions = TypedArray<float>();
 
         ImageZoneInfo neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, -1, 0, true);
-        if (!neighbourImageZoneInfo.image.is_null()) {
+        if (!neighbourImageZoneInfo.zone.is_null()) {
             directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
         neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 1, 0, true);
-        if (!neighbourImageZoneInfo.image.is_null()) {
+        if (!neighbourImageZoneInfo.zone.is_null()) {
             directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
         neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 0, -1, true);
-        if (!neighbourImageZoneInfo.image.is_null()) {
+        if (!neighbourImageZoneInfo.zone.is_null()) {
             directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 
         neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, 0, 1, true);
-        if (!neighbourImageZoneInfo.image.is_null()) {
+        if (!neighbourImageZoneInfo.zone.is_null()) {
             directions.append(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
         }
 

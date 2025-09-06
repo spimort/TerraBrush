@@ -14,7 +14,7 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource);
 
 private:
-    HashSet<Ref<ImageTexture>> _dirtyImageTextures = HashSet<Ref<ImageTexture>>();
+    std::set<Ref<ImageTexture>> _dirtyImageTextures = std::set<Ref<ImageTexture>>();
 
     Ref<Texture2DArray> _lockTextures = nullptr;
     Ref<Texture2DArray> _heightmapTextures = nullptr;

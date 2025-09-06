@@ -53,7 +53,7 @@ private:
     Vector2 _lockedAxisValue;
     std::map<Ref<ZoneResource>, Ref<Image>> _imagesCache;
     std::map<int, Ref<ZoneResource>> _zonesPositionCache;
-    TypedArray<Ref<ImageTexture>> _modifiedUndoTextures;
+    std::set<Ref<ImageTexture>> _modifiedUndoTextures;
     bool _autoAddZones;
 
     PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo zoneInfo);

@@ -12,6 +12,7 @@
 #include "editor_tools/sculpt_tool.h"
 #include "editor_tools/set_height_tool.h"
 #include "editor_tools/set_angle_tool.h"
+#include "editor_tools/texture_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -448,6 +449,22 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     _toolInfo->set_name("ToolInfo");
     add_child(_toolInfo);
 
+    if (!_currentTerraBrushNode->get_textureSets().is_null() && _currentTerraBrushNode->get_textureSets()->get_textureSets().size() > 0 && _textureIndex < 0) {
+        _textureIndex = 0;
+    }
+
+    if (_currentTerraBrushNode->get_foliages().size() > 0 && _foliageIndex < 0) {
+        _foliageIndex = 0;
+    }
+
+    if (_currentTerraBrushNode->get_objects().size() > 0 && _objectIndex < 0) {
+        _objectIndex = 0;
+    }
+
+    if (_currentTerraBrushNode->get_metaInfoLayers().size() > 0 && _metaInfoLayerIndex < 0) {
+        _metaInfoLayerIndex = 0;
+    }
+
     addDock();
 
     terraBrush->set_meta("_edit_lock_", true);
@@ -747,6 +764,11 @@ void TerraBrushPlugin::onDockBrushStrengthChanged(const float value) {
 
 void TerraBrushPlugin::onDockTextureSelected(const int index) {
     _textureIndex = index;
+
+    if (!_currentTool.is_null() && Object::cast_to<TextureTool>(_currentTool.ptr()) != nullptr) {
+        Ref<TextureTool> textureTool = Object::cast_to<TextureTool>(_currentTool.ptr());
+        textureTool->updateSelectedTextureIndex(index);
+    }
 }
 
 void TerraBrushPlugin::onDockFoliageSelected(const int index) {
@@ -809,8 +831,11 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
             setAngleTool->updateSetAngleInitialPoint(_selectedSetAngleInitialPoint);
             return setAngleTool;
         }
-        // case TerrainToolType::TERRAINTOOLTYPE_PAINT:
-        //     return memnew(TextureTool);
+        case TerrainToolType::TERRAINTOOLTYPE_PAINT: {
+            Ref<TextureTool> textureTool = memnew(TextureTool);
+            textureTool->updateSelectedTextureIndex(_textureIndex);
+            return textureTool;
+        }
         // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
         // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE:
         //     return memnew(FoliageTool);

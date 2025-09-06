@@ -96,41 +96,18 @@ void TerrainControlDock::initializeToolPreview() {
 
 void TerrainControlDock::initializeTextures() {
     CustomContentLoader::addTexturesPreviewToParent(_terraBrush, _texturesContainer, Callable(this, "setSelectedTextureIndex"));
-
-    if (_texturesContainer->get_child_count() > 0 && _selectedTextureIndex < 0) {
-        _selectedTextureIndex = 0;
-    }
-    upateSelectedTextureSet();
 }
 
 void TerrainControlDock::initializeFoliages() {
     CustomContentLoader::addFoliagesPreviewToParent(_terraBrush, _foliagesContainer, Callable(this, "setSelectedFoliageIndex"));
-
-    if (_terraBrush->get_foliages().size() > 0 && _selectedFoliageIndex < 0) {
-        _selectedFoliageIndex = 0;
-    }
-
-    updateSelectedFoliage();
 }
 
 void TerrainControlDock::initializeObjects() {
     CustomContentLoader::addObjectsPreviewToParent(_terraBrush, _objectsContainer, Callable(this, "setSelectedObjectIndex"));
-
-    if (_terraBrush->get_objects().size() > 0 && _selectedObjectIndex < 0) {
-        _selectedObjectIndex = 0;
-    }
-
-    updateSelectedObject();
 }
 
 void TerrainControlDock::initializeMetaInfoLayers() {
     CustomContentLoader::addMetaInfoLayersPreviewToParent(_terraBrush, _metaInfoLayersContainer, Callable(this, "setSelectedMetaInfoIndex"));
-
-    if (_terraBrush->get_metaInfoLayers().size() > 0 && _selectedMetaInfoIndex < 0) {
-        _selectedMetaInfoIndex = 0;
-    }
-
-    updateSelectedMetaInfo();
 }
 
 void TerrainControlDock::updateSelectedBrush() {
