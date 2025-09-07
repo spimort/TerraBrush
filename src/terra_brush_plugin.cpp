@@ -13,6 +13,7 @@
 #include "editor_tools/set_height_tool.h"
 #include "editor_tools/set_angle_tool.h"
 #include "editor_tools/texture_tool.h"
+#include "editor_tools/foliage_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -836,9 +837,12 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
             textureTool->updateSelectedTextureIndex(_textureIndex);
             return textureTool;
         }
-        // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE:
-        //     return memnew(FoliageTool);
+        case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
+        case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE: {
+            Ref<FoliageTool> foliageTool = memnew(FoliageTool);
+            foliageTool->updateSelectedFoliageIndex(_foliageIndex);
+            return foliageTool;
+        }
         // case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
         // case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE:
         //     return memnew(ObjectTool);

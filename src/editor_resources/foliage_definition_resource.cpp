@@ -110,7 +110,7 @@ FoliageDefinitionResource::FoliageDefinitionResource() {
     _nearestTextureFilter = false;
     _useGroundColor = false;
     _castShadow = false;
-    _useBrushScale = false;
+    _useBrushScale = true;
     _scaleNoiseTexture = Ref<Texture2D>(nullptr);
     _randomPlacementRange = 3.0;
     _applyOnTextureIndexes = TypedArray<int>();

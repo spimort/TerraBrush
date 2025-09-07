@@ -2,7 +2,6 @@
 #define TEXTURE_TOOL_H
 
 #include "tool_base.h"
-#include "../editor_resources/zone_resource.h"
 
 #include <godot_cpp/classes/image_texture.hpp>
 
