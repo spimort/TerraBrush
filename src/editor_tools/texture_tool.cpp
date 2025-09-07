@@ -29,7 +29,7 @@ void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
     int colorChannel = _selectedTextureIndex % 4;
     int numberOfSplatmaps = (int) Math::ceil(_terraBrush->get_textureSets()->get_textureSets().size() / 4.0);
 
-    Color transparentColor = Color(0, 0, 0, 0);
+    Color transparentColor = Color(1, 1, 1, 0); // Transparent color
 
     forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
         for (int i = 0; i < numberOfSplatmaps; i++) {

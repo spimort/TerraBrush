@@ -76,7 +76,7 @@ void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int bru
 }
 
 void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    Color smoothValue = Color::named("TRANSPARENT");
+    Color smoothValue = Color(1, 1, 1, 0); // Transparent color
     int numberOfSamples = 0;
 
     forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
