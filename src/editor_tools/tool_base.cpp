@@ -85,7 +85,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
     float startingY = imagePosition.y - (brushSize / 2);
     ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
-    std::set<int> pointsCache = std::set<int>();
+    std::unordered_set<int> pointsCache = std::unordered_set<int>();
     for (int x = 0; x < brushSize; x++) {
         for (int y = 0; y < brushSize; y++) {
             int offsetX = x;
@@ -120,7 +120,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
 
 ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
     ZoneInfo zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
-    Ref<ZoneResource> zone;
+    Ref<ZoneResource> zone = nullptr;
     if (_zonesPositionCache.count(zoneInfo.zoneKey) > 0) {
         zone = _zonesPositionCache[zoneInfo.zoneKey];
     }
@@ -161,7 +161,7 @@ ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo startingZoneInfo, i
         }
 
         if (!lockInfo.locked) {
-            Ref<Image> image;
+            Ref<Image> image = nullptr;
             if (_imagesCache.count(zone) > 0) {
                 image = _imagesCache[zone];
             }
@@ -228,9 +228,9 @@ bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
 }
 
 void ToolBase::beginPaint() {
-    _imagesCache = std::map<Ref<ZoneResource>, Ref<Image>>();
-    _zonesPositionCache = std::map<int, Ref<ZoneResource>>();
-    _modifiedUndoTextures = std::set<Ref<ImageTexture>>();
+    _imagesCache = std::unordered_map<Ref<ZoneResource>, Ref<Image>>();
+    _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
+    _modifiedUndoTextures = std::unordered_set<Ref<ImageTexture>>();
 }
 
 void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {

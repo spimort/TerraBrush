@@ -20,7 +20,7 @@ void SculptTool::beginPaint() {
     ToolBase::beginPaint();
 
     _sculptingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SculptingMultiplier());
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 void SculptTool::endPaint() {
@@ -33,7 +33,7 @@ void SculptTool::endPaint() {
     _terraBrush->updateObjectsHeight(sculptedZonesList);
 
     _sculptedZones.clear();
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 Ref<ImageTexture> SculptTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {

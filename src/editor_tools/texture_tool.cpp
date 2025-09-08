@@ -11,7 +11,7 @@ TextureTool::~TextureTool() {}
 void TextureTool::beginPaint() {
     ToolBase::beginPaint();
 
-    _splatmapImagesCache = std::map<Ref<ImageTexture>, Ref<Image>>();
+    _splatmapImagesCache = std::unordered_map<Ref<ImageTexture>, Ref<Image>>();
 }
 
 void TextureTool::endPaint() {
@@ -52,7 +52,7 @@ void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
             _terraBrush->get_terrainZones()->addDirtyImageTexture(currentSplatmapTexture);
             addTextureToUndo(currentSplatmapTexture);
 
-            Ref<Image> currentSplatmapImage;
+            Ref<Image> currentSplatmapImage = nullptr;
             if (_splatmapImagesCache.count(currentSplatmapTexture) > 0) {
                 currentSplatmapImage = _splatmapImagesCache[currentSplatmapTexture];
             }

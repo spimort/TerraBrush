@@ -3,10 +3,13 @@
 
 #include "zone_resource.h"
 #include "../misc/zone_info.h"
+#include "../misc/hash_utils.h"
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/texture2d_array.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
+
+#include <unordered_set>
 
 using namespace godot;
 
@@ -14,7 +17,7 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource);
 
 private:
-    std::set<Ref<ImageTexture>> _dirtyImageTextures = std::set<Ref<ImageTexture>>();
+    std::unordered_set<Ref<ImageTexture>> _dirtyImageTextures = std::unordered_set<Ref<ImageTexture>>();
 
     Ref<Texture2DArray> _lockTextures = nullptr;
     Ref<Texture2DArray> _heightmapTextures = nullptr;

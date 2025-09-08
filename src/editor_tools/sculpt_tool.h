@@ -3,6 +3,7 @@
 
 #include "tool_base.h"
 #include "../editor_resources/zone_resource.h"
+#include "../misc/hash_utils.h"
 
 using namespace godot;
 
@@ -11,7 +12,7 @@ class SculptTool : public ToolBase{
 
 private:
     int _sculptingMultiplier = 1;
-    HashSet<Ref<ZoneResource>> _sculptedZones = HashSet<Ref<ZoneResource>>();
+    std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 
     void sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
     void flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);

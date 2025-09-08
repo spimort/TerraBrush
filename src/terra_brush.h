@@ -190,6 +190,8 @@ public:
     void set_terrainZones(const Ref<ZonesResource> &value);
 
     Terrain *get_terrain();
+    Node3D *get_objectsContainer();
+    Ref<Texture2D> get_defaultNoise();
 
     void onCreateTerrain();
     void onRemoveTerrain();

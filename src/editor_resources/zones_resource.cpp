@@ -16,7 +16,7 @@ void ZonesResource::_bind_methods() {
 }
 
 ZonesResource::ZonesResource() {
-    _dirtyImageTextures = std::set<Ref<ImageTexture>>();
+    _dirtyImageTextures = std::unordered_set<Ref<ImageTexture>>();
 
     _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));

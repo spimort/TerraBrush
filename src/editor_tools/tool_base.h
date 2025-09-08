@@ -5,6 +5,7 @@
 #include "../misc/zone_info.h"
 #include "../editor_resources/zone_resource.h"
 #include "../terra_brush.h"
+#include "../misc/hash_utils.h"
 
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -49,12 +50,12 @@ class ToolBase : public RefCounted {
 private:
     EditorUndoRedoManager *_undoRedoManager;
 
-    LockedAxis _lockedAxis;
-    Vector2 _lockedAxisValue;
-    std::map<Ref<ZoneResource>, Ref<Image>> _imagesCache;
-    std::map<int, Ref<ZoneResource>> _zonesPositionCache;
-    std::set<Ref<ImageTexture>> _modifiedUndoTextures;
-    bool _autoAddZones;
+    LockedAxis _lockedAxis = LockedAxis::LOCKEDAXIS_NONE;
+    Vector2 _lockedAxisValue = Vector2();
+    std::unordered_map<Ref<ZoneResource>, Ref<Image>> _imagesCache = std::unordered_map<Ref<ZoneResource>, Ref<Image>>();
+    std::unordered_map<int, Ref<ZoneResource>> _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
+    std::unordered_set<Ref<ImageTexture>> _modifiedUndoTextures = std::unordered_set<Ref<ImageTexture>>();
+    bool _autoAddZones = false;
 
     PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo zoneInfo);
     void addImagesToRedo();

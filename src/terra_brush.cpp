@@ -750,6 +750,14 @@ Terrain *TerraBrush::get_terrain() {
     return _terrain;
 }
 
+Node3D *TerraBrush::get_objectsContainer() {
+    return _objectsContainerNode;
+}
+
+Ref<Texture2D> TerraBrush::get_defaultNoise() {
+    return _defaultNoise;
+}
+
 void TerraBrush::onCreateTerrain() {
     if (_resolution != 1) {
         if (!Utils::isPowerOfTwo(_resolution)) {

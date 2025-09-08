@@ -2,6 +2,7 @@
 #define TEXTURE_TOOL_H
 
 #include "tool_base.h"
+#include "../misc/hash_utils.h"
 
 #include <godot_cpp/classes/image_texture.hpp>
 
@@ -12,7 +13,7 @@ class TextureTool : public ToolBase{
 
 private:
     int _selectedTextureIndex = -1;
-    std::map<Ref<ImageTexture>, Ref<Image>> _splatmapImagesCache = std::map<Ref<ImageTexture>, Ref<Image>>();
+    std::unordered_map<Ref<ImageTexture>, Ref<Image>> _splatmapImagesCache = std::unordered_map<Ref<ImageTexture>, Ref<Image>>();
 
 protected:
     static void _bind_methods();

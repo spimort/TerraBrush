@@ -14,6 +14,7 @@
 #include "editor_tools/set_angle_tool.h"
 #include "editor_tools/texture_tool.h"
 #include "editor_tools/foliage_tool.h"
+#include "editor_tools/object_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -774,10 +775,20 @@ void TerraBrushPlugin::onDockTextureSelected(const int index) {
 
 void TerraBrushPlugin::onDockFoliageSelected(const int index) {
     _foliageIndex = index;
+
+    if (!_currentTool.is_null() && Object::cast_to<FoliageTool>(_currentTool.ptr()) != nullptr) {
+        Ref<FoliageTool> foliageTool = Object::cast_to<FoliageTool>(_currentTool.ptr());
+        foliageTool->updateSelectedFoliageIndex(index);
+    }
 }
 
 void TerraBrushPlugin::onDockObjectSelected(const int index) {
     _objectIndex = index;
+
+    if (!_currentTool.is_null() && Object::cast_to<ObjectTool>(_currentTool.ptr()) != nullptr) {
+        Ref<ObjectTool> objectTool = Object::cast_to<ObjectTool>(_currentTool.ptr());
+        objectTool->updateSelectedObjectIndex(index);
+    }
 }
 
 void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
@@ -843,9 +854,12 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
             foliageTool->updateSelectedFoliageIndex(_foliageIndex);
             return foliageTool;
         }
-        // case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE:
-        //     return memnew(ObjectTool);
+        case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
+        case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE: {
+            Ref<ObjectTool> objectTool = memnew(ObjectTool);
+            objectTool->updateSelectedObjectIndex(_objectIndex);
+            return objectTool;
+        }
         // case TerrainToolType::TERRAINTOOLTYPE_WATERADD:
         // case TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE:
         //     return memnew(WaterTool);
