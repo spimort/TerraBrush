@@ -87,20 +87,20 @@ private:
     static constexpr const char* CollisionShapeInfoInfo_OffsetKey = "Offset";
     static constexpr const char* CollisionShapeInfoInfo_ShapeKey = "Shape";
 
-    Camera3D *_camera;
-    StaticBody3D *_staticBodyContainer;
-    Ref<Texture2D> _defaultNoise;
-    Vector3 _lastUpdatedPosition;
-    float _updateTime;
-    Ref<PointOctree> _octree;
-    float _maxDistance;
-    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _sortedLODDefinitions;
-    TypedDictionary<int, Dictionary> _collisionShapes; // Sadly, we gotta use generic Dictonary here beacuse the way Variant/Godot works. The origianl definition was : private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
-    TypedDictionary<int, Array> _multiMeshIntances; // Sadly, we gotta use generic Array/Dictionary here beacuse the way Variant/Godot works. The origianl definition was : private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
-    HashSet<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision;
-    CancellationSource _cancellationTokenSource;
-    Ref<Thread> _objectsThread;
-    bool _initialized;
+    Camera3D *_camera = nullptr;
+    StaticBody3D *_staticBodyContainer = nullptr;
+    Ref<Texture2D> _defaultNoise = nullptr;
+    Vector3 _lastUpdatedPosition = Vector3();
+    float _updateTime = 0;
+    Ref<PointOctree> _octree = nullptr;
+    float _maxDistance = 0;
+    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _sortedLODDefinitions = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
+    TypedDictionary<int, Dictionary> _collisionShapes = TypedDictionary<int, Dictionary>(); // Sadly, we gotta use generic Dictonary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
+    TypedDictionary<int, Array> _multiMeshIntances = TypedDictionary<int, Array>(); // Sadly, we gotta use generic Array/Dictionary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
+    HashSet<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision = HashSet<Ref<ObjectsOctreeNodeInfo>>();
+    CancellationSource _cancellationTokenSource = CancellationSource();
+    Ref<Thread> _objectsThread = nullptr;
+    bool _initialized = false;
 
     void initialize();
     void initializeSortedLODs();

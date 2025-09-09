@@ -595,7 +595,7 @@ void ObjectsOctreeMultiMesh::addRemoveObjectFromTool(bool add, int x, int y, Ref
         noiseImage,
         x,
         y,
-        Color::named("WHITE"),
+        Color(1, 1, 1, 1), // White
         add,
         true
     );

@@ -270,7 +270,7 @@ void Objects::addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> 
             noiseImage,
             x,
             y,
-            Color::named("WHITE")
+            Color(1, 1, 1, 1) // White
         );
     }
     else if (!add && existingNode != nullptr) {
