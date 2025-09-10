@@ -20,9 +20,9 @@ PointOctreeNode::PointOctreeNode() {
     _sideLength = 0;
     _minSize = 0;
     _bounds = Ref<PointOctreeBoundingBox>(nullptr);
-    _objects = TypedArray<Ref<PointOctreeObject>>();
-    _children = TypedArray<Ref<PointOctreeNode>>();
-    _childBounds = TypedArray<Ref<PointOctreeBoundingBox>>();
+    _objects = std::vector<Ref<PointOctreeObject>>();
+    _children = std::vector<Ref<PointOctreeNode>>();
+    _childBounds = std::vector<Ref<PointOctreeBoundingBox>>();
     _actualBoundsSize = Vector3();
 }
 
@@ -57,23 +57,23 @@ void PointOctreeNode::setValues(float baseLengthVal, float minSizeVal, Vector3 c
     float quarter = _sideLength / 4;
     float childActualLength = _sideLength / 2;
     Vector3 childActualSize = Vector3(childActualLength, childActualLength, childActualLength);
-    _childBounds = TypedArray<Ref<PointOctreeBoundingBox>>();
+    _childBounds = std::vector<Ref<PointOctreeBoundingBox>>();
     _childBounds.resize(8);
-    _childBounds[0] = memnew(PointOctreeBoundingBox);
+    _childBounds[0] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[0])->init(_center + Vector3(-quarter, quarter, -quarter), childActualSize);
-    _childBounds[1] = memnew(PointOctreeBoundingBox);
+    _childBounds[1] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[1])->init(_center + Vector3(quarter, quarter, -quarter), childActualSize);
-    _childBounds[2] = memnew(PointOctreeBoundingBox);
+    _childBounds[2] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[2])->init(_center + Vector3(-quarter, quarter, quarter), childActualSize);
-    _childBounds[3] = memnew(PointOctreeBoundingBox);
+    _childBounds[3] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[3])->init(_center + Vector3(quarter, quarter, quarter), childActualSize);
-    _childBounds[4] = memnew(PointOctreeBoundingBox);
+    _childBounds[4] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[4])->init(_center + Vector3(-quarter, -quarter, -quarter), childActualSize);
-    _childBounds[5] = memnew(PointOctreeBoundingBox);
+    _childBounds[5] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[5])->init(_center + Vector3(quarter, -quarter, -quarter), childActualSize);
-    _childBounds[6] = memnew(PointOctreeBoundingBox);
+    _childBounds[6] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[6])->init(_center + Vector3(-quarter, -quarter, quarter), childActualSize);
-    _childBounds[7] = memnew(PointOctreeBoundingBox);
+    _childBounds[7] = Ref<PointOctreeBoundingBox>(memnew(PointOctreeBoundingBox));
     Ref<PointOctreeBoundingBox>(_childBounds[7])->init(_center + Vector3(quarter, -quarter, quarter), childActualSize);
 }
 
@@ -90,7 +90,7 @@ void PointOctreeNode::subAdd(Ref<RefCounted> obj, Vector3 objPos) {
             Ref<PointOctreeObject> newObj = memnew(PointOctreeObject);
             newObj->set_obj(obj);
             newObj->set_pos(objPos);
-            _objects.append(newObj);
+            _objects.push_back(newObj);
             return; // We're done. No children yet
         }
 
@@ -109,7 +109,7 @@ void PointOctreeNode::subAdd(Ref<RefCounted> obj, Vector3 objPos) {
                 // object's center is located in relation to the octree's center
                 bestFitChildIndex = bestFitChild(existingObj->get_pos());
                 Ref<PointOctreeNode>(_children[bestFitChildIndex])->subAdd(existingObj->get_obj(), existingObj->get_pos()); // Go a level deeper
-                _objects.erase(existingObj); // Remove from here
+                _objects.erase(std::remove(_objects.begin(), _objects.end(), existingObj), _objects.end()); // Remove from here
             }
         }
     }
@@ -127,7 +127,7 @@ bool PointOctreeNode::subRemove(Ref<RefCounted> obj, Vector3 objPos) {
         if (Ref<PointOctreeObject>(_objects[i])->get_obj() == obj)
         {
             removed = true;
-            _objects.remove_at(i);
+            _objects.erase(_objects.begin() + i);
             break;
         }
     }
@@ -153,23 +153,23 @@ bool PointOctreeNode::subRemove(Ref<RefCounted> obj, Vector3 objPos) {
 void PointOctreeNode::split() {
     float quarter = _sideLength / 4;
     float newLength = _sideLength / 2;
-    _children = TypedArray<Ref<PointOctreeNode>>();
+    _children = std::vector<Ref<PointOctreeNode>>();
     _children.resize(8);
-    _children[0] = memnew(PointOctreeNode);
+    _children[0] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[0])->init(newLength, _minSize, _center + Vector3(-quarter, quarter, -quarter));
-    _children[1] = memnew(PointOctreeNode);
+    _children[1] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[1])->init(newLength, _minSize, _center + Vector3(quarter, quarter, -quarter));
-    _children[2] = memnew(PointOctreeNode);
+    _children[2] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[2])->init(newLength, _minSize, _center + Vector3(-quarter, quarter, quarter));
-    _children[3] = memnew(PointOctreeNode);
+    _children[3] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[3])->init(newLength, _minSize, _center + Vector3(quarter, quarter, quarter));
-    _children[4] = memnew(PointOctreeNode);
+    _children[4] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[4])->init(newLength, _minSize, _center + Vector3(-quarter, -quarter, -quarter));
-    _children[5] = memnew(PointOctreeNode);
+    _children[5] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[5])->init(newLength, _minSize, _center + Vector3(quarter, -quarter, -quarter));
-    _children[6] = memnew(PointOctreeNode);
+    _children[6] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[6])->init(newLength, _minSize, _center + Vector3(-quarter, -quarter, quarter));
-    _children[7] = memnew(PointOctreeNode);
+    _children[7] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
     Ref<PointOctreeNode>(_children[7])->init(newLength, _minSize, _center + Vector3(quarter, -quarter, quarter));
 }
 
@@ -182,7 +182,7 @@ void PointOctreeNode::merge() {
         for (int j = numObjects - 1; j >= 0; j--)
         {
             Ref<PointOctreeObject> curObj = curChild->_objects[j];
-            _objects.append(curObj);
+            _objects.push_back(curObj);
         }
     }
     // Remove the child nodes (and the objects in them - they've been added elsewhere now)
@@ -215,7 +215,7 @@ Ref<PointOctreeBoundingBox> PointOctreeNode::bounds() {
     return _bounds;
 }
 
-void PointOctreeNode::getChildBounds(TypedArray<Ref<PointOctreeBoundingBox>> bounds) {
+void PointOctreeNode::getChildBounds(std::vector<Ref<PointOctreeBoundingBox>> bounds) {
     if (hasChildren())
     {
         for (Ref<PointOctreeNode> child : _children)
@@ -224,7 +224,7 @@ void PointOctreeNode::getChildBounds(TypedArray<Ref<PointOctreeBoundingBox>> bou
         }
         return;
     }
-    bounds.append(_bounds);
+    bounds.push_back(_bounds);
 }
 
 bool PointOctreeNode::add(Ref<RefCounted> obj, Vector3 objPos) {
@@ -244,7 +244,7 @@ bool PointOctreeNode::remove(Ref<RefCounted> obj) {
         if (Ref<PointOctreeObject>(_objects[i])->get_obj() == obj)
         {
             removed = true;
-            _objects.remove_at(i);
+            _objects.erase(_objects.begin() + i);
             break;
         }
     }
@@ -279,7 +279,7 @@ bool PointOctreeNode::remove(Ref<RefCounted> obj, Vector3 objPos) {
     return subRemove(obj, objPos);
 }
 
-void PointOctreeNode::getNearby(Ref<PointOctreeRay> ray, float maxDistance, TypedArray<Ref<RefCounted>> result) {
+void PointOctreeNode::getNearby(Ref<PointOctreeRay> ray, float maxDistance, std::vector<Ref<RefCounted>> &result) {
     // Does the ray hit this node at all?
     // Note: Expanding the bounds is not exactly the same as a real distance check, but it's fast.
     // TODO: Does someone have a fast AND accurate formula to do this check?
@@ -296,7 +296,7 @@ void PointOctreeNode::getNearby(Ref<PointOctreeRay> ray, float maxDistance, Type
     {
         if (sqrDistanceToRay(ray, Ref<PointOctreeObject>(_objects[i])->get_pos()) <= (maxDistance * maxDistance))
         {
-            result.append(Ref<PointOctreeObject>(_objects[i])->get_obj());
+            result.push_back(Ref<PointOctreeObject>(_objects[i])->get_obj());
         }
     }
 
@@ -310,7 +310,7 @@ void PointOctreeNode::getNearby(Ref<PointOctreeRay> ray, float maxDistance, Type
     }
 }
 
-void PointOctreeNode::getNearby(Vector3 &position, float maxDistance, TypedArray<Ref<RefCounted>> result) {
+void PointOctreeNode::getNearby(Vector3 &position, float maxDistance, std::vector<Ref<RefCounted>> &result) {
     // Does the node contain this position at all?
     // Note: Expanding the bounds is not exactly the same as a real distance check, but it's fast.
     // TODO: Does someone have a fast AND accurate formula to do this check?
@@ -327,7 +327,7 @@ void PointOctreeNode::getNearby(Vector3 &position, float maxDistance, TypedArray
     {
         if (position.distance_to(Ref<PointOctreeObject>(_objects[i])->get_pos()) <= maxDistance)
         {
-            result.append(Ref<PointOctreeObject>(_objects[i])->get_obj());
+            result.push_back(Ref<PointOctreeObject>(_objects[i])->get_obj());
         }
     }
 
@@ -341,10 +341,10 @@ void PointOctreeNode::getNearby(Vector3 &position, float maxDistance, TypedArray
     }
 }
 
-void PointOctreeNode::getAll(TypedArray<Ref<RefCounted>> result) {
+void PointOctreeNode::getAll(std::vector<Ref<RefCounted>> &result) {
     // add directly contained objects
     for (Ref<PointOctreeObject> object : _objects) {
-        result.append(object->get_obj());
+        result.push_back(object->get_obj());
     }
 
     // add children objects
@@ -357,7 +357,7 @@ void PointOctreeNode::getAll(TypedArray<Ref<RefCounted>> result) {
     }
 }
 
-void PointOctreeNode::setChildren(TypedArray<Ref<PointOctreeNode>> childOctrees) {
+void PointOctreeNode::setChildren(std::vector<Ref<PointOctreeNode>> &childOctrees) {
     ERR_FAIL_COND_MSG(childOctrees.size() != 8, "Child octree array must be length 8. Was length: " + String::num_int64(childOctrees.size()));
 
     _children = childOctrees;

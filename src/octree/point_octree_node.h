@@ -54,17 +54,17 @@ private:
     /// <summary>
     /// Objects in this node
     /// </summary>
-    TypedArray<Ref<PointOctreeObject>> _objects = TypedArray<Ref<PointOctreeObject>>();
+    std::vector<Ref<PointOctreeObject>> _objects = std::vector<Ref<PointOctreeObject>>();
 
     /// <summary>
     /// Child nodes, if any
     /// </summary>
-    TypedArray<Ref<PointOctreeNode>> _children = TypedArray<Ref<PointOctreeNode>>();
+    std::vector<Ref<PointOctreeNode>> _children = std::vector<Ref<PointOctreeNode>>();
 
     /// <summary>
     /// Bounds of potential children to this node. These are actual size (with looseness taken into account), not base size
     /// </summary>
-    TypedArray<Ref<PointOctreeBoundingBox>> _childBounds = TypedArray<Ref<PointOctreeBoundingBox>>();
+    std::vector<Ref<PointOctreeBoundingBox>> _childBounds = std::vector<Ref<PointOctreeBoundingBox>>();
 
     /// <summary>
     /// For reverting the bounds size after temporary changes
@@ -159,7 +159,7 @@ public:
     /// Gets All the bounding box that represents this node
     /// </summary>
     /// <param name="bounds"></param>
-    void getChildBounds(TypedArray<Ref<PointOctreeBoundingBox>> bounds);
+    void getChildBounds(std::vector<Ref<PointOctreeBoundingBox>> bounds);
 
     /// <summary>
     /// Add an object.
@@ -191,7 +191,7 @@ public:
     /// <param name="maxDistance">Maximum distance from the ray to consider.</param>
     /// <param name="result">List result.</param>
     /// <returns>Objects within range.</returns>
-    void getNearby(Ref<PointOctreeRay> ray, float maxDistance, TypedArray<Ref<RefCounted>> result);
+    void getNearby(Ref<PointOctreeRay> ray, float maxDistance, std::vector<Ref<RefCounted>> &result);
 
     /// <summary>
     /// Return objects that are within <paramref name="maxDistance"/> of the specified position.
@@ -200,19 +200,19 @@ public:
     /// <param name="maxDistance">Maximum distance from the position to consider.</param>
     /// <param name="result">List result.</param>
     /// <returns>Objects within range.</returns>
-    void getNearby(Vector3 &position, float maxDistance, TypedArray<Ref<RefCounted>> result);
+    void getNearby(Vector3 &position, float maxDistance, std::vector<Ref<RefCounted>> &result);
 
     /// <summary>
     /// Return all objects in the tree.
     /// </summary>
     /// <returns>All objects.</returns>
-    void getAll(TypedArray<Ref<RefCounted>> result);
+    void getAll(std::vector<Ref<RefCounted>> &result);
 
     /// <summary>
     /// Set the 8 children of this octree.
     /// </summary>
     /// <param name="childOctrees">The 8 new child nodes.</param>
-    void setChildren(TypedArray<Ref<PointOctreeNode>> childOctrees);
+    void setChildren(std::vector<Ref<PointOctreeNode>> &childOctrees);
 
     /// <summary>
     /// We can shrink the octree if:

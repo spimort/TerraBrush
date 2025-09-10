@@ -50,7 +50,7 @@ void PointOctree::grow(Vector3 direction) {
     {
         // Create 7 new octree children to go with the old root as children of the new root
         int rootPos = _rootNode->bestFitChild(oldRoot->get_center());
-        TypedArray<Ref<PointOctreeNode>> children = TypedArray<Ref<PointOctreeNode>>();
+        std::vector<Ref<PointOctreeNode>> children = std::vector<Ref<PointOctreeNode>>();
         children.resize(8);
         for (int i = 0; i < 8; i++)
         {
@@ -63,7 +63,7 @@ void PointOctree::grow(Vector3 direction) {
                 xDirection = i % 2 == 0 ? -1 : 1;
                 yDirection = i > 3 ? -1 : 1;
                 zDirection = (i < 2 || (i > 3 && i < 6)) ? -1 : 1;
-                children[i] = memnew(PointOctreeNode);
+                children[i] = Ref<PointOctreeNode>(memnew(PointOctreeNode));
                 Ref<PointOctreeNode>(children[i])->init(
                     oldRoot->get_sideLength(),
                     _minSize,
@@ -90,8 +90,8 @@ Ref<PointOctreeBoundingBox> PointOctree::maxBounds() {
     return boundingBox;
 }
 
-TypedArray<Ref<PointOctreeBoundingBox>> PointOctree::getChildBounds() {
-    TypedArray<Ref<PointOctreeBoundingBox>> bounds = TypedArray<Ref<PointOctreeBoundingBox>>();
+std::vector<Ref<PointOctreeBoundingBox>> PointOctree::getChildBounds() {
+    std::vector<Ref<PointOctreeBoundingBox>> bounds = std::vector<Ref<PointOctreeBoundingBox>>();
     _rootNode->getChildBounds(bounds);
     return bounds;
 }
@@ -133,32 +133,32 @@ bool PointOctree::remove(Ref<RefCounted> obj, Vector3 objPos) {
     return removed;
 }
 
-TypedArray<Ref<RefCounted>> PointOctree::getNearby(Ref<PointOctreeRay> ray, float maxDistance) {
-    TypedArray<Ref<RefCounted>> collidingWith = TypedArray<Ref<RefCounted>>();
+std::vector<Ref<RefCounted>> PointOctree::getNearby(Ref<PointOctreeRay> ray, float maxDistance) {
+    std::vector<Ref<RefCounted>> collidingWith = std::vector<Ref<RefCounted>>();
     _rootNode->getNearby(ray, maxDistance, collidingWith);
     return collidingWith;
 }
 
-TypedArray<Ref<RefCounted>> PointOctree::getNearby(Vector3 position, float maxDistance) {
-    TypedArray<Ref<RefCounted>> collidingWith = TypedArray<Ref<RefCounted>>();
+std::vector<Ref<RefCounted>> PointOctree::getNearby(Vector3 position, float maxDistance) {
+    std::vector<Ref<RefCounted>> collidingWith = std::vector<Ref<RefCounted>>();
     _rootNode->getNearby(position, maxDistance, collidingWith);
     return collidingWith;
 }
 
-bool PointOctree::getNearbyNonAlloc(Ref<PointOctreeRay> ray, float maxDistance, TypedArray<Ref<RefCounted>> nearby) {
+bool PointOctree::getNearbyNonAlloc(Ref<PointOctreeRay> ray, float maxDistance, std::vector<Ref<RefCounted>> &nearby) {
     nearby.clear();
     _rootNode->getNearby(ray, maxDistance, nearby);
     return nearby.size() > 0;
 }
 
-bool PointOctree::getNearbyNonAlloc(Vector3 position, float maxDistance, TypedArray<Ref<RefCounted>> nearby) {
+bool PointOctree::getNearbyNonAlloc(Vector3 position, float maxDistance, std::vector<Ref<RefCounted>> &nearby) {
     nearby.clear();
     _rootNode->getNearby(position, maxDistance, nearby);
     return nearby.size() > 0;
 }
 
-TypedArray<Ref<RefCounted>> PointOctree::getAll() {
-    TypedArray<Ref<RefCounted>> objects = TypedArray<Ref<RefCounted>>();
+std::vector<Ref<RefCounted>> PointOctree::getAll() {
+    std::vector<Ref<RefCounted>> objects = std::vector<Ref<RefCounted>>();
     _rootNode->getAll(objects);
     return objects;
 }

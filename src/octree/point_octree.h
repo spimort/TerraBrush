@@ -85,7 +85,7 @@ public:
     /// Gets All the bounding box that represents the whole octree
     /// </summary>
     /// <returns></returns>
-    TypedArray<Ref<PointOctreeBoundingBox>> getChildBounds();
+    std::vector<Ref<PointOctreeBoundingBox>> getChildBounds();
 
     /// <summary>
     /// Add an object.
@@ -117,7 +117,7 @@ public:
     /// <param name="ray">The ray. Passing as ref to improve performance since it won't have to be copied.</param>
     /// <param name="maxDistance">Maximum distance from the ray to consider.</param>
     /// <returns>Objects within range.</returns>
-    TypedArray<Ref<RefCounted>> getNearby(Ref<PointOctreeRay> ray, float maxDistance);
+    std::vector<Ref<RefCounted>> getNearby(Ref<PointOctreeRay> ray, float maxDistance);
 
     /// <summary>
     /// Returns objects that are within <paramref name="maxDistance"/> of the specified position.
@@ -126,7 +126,7 @@ public:
     /// <param name="position">The position. Passing as ref to improve performance since it won't have to be copied.</param>
     /// <param name="maxDistance">Maximum distance from the position to consider.</param>
     /// <returns>Objects within range.</returns>
-    TypedArray<Ref<RefCounted>> getNearby(Vector3 position, float maxDistance);
+    std::vector<Ref<RefCounted>> getNearby(Vector3 position, float maxDistance);
 
     /// <summary>
     /// Returns objects that are within <paramref name="maxDistance"/> of the specified ray.
@@ -136,7 +136,7 @@ public:
     /// <param name="maxDistance">Maximum distance from the ray to consider.</param>
     /// <param name="nearby">Pre-initialized list to populate.</param>
     /// <returns><c>true</c> if items are found, <c>false</c> otherwise.</returns>
-    bool getNearbyNonAlloc(Ref<PointOctreeRay> ray, float maxDistance, TypedArray<Ref<RefCounted>> nearby);
+    bool getNearbyNonAlloc(Ref<PointOctreeRay> ray, float maxDistance, std::vector<Ref<RefCounted>> &nearby);
 
     /// <summary>
     /// Returns objects that are within <paramref name="maxDistance"/> of the specified position.
@@ -146,13 +146,13 @@ public:
     /// <param name="maxDistance">Maximum distance from the position to consider.</param>
     /// <param name="nearby">Pre-initialized list to populate.</param>
     /// <returns><c>true</c> if items are found, <c>false</c> otherwise.</returns>
-    bool getNearbyNonAlloc(Vector3 position, float maxDistance, TypedArray<Ref<RefCounted>> nearby);
+    bool getNearbyNonAlloc(Vector3 position, float maxDistance, std::vector<Ref<RefCounted>> &nearby);
 
     /// <summary>
     /// Returns all objects in the tree.
     /// If none, returns an empty array (not null).
     /// </summary>
     /// <returns>All objects.</returns>
-    TypedArray<Ref<RefCounted>> getAll();
+    std::vector<Ref<RefCounted>> getAll();
 };
 #endif

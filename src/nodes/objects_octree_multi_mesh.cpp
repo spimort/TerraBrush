@@ -363,8 +363,8 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
         multiMeshNodes[multiMeshInstanceKey] = lodMultiMeshNodesBuffer;
     }
 
-    TypedArray<Ref<ObjectsOctreeNodeInfo>> nodes = _octree->getNearby(_lastUpdatedPosition, _maxDistance);
-    TypedArray<Ref<ObjectsOctreeNodeInfo>> toRemoveNodes = TypedArray<Ref<ObjectsOctreeNodeInfo>>();
+    std::vector<Ref<RefCounted>> nodes = _octree->getNearby(_lastUpdatedPosition, _maxDistance);
+    std::vector<Ref<ObjectsOctreeNodeInfo>> toRemoveNodes = std::vector<Ref<ObjectsOctreeNodeInfo>>();
     for (Ref<ObjectsOctreeNodeInfo> nodeInfo : nodes) {
         if (cancellationToken.isCancellationRequested) return;
 
@@ -420,7 +420,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             }
 
             if (!lodDefinition->get_addCollision()) {
-                toRemoveNodes.append(nodeInfo);
+                toRemoveNodes.push_back(nodeInfo);
             }
         }
     }
@@ -429,7 +429,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
     for (Ref<ObjectsOctreeNodeInfo> actualNode : _actualNodesWithCollision) {
         if (cancellationToken.isCancellationRequested) return;
 
-        if (!nodes.has(actualNode) || toRemoveNodes.has(actualNode)) {
+        if (std::find(nodes.begin(), nodes.end(), actualNode) == nodes.end() || std::find(toRemoveNodes.begin(), toRemoveNodes.end(), actualNode) != toRemoveNodes.end()) {
             if (cancellationToken.isCancellationRequested) return;
 
             actualNode->get_collisionShape()->call_deferred("queue_free");
@@ -531,7 +531,7 @@ void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> z
                 Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360), 0) : Vector3(0, 0, 0);
                 float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
 
-                TypedArray<Ref<ObjectsOctreeNodeInfo>> existingNodes = checkExistingNode ? _octree->getNearby(resultPosition, 0.1f) : TypedArray<Ref<ObjectsOctreeNodeInfo>>();
+                std::vector<Ref<RefCounted>> existingNodes = checkExistingNode ? _octree->getNearby(resultPosition, 0.1f) : std::vector<Ref<RefCounted>>();
                 if (add && existingNodes.size() == 0) {
                     Ref<ObjectsOctreeNodeInfo> octreeNodeInfo = memnew(ObjectsOctreeNodeInfo);
                     octreeNodeInfo->set_imagePosition(Vector2i(x, y));
