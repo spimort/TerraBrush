@@ -15,6 +15,7 @@
 #include "editor_tools/texture_tool.h"
 #include "editor_tools/foliage_tool.h"
 #include "editor_tools/object_tool.h"
+#include "editor_tools/water_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -860,9 +861,9 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
             objectTool->updateSelectedObjectIndex(_objectIndex);
             return objectTool;
         }
-        // case TerrainToolType::TERRAINTOOLTYPE_WATERADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE:
-        //     return memnew(WaterTool);
+        case TerrainToolType::TERRAINTOOLTYPE_WATERADD:
+        case TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE:
+            return memnew(WaterTool);
         // case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD:
         // case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE:
         //     return memnew(WaterFlowTool);

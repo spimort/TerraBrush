@@ -20,6 +20,8 @@
 #include <godot_cpp/classes/thread.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
+#include <unordered_set>
+
 using namespace godot;
 
 class ObjectsOctreeNodeInfo : public RefCounted {
@@ -97,7 +99,7 @@ private:
     TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _sortedLODDefinitions = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
     TypedDictionary<int, Dictionary> _collisionShapes = TypedDictionary<int, Dictionary>(); // Sadly, we gotta use generic Dictonary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
     TypedDictionary<int, Array> _multiMeshIntances = TypedDictionary<int, Array>(); // Sadly, we gotta use generic Array/Dictionary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
-    HashSet<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision = HashSet<Ref<ObjectsOctreeNodeInfo>>();
+    std::unordered_set<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision = std::unordered_set<Ref<ObjectsOctreeNodeInfo>>();
     CancellationSource _cancellationTokenSource = CancellationSource();
     Ref<Thread> _objectsThread = nullptr;
     bool _initialized = false;

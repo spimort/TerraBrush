@@ -34,7 +34,7 @@ void ObjectsOctreeMultiMesh::_notification(int what) {
 ObjectsOctreeMultiMesh::ObjectsOctreeMultiMesh() {
     _lastUpdatedPosition = Vector3(0, 0, 0);
     _updateTime = 0;
-    _actualNodesWithCollision = HashSet<Ref<ObjectsOctreeNodeInfo>>();
+    _actualNodesWithCollision = std::unordered_set<Ref<ObjectsOctreeNodeInfo>>();
     _initialized = false;
 }
 

@@ -130,6 +130,10 @@ void CustomContentLoader::addObjectsPreviewToParent(TerraBrush *terraBrush, Node
         for (int i = 0; i < terraBrush->get_objects().size(); i++) {
             Ref<ObjectResource> objectItem = terraBrush->get_objects()[i];
 
+            if (objectItem->get_definition().is_null()) {
+                break;
+            }
+
             if (objectItem->get_definition()->get_objectScenes().size() > 0 || objectItem->get_definition()->get_lodMeshes().size() > 0) {
                 DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 

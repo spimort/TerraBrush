@@ -18,7 +18,7 @@ private:
     float _setAngleValue = 0;
     Vector3 _setAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
     Node3D *_initialPointMesh = nullptr;
-    HashSet<Ref<ZoneResource>> _sculptedZones = HashSet<Ref<ZoneResource>>();
+    std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 
 protected:
     static void _bind_methods();

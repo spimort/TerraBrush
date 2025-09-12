@@ -78,7 +78,7 @@ bool SetAngleTool::handleInput(TerrainToolType toolType, Ref<InputEvent> event) 
 void SetAngleTool::beginPaint() {
     ToolBase::beginPaint();
 
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 void SetAngleTool::endPaint() {
@@ -90,7 +90,7 @@ void SetAngleTool::endPaint() {
     }
     _terraBrush->updateObjectsHeight(sculptedZonesList);
 
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 Ref<ImageTexture> SetAngleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {

@@ -1,35 +1,30 @@
-#ifndef SET_HEIGHT_TOOL_H
-#define SET_HEIGHT_TOOL_H
+#ifndef WATER_TOOL_H
+#define WATER_TOOL_H
 
 #include "tool_base.h"
 #include "../editor_resources/zone_resource.h"
+#include "../misc/hash_utils.h"
 
 using namespace godot;
 
-class SetHeightTool : public ToolBase {
-    GDCLASS(SetHeightTool, ToolBase);
+class WaterTool : public ToolBase{
+    GDCLASS(WaterTool, ToolBase);
 
 private:
-    float _setHeightValue = 0;
     std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 
 protected:
     static void _bind_methods();
 
     bool getApplyResolution() override;
-    String getToolInfo(TerrainToolType toolType) override;
-    bool handleInput(TerrainToolType toolType, Ref<InputEvent> event) override;
     void beginPaint() override;
     void endPaint() override;
     Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
 
 public:
-    SetHeightTool();
-    ~SetHeightTool();
+    WaterTool();
+    ~WaterTool();
 
     void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) override;
-
-    float getSetHeightValue();
-    void updateSetHeightValue(float value);
 };
 #endif

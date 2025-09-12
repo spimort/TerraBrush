@@ -69,7 +69,7 @@ bool SetHeightTool::handleInput(TerrainToolType toolType, Ref<InputEvent> event)
 void SetHeightTool::beginPaint() {
     ToolBase::beginPaint();
 
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 void SetHeightTool::endPaint() {
@@ -81,7 +81,7 @@ void SetHeightTool::endPaint() {
     }
     _terraBrush->updateObjectsHeight(sculptedZonesList);
 
-    _sculptedZones = HashSet<Ref<ZoneResource>>();
+    _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
 Ref<ImageTexture> SetHeightTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
