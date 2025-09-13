@@ -19,8 +19,6 @@ ToolsPieMenu::ToolsPieMenu() {
 ToolsPieMenu::~ToolsPieMenu() {}
 
 void ToolsPieMenu::_ready() {
-    set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
-
     _pieMenu = memnew(PieMenu);
     _pieMenu->set_label("Tools");
     _pieMenu->set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
