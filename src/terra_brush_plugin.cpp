@@ -20,6 +20,7 @@
 #include "editor_tools/water_flow_tool.h"
 #include "editor_tools/snow_tool.h"
 #include "editor_tools/hole_tool.h"
+#include "editor_tools/lock_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -877,9 +878,9 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_HOLEADD:
         case TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE:
             return memnew(HoleTool);
-        // case TerrainToolType::TERRAINTOOLTYPE_LOCKADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE:
-        //     return memnew(LockTool);
+        case TerrainToolType::TERRAINTOOLTYPE_LOCKADD:
+        case TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE:
+            return memnew(LockTool);
         // case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
         // case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE:
         //     return memnew(MetaInfoTool);
