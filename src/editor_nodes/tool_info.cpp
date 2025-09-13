@@ -49,9 +49,11 @@ void ToolInfo::setText(const String text) {
         if (!_tween.is_null()) {
             _tween->kill();
         }
-        _tween = get_tree()->create_tween();
 
-        if (!text.is_empty()) {
+        if (text.is_empty()) {
+            _panelContainer->set_modulate(Color::html("#ffffff00"));
+        } else {
+            _tween = get_tree()->create_tween();
             _panelContainer->set_modulate(Color::html("#ffffff00"));
             _tween->tween_property(_panelContainer, (NodePath)"modulate", Color::html("#ffffff"), 0.1);
             _tween->tween_property(_panelContainer, (NodePath)"modulate", Color::html("#ffffff"), 5.0);
