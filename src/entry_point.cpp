@@ -40,6 +40,7 @@
 #include "editor_tools/snow_tool.h"
 #include "editor_tools/hole_tool.h"
 #include "editor_tools/lock_tool.h"
+#include "editor_tools/meta_info_tool.h"
 
 #include "misc/keybind_manager.h"
 
@@ -140,6 +141,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(SnowTool);
         GDREGISTER_INTERNAL_CLASS(HoleTool);
         GDREGISTER_INTERNAL_CLASS(LockTool);
+        GDREGISTER_INTERNAL_CLASS(MetaInfoTool);
 
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();

@@ -435,7 +435,6 @@ void TerrainControlDock::buildLayout() {
                                     toolPreview->set_tooltip_text("Remove hole");
                                     _toolTypesContainer->add_child(toolPreview);
 
-
                                     toolPreview = memnew(ToolPreview);
                                     toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKADD);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_add.png"));
@@ -446,6 +445,18 @@ void TerrainControlDock::buildLayout() {
                                     toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/lock_remove.png"));
                                     toolPreview->set_tooltip_text("Unlock");
+                                    _toolTypesContainer->add_child(toolPreview);
+
+                                    toolPreview = memnew(ToolPreview);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_METAINFOADD);
+                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/tag_add.png"));
+                                    toolPreview->set_tooltip_text("Add meta info");
+                                    _toolTypesContainer->add_child(toolPreview);
+
+                                    toolPreview = memnew(ToolPreview);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE);
+                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/tag_remove.png"));
+                                    toolPreview->set_tooltip_text("Remove meta info");
                                     _toolTypesContainer->add_child(toolPreview);
                                 }
 

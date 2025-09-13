@@ -188,6 +188,22 @@ void ToolsPieMenu::_ready() {
 
     _pieMenu->add_child(memnew(Control)); // Splitter
 
+    toolPreview = memnew(ToolPreview);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_METAINFOADD);
+    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/tag_add.png"));
+    toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
+    toolPreview->set_tooltip_text("Add meta info");
+    _pieMenu->add_child(toolPreview);
+
+    toolPreview = memnew(ToolPreview);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE);
+    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/tag_remove.png"));
+    toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
+    toolPreview->set_tooltip_text("Remove meta info");
+    _pieMenu->add_child(toolPreview);
+
+    _pieMenu->add_child(memnew(Control)); // Splitter
+
     add_child(_pieMenu); // This is done at the end so the menu calculates the content in the _ready function
 
     for (int i = 0; i < _pieMenu->get_child_count(); i++) {

@@ -21,6 +21,7 @@
 #include "editor_tools/snow_tool.h"
 #include "editor_tools/hole_tool.h"
 #include "editor_tools/lock_tool.h"
+#include "editor_tools/meta_info_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -799,6 +800,11 @@ void TerraBrushPlugin::onDockObjectSelected(const int index) {
 
 void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
     _metaInfoLayerIndex = index;
+
+    if (!_currentTool.is_null() && Object::cast_to<MetaInfoTool>(_currentTool.ptr()) != nullptr) {
+        Ref<MetaInfoTool> metaInfoTool = Object::cast_to<MetaInfoTool>(_currentTool.ptr());
+        metaInfoTool->updateSelectedMetaInfoIndex(index);
+    }
 }
 
 void TerraBrushPlugin::updateCurrentTool() {
@@ -881,9 +887,12 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_LOCKADD:
         case TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE:
             return memnew(LockTool);
-        // case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE:
-        //     return memnew(MetaInfoTool);
+        case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
+        case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE: {
+            Ref<MetaInfoTool> metaInfoTool = memnew(MetaInfoTool);
+            metaInfoTool->updateSelectedMetaInfoIndex(_metaInfoLayerIndex);
+            return metaInfoTool;
+        }
     }
 
     return nullptr;
