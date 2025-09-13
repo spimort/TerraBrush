@@ -36,6 +36,7 @@
 #include "editor_tools/foliage_tool.h"
 #include "editor_tools/object_tool.h"
 #include "editor_tools/water_tool.h"
+#include "editor_tools/water_flow_tool.h"
 
 #include "misc/keybind_manager.h"
 
@@ -132,6 +133,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(FoliageTool);
         GDREGISTER_INTERNAL_CLASS(ObjectTool);
         GDREGISTER_INTERNAL_CLASS(WaterTool);
+        GDREGISTER_INTERNAL_CLASS(WaterFlowTool);
 
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();
