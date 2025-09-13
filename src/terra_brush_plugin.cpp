@@ -17,6 +17,7 @@
 #include "editor_tools/object_tool.h"
 #include "editor_tools/water_tool.h"
 #include "editor_tools/water_flow_tool.h"
+#include "editor_tools/snow_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -868,9 +869,9 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD:
         case TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE:
             return memnew(WaterFlowTool);
-        // case TerrainToolType::TERRAINTOOLTYPE_SNOWADD:
-        // case TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE:
-        //     return memnew(SnowTool);
+        case TerrainToolType::TERRAINTOOLTYPE_SNOWADD:
+        case TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE:
+            return memnew(SnowTool);
         // case TerrainToolType::TERRAINTOOLTYPE_HOLEADD:
         // case TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE:
         //     return memnew(HoleTool);
