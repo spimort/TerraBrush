@@ -14,7 +14,7 @@ CustomContentPieMenu::~CustomContentPieMenu() {}
 
 void CustomContentPieMenu::_ready() {
     _pieMenu = memnew(PieMenu);
-    _pieMenu->set_buttonsMinRadius(20);
+    _pieMenu->set_buttonsRadiusRatio(20);
     add_child(_pieMenu);
 }
 
