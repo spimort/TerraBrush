@@ -637,11 +637,15 @@ void TerraBrushPlugin::showCurrentToolMenu() {
             );
             break;
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
-            // var setAngleTool = (SetAngleTool)_currentTerraBrushNode.CurrentTool;
-            // var angleValue = await DialogUtils.ShowNumericSelector(this, setAngleTool.GetSetAngleValue(), -89.9f, 89.9f);
-            // if (angleValue.HasValue) {
-            //     setAngleTool.UpdateSetAngleValue(angleValue.Value);
-            // }
+            DialogUtils::showNumericSelector(
+                this,
+                ([&](float value) {
+                    _selectedSetAngle = value;
+                    Ref<SetAngleTool> setAngleTool = Object::cast_to<SetAngleTool>(_currentTool.ptr());
+                    setAngleTool->updateSetAngleValue(_selectedSetAngle);
+                }),
+                _selectedSetAngle
+            );
             break;
         case TerrainToolType::TERRAINTOOLTYPE_PAINT:
             // ShowCustomContentPieMenu("Textures", customContentPieMenu => {

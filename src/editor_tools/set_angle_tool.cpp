@@ -115,7 +115,7 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
         return;
     }
 
-    if (_setAngleInitialPoint == Vector3()) {
+    if (_setAngleInitialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
         return;
     }
 
