@@ -19,6 +19,7 @@ class Utils {
         static Ref<ShaderMaterial> createCustomShaderCopy(Ref<ShaderMaterial> customShader);
         static bool isPowerOfTwo(int x);
         static Color getPixelLinear(Ref<Image> image, float x, float y);
+        static float roundToDecimalPlace(float value, int decimalPlace);
 
         // TODO : GDExtension
         // static Task<Texture2D> WaitForTextureReady(Texture2D texture); This one wont be converted for now as async/await is not something that exists in cpp

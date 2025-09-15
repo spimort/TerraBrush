@@ -5,6 +5,7 @@
 #include "misc/zone_utils.h"
 #include "misc/custom_content_loader.h"
 #include "misc/utils.h"
+#include "misc/dialog_utils.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
@@ -625,11 +626,15 @@ void TerraBrushPlugin::showCurrentToolMenu() {
     // TODO : GDExtension
     switch (_currentToolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
-            // var setHeightTool = (SetHeightTool)_currentTerraBrushNode.CurrentTool;
-            // var heightValue = await DialogUtils.ShowNumericSelector(this, setHeightTool.GetSetHeightValue());
-            // if (heightValue.HasValue) {
-            //     setHeightTool.UpdateSetHeightValue(heightValue.Value);
-            // }
+            DialogUtils::showNumericSelector(
+                this,
+                ([&](float value) {
+                    _selectedSetHeight = value;
+                    Ref<SetHeightTool> setHeightTool = Object::cast_to<SetHeightTool>(_currentTool.ptr());
+                    setHeightTool->updateSetHeightValue(_selectedSetHeight);
+                }),
+                _selectedSetHeight
+            );
             break;
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
             // var setAngleTool = (SetAngleTool)_currentTerraBrushNode.CurrentTool;

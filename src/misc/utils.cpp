@@ -104,3 +104,8 @@ Color Utils::getPixelLinear(Ref<Image> image, float x, float y) {
 
     return result;
 }
+
+float Utils::roundToDecimalPlace(float value, int decimalPlace) {
+    const double multiplier = std::pow(10.0, decimalPlace);
+    return std::ceil(value * multiplier) / multiplier;
+}

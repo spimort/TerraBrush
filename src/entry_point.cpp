@@ -12,6 +12,7 @@
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/terrain_control_dock.h"
 #include "editor_nodes/tool_info.h"
+#include "editor_nodes/numeric_selector_dialog.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -43,6 +44,7 @@
 #include "editor_tools/meta_info_tool.h"
 
 #include "misc/keybind_manager.h"
+#include "misc/dialog_utils.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -142,6 +144,9 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(HoleTool);
         GDREGISTER_INTERNAL_CLASS(LockTool);
         GDREGISTER_INTERNAL_CLASS(MetaInfoTool);
+
+        GDREGISTER_INTERNAL_CLASS(FileDialogEventsWrapper);
+        GDREGISTER_INTERNAL_CLASS(NumericSelectorDialog);
 
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();
