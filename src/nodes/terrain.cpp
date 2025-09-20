@@ -12,6 +12,7 @@
 #include <godot_cpp/classes/texture2d_array.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/height_map_shape3d.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
 using namespace godot;
@@ -199,39 +200,55 @@ void Terrain::updateCollisionShape() {
         collisionShape->queue_free();
     }
 
-    TypedArray<Ref<HeightMapShape3D>> shapes = TypedArray<Ref<HeightMapShape3D>>();
+    TypedDictionary<Ref<ZoneResource>, Dictionary> zonesData = TypedDictionary<Ref<ZoneResource>, Dictionary>();
     for (Ref<ZoneResource> zone : _terrainZones->get_zones()) {
         Ref<HeightMapShape3D> heightMapShape3D = addZoneCollision(zone);
+        Dictionary collisionData = Dictionary();
+        collisionData[CollisionDataShapeKey] = heightMapShape3D;
 
-        shapes.append(heightMapShape3D);
+        Ref<Image> heightmapImage = zone->get_heightMapTexture()->get_image();
+        collisionData[CollisionDataHeightmapImageKey] = heightmapImage->get_data();
+        collisionData[CollisionDataImageWidthKey] = heightmapImage->get_width();
+        collisionData[CollisionDataImageHeightKey] = heightmapImage->get_height();
+        if (!zone->get_waterTexture().is_null()) {
+            collisionData[CollisionDataWaterImageKey] = zone->get_waterTexture()->get_image()->get_data();
+        }
+
+        zonesData[zone] = collisionData;
     }
 
     if (_createCollisionInThread) {
         _collisionThread.instantiate();
-        _collisionThread->start(Callable(this, "onUpdateTerrainCollision").bind(shapes));
+        _collisionThread->start(Callable(this, "onUpdateTerrainCollision").bind(zonesData));
     } else {
-        onUpdateTerrainCollision(shapes);
+        onUpdateTerrainCollision(zonesData);
     }
 }
 
-void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> shapes) {
+void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, Dictionary> zonesData) {
     CancellationToken token = _collisionCancellationSource.token;
 
-    TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache = TypedDictionary<Ref<ZoneResource>, Dictionary>();
-
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
+        if (token.isCancellationRequested) {
+            return;
+        }
+
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
+        Dictionary collisionData = zonesData[zone];
+
         Ref<ZoneResource> leftNeighbourZone = getZoneForPosition(zone->get_zonePosition().x - 1, zone->get_zonePosition().y);
         Ref<ZoneResource> topNeighbourZone = getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y - 1);
         Ref<ZoneResource> rightNeighbourZone = getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y);
         Ref<ZoneResource> bottomNeighbourZone = getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y + 1);
         Ref<ZoneResource> bottomRightNeighbourZone = getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y + 1);
 
-        Ref<Image> heightMapImage = zone->get_heightMapTexture()->get_image();
-        Ref<Image> waterImage;
+        int imageWidth = collisionData[CollisionDataImageWidthKey];
+        int imageHeight = collisionData[CollisionDataImageHeightKey];
+        PackedByteArray heightMapImage = collisionData[CollisionDataHeightmapImageKey];
+        PackedByteArray waterImage = PackedByteArray();
 
-        if (!zone->get_waterTexture().is_null()) {
-            waterImage = zone->get_waterTexture()->get_image();
+        if (collisionData.has(CollisionDataWaterImageKey)) {
+            waterImage = collisionData[CollisionDataWaterImageKey];
         }
 
         if (token.isCancellationRequested) {
@@ -239,8 +256,8 @@ void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> s
         }
 
         TypedArray<float> terrainData = TypedArray<float>();
-        for (int y = 0; y < heightMapImage->get_height(); y++) {
-            for (int x = 0; x < heightMapImage->get_width(); x++) {
+        for (int y = 0; y < imageHeight; y++) {
+            for (int x = 0; x < imageWidth; x++) {
                 if (token.isCancellationRequested) {
                     return;
                 }
@@ -253,26 +270,26 @@ void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> s
                 if (_zonesSize % 2 == 0) {
                     if (x == 0 && !leftNeighbourZone.is_null()) {
                         currentZone = leftNeighbourZone;
-                        lookupX = heightMapImage->get_width() - 1;
+                        lookupX = imageWidth - 1;
                     } else if (y == 0 && !topNeighbourZone.is_null()) {
                         currentZone = topNeighbourZone;
-                        lookupY = heightMapImage->get_height() - 1;
+                        lookupY = imageHeight - 1;
                     }
                 } else {
-                    if (x == heightMapImage->get_width() - 1 && y == heightMapImage->get_height() - 1 && !bottomRightNeighbourZone.is_null()) {
+                    if (x == imageWidth - 1 && y == imageHeight - 1 && !bottomRightNeighbourZone.is_null()) {
                         currentZone = bottomRightNeighbourZone;
                         lookupX = 0;
                         lookupY = 0;
-                    } else if (x == heightMapImage->get_width() - 1 && !rightNeighbourZone.is_null()) {
+                    } else if (x == imageWidth - 1 && !rightNeighbourZone.is_null()) {
                         currentZone = rightNeighbourZone;
                         lookupX = 0;
-                    } else if (y == heightMapImage->get_height() - 1 && !bottomNeighbourZone.is_null()) {
+                    } else if (y == imageHeight - 1 && !bottomNeighbourZone.is_null()) {
                         currentZone = bottomNeighbourZone;
                         lookupY = 0;
                     }
                 }
 
-                float pixelHeight = getHeightForZone(currentZone, lookupX, lookupY, imagesCache);
+                float pixelHeight = getHeightForZone(lookupX, lookupY, imageWidth, heightMapImage, waterImage);
                 terrainData.append(pixelHeight);
             }
         }
@@ -281,7 +298,8 @@ void Terrain::onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> s
             return;
         }
 
-        call_deferred("assignCollisionData", shapes[i], PackedFloat32Array(terrainData));
+        Ref<HeightMapShape3D> heightMapShape3D = collisionData[CollisionDataShapeKey];
+        call_deferred("assignCollisionData", heightMapShape3D, PackedFloat32Array(terrainData));
     }
 }
 
@@ -379,33 +397,44 @@ void Terrain::updateTextures() {
     }
 }
 
-float Terrain::getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache) {
-    Dictionary zoneImages;
-    if (imagesCache.has(zone)) {
-        zoneImages = imagesCache[zone];
-    } else {
-        zoneImages = Dictionary();
-        zoneImages[HeightMapTextureKey] = zone->get_heightMapTexture()->get_image();
-        if (!zone->get_waterTexture().is_null()) {
-            zoneImages[WaterTextureKey] = zone->get_waterTexture()->get_image();
-        }
-
-        imagesCache[zone] = zoneImages;
-    }
-
-    Color pixel = Ref<Image>(zoneImages[HeightMapTextureKey])->get_pixel(x, y);
+float Terrain::getHeightForZone(int x, int y, int imageWidth, PackedByteArray heightmapImage, PackedByteArray waterImage) {
+    Color pixel = getPixelFromImageArray(x, y, heightmapImage, imageWidth, 2, true);
     if (pixel.g > 0.0f) {
         return HoleValue;
     }
 
     float pixelHeight = pixel.r * _heightMapFactor;
     float waterHeight = 0;
-    if (zoneImages.has(WaterTextureKey)) {
-        waterHeight = Ref<Image>(zoneImages[WaterTextureKey])->get_pixel(x, y).r;
+    if (waterImage.size() > 0) {
+        waterHeight = getPixelFromImageArray(x, y, waterImage, imageWidth, 4, false).r;
     }
     pixelHeight -= waterHeight * _waterFactor;
 
     return pixelHeight;
+}
+
+Color Terrain::getPixelFromImageArray(int x, int y, PackedByteArray data, int imageWidth, int channels, bool floatValue) {
+    int index = (y * imageWidth + x) * channels;
+
+    if (floatValue) {
+        const float *imageData = reinterpret_cast<const float *>(data.ptr());
+
+        float r = channels >= 1 ? imageData[index + 0] : 0;
+        float g = channels >= 2 ? imageData[index + 1] : 0;
+        float b = channels >= 3 ? imageData[index + 2] : 0;
+        float a = channels >= 4 ? imageData[index + 3] : 1;
+
+        return Color(r, g, b, a);
+    } else {
+        const uint8_t *imageData = data.ptr();
+
+        float r = channels >= 1 ? imageData[index + 0] / 255.0 : 0;
+        float g = channels >= 2 ? imageData[index + 1] / 255.0 : 0;
+        float b = channels >= 3 ? imageData[index + 2] / 255.0 : 0;
+        float a = channels >= 4 ? imageData[index + 3] / 255.0 : 1;
+
+        return Color(r, g, b, a);
+    }
 }
 
 void Terrain::buildTerrain() {

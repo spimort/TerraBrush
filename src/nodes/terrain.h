@@ -19,6 +19,12 @@ class Terrain : public Node3D {
     GDCLASS(Terrain, Node3D);
 
 private:
+    static constexpr const char* CollisionDataShapeKey = "Shape";
+    static constexpr const char* CollisionDataHeightmapImageKey = "HeightmapImage";
+    static constexpr const char* CollisionDataWaterImageKey = "WaterImage";
+    static constexpr const char* CollisionDataImageWidthKey = "ImageWidth";
+    static constexpr const char* CollisionDataImageHeightKey = "ImageHeight";
+
     static constexpr const char* HeightMapTextureKey = "HeightMapTexture";
     static constexpr const char* WaterTextureKey = "WaterTexture";
     const float HoleValue = std::numeric_limits<float>::quiet_NaN();
@@ -60,8 +66,9 @@ private:
     void updateCollisionShape();
     void assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data);
     void updateTextures();
-    float getHeightForZone(Ref<ZoneResource> zone, int x, int y, TypedDictionary<Ref<ZoneResource>, Dictionary> imagesCache);
-    void onUpdateTerrainCollision(const TypedArray<Ref<HeightMapShape3D>> shapes);
+    float getHeightForZone(int x, int y, int imageWidth, PackedByteArray heightmapImage, PackedByteArray waterImage);
+    Color getPixelFromImageArray(int x, int y, PackedByteArray data, int imageWidth, int channels, bool floatValue);
+    void onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, Dictionary> zonesData);
     Ref<ZoneResource> getZoneForPosition(int x, int y);
 
 protected:
