@@ -13,6 +13,7 @@
 #include "editor_nodes/terrain_control_dock.h"
 #include "editor_nodes/tool_info.h"
 #include "editor_nodes/numeric_selector_dialog.h"
+#include "editor_nodes/import_image_row.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -86,7 +87,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(Foliage);
         // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
         // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
-        // GodotRegistry.RegisterInternalClass<NumericSelectorDialog>(NumericSelectorDialog.BindMethods);
         GDREGISTER_INTERNAL_CLASS(ObjectsBase);
         GDREGISTER_INTERNAL_CLASS(Objects);
         GDREGISTER_INTERNAL_CLASS(ObjectsOctreeMultiMesh);
@@ -99,7 +99,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
         GDREGISTER_INTERNAL_CLASS(ToolPreview);
         // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
-        // GodotRegistry.RegisterInternalClass<ImportImageRow>(ImportImageRow.BindMethods);
+        GDREGISTER_INTERNAL_CLASS(ImportImageRow);
         GDREGISTER_INTERNAL_CLASS(ToolInfo);
         GDREGISTER_INTERNAL_CLASS(KeybindManager);
 

@@ -67,8 +67,6 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
         return nullptr;
     }
 
-    // TODO
-    // textureArray._Images = textureImageArray;
     Ref<Texture2DArray> textureArray = memnew(Texture2DArray);
     textureArray->create_from_images(textureImageArray);
 
