@@ -72,7 +72,7 @@ private:
     Node *getActiveViewport();
     StringName hideOverlaySelector();
     void showToolPieMenu(StringName actionName);
-    void showCustomContentPieMenu(String label, Callable addItems);
+    void showCustomContentPieMenu(String label, std::function<void(CustomContentPieMenu*)> addItems);
     void showCurrentToolMenu();
     void showBrushNumericSelector(int minVale, int maxValue, Color widgetColor, int initialValue, Callable onValueSelected, StringName actionName);
     void updateTerrainSettings();
@@ -87,9 +87,13 @@ private:
     void onDockBrushSizeChanged(const int value);
     void onDockBrushStrengthChanged(const float value);
     void onDockTextureSelected(const int index);
+    void onCustomContentSelectorTextureSelected(const int index);
     void onDockFoliageSelected(const int index);
+    void onCustomContentSelectorFoliageSelected(const int index);
     void onDockObjectSelected(const int index);
+    void onCustomContentSelectorObjectSelected(const int index);
     void onDockMetaInfoSelected(const int index);
+    void onCustomContentSelectorMetaInfoSelected(const int index);
     void updateCurrentTool();
     Ref<ToolBase> getToolForType(TerrainToolType toolType);
     void beforeDeselectTool();

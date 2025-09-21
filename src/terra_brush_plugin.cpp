@@ -62,6 +62,11 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onDockFoliageSelected", "index"), &TerraBrushPlugin::onDockFoliageSelected);
     ClassDB::bind_method(D_METHOD("onDockObjectSelected", "index"), &TerraBrushPlugin::onDockObjectSelected);
     ClassDB::bind_method(D_METHOD("onDockMetaInfoSelected", "index"), &TerraBrushPlugin::onDockMetaInfoSelected);
+
+    ClassDB::bind_method(D_METHOD("onCustomContentSelectorTextureSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorTextureSelected);
+    ClassDB::bind_method(D_METHOD("onCustomContentSelectorFoliageSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorFoliageSelected);
+    ClassDB::bind_method(D_METHOD("onCustomContentSelectorObjectSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorObjectSelected);
+    ClassDB::bind_method(D_METHOD("onCustomContentSelectorMetaInfoSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorMetaInfoSelected);
 }
 
 TerraBrushPlugin::TerraBrushPlugin() {
@@ -189,7 +194,9 @@ int TerraBrushPlugin::_forward_3d_gui_input(Camera3D *viewportCamera, const Ref<
         }
 
         if (inputEvent->is_action(KeybindManager::StringNames::BrushPie())) {
-            showCustomContentPieMenu("Brushes", Callable(this, "onPieMenuBrushSelected"));
+            showCustomContentPieMenu("Brushes", ([&](CustomContentPieMenu *customContentPieMenu) {
+                onPieMenuBrushSelected(customContentPieMenu);
+            }));
             return AFTER_GUI_INPUT_STOP;
         }
 
@@ -600,7 +607,7 @@ void TerraBrushPlugin::showToolPieMenu(StringName actionName) {
     }
 }
 
-void TerraBrushPlugin::showCustomContentPieMenu(String label, Callable addItems) {
+void TerraBrushPlugin::showCustomContentPieMenu(String label, std::function<void(CustomContentPieMenu*)> addItems) {
     StringName previewActionName = hideOverlaySelector();
 
     if (previewActionName != label) {
@@ -614,7 +621,7 @@ void TerraBrushPlugin::showCustomContentPieMenu(String label, Callable addItems)
 
             EditorInterface::get_singleton()->get_base_control()->add_child(_overlaySelector);
 
-            addItems.call(customContentPieMenu);
+            addItems(customContentPieMenu);
 
             customContentPieMenu->get_pieMenu()->set_label(label);
             customContentPieMenu->get_pieMenu()->updateContent();
@@ -648,42 +655,30 @@ void TerraBrushPlugin::showCurrentToolMenu() {
             );
             break;
         case TerrainToolType::TERRAINTOOLTYPE_PAINT:
-            // ShowCustomContentPieMenu("Textures", customContentPieMenu => {
-            //     CustomContentLoader.AddTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
-            //         _terrainControlDock.SetSelectedTextureIndex(index);
-            //         HideOverlaySelector();
-            //     }, true);
-            // });
+            showCustomContentPieMenu("Textures", ([&](CustomContentPieMenu *customContentPieMenu) {
+                CustomContentLoader::addTexturesPreviewToParent(_currentTerraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorTextureSelected"), true);
+            }));
 
             break;
         case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
         case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE:
-            // ShowCustomContentPieMenu("Foliages", customContentPieMenu => {
-            //     CustomContentLoader.AddFoliagesPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
-            //         _terrainControlDock.SetSelectedFoliageIndex(index);
-            //         HideOverlaySelector();
-            //     }, true);
-            // });
+            showCustomContentPieMenu("Foliages", ([&](CustomContentPieMenu *customContentPieMenu) {
+                CustomContentLoader::addFoliagesPreviewToParent(_currentTerraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorFoliageSelected"), true);
+            }));
 
             break;
         case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
         case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE:
-            // ShowCustomContentPieMenu("Objects", customContentPieMenu => {
-            //     CustomContentLoader.AddObjectsPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
-            //         _terrainControlDock.SetSelectedObjectIndex(index);
-            //         HideOverlaySelector();
-            //     }, true);
-            // });
+            showCustomContentPieMenu("Objects", ([&](CustomContentPieMenu *customContentPieMenu) {
+                CustomContentLoader::addObjectsPreviewToParent(_currentTerraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorObjectSelected"), true);
+            }));
 
             break;
         case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
         case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE:
-            // ShowCustomContentPieMenu("MetaInfo", customContentPieMenu => {
-            //     CustomContentLoader.AddMetaInfoLayersPreviewToParent(_currentTerraBrushNode, customContentPieMenu.PieMenu, index => {
-            //         _terrainControlDock.SetSelectedMetaInfoIndex(index);
-            //         HideOverlaySelector();
-            //     }, true);
-            // });
+            showCustomContentPieMenu("MetaInfo", ([&](CustomContentPieMenu *customContentPieMenu) {
+                CustomContentLoader::addMetaInfoLayersPreviewToParent(_currentTerraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorMetaInfoSelected"), true);
+            }));
 
             break;
     }
@@ -789,6 +784,11 @@ void TerraBrushPlugin::onDockTextureSelected(const int index) {
     }
 }
 
+void TerraBrushPlugin::onCustomContentSelectorTextureSelected(const int index) {
+    _terrainControlDock->setSelectedTextureIndex(index);
+    hideOverlaySelector();
+}
+
 void TerraBrushPlugin::onDockFoliageSelected(const int index) {
     _foliageIndex = index;
 
@@ -796,6 +796,11 @@ void TerraBrushPlugin::onDockFoliageSelected(const int index) {
         Ref<FoliageTool> foliageTool = Object::cast_to<FoliageTool>(_currentTool.ptr());
         foliageTool->updateSelectedFoliageIndex(index);
     }
+}
+
+void TerraBrushPlugin::onCustomContentSelectorFoliageSelected(const int index) {
+    _terrainControlDock->setSelectedFoliageIndex(index);
+    hideOverlaySelector();
 }
 
 void TerraBrushPlugin::onDockObjectSelected(const int index) {
@@ -807,6 +812,11 @@ void TerraBrushPlugin::onDockObjectSelected(const int index) {
     }
 }
 
+void TerraBrushPlugin::onCustomContentSelectorObjectSelected(const int index) {
+    _terrainControlDock->setSelectedObjectIndex(index);
+    hideOverlaySelector();
+}
+
 void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
     _metaInfoLayerIndex = index;
 
@@ -814,6 +824,11 @@ void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
         Ref<MetaInfoTool> metaInfoTool = Object::cast_to<MetaInfoTool>(_currentTool.ptr());
         metaInfoTool->updateSelectedMetaInfoIndex(index);
     }
+}
+
+void TerraBrushPlugin::onCustomContentSelectorMetaInfoSelected(const int index) {
+    _terrainControlDock->setSelectedMetaInfoIndex(index);
+    hideOverlaySelector();
 }
 
 void TerraBrushPlugin::updateCurrentTool() {
