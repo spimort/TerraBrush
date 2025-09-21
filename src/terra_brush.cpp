@@ -1012,7 +1012,7 @@ Ref<ZoneResource> TerraBrush::addNewZone(Vector2i zonePosition) {
     Ref<ZoneResource> zone = memnew(ZoneResource);
     zone->set_zonePosition(zonePosition);
 
-    zone->initializeImagesForTerrain();
+    initializeImagesForTerrain(zone);
 
     TypedArray<Ref<ZoneResource>> newList = TypedArray<Ref<ZoneResource>>();
     newList.append_array(_terrainZones->get_zones());
@@ -1032,4 +1032,45 @@ Ref<ZoneResource> TerraBrush::addNewZone(Vector2i zonePosition) {
     }
 
     return zone;
+}
+
+void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
+    zone->set_heightMapTexture(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+
+    if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
+        int numberOfSplatmaps = (int) Math::ceil(_textureSets->get_textureSets().size() / 4.0f);
+        TypedArray<Ref<ImageTexture>> splatmaps = TypedArray<Ref<ImageTexture>>();
+        for (int i = 0; i < numberOfSplatmaps; i++) {
+            splatmaps.append(ZoneUtils::createSplatmapImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
+        }
+        zone->set_splatmapsTexture(splatmaps);
+    }
+
+    if (_foliages.size() > 0) {
+        TypedArray<Ref<ImageTexture>> foliagesTexture = TypedArray<Ref<ImageTexture>>();
+        for (int i = 0; i < _foliages.size(); i++) {
+            foliagesTexture.append(ZoneUtils::createFoliageImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
+        }
+        zone->set_foliagesTexture(foliagesTexture);
+    }
+
+    if (_objects.size() > 0) {
+        TypedArray<Ref<ImageTexture>> objectsTexture = TypedArray<Ref<ImageTexture>>();
+        for (int i = 0; i < _objects.size(); i++) {
+            objectsTexture.append(ZoneUtils::createObjectImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
+        }
+        zone->set_objectsTexture(objectsTexture);
+    }
+
+    if (!_waterDefinition.is_null()) {
+        zone->set_waterTexture(ZoneUtils::createWaterImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+    }
+
+    if (!_snowDefinition.is_null()) {
+        zone->set_snowTexture(ZoneUtils::createSnowImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+    }
+
+    if (_metaInfoLayers.size() > 0) {
+        zone->set_metaInfoTexture(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+    }
 }

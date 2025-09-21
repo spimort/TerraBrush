@@ -91,6 +91,7 @@ private:
     void createSnow();
     void createMetaInfo();
     Ref<Image> getImageFromImageTexture(Ref<ImageTexture> texture);
+    void initializeImagesForTerrain(Ref<ZoneResource> zone);
 
 protected:
     static void _bind_methods();
