@@ -39,7 +39,6 @@ String Utils::pathCombineForwardSlash(String directory, String path) {
 }
 
 Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> textures) {
-    Ref<Texture2DArray> textureArray = memnew(Texture2DArray);
     TypedArray<Ref<Image>> textureImageArray = TypedArray<Ref<Image>>();
 
     int width = 0;
@@ -50,20 +49,27 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
             if (!texture.is_null()) {
                 Ref<Image> textureImage = texture->get_image();
 
-                if (width == 0) {
-                    width = textureImage->get_width();
-                    height = textureImage->get_height();
-                } else if (textureImage->get_width() != width || textureImage->get_height() != height) {
-                    textureImage->resize(width, height);
-                }
+                if (!textureImage.is_null()) {
+                    if (width == 0) {
+                        width = textureImage->get_width();
+                        height = textureImage->get_height();
+                    } else if (textureImage->get_width() != width || textureImage->get_height() != height) {
+                        textureImage->resize(width, height);
+                    }
 
-                textureImageArray.append(textureImage);
+                    textureImageArray.append(textureImage);
+                }
             }
         }
     }
 
+    if (textureImageArray.size() == 0) {
+        return nullptr;
+    }
+
     // TODO
     // textureArray._Images = textureImageArray;
+    Ref<Texture2DArray> textureArray = memnew(Texture2DArray);
     textureArray->create_from_images(textureImageArray);
 
     return textureArray;

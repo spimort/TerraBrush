@@ -21,6 +21,7 @@ mono_crash.*.json
 *.dll
 *.lib
 *.exp
+*.pdb
 
 # vscode
 /.vscode

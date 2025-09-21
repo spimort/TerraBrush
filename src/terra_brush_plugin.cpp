@@ -630,7 +630,6 @@ void TerraBrushPlugin::showCustomContentPieMenu(String label, std::function<void
 }
 
 void TerraBrushPlugin::showCurrentToolMenu() {
-    // TODO : GDExtension
     switch (_currentToolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETHEIGHT:
             DialogUtils::showNumericSelector(

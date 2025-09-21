@@ -363,7 +363,9 @@ void Terrain::updateTextures() {
         _clipmap->get_shader()->set_shader_parameter(StringNames::Triplanar(), triplanar);
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesTriplanar(), texturesTriplanar);
         _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
-        _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
+        if (!textureArray.is_null()) {
+            _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
+        }
         _clipmap->get_shader()->set_shader_parameter(StringNames::UseSharpTransitions(), _useSharpTransitions);
 
         if (normalTextures.size() > 0) {
@@ -392,7 +394,9 @@ void Terrain::updateTextures() {
         Ref<Texture2DArray> textureArray = Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>>({_defaultTexture}));
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), TypedArray<int>({_textureDetail}));
         _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
-        _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
+        if (!textureArray.is_null()) {
+            _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
+        }
         _clipmap->get_shader()->set_shader_parameter(StringNames::UseAntitile(), false);
     }
 }
