@@ -14,6 +14,7 @@
 #include "editor_nodes/tool_info.h"
 #include "editor_nodes/numeric_selector_dialog.h"
 #include "editor_nodes/import_image_row.h"
+#include "editor_nodes/import_dialog.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -98,7 +99,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(Water);
         GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
         GDREGISTER_INTERNAL_CLASS(ToolPreview);
-        // GodotRegistry.RegisterInternalClass<ImportDialog>(ImportDialog.BindMethods);
+        GDREGISTER_CLASS(ImportDialog);
         GDREGISTER_INTERNAL_CLASS(ImportImageRow);
         GDREGISTER_INTERNAL_CLASS(ToolInfo);
         GDREGISTER_INTERNAL_CLASS(KeybindManager);

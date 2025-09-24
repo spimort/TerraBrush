@@ -6,6 +6,7 @@
 #include "misc/custom_content_loader.h"
 #include "misc/utils.h"
 #include "misc/dialog_utils.h"
+#include "misc/importer_engine.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
@@ -710,9 +711,12 @@ void TerraBrushPlugin::showBrushNumericSelector(int minVale, int maxValue, Color
 }
 
 void TerraBrushPlugin::updateTerrainSettings() {
-    if (_currentTerraBrushNode != nullptr) {
-        _currentTerraBrushNode->onUpdateTerrainSettings();
-    }
+    // if (_currentTerraBrushNode != nullptr) {
+    //     _currentTerraBrushNode->onUpdateTerrainSettings();
+    // }
+    DialogUtils::showImportDialog(this, _currentTerraBrushNode, ([&](ImporterSettings settings) {
+
+    }));
 }
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {

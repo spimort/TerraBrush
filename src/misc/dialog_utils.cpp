@@ -1,5 +1,6 @@
 #include "dialog_utils.h"
 #include "../editor_nodes/numeric_selector_dialog.h"
+#include "../editor_nodes/import_dialog.h"
 
 #include <godot_cpp/classes/scene_tree.hpp>
 
@@ -56,8 +57,14 @@ void DialogUtils::showConfirmDialog(Node *sourceNode, String title, String conte
 
 }
 
-// void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBursh) {} // TODO : GDExtension
+void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBursh, std::function<void(ImporterSettings)> onAccept) {
+    ImportDialog *importDialog = memnew(ImportDialog);
+    importDialog->init(onAccept);
+    importDialog->set_originialTerraBrush(originalTerraBursh);
 
+    sourceNode->get_tree()->get_root()->add_child(importDialog);
+    importDialog->popup_centered();
+}
 
 void FileDialogEventsWrapper::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onSelect", "value"), &FileDialogEventsWrapper::onSelect);
