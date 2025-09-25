@@ -64,7 +64,7 @@ void ImportDialog::previewImport() {
     _previewTerrain = memnew(TerraBrush);
     _previewTerrain->set_zonesSize(_originialTerraBrush->get_zonesSize());
     _previewTerrain->set_resolution(_originialTerraBrush->get_resolution());
-    // ImporterEngine::importTerrain(_previewTerrain, settings); // TODO : GDExtension
+    ImporterEngine::importTerrain(_previewTerrain, settings);
     _subViewport->add_child(_previewTerrain);
 }
 
@@ -95,12 +95,15 @@ ImporterSettings ImportDialog::getImporterSettings() {
         settings.scaleToResolution = _scaleToResolutionCheckbox->is_pressed();
     }
 
-    if (_splatmapsContainer != nullptr) {
+    if (_splatmapsContainer != nullptr && _splatmapsContainer->get_child_count() > 0) {
         TypedArray<Ref<Texture2D>> splatmaps = TypedArray<Ref<Texture2D>>();
 
         for (int i = 0; i < _splatmapsContainer->get_child_count(); i++) {
             ImportImageRow *importRow = Object::cast_to<ImportImageRow>(_splatmapsContainer->get_child(i));
-            splatmaps.append(importRow->get_imageTexture());
+            Ref<Texture2D> texture = importRow->get_imageTexture();
+            if (!texture.is_null()) {
+                splatmaps.append(texture);
+            }
         }
 
         settings.splatmaps = splatmaps;
@@ -111,7 +114,10 @@ ImporterSettings ImportDialog::getImporterSettings() {
 
         for (int i = 0; i < _foliagesContainer->get_child_count(); i++) {
             ImportImageRow *importRow = Object::cast_to<ImportImageRow>(_foliagesContainer->get_child(i));
-            foliages.append(importRow->get_imageTexture());
+            Ref<Texture2D> texture = importRow->get_imageTexture();
+            if (!texture.is_null()) {
+                foliages.append(texture);
+            }
         }
 
         settings.foliages = foliages;
@@ -122,7 +128,10 @@ ImporterSettings ImportDialog::getImporterSettings() {
 
         for (int i = 0; i < _objectsContainer->get_child_count(); i++) {
             ImportImageRow *importRow = Object::cast_to<ImportImageRow>(_objectsContainer->get_child(i));
-            objects.append(importRow->get_imageTexture());
+            Ref<Texture2D> texture = importRow->get_imageTexture();
+            if (!texture.is_null()) {
+                objects.append(texture);
+            }
         }
 
         settings.objects = objects;
@@ -316,7 +325,7 @@ void ImportDialog::buildLayout() {
                     Button *okButton = memnew(Button);
                     okButton->set_text("   OK   ");
                     okButton->set_h_size_flags(Control::SizeFlags::SIZE_SHRINK_CENTER);
-                    okButton->connect("pressed", Callable(this, "okButton"));
+                    okButton->connect("pressed", Callable(this, "onOkButton"));
                     buttonsContainer->add_child(okButton);
 
                     Button *cancelButton = memnew(Button);

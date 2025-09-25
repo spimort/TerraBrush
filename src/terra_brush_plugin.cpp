@@ -711,11 +711,9 @@ void TerraBrushPlugin::showBrushNumericSelector(int minVale, int maxValue, Color
 }
 
 void TerraBrushPlugin::updateTerrainSettings() {
-    // if (_currentTerraBrushNode != nullptr) {
-    //     _currentTerraBrushNode->onUpdateTerrainSettings();
-    // }
     DialogUtils::showImportDialog(this, _currentTerraBrushNode, ([&](ImporterSettings settings) {
-
+        ImporterEngine::importTerrain(_currentTerraBrushNode, settings);
+        _currentTerraBrushNode->onUpdateTerrainSettings();
     }));
 }
 

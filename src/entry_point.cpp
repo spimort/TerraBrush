@@ -99,7 +99,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(Water);
         GDREGISTER_INTERNAL_CLASS(DockPreviewButton);
         GDREGISTER_INTERNAL_CLASS(ToolPreview);
-        GDREGISTER_CLASS(ImportDialog);
+        GDREGISTER_INTERNAL_CLASS(ImportDialog);
         GDREGISTER_INTERNAL_CLASS(ImportImageRow);
         GDREGISTER_INTERNAL_CLASS(ToolInfo);
         GDREGISTER_INTERNAL_CLASS(KeybindManager);

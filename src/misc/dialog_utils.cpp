@@ -16,13 +16,11 @@ void DialogUtils::showFileDialog(Node *sourceNode, std::function<void(String)> o
 
     FileDialogEventsWrapper *eventsWrapper = memnew(FileDialogEventsWrapper);
     eventsWrapper->init(
-        ([&](String value) {
-            eventsWrapper->queue_free();
+        ([fileDialog, onSelect](String value) {
             fileDialog->queue_free();
             onSelect(value);
         }),
-        ([&] {
-            eventsWrapper->queue_free();
+        ([fileDialog, onSelect] {
             fileDialog->queue_free();
             onSelect("");
         })
@@ -34,8 +32,8 @@ void DialogUtils::showFileDialog(Node *sourceNode, std::function<void(String)> o
     fileDialog->connect("canceled", Callable(eventsWrapper, "onCancel"));
     fileDialog->connect("close_requested", Callable(eventsWrapper, "onCancel"));
 
-    sourceNode->add_child(eventsWrapper);
     sourceNode->add_child(fileDialog);
+    fileDialog->add_child(eventsWrapper);
     fileDialog->popup_centered(Vector2i(800, 600));
 }
 
