@@ -7,6 +7,7 @@
 #include "misc/utils.h"
 #include "misc/dialog_utils.h"
 #include "misc/importer_engine.h"
+#include "misc/exporter_engine.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
@@ -715,6 +716,15 @@ void TerraBrushPlugin::updateTerrainSettings() {
         ImporterEngine::importTerrain(_currentTerraBrushNode, settings);
         _currentTerraBrushNode->onUpdateTerrainSettings();
     }));
+
+    // DialogUtils::showFileDialog(
+    //     this,
+    //     ([&](String folder) {
+    //         ExporterEngine::exportTerrain(_currentTerraBrushNode, folder);
+    //     }),
+    //     EditorFileDialog::Access::ACCESS_FILESYSTEM,
+    //     EditorFileDialog::FileMode::FILE_MODE_OPEN_DIR
+    // );
 }
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {
