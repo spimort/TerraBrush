@@ -349,5 +349,7 @@ void Clipmap::updateAABB() {
 }
 
 void Clipmap::updateShaderOffsetPosition() {
-    _clipmapShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
+    if (!_clipmapShader.is_null()) {
+        _clipmapShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
+    }
 }

@@ -8,9 +8,12 @@
 #include "misc/dialog_utils.h"
 #include "misc/importer_engine.h"
 #include "misc/exporter_engine.h"
+
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
 #include "editor_nodes/custom_content_pie_menu.h"
+#include "editor_nodes/keybind_settings.h"
+
 #include "editor_resources/zone_resource.h"
 
 #include "editor_tools/sculpt_tool.h"
@@ -40,6 +43,7 @@
 #include <godot_cpp/classes/collision_object3d.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_resource_preview.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -313,13 +317,9 @@ void TerraBrushPlugin::createCustomSetting(String name, Variant defaultValue, Va
 }
 
 void TerraBrushPlugin::handleKeyBindings() {
-    // TODO : GDExtension
-
-    // var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeybindSettings.tscn")
-    //     .Instantiate<KeybindSettings>();
-    // dlg.Confirmed += () => dlg.QueueFree();
-    // GetTree().Root.AddChild(dlg);
-    // dlg.PopupCentered();
+    KeybindSettings *dlg = memnew(KeybindSettings);
+    get_tree()->get_root()->add_child(dlg);
+    dlg->popup_centered();
 }
 
 void TerraBrushPlugin::onUndoTexture(Ref<ImageTexture> imageTexture, PackedByteArray previousImageData) {

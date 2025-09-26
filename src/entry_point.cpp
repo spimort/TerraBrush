@@ -15,6 +15,7 @@
 #include "editor_nodes/numeric_selector_dialog.h"
 #include "editor_nodes/import_image_row.h"
 #include "editor_nodes/import_dialog.h"
+#include "editor_nodes/keybind_settings.h"
 
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/foliage_definition_resource.h"
@@ -86,7 +87,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(Clipmap);
         GDREGISTER_INTERNAL_CLASS(CustomContentPieMenu);
         GDREGISTER_INTERNAL_CLASS(Foliage);
-        // GodotRegistry.RegisterInternalClass<KeybindSettings>(KeybindSettings.BindMethods);
+        GDREGISTER_INTERNAL_CLASS(KeybindSettings);
         // GodotRegistry.RegisterInternalClass<KeyListenDialog>(KeyListenDialog.BindMethods);
         GDREGISTER_INTERNAL_CLASS(ObjectsBase);
         GDREGISTER_INTERNAL_CLASS(Objects);

@@ -317,6 +317,7 @@ void Foliage::updateAABB() {
 }
 
 void Foliage::updateShaderOffsetPosition() {
-    _foliageShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
+    if (!_foliageShader.is_null()) {
+        _foliageShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
+    }
 }
-
