@@ -55,6 +55,8 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("updateAutoAddZonesSetting"), &TerraBrushPlugin::updateAutoAddZonesSetting);
     ClassDB::bind_method(D_METHOD("onToolSelected", "value"), &TerraBrushPlugin::onToolSelected);
     ClassDB::bind_method(D_METHOD("hideOverlaySelector"), &TerraBrushPlugin::hideOverlaySelector);
+    ClassDB::bind_method(D_METHOD("importTerrain"), &TerraBrushPlugin::importTerrain);
+    ClassDB::bind_method(D_METHOD("exportTerrain"), &TerraBrushPlugin::exportTerrain);
 
     ClassDB::bind_method(D_METHOD("onDockToolTypeSelected", "toolType"), &TerraBrushPlugin::onDockToolTypeSelected);
     ClassDB::bind_method(D_METHOD("onDockBrushSelected", "index", "image"), &TerraBrushPlugin::onDockBrushSelected);
@@ -426,6 +428,20 @@ void TerraBrushPlugin::removeDock() {
         _updateTerrainSettingsButton = nullptr;
     }
 
+    if (_importTerrainSettingsButton != nullptr) {
+        remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _importTerrainSettingsButton);
+        _importTerrainSettingsButton->queue_free();
+
+        _importTerrainSettingsButton = nullptr;
+    }
+
+    if (_exportTerrainSettingsButton != nullptr) {
+        remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _exportTerrainSettingsButton);
+        _exportTerrainSettingsButton->queue_free();
+
+        _exportTerrainSettingsButton = nullptr;
+    }
+
     if (_autoAddZonesCheckbox != nullptr) {
         remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _autoAddZonesCheckbox);
         _autoAddZonesCheckbox->queue_free();
@@ -457,8 +473,6 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     // };
     _undoRedo = get_undo_redo();
     updateCurrentTool();
-    // TODO : GDExtension
-    // _currentTerraBrushNode.UndoRedo = _undoRedo;
 
     if (_toolInfo != nullptr) {
         _toolInfo->queue_free();
@@ -518,6 +532,16 @@ void TerraBrushPlugin::addDock() {
     _updateTerrainSettingsButton->set_text("Update terrain");
     _updateTerrainSettingsButton->connect("pressed", Callable(this, "updateTerrainSettings"));
     add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _updateTerrainSettingsButton);
+
+    _importTerrainSettingsButton = memnew(Button);
+    _importTerrainSettingsButton->set_text("Import terrain");
+    _importTerrainSettingsButton->connect("pressed", Callable(this, "importTerrain"));
+    add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _importTerrainSettingsButton);
+
+    _exportTerrainSettingsButton = memnew(Button);
+    _exportTerrainSettingsButton->set_text("Export terrain");
+    _exportTerrainSettingsButton->connect("pressed", Callable(this, "exportTerrain"));
+    add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _exportTerrainSettingsButton);
 
     _autoAddZonesCheckbox = memnew(CheckBox);
     _autoAddZonesCheckbox->set_text("Auto add zones");
@@ -712,19 +736,7 @@ void TerraBrushPlugin::showBrushNumericSelector(int minVale, int maxValue, Color
 }
 
 void TerraBrushPlugin::updateTerrainSettings() {
-    DialogUtils::showImportDialog(this, _currentTerraBrushNode, ([&](ImporterSettings settings) {
-        ImporterEngine::importTerrain(_currentTerraBrushNode, settings);
-        _currentTerraBrushNode->onUpdateTerrainSettings();
-    }));
-
-    // DialogUtils::showFileDialog(
-    //     this,
-    //     ([&](String folder) {
-    //         ExporterEngine::exportTerrain(_currentTerraBrushNode, folder);
-    //     }),
-    //     EditorFileDialog::Access::ACCESS_FILESYSTEM,
-    //     EditorFileDialog::FileMode::FILE_MODE_OPEN_DIR
-    // );
+    _currentTerraBrushNode->onUpdateTerrainSettings();
 }
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {
@@ -931,4 +943,22 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
     }
 
     return nullptr;
+}
+
+void TerraBrushPlugin::importTerrain() {
+    DialogUtils::showImportDialog(this, _currentTerraBrushNode, ([&](ImporterSettings settings) {
+        ImporterEngine::importTerrain(_currentTerraBrushNode, settings);
+        _currentTerraBrushNode->onUpdateTerrainSettings();
+    }));
+}
+
+void TerraBrushPlugin::exportTerrain() {
+    DialogUtils::showFileDialog(
+        this,
+        ([&](String folder) {
+            ExporterEngine::exportTerrain(_currentTerraBrushNode, folder);
+        }),
+        EditorFileDialog::Access::ACCESS_FILESYSTEM,
+        EditorFileDialog::FileMode::FILE_MODE_OPEN_DIR
+    );
 }

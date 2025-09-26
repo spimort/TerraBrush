@@ -34,6 +34,8 @@ private:
     Array _editorViewports = Array();
     Control *_overlaySelector = nullptr;
     Button *_updateTerrainSettingsButton = nullptr;
+    Button *_importTerrainSettingsButton = nullptr;
+    Button *_exportTerrainSettingsButton = nullptr;
     CheckBox *_autoAddZonesCheckbox = nullptr;
 
     Ref<ToolBase> _currentTool = nullptr;
@@ -97,6 +99,8 @@ private:
     void updateCurrentTool();
     Ref<ToolBase> getToolForType(TerrainToolType toolType);
     void beforeDeselectTool();
+    void importTerrain();
+    void exportTerrain();
 
 protected:
     static void _bind_methods();
