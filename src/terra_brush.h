@@ -8,6 +8,8 @@
 #include "editor_resources/water_resource.h"
 #include "editor_resources/snow_resource.h"
 #include "editor_resources/meta_info_layer_resource.h"
+#include "editor_resources/terrain_position_information.h"
+
 #include "nodes/water.h"
 #include "nodes/terrain.h"
 #include "nodes/snow.h"
@@ -204,7 +206,7 @@ public:
     void updateCameraPosition(Camera3D *viewportCamera);
     void saveResources();
     void addInteractionPoint(float x, float y);
-    // Ref<TerrainPositionInformation> getPositionInformation(float x, float y); TODO : GDExtension
+    Ref<TerrainPositionInformation> getPositionInformation(float x, float y);
     void onLockTerrain();
     void onUnlockTerrain();
     Ref<ZoneResource> addNewZone(Vector2i zonePosition);

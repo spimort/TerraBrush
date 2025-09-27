@@ -13,9 +13,14 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
 
+#include <vector>
+#include <algorithm>
+
 using namespace godot;
 
 void TerraBrush::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("getPositionInformation", "x", "y"), &TerraBrush::getPositionInformation);
+
     ADD_GROUP("TerrainSettings", "");
 
     ClassDB::bind_method(D_METHOD("get_dataPath"), &TerraBrush::get_dataPath);
@@ -983,8 +988,86 @@ void TerraBrush::addInteractionPoint(float x, float y) {
     }
 }
 
-// TODO : GDExtension
-// Ref<TerrainPositionInformation> getPositionInformation(float x, float y);
+Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, float y) {
+    x += _zonesSize / 2;
+    y += _zonesSize / 2;
+
+    if (_zonesSize % 2 == 0) {
+        x -= _lodInitialCellWidth / 2.0f;
+        y -= _lodInitialCellWidth / 2.0f;
+    }
+
+    ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(x, y, _zonesSize, _resolution);
+    Ref<ZoneResource> zone = _terrainZones->getZoneForZoneInfo(zoneInfo);
+
+    if (!zone.is_null()) {
+        float waterFactor = 0;
+        float snowFactor = 0;
+        int metaInfoIndex = -1;
+        String metaInfoName = "";
+
+        if (!zone->get_waterTexture().is_null()) {
+            waterFactor = getImageFromImageTexture(zone->get_waterTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+        }
+
+        if (!zone->get_snowTexture().is_null()) {
+            snowFactor = getImageFromImageTexture(zone->get_snowTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+        }
+
+        if (_metaInfoLayers.size() > 0 && !zone->get_metaInfoTexture().is_null()) {
+            Color metaInfoColor = getImageFromImageTexture(zone->get_metaInfoTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+            int metaInfoColorIndex = (int) metaInfoColor.r;
+
+            if (metaInfoColorIndex >= 0 && _metaInfoLayers.size() - 1 >= metaInfoColorIndex) {
+                metaInfoIndex = metaInfoColorIndex;
+                metaInfoName = Ref<MetaInfoLayerResource>(_metaInfoLayers[metaInfoColorIndex])->get_name();
+            }
+        }
+
+        TypedArray<Ref<TerrainPositionTextureInformation>> textures = TypedArray<Ref<TerrainPositionTextureInformation>>();
+        if (zone->get_splatmapsTexture().size() > 0) {
+            std::vector<Ref<TerrainPositionTextureInformation>> tempTextures = std::vector<Ref<TerrainPositionTextureInformation>>();
+            for (int i = 0; i < _textureSets->get_textureSets().size(); i++) {
+                Ref<TextureSetResource> textureSet = _textureSets->get_textureSets()[i];
+
+                int splatmapIndex = (int) Math::floor(i / 4.0);
+                Ref<ImageTexture> splatmapImage = zone->get_splatmapsTexture()[splatmapIndex];
+                Color pixel = getImageFromImageTexture(splatmapImage)->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+                int colorIndex = i % 4;
+
+                Ref<TerrainPositionTextureInformation> textureInfo = memnew(TerrainPositionTextureInformation);
+                textureInfo->set_index(i);
+                textureInfo->set_name(textureSet->get_name());
+                textureInfo->set_factor(pixel[colorIndex]);
+
+                tempTextures.push_back(textureInfo);
+            }
+
+            std::sort(tempTextures.begin(), tempTextures.end(),
+                ([](const Ref<TerrainPositionTextureInformation> &a, const Ref<TerrainPositionTextureInformation> &b) {
+                    return a->get_factor() > b->get_factor();
+                })
+            );
+
+            for (Ref<TerrainPositionTextureInformation> textureInfo : tempTextures) {
+                textures.append(textureInfo);
+            }
+        }
+
+        Ref<TerrainPositionInformation> info = memnew(TerrainPositionInformation);
+        info->set_textures(textures);
+        info->set_waterFactor(waterFactor);
+        info->set_waterDeepness(waterFactor * (_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor()));
+        info->set_snowFactor(snowFactor);
+        info->set_snowHeight(snowFactor * (_snowDefinition.is_null() ? 0 : _snowDefinition->get_snowFactor()));
+        info->set_metaInfoIndex(metaInfoIndex);
+        info->set_metaInfoName(metaInfoName);
+
+        return info;
+    }
+
+    return nullptr;
+}
 
 void TerraBrush::onLockTerrain() {
     if (_terrainZones->get_zones().size() > 0) {

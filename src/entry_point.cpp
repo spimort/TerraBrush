@@ -32,6 +32,7 @@
 #include "editor_resources/water_resource.h"
 #include "editor_resources/zone_resource.h"
 #include "editor_resources/zones_resource.h"
+#include "editor_resources/terrain_position_information.h"
 
 #include "editor_tools/tool_base.h"
 #include "editor_tools/sculpt_tool.h"
@@ -106,9 +107,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(ToolInfo);
         GDREGISTER_INTERNAL_CLASS(KeybindManager);
 
-        // GodotRegistry.RegisterRuntimeClass<TerrainPositionInformation>(TerrainPositionInformation.BindMethods);
-        // GodotRegistry.RegisterRuntimeClass<TerrainPositionTextureInformation>(TerrainPositionTextureInformation.BindMethods);
-
         // Resources
         GDREGISTER_CLASS(FoliageResource);
         GDREGISTER_CLASS(FoliageDefinitionResource);
@@ -124,6 +122,9 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_CLASS(WaterResource);
         GDREGISTER_CLASS(ZoneResource);
         GDREGISTER_CLASS(ZonesResource);
+
+        GDREGISTER_RUNTIME_CLASS(TerrainPositionInformation);
+        GDREGISTER_RUNTIME_CLASS(TerrainPositionTextureInformation);
 
         // Public nodes
         GDREGISTER_CLASS(TerraBrush);
