@@ -460,8 +460,7 @@ void Terrain::buildTerrain() {
     _terrainCollider->set_collision_layer(_collisionLayers);
     _terrainCollider->set_collision_mask(_collisionMask);
 
-    // TODO : GDExtension (_defaultSettings.CollisionOnly)
-    if (!Engine::get_singleton()->is_editor_hint() && (_collisionOnly)) { // || _defaultSettings.CollisionOnly)) {
+    if (!Engine::get_singleton()->is_editor_hint() && (_collisionOnly)) {
         updateCollisionShape();
         _clipmap->get_clipmapMesh()->set_visible(false);
     } else {

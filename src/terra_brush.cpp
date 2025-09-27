@@ -529,7 +529,7 @@ void TerraBrush::loadTerrain() {
     _terrainZones->updateZonesMap();
     _terrainZones->updateHeightmaps();
 
-    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) { // TODO : GDExtension && !DefaultSettings.CollisionOnly)) {
+    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) {
         // Water needs to be created first so we have the reference to the image texture
         createWater();
     }
@@ -564,7 +564,7 @@ void TerraBrush::loadTerrain() {
 
     createObjects();
 
-    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) { // TODO : GDExtension && !DefaultSettings.CollisionOnly)) {
+    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) {
         createFoliages();
         createSnow();
     }
@@ -784,9 +784,6 @@ void TerraBrush::onCreateTerrain() {
     _terrainZones->set_zones(Array::make(zoneResource));
 
     loadTerrain();
-
-    // TODO : GDExtension
-    // _terrainSettingsUpdated?.Invoke();
 }
 
 void TerraBrush::onRemoveTerrain() {
@@ -847,8 +844,6 @@ void TerraBrush::onUpdateTerrainSettings() {
     }
 
     loadTerrain();
-    // TODO : GDExtension
-    // TerrainSettingsUpdated?.Invoke();
 }
 
 void TerraBrush::clearObjects() {
