@@ -13,11 +13,22 @@
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/check_box.hpp>
+#include <godot_cpp/classes/menu_button.hpp>
 
 using namespace godot;
 
 class TerraBrushPlugin : public EditorPlugin {
     GDCLASS(TerraBrushPlugin, EditorPlugin);
+
+    enum TerrainMenuButtonAction {
+        TERRAINMENUBUTTONACTION_CREATETERRAIN = 1,
+        TERRAINMENUBUTTONACTION_REMOVETERRAIN = 2,
+        TERRAINMENUBUTTONACTION_UPDATETERRAIN = 3,
+        TERRAINMENUBUTTONACTION_IMPORTTERRAIN = 4,
+        TERRAINMENUBUTTONACTION_EXPORTTERRAIN = 5,
+        TERRAINMENUBUTTONACTION_LOCKALLTERRAIN = 6,
+        TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN = 7,
+    };
 
 private:
     const float UpdateDelay = 0.005f;
@@ -33,9 +44,8 @@ private:
     Node *_editorViewportsContainer = nullptr;
     Array _editorViewports = Array();
     Control *_overlaySelector = nullptr;
+    MenuButton *_terrainMenuButton = nullptr;
     Button *_updateTerrainSettingsButton = nullptr;
-    Button *_importTerrainSettingsButton = nullptr;
-    Button *_exportTerrainSettingsButton = nullptr;
     CheckBox *_autoAddZonesCheckbox = nullptr;
 
     Ref<ToolBase> _currentTool = nullptr;
@@ -101,6 +111,7 @@ private:
     void beforeDeselectTool();
     void importTerrain();
     void exportTerrain();
+    void onTerrainMenuItemPressed(const int id);
 
 protected:
     static void _bind_methods();

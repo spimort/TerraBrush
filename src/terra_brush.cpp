@@ -159,15 +159,6 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_terrainZones"), &TerraBrush::get_terrainZones);
     ClassDB::bind_method(D_METHOD("set_terrainZones", "value"), &TerraBrush::set_terrainZones);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "terrainZones", PROPERTY_HINT_RESOURCE_TYPE, "ZonesResource"), "set_terrainZones", "get_terrainZones");
-
-    ADD_GROUP("Actions", "");
-
-    ClassDB::bind_method(D_METHOD("onCreateTerrain"), &TerraBrush::onCreateTerrain);
-    ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "CreateTerrain", PROPERTY_HINT_TOOL_BUTTON, "Create Terrain", PROPERTY_USAGE_EDITOR), "", "onCreateTerrain");
-    ClassDB::bind_method(D_METHOD("onUpdateTerrainSettings"), &TerraBrush::onUpdateTerrainSettings);
-    ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "UpdateTerrain", PROPERTY_HINT_TOOL_BUTTON, "Update Terrain", PROPERTY_USAGE_EDITOR), "", "onUpdateTerrainSettings");
-    ClassDB::bind_method(D_METHOD("onRemoveTerrain"), &TerraBrush::onRemoveTerrain);
-    ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "RemoveTerrain", PROPERTY_HINT_TOOL_BUTTON, "Remove Terrain", PROPERTY_USAGE_EDITOR), "", "onRemoveTerrain");
 }
 
 TerraBrush::TerraBrush() {

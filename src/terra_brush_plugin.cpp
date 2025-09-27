@@ -44,6 +44,8 @@
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_resource_preview.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -75,6 +77,8 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorFoliageSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorFoliageSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorObjectSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorObjectSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorMetaInfoSelected", "index"), &TerraBrushPlugin::onCustomContentSelectorMetaInfoSelected);
+
+    ClassDB::bind_method(D_METHOD("onTerrainMenuItemPressed", "id"), &TerraBrushPlugin::onTerrainMenuItemPressed);
 }
 
 TerraBrushPlugin::TerraBrushPlugin() {
@@ -421,25 +425,18 @@ void TerraBrushPlugin::removeDock() {
         _terrainControlDock = nullptr;
     }
 
+    if (_terrainMenuButton != nullptr) {
+        remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _terrainMenuButton);
+        _terrainMenuButton->queue_free();
+
+        _terrainMenuButton = nullptr;
+    }
+
     if (_updateTerrainSettingsButton != nullptr) {
         remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _updateTerrainSettingsButton);
         _updateTerrainSettingsButton->queue_free();
 
         _updateTerrainSettingsButton = nullptr;
-    }
-
-    if (_importTerrainSettingsButton != nullptr) {
-        remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _importTerrainSettingsButton);
-        _importTerrainSettingsButton->queue_free();
-
-        _importTerrainSettingsButton = nullptr;
-    }
-
-    if (_exportTerrainSettingsButton != nullptr) {
-        remove_control_from_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _exportTerrainSettingsButton);
-        _exportTerrainSettingsButton->queue_free();
-
-        _exportTerrainSettingsButton = nullptr;
     }
 
     if (_autoAddZonesCheckbox != nullptr) {
@@ -528,20 +525,26 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->setSelectedObjectIndex(_objectIndex);
     _terrainControlDock->setSelectedMetaInfoIndex(_metaInfoLayerIndex);
 
+    Ref<Theme> iconTheme = EditorInterface::get_singleton()->get_editor_theme();
+
+    _terrainMenuButton = memnew(MenuButton);
+    _terrainMenuButton->set_text("Terrain");
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Add", "EditorIcons"), "Create terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATETERRAIN);
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Remove", "EditorIcons"), "Remove terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_REMOVETERRAIN);
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Reload", "EditorIcons"), "Update terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UPDATETERRAIN);
+    _terrainMenuButton->get_popup()->add_separator();
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("ImageTexture3D", "EditorIcons"), "Import terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_IMPORTTERRAIN);
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Image", "EditorIcons"), "Export terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_EXPORTTERRAIN);
+    _terrainMenuButton->get_popup()->add_separator();
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Lock", "EditorIcons"), "Lock all terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_LOCKALLTERRAIN);
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Unlock", "EditorIcons"), "Unlock all terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN);
+    _terrainMenuButton->get_popup()->connect("id_pressed", Callable(this, "onTerrainMenuItemPressed"));
+    add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _terrainMenuButton);
+
     _updateTerrainSettingsButton = memnew(Button);
     _updateTerrainSettingsButton->set_text("Update terrain");
     _updateTerrainSettingsButton->connect("pressed", Callable(this, "updateTerrainSettings"));
     add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _updateTerrainSettingsButton);
-
-    _importTerrainSettingsButton = memnew(Button);
-    _importTerrainSettingsButton->set_text("Import terrain");
-    _importTerrainSettingsButton->connect("pressed", Callable(this, "importTerrain"));
-    add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _importTerrainSettingsButton);
-
-    _exportTerrainSettingsButton = memnew(Button);
-    _exportTerrainSettingsButton->set_text("Export terrain");
-    _exportTerrainSettingsButton->connect("pressed", Callable(this, "exportTerrain"));
-    add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _exportTerrainSettingsButton);
 
     _autoAddZonesCheckbox = memnew(CheckBox);
     _autoAddZonesCheckbox->set_text("Auto add zones");
@@ -961,4 +964,30 @@ void TerraBrushPlugin::exportTerrain() {
         EditorFileDialog::Access::ACCESS_FILESYSTEM,
         EditorFileDialog::FileMode::FILE_MODE_OPEN_DIR
     );
+}
+
+void TerraBrushPlugin::onTerrainMenuItemPressed(const int id) {
+    switch (id) {
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATETERRAIN:
+            _currentTerraBrushNode->onCreateTerrain();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_REMOVETERRAIN:
+            _currentTerraBrushNode->onRemoveTerrain();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UPDATETERRAIN:
+            _currentTerraBrushNode->onUpdateTerrainSettings();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_IMPORTTERRAIN:
+            importTerrain();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_EXPORTTERRAIN:
+            exportTerrain();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_LOCKALLTERRAIN:
+            _currentTerraBrushNode->onLockTerrain();
+            break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN:
+            _currentTerraBrushNode->onUnlockTerrain();
+            break;
+    }
 }
