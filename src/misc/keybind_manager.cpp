@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/input_map.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/os.hpp>
 
 using namespace godot;
 
@@ -16,9 +17,9 @@ TypedArray<Ref<InputEvent>> KeybindManager::getBinding(StringName actionName) {
 
 String KeybindManager::describeInputKey(Ref<InputEventKey> key) {
     String desc = "";
-    if (key->is_ctrl_pressed()) desc += "Ctrl +";
-    if (key->is_alt_pressed()) desc += "Alt +";
-    desc += key->get_keycode();
+    if (key->is_ctrl_pressed()) desc += "Ctrl + ";
+    if (key->is_alt_pressed()) desc += "Alt + ";
+    desc += OS::get_singleton()->get_keycode_string(key->get_keycode());
     return desc;
 }
 

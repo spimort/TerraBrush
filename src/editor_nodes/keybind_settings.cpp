@@ -1,9 +1,12 @@
 #include "keybind_settings.h"
+#include "key_listen_dialog.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/classes/tree.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
+#include <godot_cpp/classes/input_event_key.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 
 using namespace godot;
 
@@ -19,7 +22,7 @@ KeybindSettings::~KeybindSettings() {}
 void KeybindSettings::_ready() {
     set_ok_button_text("Close");
     set_title("TerraBrush Keybindings");
-    set_initial_position(WindowInitialPosition::WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN);
+    set_initial_position(WindowInitialPosition::WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN);
     set_size(Vector2(400, 300));
     set_visible(true);
     connect("confirmed", Callable(this, "onConfirm"));
@@ -74,27 +77,20 @@ void KeybindSettings::keybindListOnButtonClicked(const TreeItem *item, const int
     if ((MouseButton)mouseButtonIndex != MouseButton::MOUSE_BUTTON_LEFT) return;
 
     switch ((ShortcutType)id) {
-        case ShortcutType::SHORTCUTTYPE_ADD:
-            // TODO : GDExtension
+        case ShortcutType::SHORTCUTTYPE_ADD: {
+            KeyListenDialog *dlg = memnew(KeyListenDialog);
+            dlg->init(([dlg, item, &_keybindManager = _keybindManager](Ref<InputEventKey> key) {
+                String action = item->get_metadata(0);
+                const_cast<TreeItem*>(item)->set_text(1, KeybindManager::describeInputKey(key));
+                _keybindManager->updateKeybind(action, key);
+                dlg->queue_free();
+            }));
 
-            // var dlg = ResourceLoader.Load<PackedScene>("res://addons/terrabrush/Components/KeyListenDialog.tscn")
-            //     .Instantiate<KeyListenDialog>();
-
-            // dlg.KeyListenAccepted += (key) => {
-            //     var action = item.GetMetadata(0).AsStringName();
-            //     item.SetText(1, KeybindManager.DescribeKey(key));
-            //     _keybindManager.UpdateKeybind(action, key);
-            //     dlg.QueueFree();
-            // };
-
-            // dlg.KeyListenCancelled += () => dlg.QueueFree();
-
-            // GetTree().Root.AddChild(dlg);
-            // dlg.PopupCentered();
-            // Handle Erase Shortcut
+            get_tree()->get_root()->add_child(dlg);
+            dlg->popup_centered();
             break;
+        }
         case ShortcutType::SHORTCUTTYPE_ERASE:
-            // Handle Add Shortcut
             String action = item->get_metadata(0);
             _keybindManager->resetKeybind(action);
             const_cast<TreeItem*>(item)->set_text(1, _keybindManager->describeKey(action));
@@ -103,5 +99,6 @@ void KeybindSettings::keybindListOnButtonClicked(const TreeItem *item, const int
 }
 
 void KeybindSettings::onConfirm() {
+    _keybindManager->saveEditorSettings();
     queue_free();
 }
