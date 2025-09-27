@@ -1,6 +1,7 @@
 #include "terra_brush.h"
 #include "misc/utils.h"
 #include "misc/zone_utils.h"
+#include "misc/string_names.h"
 #include "nodes/foliage.h"
 #include "nodes/objects.h"
 #include "nodes/objects_octree_multi_mesh.h"
@@ -20,6 +21,8 @@ using namespace godot;
 
 void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("getPositionInformation", "x", "y"), &TerraBrush::getPositionInformation);
+
+    ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
     ADD_GROUP("TerrainSettings", "");
 
@@ -577,8 +580,7 @@ void TerraBrush::loadTerrain() {
 
     createMetaInfo();
 
-    // TODO : GDExtension
-    // EmitSignal(StringNames.TerrainLoaded);
+    emit_signal(StringNames::TerrainLoaded());
 }
 
 void TerraBrush::createFoliages() {
