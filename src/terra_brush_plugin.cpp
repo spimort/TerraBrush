@@ -463,11 +463,6 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     }
 
     _currentTerraBrushNode = terraBrush;
-    // TODO : GDExtension
-    // _currentTerraBrushNode.TerrainSettingsUpdated += () => {
-    //     RemoveDock();
-    //     AddDock();
-    // };
     _undoRedo = get_undo_redo();
     updateCurrentTool();
 
@@ -740,6 +735,8 @@ void TerraBrushPlugin::showBrushNumericSelector(int minVale, int maxValue, Color
 
 void TerraBrushPlugin::updateTerrainSettings() {
     _currentTerraBrushNode->onUpdateTerrainSettings();
+    removeDock();
+    addDock();
 }
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {
@@ -970,12 +967,14 @@ void TerraBrushPlugin::onTerrainMenuItemPressed(const int id) {
     switch (id) {
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATETERRAIN:
             _currentTerraBrushNode->onCreateTerrain();
+            removeDock();
+            addDock();
             break;
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_REMOVETERRAIN:
             _currentTerraBrushNode->onRemoveTerrain();
             break;
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UPDATETERRAIN:
-            _currentTerraBrushNode->onUpdateTerrainSettings();
+            updateTerrainSettings();
             break;
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_IMPORTTERRAIN:
             importTerrain();
