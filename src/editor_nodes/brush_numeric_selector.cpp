@@ -124,7 +124,7 @@ void BrushNumericSelector::updateValue(float value) {
     _brushPreview->set_size(Vector2(size, size));
     _brushPreview->set_position(Vector2(-(size / 2), -(size / 2)));
 
-    _valueLabel->set_text(String::num(value));
+    _valueLabel->set_text(String::num(value, 0));
 }
 
 void BrushNumericSelector::requestSelectValue() {
