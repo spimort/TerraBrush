@@ -63,7 +63,7 @@ private:
     int getResolution();
 
 protected:
-    TerraBrush *_terraBrush;
+    TerraBrush *_terraBrush = nullptr;
 
     static void _bind_methods();
 

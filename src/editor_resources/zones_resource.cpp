@@ -206,6 +206,10 @@ void ZonesResource::updateZoneMetaInfoTexture(Ref<ZoneResource> zone) {
 }
 
 void ZonesResource::saveResources() {
+    if (_dirtyImageTextures.size() == 0) {
+        return;
+    }
+
     for (Ref<ImageTexture> dirtyImageResource : _dirtyImageTextures) {
         saveImageResource(dirtyImageResource);
     }

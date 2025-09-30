@@ -954,7 +954,7 @@ void TerraBrush::updateCameraPosition(Camera3D *viewportCamera) {
 }
 
 void TerraBrush::saveResources() {
-    if (!_dataPath.is_empty()) {
+    if (!_dataPath.is_empty() && !_terrainZones.is_null()) {
         _terrainZones->saveResources();
     }
 }

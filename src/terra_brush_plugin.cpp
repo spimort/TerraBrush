@@ -463,7 +463,9 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     }
 
     _currentTerraBrushNode = terraBrush;
+
     _undoRedo = get_undo_redo();
+    _currentTool = Ref<ToolBase>(nullptr);
     updateCurrentTool();
 
     if (_toolInfo != nullptr) {
