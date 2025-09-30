@@ -28,7 +28,7 @@ void TerraBrush::_bind_methods() {
 
     ClassDB::bind_method(D_METHOD("get_dataPath"), &TerraBrush::get_dataPath);
     ClassDB::bind_method(D_METHOD("set_dataPath", "value"), &TerraBrush::set_dataPath);
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "dataPath"), "set_dataPath", "get_dataPath");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "dataPath", PROPERTY_HINT_DIR), "set_dataPath", "get_dataPath");
 
     ClassDB::bind_method(D_METHOD("get_zonesSize"), &TerraBrush::get_zonesSize);
     ClassDB::bind_method(D_METHOD("set_zonesSize", "value"), &TerraBrush::set_zonesSize);
