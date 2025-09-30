@@ -17,7 +17,7 @@ void FoliageTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         Color newColor = toolType == TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD ? Color(1, 0, 0, 1) : Color(0, 0, 0, 0);
 

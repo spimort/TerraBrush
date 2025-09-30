@@ -17,7 +17,7 @@ void MetaInfoTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         if (pixelBrushStrength > 0.0) {
             int layerValue = toolType == TerrainToolType::TERRAINTOOLTYPE_METAINFOADD ? _selectedMetaInfoIndex : -1;
 

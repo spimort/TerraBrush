@@ -39,7 +39,7 @@ void WaterTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brush
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         Color newColor = toolType == TerrainToolType::TERRAINTOOLTYPE_WATERADD ? Color(1, currentPixel.g, currentPixel.b, 1) : Color(0, 0.5f, 0.5f, 1);

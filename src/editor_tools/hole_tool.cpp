@@ -32,7 +32,7 @@ Ref<ImageTexture> HoleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
 }
 
 void HoleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         float holeValue = toolType == TerrainToolType::TERRAINTOOLTYPE_HOLEADD ? 1 : 0;
 

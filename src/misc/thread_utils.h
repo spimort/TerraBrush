@@ -11,7 +11,7 @@ struct CancellationSource {
     CancellationSource() {
         token = CancellationToken();
     }
-    CancellationSource(CancellationToken p_token) {
+    CancellationSource(CancellationToken &p_token) {
         token = p_token;
     }
 

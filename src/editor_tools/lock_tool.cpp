@@ -18,7 +18,7 @@ Ref<ImageTexture> LockTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
 }
 
 void LockTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         if (pixelBrushStrength > 0.0) {
             Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
             float lockValue = toolType == TerrainToolType::TERRAINTOOLTYPE_LOCKADD ? 1 : 0;

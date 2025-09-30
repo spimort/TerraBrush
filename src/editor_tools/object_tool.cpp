@@ -51,7 +51,7 @@ void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
 
     ObjectsBase *objectsNode = Object::cast_to<ObjectsBase>(_terraBrush->get_objectsContainer()->get_node_or_null(String::num_int64(_selectedObjectIndex)));
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Ref<Image> heightmapImage = nullptr;
         if (_heightmapImagesCache.count(imageZoneInfo.zone) > 0) {
             heightmapImage = _heightmapImagesCache[imageZoneInfo.zone];

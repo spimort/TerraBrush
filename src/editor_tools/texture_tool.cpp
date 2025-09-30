@@ -31,7 +31,7 @@ void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
 
     Color transparentColor = Color(1, 1, 1, 0); // Transparent color
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         for (int i = 0; i < numberOfSplatmaps; i++) {
             Color splatmapColor = transparentColor;
 

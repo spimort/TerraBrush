@@ -91,14 +91,14 @@ Ref<ImageTexture> SetHeightTool::getToolCurrentImageTexture(Ref<ZoneResource> zo
 void SetHeightTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
     if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
         ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
-        ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0, true);
+        ImageZoneInfo &imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0, true);
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         updateSetHeightValue(_setHeightValue = currentPixel.r);
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         Color newValue = Color(
             Math::lerp(currentPixel.r, _setHeightValue, pixelBrushStrength * brushStrength),

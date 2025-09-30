@@ -116,7 +116,7 @@ ZoneInfo ZoneUtils::getPixelToZoneInfo(float x, float y, int zonesSize, int reso
     return ZoneInfo(zoneKey, zonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
 }
 
-ZoneInfo ZoneUtils::getZoneInfoFromZoneOffset(ZoneInfo startingZone, Vector2i offset, int zonesSize, int resolution) {
+ZoneInfo ZoneUtils::getZoneInfoFromZoneOffset(ZoneInfo &startingZone, Vector2i offset, int zonesSize, int resolution) {
     int resolutionSize = getImageSizeForResolution(zonesSize, resolution);
     Vector2 pixelPosition = Vector2(startingZone.imagePosition.x + offset.x, startingZone.imagePosition.y + offset.y);
     int zoneXPosition = (int) Math::floor(pixelPosition.x / resolutionSize);
