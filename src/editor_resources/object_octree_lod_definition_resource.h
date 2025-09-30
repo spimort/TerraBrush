@@ -11,8 +11,6 @@ class ObjectOctreeLODDefinitionResource : public Resource {
 private:
     float _maxDistance = 0;
     bool _addCollision = false;
-    bool _automaticLOD = false;
-    int _automaticLODTargetVertices = 0;
     int _objectFrequency = 0;
 
 protected:
@@ -27,12 +25,6 @@ public:
 
     bool get_addCollision() const;
     void set_addCollision(const bool value);
-
-    bool get_automaticLOD() const;
-    void set_automaticLOD(const bool value);
-
-    int get_automaticLODTargetVertices() const;
-    void set_automaticLODTargetVertices(const int value);
 
     int get_objectFrequency() const;
     void set_objectFrequency(const int value);

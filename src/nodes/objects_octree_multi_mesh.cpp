@@ -220,14 +220,6 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
                         Ref<ObjectOctreeLODDefinitionResource> lodDefinition = _definition->get_lodList()[lodIndex];
 
                         Ref<Mesh> resultLodMesh = meshInstance->get_mesh();
-                        if (lodIndex != 0 && lodDefinition->get_automaticLOD()) {
-                            int targetVertices = lodDefinition->get_automaticLODTargetVertices();
-                            if (targetVertices <= 0) {
-                                targetVertices =  Math::max(3, minimumSurfaceVerticesCount / (lodIndex * DecimateFactor));
-                            }
-                            // TODO : GDExtension
-                            // resultLodMesh = qem.QEMAlgorithm.GetGodotLODMesh(resultLodMesh, targetVertices, meshInstance);
-                        }
 
                         Ref<MultiMesh> multiMesh = memnew(MultiMesh);
                         multiMesh->set_transform_format(MultiMesh::TransformFormat::TRANSFORM_3D);
