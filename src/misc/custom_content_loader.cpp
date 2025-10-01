@@ -71,6 +71,9 @@ void CustomContentLoader::addTexturesPreviewToParent(TerraBrush *terraBrush, Nod
     if (!terraBrush->get_textureSets().is_null() && terraBrush->get_textureSets()->get_textureSets().size() > 0) {
         for (int i = 0; i < terraBrush->get_textureSets()->get_textureSets().size(); i++) {
             Ref<TextureSetResource> textureSet = terraBrush->get_textureSets()->get_textureSets()[i];
+            if (textureSet.is_null()) {
+                break;
+            }
 
             DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 

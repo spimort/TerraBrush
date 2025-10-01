@@ -335,7 +335,13 @@ void Terrain::updateTextures() {
         TypedArray<Ref<Texture2D>> roughnessTextures = TypedArray<Ref<Texture2D>>();
         TypedArray<Ref<Texture2D>> heightTextures = TypedArray<Ref<Texture2D>>();
         for (Ref<TextureSetResource> textureSet : _textureSets->get_textureSets()) {
-            albedoTextures.append(textureSet->get_albedoTexture());
+            if (textureSet.is_null()) {
+                break;
+            }
+
+            if (!textureSet->get_albedoTexture().is_null()) {
+                albedoTextures.append(textureSet->get_albedoTexture());
+            }
             textureDetails.append(textureSet->get_textureDetail()  <= 0 ? _textureDetail : textureSet->get_textureDetail());
             if (textureSet->get_triplanar()) {
                 triplanar = true;
@@ -357,12 +363,15 @@ void Terrain::updateTextures() {
             }
         }
 
-        Ref<Texture2DArray> textureArray = Utils::texturesToTextureArray(albedoTextures);
+        Ref<Texture2DArray> textureArray = nullptr;
+        if (albedoTextures.size() > 0) {
+            textureArray = Utils::texturesToTextureArray(albedoTextures);
+            _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
+        }
 
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), textureDetails);
         _clipmap->get_shader()->set_shader_parameter(StringNames::Triplanar(), triplanar);
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesTriplanar(), texturesTriplanar);
-        _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
         if (!textureArray.is_null()) {
             _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
         }
