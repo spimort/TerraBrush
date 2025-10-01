@@ -28,3 +28,6 @@ mono_crash.*.json
 
 # SCons
 .sconsign.dblite
+
+# TerraBrush
+demo/addons/terrabrush/bin
