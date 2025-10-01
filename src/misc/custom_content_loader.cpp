@@ -133,7 +133,7 @@ void CustomContentLoader::addObjectsPreviewToParent(TerraBrush *terraBrush, Node
         for (int i = 0; i < terraBrush->get_objects().size(); i++) {
             Ref<ObjectResource> objectItem = terraBrush->get_objects()[i];
 
-            if (objectItem->get_definition().is_null()) {
+            if (objectItem.is_null() || objectItem->get_definition().is_null()) {
                 break;
             }
 

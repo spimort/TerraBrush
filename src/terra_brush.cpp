@@ -899,6 +899,10 @@ void TerraBrush::createObjects() {
     bool loadInThread = _objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADED || (_objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADEDINEDITORONLY && Engine::get_singleton()->is_editor_hint());
     for (int objectIndex = 0; objectIndex < _objects.size(); objectIndex++) {
         Ref<ObjectResource> objectItem = _objects[objectIndex];
+        if (objectItem.is_null() || objectItem->get_definition().is_null()) {
+            break;
+        }
+
         if (objectItem->get_hide()) {
             continue;
         }
