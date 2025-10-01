@@ -4,6 +4,10 @@ entry_symbol = "terrabrush_library_init"
 compatibility_minimum = "4.1"
 reloadable = true
 
+[icons]
+
+TerraBrush = "res://addons/terrabrush/icon.png"
+
 [libraries]
 
 windows.debug.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_debug.x86_64.dll"
