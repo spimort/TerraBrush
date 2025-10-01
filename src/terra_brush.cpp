@@ -608,6 +608,9 @@ void TerraBrush::createFoliages() {
 
     for (int i = 0; i < _foliages.size(); i++) {
         Ref<FoliageResource> foliage = _foliages[i];
+        if (foliage.is_null()) {
+            break;
+        }
 
         if (!foliage->get_definition().is_null()) {
             Foliage *newFoliage = memnew(Foliage);

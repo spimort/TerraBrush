@@ -99,7 +99,7 @@ void CustomContentLoader::addFoliagesPreviewToParent(TerraBrush *terraBrush, Nod
     if (terraBrush->get_foliages().size() > 0) {
         for (int i = 0; i < terraBrush->get_foliages().size(); i++) {
             Ref<FoliageResource> foliage = terraBrush->get_foliages()[i];
-            if (!foliage->get_definition().is_null()) {
+            if (!foliage.is_null() && !foliage->get_definition().is_null()) {
                 DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
                 dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
@@ -116,7 +116,7 @@ void CustomContentLoader::addFoliagesPreviewToParent(TerraBrush *terraBrush, Nod
                 }
 
                 dockPreviewButton->set_tooltip_text(
-                    !foliage->get_definition()->get_mesh()->get_path().is_empty()
+                    !foliage->get_definition()->get_mesh().is_null() && !foliage->get_definition()->get_mesh()->get_path().is_empty()
                         ? foliage->get_definition()->get_mesh()->get_path().get_file()
                         : "Foliage " + String::num_int64(i + 1)
                 );
