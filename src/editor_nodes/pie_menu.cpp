@@ -31,6 +31,7 @@ void PieMenu::_ready() {
     _controlsContainer->set_anchors_and_offsets_preset(LayoutPreset::PRESET_TOP_LEFT);
     _controlsContainer->set_offset(Side::SIDE_BOTTOM, 40.0);
     add_child(_controlsContainer);
+    move_child(_controlsContainer, 0); // Move the container so the background is behind
 
     _pieBackground = memnew(TextureRect);
     _pieBackground->set_texture(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/white_circle.png"));
