@@ -177,6 +177,9 @@ void CustomContentLoader::addMetaInfoLayersPreviewToParent(TerraBrush *terraBrus
     if (terraBrush->get_metaInfoLayers().size() > 0) {
         for (int i = 0; i < terraBrush->get_metaInfoLayers().size(); i++) {
             Ref<MetaInfoLayerResource> metaInfoLayer = terraBrush->get_metaInfoLayers()[i];
+            if (metaInfoLayer.is_null()) {
+                break;
+            }
 
             DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 

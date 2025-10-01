@@ -491,7 +491,9 @@ void Terrain::buildTerrain() {
 
                 TypedArray<Color> metaInfoColors = TypedArray<Color>();
                 for (Ref<MetaInfoLayerResource> metaInfo : _metaInfoLayers) {
-                    metaInfoColors.append(metaInfo->get_color());
+                    if (!metaInfo.is_null()) {
+                        metaInfoColors.append(metaInfo->get_color());
+                    }
                 }
                 _clipmap->get_shader()->set_shader_parameter(StringNames::MetaInfoColors(), metaInfoColors);
             }
