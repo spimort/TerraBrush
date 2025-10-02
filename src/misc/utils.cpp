@@ -45,9 +45,29 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
     int height = 0;
 
     if (!textures.is_empty()) {
+        Ref<Texture2D> firstTexture = Ref<Texture2D>(textures[0]);
+        if (firstTexture.is_null()) {
+            return nullptr;
+        }
+
+        Ref<Image> firstImage = firstTexture->get_image();
+        if (firstImage.is_null()) {
+            return nullptr;
+        }
+
+        Image::Format expectedFormat = firstImage->get_format();
+        bool expectedMipmaps = firstImage->has_mipmaps();
+        int expectedWidth = firstImage->get_width();
+        int expectedHeight = firstImage->get_height();
+
         for (Ref<Texture2D> texture : textures) {
             if (!texture.is_null()) {
                 Ref<Image> textureImage = texture->get_image();
+
+                ERR_FAIL_COND_V_MSG(textureImage->get_format() != expectedFormat, ERR_INVALID_PARAMETER, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedFormat) + "'. Actual format : '" + String::num_int64(textureImage->get_format()) + "'");
+                ERR_FAIL_COND_V_MSG(textureImage->has_mipmaps() != expectedMipmaps, ERR_INVALID_PARAMETER, "The image '" + texture->get_path() + "' does not have the expected mipmaps : '" + expectedMipmaps + "'. Actual mipmaps : '" + textureImage->has_mipmaps() + "'");
+                ERR_FAIL_COND_V_MSG(textureImage->get_width() != expectedWidth, ERR_INVALID_PARAMETER, "The image '" + texture->get_path() + "' does not have the expected width : '" + String::num_int64(expectedWidth) + "'. Actual width : '" + String::num_int64(textureImage->get_width()) + "'");
+                ERR_FAIL_COND_V_MSG(textureImage->get_height() != expectedHeight, ERR_INVALID_PARAMETER, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedHeight) + "'. Actual height : '" + String::num_int64(textureImage->get_height()) + "'");
 
                 if (!textureImage.is_null()) {
                     if (width == 0) {
