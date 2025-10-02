@@ -227,11 +227,13 @@ void Foliage::updateFoliage() {
     if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         _foliageShader->set_shader_parameter(StringNames::Splatmaps(), _terrainZones->get_splatmapsTextures());
 
-        TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();
-        for (Ref<Texture2D> albedoTexture : _textureSets->get_textureSets()) {
-            albedoTextures.append(albedoTexture);
+        TypedArray<Ref<Texture2D>> groundTextures = TypedArray<Ref<Texture2D>>();
+        for (Ref<TextureSetResource> groundTextureSet : _textureSets->get_textureSets()) {
+            if (!groundTextureSet->get_albedoTexture().is_null()) {
+                groundTextures.append(groundTextureSet->get_albedoTexture());
+            }
         }
-        _foliageShader->set_shader_parameter(StringNames::Textures(), Utils::texturesToTextureArray(albedoTextures));
+        _foliageShader->set_shader_parameter(StringNames::Textures(), Utils::texturesToTextureArray(groundTextures));
         _foliageShader->set_shader_parameter(StringNames::NumberOfTextures(), _textureSets->get_textureSets().size());
         _foliageShader->set_shader_parameter(StringNames::TextureDetail(), _textureDetail);
     }
