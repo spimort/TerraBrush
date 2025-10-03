@@ -79,6 +79,11 @@ public partial class Demo : CharacterBody3D {
 							Main Texture : {(result.Textures?.Length > 0 ? result.Textures?[0].Factor : "")} - {(result.Textures?.Length > 0 ? result.Textures?[0].Name : "")}
 							Meta Info : {result.MetaInfoIndex} - {result.MetaInfoName}
 						""".Trim();
+
+					if (result.Textures is not null)
+						foreach (var t in result.Textures)
+							t.Free();
+					result.Free();
 				}
 				else {
 					debugText = $"{debugText} : No zone";
