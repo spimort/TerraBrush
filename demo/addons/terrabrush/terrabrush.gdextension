@@ -11,3 +11,7 @@ TerraBrush = "res://addons/terrabrush/icon.png"
 [libraries]
 
 windows.debug.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_debug.x86_64.dll"
+
+web.debug = "res://addons/terrabrush/bin/terrabrush.web.template_debug.wasm32.wasm"
+web.release = "res://addons/terrabrush/bin/terrabrush.web.template_debug.wasm32.wasm"

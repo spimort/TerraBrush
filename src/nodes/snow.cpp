@@ -191,7 +191,7 @@ void Snow::addCompressedSnow(float x, float y) {
 
             TypedDictionary<Vector2i, float> listOfPoints;
             if (_compressedPositions.has(zone)) {
-                listOfPoints = _compressedPositions[zone];
+                listOfPoints = TypedDictionary<Vector2i, float>(_compressedPositions[zone]);
             } else {
                 listOfPoints = TypedDictionary<Vector2i, float>();
                 _compressedPositions[zone] = listOfPoints;

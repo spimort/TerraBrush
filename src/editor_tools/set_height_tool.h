@@ -16,7 +16,7 @@ private:
 protected:
     static void _bind_methods();
 
-    bool getApplyResolution() override;
+    bool getApplyResolution() const override;
     String getToolInfo(TerrainToolType toolType) override;
     bool handleInput(TerrainToolType toolType, Ref<InputEvent> event) override;
     void beginPaint() override;

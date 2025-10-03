@@ -18,6 +18,7 @@ mono_crash.*.json
 
 # Godot CPP
 *.obj
+*.o
 *.dll
 *.lib
 *.exp
@@ -31,3 +32,4 @@ mono_crash.*.json
 
 # TerraBrush
 demo/addons/terrabrush/bin
+demo/bin

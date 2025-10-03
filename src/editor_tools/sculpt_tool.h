@@ -21,7 +21,7 @@ private:
 protected:
     static void _bind_methods();
 
-    bool getApplyResolution() override;
+    bool getApplyResolution() const override;
     void beginPaint() override;
     void endPaint() override;
     Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;

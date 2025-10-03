@@ -8,7 +8,7 @@ WaterTool::WaterTool() {}
 
 WaterTool::~WaterTool() {}
 
-bool WaterTool::getApplyResolution() {
+bool WaterTool::getApplyResolution() const {
     return true;
 }
 

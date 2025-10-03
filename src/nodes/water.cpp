@@ -268,7 +268,7 @@ void Water::addRippleEffect(float x, float y) {
 
             TypedDictionary<Vector2i, float> listOfPoints;
             if (_ripplePositions.has(zone)) {
-                listOfPoints = _ripplePositions[zone];
+                listOfPoints = TypedDictionary<Vector2i, float>(_ripplePositions[zone]);
             } else {
                 listOfPoints = TypedDictionary<Vector2i, float>();
                 _ripplePositions[zone] = listOfPoints;

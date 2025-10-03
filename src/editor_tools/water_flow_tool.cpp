@@ -8,7 +8,7 @@ WaterFlowTool::WaterFlowTool() {}
 
 WaterFlowTool::~WaterFlowTool() {}
 
-bool WaterFlowTool::getApplyResolution() {
+bool WaterFlowTool::getApplyResolution() const {
     return true;
 };
 

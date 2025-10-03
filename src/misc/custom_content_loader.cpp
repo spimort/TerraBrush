@@ -145,7 +145,7 @@ void CustomContentLoader::addObjectsPreviewToParent(TerraBrush *terraBrush, Node
 
                 parentNode->add_child(dockPreviewButton);
 
-                Ref<Resource> meshResource = objectItem->get_definition()->get_objectScenes().size() > 0 ? objectItem->get_definition()->get_objectScenes()[0] : (Ref<ObjectOctreeLODMeshDefinitionResource>((Ref<ObjectOctreeLODMeshesDefinitionResource>(objectItem->get_definition()->get_lodMeshes()[0]))->get_meshes()[0]))->get_mesh();
+                Ref<Resource> meshResource = objectItem->get_definition()->get_objectScenes().size() > 0 ? Ref<Resource>(objectItem->get_definition()->get_objectScenes()[0]) : Ref<Resource>((Ref<ObjectOctreeLODMeshDefinitionResource>((Ref<ObjectOctreeLODMeshesDefinitionResource>(objectItem->get_definition()->get_lodMeshes()[0]))->get_meshes()[0]))->get_mesh());
                 dockPreviewButton->loadResourcePreview(meshResource);
 
                 TypedArray<Ref<PackedScene>> packedScenes = objectItem->get_definition()->get_objectScenes();

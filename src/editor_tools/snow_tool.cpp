@@ -8,7 +8,7 @@ SnowTool::SnowTool() {}
 
 SnowTool::~SnowTool() {}
 
-bool SnowTool::getApplyResolution() {
+bool SnowTool::getApplyResolution() const {
     return true;
 }
 

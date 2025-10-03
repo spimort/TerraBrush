@@ -131,9 +131,9 @@ public:
     void _ready() override;
     void _physics_process(double delta) override;
 
-    void updateMeshesFromTool();
-    void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones);
-    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage);
+    void updateMeshesFromTool() override;
+    void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
+    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage) override;
     Vector2 getHeightPositionForResolution(Vector2 position, int resolutionZoneSize);
 };
 #endif

@@ -706,6 +706,8 @@ void TerraBrushPlugin::showCurrentToolMenu() {
             }));
 
             break;
+        default:
+            break;
     }
 }
 
@@ -941,6 +943,9 @@ Ref<ToolBase> TerraBrushPlugin::getToolForType(TerrainToolType toolType) {
             Ref<MetaInfoTool> metaInfoTool = memnew(MetaInfoTool);
             metaInfoTool->updateSelectedMetaInfoIndex(_metaInfoLayerIndex);
             return metaInfoTool;
+        }
+        case TerrainToolType::TERRAINTOOLTYPE_NONE: {
+            return nullptr;
         }
     }
 

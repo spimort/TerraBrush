@@ -12,7 +12,7 @@ SculptTool::SculptTool() {}
 
 SculptTool::~SculptTool() {}
 
-bool SculptTool::getApplyResolution() {
+bool SculptTool::getApplyResolution() const {
     return true;
 }
 

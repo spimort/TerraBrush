@@ -60,14 +60,14 @@ private:
     PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zoneInfo);
     void addImagesToRedo();
     Ref<Image> getUndoRedoImageFromTexture(Ref<ImageTexture> imageTexture);
-    int getResolution();
+    int getResolution() const;
 
 protected:
     TerraBrush *_terraBrush = nullptr;
 
     static void _bind_methods();
 
-    virtual bool getApplyResolution();
+    virtual bool getApplyResolution() const;
     virtual Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone);
     void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone = false);
     void addTextureToUndo(Ref<ImageTexture> texture);

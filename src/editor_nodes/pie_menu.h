@@ -41,7 +41,7 @@ public:
     ~PieMenu();
 
     void _ready() override;
-    void _process(double delta);
+    void _process(double delta) override;
     void _gui_input(const Ref<InputEvent> &event) override;
 
     void set_buttonsRadiusRatio(const int value);

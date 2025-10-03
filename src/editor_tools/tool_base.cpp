@@ -44,7 +44,7 @@ Ref<Image> ToolBase::getUndoRedoImageFromTexture(Ref<ImageTexture> imageTexture)
     return image;
 }
 
-int ToolBase::getResolution() {
+int ToolBase::getResolution() const {
     if (getApplyResolution()) {
         return _terraBrush->get_resolution();
     }
@@ -60,7 +60,7 @@ void ToolBase::addTextureToUndo(Ref<ImageTexture> texture) {
     }
 }
 
-bool ToolBase::getApplyResolution() {
+bool ToolBase::getApplyResolution() const {
     return false;
 }
 
@@ -94,7 +94,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                 offsetX = (int) Math::floor(Math::remap((float) x, 0, brushSize, 0, (int) Math::ceil(((float) brushSize) / _terraBrush->get_resolution())));
                 offsetY = (int) Math::floor(Math::remap((float) y, 0, brushSize, 0, (int) Math::ceil(((float) brushSize) / _terraBrush->get_resolution())));
             }
-            ImageZoneInfo &imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
+            ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
 
             if (!imageZoneInfo.zone.is_null()) {
                 int zoneKey = imageZoneInfo.zoneInfo.zoneKey;
@@ -119,7 +119,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
 }
 
 ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
-    ZoneInfo &zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
+    ZoneInfo zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
     Ref<ZoneResource> zone = nullptr;
     if (_zonesPositionCache.count(zoneInfo.zoneKey) > 0) {
         zone = _zonesPositionCache[zoneInfo.zoneKey];

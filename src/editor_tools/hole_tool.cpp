@@ -8,7 +8,7 @@ HoleTool::HoleTool() {}
 
 HoleTool::~HoleTool() {}
 
-bool HoleTool::getApplyResolution() {
+bool HoleTool::getApplyResolution() const {
     return true;
 }
 

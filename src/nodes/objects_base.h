@@ -26,8 +26,8 @@ protected:
     int _defaultObjectFrequency = 0;
 
 public:
-    ObjectsBase::ObjectsBase();
-    ObjectsBase::~ObjectsBase();
+    ObjectsBase();
+    ~ObjectsBase();
 
     void set_objectsIndex(const int value);
     void set_definition(const Ref<ObjectDefinitionResource> &value);
