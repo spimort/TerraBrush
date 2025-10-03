@@ -11,5 +11,6 @@ config_version=5
 [application]
 
 config/name="TerraBrushDemo"
+run/main_scene="uid://v4o1p7h4rn3j"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
