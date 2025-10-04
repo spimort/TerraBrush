@@ -1,0 +1,1 @@
+scons platform=web dlink_enabled=yes production=yes
