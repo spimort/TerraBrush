@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dphq1rep4o7nm"]
-
-[ext_resource type="Script" uid="uid://bbutjiiv00ddk" path="res://addons/terrabrush/Scripts/ObjectsOctreeMultiMesh.cs" id="1_eqtvc"]
-
-[node name="ObjectsOctreeMultiMesh" type="Node3D"]
-script = ExtResource("1_eqtvc")
