@@ -10,6 +10,8 @@
 #include <godot_cpp/classes/multi_mesh.hpp>
 #include <godot_cpp/classes/mesh.hpp>
 
+#include <algorithm>
+
 using namespace godot;
 
 void ObjectsOctreeMultiMesh::_bind_methods() {

@@ -11,6 +11,8 @@
 #include "point_octree_node.h"
 #include "point_octree_object.h"
 
+#include <algorithm>
+
 using namespace godot;
 
 void PointOctreeNode::_bind_methods() {}
