@@ -265,6 +265,10 @@ void ZonesResource::updateImageTextures(int zoneSize) {
 
 Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(ZoneInfo zoneInfo) {
     for (Ref<ZoneResource> zone : _zones) {
+        if (zone.is_null()) {
+            return nullptr;
+        }
+
         if (zone->get_zonePosition().x == zoneInfo.zonePosition.x && zone->get_zonePosition().y == zoneInfo.zonePosition.y) {
             return zone;
         }

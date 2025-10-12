@@ -17,7 +17,8 @@ Ref<ImageTexture> SnowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
 }
 
 void SnowTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    if (_terraBrush->get_snowDefinition().is_null()) {
+    // If the snow definition is null, or it's texture we exit here
+    if (_terraBrush->get_snowDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_snowTexture().is_null()) {
         return;
     }
 

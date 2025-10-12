@@ -35,7 +35,8 @@ Ref<ImageTexture> WaterTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) 
 }
 
 void WaterTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    if (_terraBrush->get_waterDefinition().is_null()) {
+    // If the water definition is null, or it's texture we exit here
+    if (_terraBrush->get_waterDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_waterTexture().is_null()) {
         return;
     }
 
