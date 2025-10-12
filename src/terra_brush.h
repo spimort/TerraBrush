@@ -27,6 +27,8 @@ class TerraBrush : public Node3D {
 private:
     const int HeightMapFactor = 1;
 
+    String _version = "0.14.0-alpha";
+
     Terrain *_terrain = nullptr;
     Node3D *_foliagesNode = nullptr;
     Node3D *_objectsContainerNode = nullptr;
@@ -104,6 +106,8 @@ public:
 
     void _ready() override;
     PackedStringArray _get_configuration_warnings() const override;
+
+    String get_version() const;
 
     String get_dataPath() const;
     void set_dataPath(const String value);

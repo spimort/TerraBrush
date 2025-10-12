@@ -26,6 +26,8 @@ void TerraBrush::_bind_methods() {
 
     ADD_GROUP("TerrainSettings", "");
 
+    ClassDB::bind_method(D_METHOD("get_version"), &TerraBrush::get_version);
+
     ClassDB::bind_method(D_METHOD("get_dataPath"), &TerraBrush::get_dataPath);
     ClassDB::bind_method(D_METHOD("set_dataPath", "value"), &TerraBrush::set_dataPath);
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "dataPath", PROPERTY_HINT_DIR), "set_dataPath", "get_dataPath");
@@ -264,6 +266,10 @@ PackedStringArray TerraBrush::_get_configuration_warnings() const {
     }
 
     return warnings;
+}
+
+String TerraBrush::get_version() const {
+    return _version;
 }
 
 String TerraBrush::get_dataPath() const {
