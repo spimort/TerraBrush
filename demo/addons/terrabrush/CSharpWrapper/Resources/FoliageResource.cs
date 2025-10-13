@@ -10,7 +10,7 @@ public partial class FoliageResource : Resource {
             return _godotHandle.AsGodotObject().Call("get_definition");
         }
         set {
-            _godotHandle.AsGodotObject().Call("set_definition", value.GodotHandle());
+            _godotHandle.AsGodotObject().Call("set_definition", value == null ? default : value.GodotHandle());
         }
     }
 
