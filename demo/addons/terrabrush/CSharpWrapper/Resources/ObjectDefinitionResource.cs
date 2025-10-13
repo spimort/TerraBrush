@@ -1,82 +1,150 @@
-// using System.Collections.Generic;
-// using Godot;
-// using Godot.Collections;
+using System.Linq;
+using Godot;
 
-// namespace TerraBrush;
+namespace TerraBrush;
 
-// public enum ObjectStrategy {
-//     PackedScenes = 1,
-//     OctreeMultiMeshes = 2
-// }
+public partial class ObjectDefinitionResource : Resource {
+    private Variant _godotHandle;
 
-// [Tool]
-// [GlobalClass]
-// public partial class ObjectDefinitionResource : Resource {
-//     private static readonly List<string> _packedScenesProperties = new List<string> {
-//     };
+    public ObjectStrategy Strategy {
+        get {
+            return (ObjectStrategy) _godotHandle.AsGodotObject().Call("get_strategy").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_strategy", (int) value);
+        }
+    }
 
-//     private static readonly List<string> _octreeMultiMeshesProperties = new List<string> {
-//         nameof(LODList),
-//         nameof(LODMeshes),
-//         nameof(UpdateDistanceThreshold),
-//         nameof(UpdateTimeFrequency),
-//         nameof(VisualInstanceLayers),
-//     };
+    public int ObjectFrequency {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_objectFrequency").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_objectFrequency", value);
+        }
+    }
 
-//     private ObjectStrategy _strategy = ObjectStrategy.PackedScenes;
-//     private bool _randomSize;
+    public float RandomRange {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_randomRange").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomRange", value);
+        }
+    }
 
-//     [Export] public ObjectStrategy Strategy {
-//         get {
-//             return _strategy;
-//         }
-//         set {
-//             _strategy = value;
-//             NotifyPropertyListChanged();
-//         }
-//     }
-//     [Export] public int ObjectFrequency { get;set; } = -1;
-//     [Export] public float RandomRange { get;set; } = 1;
-//     [Export] public Texture2D NoiseTexture { get;set; }
-//     [Export] public bool RandomYRotation { get;set; }
-//     [Export]
-//     public bool RandomSize {
-//         get {
-//             return _randomSize;
-//         }
-//         set {
-//             _randomSize = value;
-//             NotifyPropertyListChanged();
-//         }
-//     }
-//     [Export] public float RandomSizeFactorMin { get;set; } = 0.2f;
-//     [Export] public float RandomSizeFactorMax { get;set; } = 1.2f;
-//     [Export] public PackedScene[] ObjectScenes { get;set; }
-//     [Export] public ObjectOctreeLODDefinitionResource[] LODList { get;set;}
-//     [Export] public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes { get;set;}
-//     [Export] public float UpdateDistanceThreshold { get;set; } = 1;
-//     [Export] public float UpdateTimeFrequency { get;set; } = 0.1f;
-//     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public Texture2D NoiseTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_noiseTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_noiseTexture", value);
+        }
+    }
 
-//     public override void _ValidateProperty(Dictionary property) {
-//         base._ValidateProperty(property);
+    public bool RandomYRotation {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_randomYRotation").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomYRotation", value);
+        }
+    }
 
-//         if (Strategy == ObjectStrategy.PackedScenes) {
-//             if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
-//                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
-//             } else if (_packedScenesProperties.Contains((string) property["name"])) {
-//                 property["usage"] = (long) PropertyUsageFlags.Default;
-//             }
-//         } else if (Strategy == ObjectStrategy.OctreeMultiMeshes) {
-//             if (_octreeMultiMeshesProperties.Contains((string) property["name"])) {
-//                 property["usage"] = (long) PropertyUsageFlags.Default;
-//             } else if (_packedScenesProperties.Contains((string) property["name"])) {
-//                 property["usage"] = (long) PropertyUsageFlags.NoEditor;
-//             }
-//         }
+    public bool RandomSize {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_randomSize").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomSize", value);
+        }
+    }
 
-//         if ((string)property["name"] == nameof(RandomSizeFactorMin) || (string)property["name"] == nameof(RandomSizeFactorMax)) {
-//             property["usage"] = (long) (RandomSize ? PropertyUsageFlags.Default : PropertyUsageFlags.NoEditor);
-//         }
-//     }
-// }
+    public float RandomSizeFactorMin {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_randomSizeFactorMin").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomSizeFactorMin", value);
+        }
+    }
+
+    public float RandomSizeFactorMax {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_randomSizeFactorMax").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomSizeFactorMax", value);
+        }
+    }
+
+    public PackedScene[] ObjectScenes {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_objectScenes").AsGodotObjectArray<PackedScene>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_objectScenes", value);
+        }
+    }
+
+    public ObjectOctreeLODDefinitionResource[] LODList {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_lodList").AsGodotArray<Variant>()?.Select(x => new ObjectOctreeLODDefinitionResource(x)).ToArray();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_lodList", value == null ? null : new Godot.Collections.Array(value.Select(x => x.GodotHandle())));
+        }
+    }
+
+    public ObjectOctreeLODMeshesDefinitionResource[] LODMeshes {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_lodMeshes").AsGodotArray<Variant>()?.Select(x => new ObjectOctreeLODMeshesDefinitionResource(x)).ToArray();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_lodMeshes", value == null ? null : new Godot.Collections.Array(value.Select(x => x.GodotHandle())));
+        }
+    }
+
+    public float UpdateDistanceThreshold {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_updateDistanceThreshold").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_updateDistanceThreshold", value);
+        }
+    }
+
+    public float UpdateTimeFrequency {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_updateTimeFrequency").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_updateTimeFrequency", value);
+        }
+    }
+
+    public int VisualInstanceLayers {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_visualInstanceLayers").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_visualInstanceLayers", value);
+        }
+    }
+
+    public static implicit operator ObjectDefinitionResource(Variant handle) => new(handle);
+
+    public ObjectDefinitionResource(Variant handle) {
+        _godotHandle = handle;
+    }
+
+    public ObjectDefinitionResource() {
+        _godotHandle = ClassDB.Instantiate("ObjectDefinitionResource");
+    }
+
+    internal Variant GodotHandle() {
+        return _godotHandle;
+    }
+
+    public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+}
