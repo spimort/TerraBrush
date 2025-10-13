@@ -1,38 +1,123 @@
-// using Godot;
+using Godot;
 
-// namespace TerraBrush;
+namespace TerraBrush;
 
-// [Tool]
-// [GlobalClass]
-// public partial class SnowResource : Resource {
-//     private ShaderMaterial _customShader;
+public partial class SnowResource : Resource {
+    private Variant _godotHandle;
 
-//     [Export] public float SnowFactor { get;set; } = 1;
-//     [Export] public float SnowInnerOffset { get;set; } = 0.3f;
-//     [Export] public Texture2D SnowColorTexture { get;set; }
-//     [Export] public Texture2D SnowColorNormal { get;set; }
-//     [Export] public Texture2D SnowColorRoughness { get;set; }
-//     [Export] public float SnowColorDetail { get;set; } = 20f;
-//     [Export] public Texture2D Noise { get;set; }
-//     [Export] public float NoiseFactor { get;set; }
-//     [Export(PropertyHint.Range, "0,1,0.001")] public float Metallic { get;set; }
-//     [Export(PropertyHint.Layers3DRender)] public int VisualInstanceLayers { get;set; } = 1;
+    public float SnowFactor {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_snowFactor").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowFactor", value);
+        }
+    }
 
-//     [Export] public ShaderMaterial CustomShader {
-//         get {
-//             return _customShader;
-//         } set {
-//             _customShader = value;
+    public float SnowInnerOffset {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_snowInnerOffset").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowInnerOffset", value);
+        }
+    }
 
-//             if (value != null && value.Shader == null) {
-//                 var defaultShader = ResourceLoader.Load<Shader>("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader");
-//                 var defaultCode = defaultShader.Code;
+    public Texture2D SnowColorTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_snowColorTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowColorTexture", value);
+        }
+    }
 
-//                 var shader = new Shader {
-//                     Code = defaultCode
-//                 };
-//                 value.Shader = shader;
-//             }
-//         }
-//     }
-// }
+    public Texture2D SnowColorNormal {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_snowColorNormal").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowColorNormal", value);
+        }
+    }
+
+    public Texture2D SnowColorRoughness {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_snowColorRoughness").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowColorRoughness", value);
+        }
+    }
+
+    public float SnowColorDetail {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_snowColorDetail").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowColorDetail", value);
+        }
+    }
+
+    public Texture2D Noise {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_noise").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_noise", value);
+        }
+    }
+
+    public float NoiseFactor {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_noiseFactor").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_noiseFactor", value);
+        }
+    }
+
+    public float Metallic {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_metallic").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_metallic", value);
+        }
+    }
+
+    public int VisualInstanceLayers {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_visualInstanceLayers").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_visualInstanceLayers", value);
+        }
+    }
+
+    public ShaderMaterial CustomShader {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_customShader").As<ShaderMaterial>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_customShader", value);
+        }
+    }
+
+
+    public static implicit operator SnowResource(Variant handle) => new(handle);
+
+    public SnowResource(Variant handle) {
+        _godotHandle = handle;
+    }
+
+    public SnowResource() {
+        _godotHandle = ClassDB.Instantiate("SnowResource");
+    }
+
+    internal Variant GodotHandle() {
+        return _godotHandle;
+    }
+
+    public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+}
