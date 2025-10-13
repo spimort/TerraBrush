@@ -203,12 +203,19 @@ public partial class FoliageDefinitionResource : Resource {
         }
     }
 
+    public static implicit operator FoliageDefinitionResource(Variant handle) => new(handle);
 
-    public FoliageDefinitionResource(Resource handle) {
+    public FoliageDefinitionResource(Variant handle) {
         _godotHandle = handle;
     }
 
     public FoliageDefinitionResource() {
         _godotHandle = ClassDB.Instantiate("FoliageDefinitionResource");
     }
+
+    internal Variant GodotHandle() {
+        return _godotHandle;
+    }
+
+    public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
 }
