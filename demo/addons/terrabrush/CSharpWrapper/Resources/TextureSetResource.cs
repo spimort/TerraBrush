@@ -1,61 +1,87 @@
-// using System.Linq;
-// using Godot;
+using System.Linq;
+using Godot;
 
-// namespace TerraBrush;
+namespace TerraBrush;
 
-// [Tool]
-// [GlobalClass]
-// public partial class TextureSetResource : Resource {
-//     private const string NormalFilesHint = "normal";
-//     private const string RoughnessFilesHint = "roughness";
-//     private const string HeightFilesHint = "height";
+public partial class TextureSetResource : Resource {
+    private Variant _godotHandle;
 
-//     private Texture2D _albedoTexture;
+    public string Name {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_name").AsString();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_name", value);
+        }
+    }
 
-//     [Export] public string Name { get;set; }
-//     [Export] public Texture2D AlbedoTexture {
-//         get {
-//             return _albedoTexture;
-//         } set {
-//             if (Engine.IsEditorHint() && value != null && !string.IsNullOrWhiteSpace(value.ResourcePath) && value.ResourcePath != _albedoTexture?.ResourcePath) {
-//                 var directory = value.ResourcePath.Replace(System.IO.Path.GetFileName(value.ResourcePath), "");
-//                 var directoryFiles = DirAccess.GetFilesAt(directory);
+    public Texture2D AlbedoTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_albedoTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_albedoTexture", value);
+        }
+    }
 
-//                 var normalFiles = directoryFiles.Where(file => file.Contains(NormalFilesHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
-//                 var normalFile = string.Empty;
-//                 if (normalFiles.Count() == 1) {
-//                     normalFile = normalFiles.ElementAt(0);
-//                 } else if (normalFiles.Count() > 1) {
-//                     normalFiles = normalFiles.Where(file => file.Contains("GL"));
-//                     if (normalFiles.Count() == 1) {
-//                         normalFile = normalFiles.ElementAt(0);
-//                     }
-//                 }
+    public Texture2D NormalTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_normalTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_normalTexture", value);
+        }
+    }
 
-//                 if (!string.IsNullOrWhiteSpace(normalFile)) {
-//                     NormalTexture = ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, normalFile));
-//                 }
+    public Texture2D RoughnessTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_roughnessTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_roughnessTexture", value);
+        }
+    }
 
-//                 RoughnessTexture ??= FindTexture(RoughnessFilesHint, directory, directoryFiles);
-//                 HeightTexture ??= FindTexture(HeightFilesHint, directory, directoryFiles);
-//             }
+    public Texture2D HeightTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_heightTexture").As<Texture2D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_heightTexture", value);
+        }
+    }
 
-//             _albedoTexture = value;
-//         }
-//     }
+    public int TextureDetail {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_textureDetail").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_textureDetail", value);
+        }
+    }
 
-//     [Export] public Texture2D NormalTexture { get;set; }
-//     [Export] public Texture2D RoughnessTexture { get;set; }
-//     [Export] public Texture2D HeightTexture { get;set; }
-//     [Export] public int TextureDetail { get;set; } = -1;
-//     [Export] public bool Triplanar { get;set; }
+    public bool Triplanar {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_triplanar").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_triplanar", value);
+        }
+    }
 
-//     private Texture2D FindTexture(string fileHint, string directory, string[] directoryFiles) {
-//         var files = directoryFiles.Where(file => file.Contains(fileHint, System.StringComparison.InvariantCultureIgnoreCase) && !file.EndsWith(".import"));
-//         if (files.Count() == 1) {
-//             var file = files.ElementAt(0);
-//             return ResourceLoader.Load<Texture2D>(System.IO.Path.Combine(directory, file));
-//         }
-//         return null;
-//     }
-// }
+    public static implicit operator TextureSetResource(Variant handle) => new(handle);
+
+    public TextureSetResource(Variant handle) {
+        _godotHandle = handle;
+    }
+
+    public TextureSetResource() {
+        _godotHandle = ClassDB.Instantiate("TextureSetResource");
+    }
+
+    internal Variant GodotHandle() {
+        return _godotHandle;
+    }
+
+    public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+}
