@@ -1,54 +1,97 @@
-// using System.Collections.Generic;
-// using System.Linq;
-// using Godot;
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
 
-// namespace TerraBrush;
+namespace TerraBrush;
 
-// [Tool]
-// [GlobalClass]
-// public partial class ZoneResource : Resource {
-//     public ImageTexture LockTexture { get;set; }
-//     [Export] public Vector2I ZonePosition { get;set; }
-//     [Export] public ImageTexture HeightMapTexture { get;set; }
-//     [Export] public ImageTexture[] SplatmapsTexture { get;set; }
-//     [Export] public ImageTexture[] FoliagesTexture { get;set; }
-//     [Export] public ImageTexture[] ObjectsTexture { get;set; }
-//     [Export] public ImageTexture WaterTexture { get;set; }
-//     [Export] public ImageTexture SnowTexture { get;set; }
-//     [Export] public ImageTexture MetaInfoTexture { get;set; }
+public partial class ZoneResource : Resource {
+    private Variant _godotHandle;
 
-//     public void InitializeImagesForTerrain(TerraBrush terraBrush) {
-//         HeightMapTexture = ZoneUtils.CreateHeightmapImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
+    public Vector2I ZonePosition {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_zonePosition").AsVector2I();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_zonePosition", value);
+        }
+    }
 
-//         var numberOfSplatmaps = Mathf.CeilToInt((terraBrush.TextureSets?.TextureSets?.Length ?? 0) / 4.0f);
-//         var splatmaps = new List<ImageTexture>();
-//         for (var i = 0; i < numberOfSplatmaps; i++) {
-//             splatmaps.Add(ZoneUtils.CreateSplatmapImage(terraBrush.ZonesSize, ZonePosition, i, terraBrush.DataPath));
-//         }
-//         SplatmapsTexture = splatmaps.ToArray();
+    public ImageTexture HeightMapTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_heightMapTexture").As<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_heightMapTexture", value);
+        }
+    }
 
-//         if (terraBrush.Foliages != null) {
-//             FoliagesTexture = terraBrush.Foliages.Select((foliage, index) => {
-//                 return ZoneUtils.CreateFoliageImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
-//             }).ToArray();
-//         }
+    public ImageTexture[] SplatmapsTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_splatmapsTexture").AsGodotObjectArray<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_splatmapsTexture", value);
+        }
+    }
 
-//         if (terraBrush.Objects != null) {
-//             ObjectsTexture = terraBrush.Objects.Select((objectItem, index) => {
-//                 return ZoneUtils.CreateObjectImage(terraBrush.ZonesSize, ZonePosition, index, terraBrush.DataPath);
-//             }).ToArray();
-//         }
+    public ImageTexture[] FoliagesTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_foliagesTexture").AsGodotObjectArray<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_foliagesTexture", value);
+        }
+    }
 
-//         if (terraBrush.WaterDefinition != null) {
-//             WaterTexture = ZoneUtils.CreateWaterImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
-//         }
+    public ImageTexture[] ObjectsTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_objectsTexture").AsGodotObjectArray<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_objectsTexture", value);
+        }
+    }
 
-//         if (terraBrush.SnowDefinition != null) {
-//             SnowTexture = ZoneUtils.CreateSnowImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
-//         }
+    public ImageTexture WaterTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_waterTexture").As<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_waterTexture", value);
+        }
+    }
 
-//         if (terraBrush.MetaInfoLayers?.Length > 0) {
-//             MetaInfoTexture = ZoneUtils.CreateMetaInfoImage(terraBrush.ZonesSize, terraBrush.Resolution, ZonePosition, terraBrush.DataPath);
-//         }
-//     }
-// }
+    public ImageTexture SnowTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_snowTexture").As<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_snowTexture", value);
+        }
+    }
+
+    public ImageTexture MetaInfoTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_metaInfoTexture").As<ImageTexture>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_metaInfoTexture", value);
+        }
+    }
+
+    public static implicit operator ZoneResource(Variant handle) => new(handle);
+
+    public ZoneResource(Variant handle) {
+        _godotHandle = handle;
+    }
+
+    public ZoneResource() {
+        _godotHandle = ClassDB.Instantiate("ZoneResource");
+    }
+
+    internal Variant GodotHandle() {
+        return _godotHandle;
+    }
+
+    public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+}
