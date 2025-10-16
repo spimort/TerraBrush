@@ -288,4 +288,12 @@ public partial class TerraBrush : Node {
     public TerrainPositionInformation GetPositionInformation(float x, float y) {
         return _godotHandle.AsGodotObject().Call("getPositionInformation", x, y);
     }
+
+    public void AddInteractionPoint(float x, float y) {
+        _godotHandle.AsGodotObject().Call("addInteractionPoint", x, y);
+    }
+
+    public void OnUpdateTerrainSettings() {
+        _godotHandle.AsGodotObject().Call("onUpdateTerrainSettings");
+    }
 }

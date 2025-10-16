@@ -21,6 +21,8 @@ using namespace godot;
 
 void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("getPositionInformation", "x", "y"), &TerraBrush::getPositionInformation);
+    ClassDB::bind_method(D_METHOD("addInteractionPoint", "x", "y"), &TerraBrush::addInteractionPoint);
+    ClassDB::bind_method(D_METHOD("onUpdateTerrainSettings"), &TerraBrush::onUpdateTerrainSettings);
 
     ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
