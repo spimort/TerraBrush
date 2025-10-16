@@ -296,4 +296,8 @@ public partial class TerraBrush : Node {
     public void OnUpdateTerrainSettings() {
         _godotHandle.AsGodotObject().Call("onUpdateTerrainSettings");
     }
+
+    public StaticBody3D GetTerrainCollider() {
+        return _godotHandle.AsGodotObject().Call("getTerrainCollider").As<StaticBody3D>();
+    }
 }

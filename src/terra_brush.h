@@ -214,5 +214,6 @@ public:
     void onLockTerrain();
     void onUnlockTerrain();
     Ref<ZoneResource> addNewZone(Vector2i zonePosition);
+    StaticBody3D *getTerrainCollider() const;
 };
 #endif

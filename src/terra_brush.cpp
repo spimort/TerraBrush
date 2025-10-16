@@ -23,6 +23,7 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("getPositionInformation", "x", "y"), &TerraBrush::getPositionInformation);
     ClassDB::bind_method(D_METHOD("addInteractionPoint", "x", "y"), &TerraBrush::addInteractionPoint);
     ClassDB::bind_method(D_METHOD("onUpdateTerrainSettings"), &TerraBrush::onUpdateTerrainSettings);
+    ClassDB::bind_method(D_METHOD("getTerrainCollider"), &TerraBrush::getTerrainCollider);
 
     ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
@@ -1159,4 +1160,8 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
     if (_metaInfoLayers.size() > 0) {
         zone->set_metaInfoTexture(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
     }
+}
+
+StaticBody3D *TerraBrush::getTerrainCollider() const {
+    return _terrain->get_terrainCollider();
 }
