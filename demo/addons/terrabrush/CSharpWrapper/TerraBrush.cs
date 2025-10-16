@@ -284,4 +284,8 @@ public partial class TerraBrush : Node {
     }
 
     public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+
+    public TerrainPositionInformation GetPositionInformation(float x, float y) {
+        return _godotHandle.AsGodotObject().Call("getPositionInformation", x, y);
+    }
 }
