@@ -1,6 +1,5 @@
 using Godot;
 
-[Tool]
 public partial class DemoCSharp : CharacterBody3D {
     public const float Speed = 15.0f;
     public const float JumpVelocity = 10f;

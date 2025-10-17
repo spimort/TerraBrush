@@ -47,7 +47,7 @@ void Water::_physics_process(double delta) {
                 Color pixel = rippleWaterImage->get_pixel(position.x, position.y);
                 float rippleValue = points[position];
 
-                if (rippleValue < 1) {
+                if (rippleValue < 1.0) {
                     rippleValue += (float) delta * RippleResetSpeed;
 
                     if (rippleValue >= 1.0) {
@@ -285,7 +285,7 @@ Ref<Image> Water::getImageForZone(Ref<ZoneResource> &zone) {
     if (_imagesCache.has(zone)) {
         return _imagesCache[zone];
     } else {
-        Ref<Image> image = zone->get_snowTexture()->get_image();
+        Ref<Image> image = zone->get_waterTexture()->get_image();
         _imagesCache[zone] = image;
 
         return image;
