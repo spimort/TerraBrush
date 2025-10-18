@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 	var playerX = global_position.x
 	var playerZ = global_position.z
 	
-	var debugText = "[Press ESC to grab/release mouse] FPS: " + String.num_int64(Engine.get_frames_per_second())
+	var debugText = "[Press ESC to grab/release mouse] FPS: " + String.num(Engine.get_frames_per_second(), 2)
 	
 	if _shapeCast.is_colliding():
 		var collision = _shapeCast.get_collider(0)
