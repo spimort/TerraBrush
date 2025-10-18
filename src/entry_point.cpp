@@ -129,7 +129,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         // Public nodes
         GDREGISTER_CLASS(TerraBrush);
 
-        print_line("Init TerraBrush scene plugin");
         return;
     }
 
@@ -155,7 +154,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();
 
-        print_line("Init TerraBrush editor plugin");
         return;
     }
 }
@@ -164,8 +162,6 @@ void uninitialize_terrabrush_module(ModuleInitializationLevel level) {
     if (level != MODULE_INITIALIZATION_LEVEL_SCENE) {
         return;
     }
-
-    print_line("DeInit TerraBrush");
 }
 
 extern "C" {
