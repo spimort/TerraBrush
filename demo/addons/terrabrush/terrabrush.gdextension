@@ -11,10 +11,13 @@ TerraBrush = "res://addons/terrabrush/icon.png"
 [libraries]
 
 windows.debug.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_debug.x86_64.dll"
-windows.release.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/terrabrush/bin/terrabrush.windows.template_release.x86_64.dll"
 
 linux.debug.x86_64 = "res://addons/terrabrush/bin/libterrabrush.linux.template_debug.x86_64.so"
-linux.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.linux.template_release.x86_64.so"
+
+macos.debug = "res://addons/terrabrush/bin/libterrabrush.macos.template_debug.framework"
+macos.release = "res://addons/terrabrush/bin/libterrabrush.macos.template_release.framework"
 
 web.debug = "res://addons/terrabrush/bin/terrabrush.web.template_debug.wasm32.wasm"
-web.release = "res://addons/terrabrush/bin/terrabrush.web.template_debug.wasm32.wasm"
+web.release = "res://addons/terrabrush/bin/terrabrush.web.template_release.wasm32.wasm"
