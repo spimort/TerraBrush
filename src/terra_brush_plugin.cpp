@@ -362,19 +362,6 @@ Vector3 TerraBrushPlugin::getRayCastWithTerrain(Camera3D *editorCamera) {
             Vector3 from = editorCamera->project_ray_origin(screenPosition);
             Vector3 dir = editorCamera->project_ray_normal(screenPosition);
 
-            float distance = 2000;
-            Ref<PhysicsRayQueryParameters3D> query = memnew(PhysicsRayQueryParameters3D);
-            query->set_from(from);
-            query->set_to(from + dir * distance);
-            Dictionary result = spaceState->intersect_ray(query);
-
-            if (_currentTerraBrushNode->get_terrain() != nullptr && result.size() > 0) {
-                CollisionObject3D *collider = Object::cast_to<CollisionObject3D>(result["collider"]);
-                if (collider == _currentTerraBrushNode->get_terrain()->get_terrainCollider()) {
-                    return (Vector3)result["position"] + Vector3(0, 0.1f, 0);
-                }
-            }
-
             return getMouseClickToZoneHeight(from, dir);
         }
     }
