@@ -11,7 +11,7 @@ ObjectTool::ObjectTool() {}
 
 ObjectTool::~ObjectTool() {}
 
-Ref<ImageTexture> ObjectTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> ObjectTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_objectsTexture()[_selectedObjectIndex];
 }
 
@@ -58,7 +58,7 @@ void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
         }
 
         if (heightmapImage.is_null()) {
-            heightmapImage = imageZoneInfo.zone->get_heightMapTexture()->get_image();
+            heightmapImage = imageZoneInfo.zone->get_heightMapTexture();
             _heightmapImagesCache[imageZoneInfo.zone] = heightmapImage;
         }
 
@@ -69,7 +69,7 @@ void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
             }
 
             if (waterImage.is_null()) {
-                waterImage = imageZoneInfo.zone->get_waterTexture()->get_image();
+                waterImage = imageZoneInfo.zone->get_waterTexture();
                 _waterImagesCache[imageZoneInfo.zone] = waterImage;
             }
         }

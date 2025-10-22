@@ -262,14 +262,14 @@ void ObjectsOctreeMultiMesh::initializeOctree() {
     for (int zoneIndex = 0; zoneIndex < _terrainZones->get_zones().size(); zoneIndex++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
 
-        Ref<Image> heightmapImage = zone->get_heightMapTexture()->get_image();
+        Ref<Image> heightmapImage = zone->get_heightMapTexture();
         Ref<Image> waterImage;
 
         if (!zone->get_waterTexture().is_null()) {
-            waterImage = zone->get_waterTexture()->get_image();
+            waterImage = zone->get_waterTexture();
         }
 
-        Ref<ImageTexture> imageTexture = zone->get_objectsTexture()[_objectsIndex];
+        Ref<Image> imageTexture = zone->get_objectsTexture()[_objectsIndex];
 
         Ref<Texture2D> noiseTexture;
         if (_definition->get_noiseTexture().is_null()) {
@@ -285,7 +285,7 @@ void ObjectsOctreeMultiMesh::initializeOctree() {
         }
 
         // Load all the objects from the image
-        Ref<Image> objectsImage = imageTexture->get_image();
+        Ref<Image> objectsImage = imageTexture;
 
         for (int x = 0; x < objectsImage->get_width(); x++) {
             for (int y = 0; y < objectsImage->get_height(); y++) {

@@ -71,7 +71,7 @@ private:
 
     void createCustomSetting(String name, Variant defaultValue, Variant::Type type, PropertyHint hint = PropertyHint::PROPERTY_HINT_NONE, String hintString = "");
     void handleKeyBindings();
-    void onUndoTexture(Ref<ImageTexture> imageTexture, PackedByteArray previousImageData);
+    void onUndoImage(Ref<Image> image, PackedByteArray previousImageData);
     void onUndoRedo();
     Vector3 getRayCastWithTerrain(Camera3D *editorCamera);
     Vector3 getMouseClickToZoneHeight(Vector3 from, Vector3 direction);

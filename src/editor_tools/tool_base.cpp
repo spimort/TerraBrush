@@ -26,22 +26,15 @@ void ToolBase::init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManag
 }
 
 PixelLockedInfo ToolBase::isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zoneInfo) {
-    Ref<Image> image = zone->get_lockTexture()->get_image();
+    Ref<Image> image = zone->get_lockTexture();
     Color pixel = image->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
     return PixelLockedInfo(pixel.r == 1.0, pixel.r);
 }
 
 void ToolBase::addImagesToRedo() {
-    for (Ref<ImageTexture> imageTexture : _modifiedUndoTextures) {
-        _undoRedoManager->add_do_method(imageTexture.ptr(), "update", getUndoRedoImageFromTexture(imageTexture));
+    for (Ref<Image> image : _modifiedUndoTextures) {
+        _undoRedoManager->add_do_method(image.ptr(), "set_data", image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), image->get_data());
     }
-}
-
-Ref<Image> ToolBase::getUndoRedoImageFromTexture(Ref<ImageTexture> imageTexture) {
-    Ref<Image> image = memnew(Image);
-    image->set_data(imageTexture->get_width(), imageTexture->get_height(), imageTexture->get_image()->has_mipmaps(), imageTexture->get_format(), imageTexture->get_image()->get_data());
-
-    return image;
 }
 
 int ToolBase::getResolution() const {
@@ -52,11 +45,11 @@ int ToolBase::getResolution() const {
     return 1;
 }
 
-void ToolBase::addTextureToUndo(Ref<ImageTexture> texture) {
+void ToolBase::addTextureToUndo(Ref<Image> texture) {
     if (_modifiedUndoTextures.count(texture) == 0) {
         _modifiedUndoTextures.insert(texture);
 
-        _undoRedoManager->add_undo_method(texture.ptr(), "update", getUndoRedoImageFromTexture(texture));
+        _undoRedoManager->add_undo_method(texture.ptr(), "set_data", texture->get_width(), texture->get_height(), texture->has_mipmaps(), texture->get_format(), texture->get_data());
     }
 }
 
@@ -64,7 +57,7 @@ bool ToolBase::getApplyResolution() const {
     return false;
 }
 
-Ref<ImageTexture> ToolBase::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> ToolBase::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return nullptr;
 }
 
@@ -161,23 +154,10 @@ ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, 
         }
 
         if (!lockInfo.locked) {
-            Ref<Image> image = nullptr;
-            if (_imagesCache.count(zone) > 0) {
-                image = _imagesCache[zone];
-            }
-
-            if (image.is_null()) {
-                Ref<ImageTexture> imageTexture = getToolCurrentImageTexture(zone);
-
-                if (!imageTexture.is_null()) {
-                    if (image.is_null()) {
-                        image = imageTexture->get_image();
-                        _imagesCache[zone] = image;
-                    }
-
-                    _terraBrush->get_terrainZones()->addDirtyImageTexture(imageTexture);
-                    addTextureToUndo(imageTexture);
-                }
+            Ref<Image> image = getToolCurrentImageTexture(zone);
+            if (!image.is_null()) {
+                _terraBrush->get_terrainZones()->addDirtyImageTexture(image);
+                addTextureToUndo(image);
             }
 
             return ImageZoneInfo(image, zoneInfo, zone, lockInfo.lockedStrength);
@@ -228,9 +208,8 @@ bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
 }
 
 void ToolBase::beginPaint() {
-    _imagesCache = std::unordered_map<Ref<ZoneResource>, Ref<Image>>();
     _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
-    _modifiedUndoTextures = std::unordered_set<Ref<ImageTexture>>();
+    _modifiedUndoTextures = std::unordered_set<Ref<Image>>();
 }
 
 void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
@@ -238,7 +217,6 @@ void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushS
 }
 
 void ToolBase::endPaint() {
-    _imagesCache.clear();
     _zonesPositionCache.clear();
 
     addImagesToRedo();

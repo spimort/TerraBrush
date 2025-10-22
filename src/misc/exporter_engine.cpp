@@ -45,17 +45,17 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
 
     Ref<Image> resultHeightmapImage = Image::create_empty(resolutionWidth, resolutionHeight, false, firstZone->get_heightMapTexture()->get_format());
     std::vector<Ref<Image>> resultSplatmapsImages = std::vector<Ref<Image>>();
-    for (Ref<ImageTexture> splatmapTexture : firstZone->get_splatmapsTexture()) {
+    for (Ref<Image> splatmapTexture : firstZone->get_splatmapsTexture()) {
         resultSplatmapsImages.push_back(Image::create_empty(width, height, false, splatmapTexture->get_format()));
     }
 
     std::vector<Ref<Image>> resultFoliagesImages = std::vector<Ref<Image>>();
-    for (Ref<ImageTexture> foliageTexture : firstZone->get_foliagesTexture()) {
+    for (Ref<Image> foliageTexture : firstZone->get_foliagesTexture()) {
         resultFoliagesImages.push_back(Image::create_empty(width, height, false, foliageTexture->get_format()));
     }
 
     std::vector<Ref<Image>> resultObjectsImages = std::vector<Ref<Image>>();
-    for (Ref<ImageTexture> objectTexture : firstZone->get_objectsTexture()) {
+    for (Ref<Image> objectTexture : firstZone->get_objectsTexture()) {
         resultObjectsImages.push_back(Image::create_empty(width, height, false, objectTexture->get_format()));
     }
 
@@ -93,30 +93,30 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
             Ref<Image> metaInfoImage = nullptr;
 
             if (!zone.is_null()) {
-                heightMapImage = zone->get_heightMapTexture()->get_image();
+                heightMapImage = zone->get_heightMapTexture();
 
-                for (Ref<ImageTexture> splatmapTexture : zone->get_splatmapsTexture()) {
-                    splatmapsImages.push_back(splatmapTexture->get_image());
+                for (Ref<Image> splatmapTexture : zone->get_splatmapsTexture()) {
+                    splatmapsImages.push_back(splatmapTexture);
                 }
 
-                for (Ref<ImageTexture> foliageTexture : zone->get_foliagesTexture()) {
-                    foliagesImages.push_back(foliageTexture->get_image());
+                for (Ref<Image> foliageTexture : zone->get_foliagesTexture()) {
+                    foliagesImages.push_back(foliageTexture);
                 }
 
-                for (Ref<ImageTexture> objectTexture : zone->get_objectsTexture()) {
-                    objectsImages.push_back(objectTexture->get_image());
+                for (Ref<Image> objectTexture : zone->get_objectsTexture()) {
+                    objectsImages.push_back(objectTexture);
                 }
 
                 if (!zone->get_waterTexture().is_null()) {
-                    waterImage = zone->get_waterTexture()->get_image();
+                    waterImage = zone->get_waterTexture();
                 }
 
                 if (!zone->get_snowTexture().is_null()) {
-                    snowImage = zone->get_snowTexture()->get_image();
+                    snowImage = zone->get_snowTexture();
                 }
 
                 if (!zone->get_metaInfoTexture().is_null()) {
-                    metaInfoImage = zone->get_metaInfoTexture()->get_image();
+                    metaInfoImage = zone->get_metaInfoTexture();
                 }
             }
 

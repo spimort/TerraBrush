@@ -30,7 +30,7 @@ void WaterTool::endPaint() {
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
-Ref<ImageTexture> WaterTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> WaterTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_waterTexture();
 }
 

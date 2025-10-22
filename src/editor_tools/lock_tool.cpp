@@ -9,7 +9,7 @@ LockTool::LockTool() {}
 
 LockTool::~LockTool() {}
 
-Ref<ImageTexture> LockTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> LockTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     if (zone->get_lockTexture().is_null()) {
         zone->set_lockTexture(ZoneUtils::createLockImage(_terraBrush->get_zonesSize(), zone->get_zonePosition()));
     }

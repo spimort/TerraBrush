@@ -28,7 +28,7 @@ protected:
     bool handleInput(TerrainToolType toolType, Ref<InputEvent> event) override;
     void beginPaint() override;
     void endPaint() override;
-    Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
     void beforeDeselect() override;
     void updateInitialPointMesh();
     void clearInitialPointMesh();

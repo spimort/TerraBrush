@@ -206,12 +206,12 @@ void Terrain::updateCollisionShape() {
         Dictionary collisionData = Dictionary();
         collisionData[CollisionDataShapeKey] = heightMapShape3D;
 
-        Ref<Image> heightmapImage = zone->get_heightMapTexture()->get_image();
+        Ref<Image> heightmapImage = zone->get_heightMapTexture();
         collisionData[CollisionDataHeightmapImageKey] = heightmapImage->get_data();
         collisionData[CollisionDataImageWidthKey] = heightmapImage->get_width();
         collisionData[CollisionDataImageHeightKey] = heightmapImage->get_height();
         if (!zone->get_waterTexture().is_null()) {
-            collisionData[CollisionDataWaterImageKey] = zone->get_waterTexture()->get_image()->get_data();
+            collisionData[CollisionDataWaterImageKey] = zone->get_waterTexture()->get_data();
         }
 
         zonesData[zone] = collisionData;

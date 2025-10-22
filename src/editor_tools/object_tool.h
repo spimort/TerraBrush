@@ -20,7 +20,7 @@ private:
 protected:
     static void _bind_methods();
 
-    Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
     void beginPaint() override;
     void endPaint() override;
 

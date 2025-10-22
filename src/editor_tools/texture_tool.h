@@ -13,7 +13,6 @@ class TextureTool : public ToolBase{
 
 private:
     int _selectedTextureIndex = -1;
-    std::unordered_map<Ref<ImageTexture>, Ref<Image>> _splatmapImagesCache = std::unordered_map<Ref<ImageTexture>, Ref<Image>>();
 
 protected:
     static void _bind_methods();

@@ -326,14 +326,12 @@ void TerraBrushPlugin::handleKeyBindings() {
     dlg->popup_centered();
 }
 
-void TerraBrushPlugin::onUndoTexture(Ref<ImageTexture> imageTexture, PackedByteArray previousImageData) {
+void TerraBrushPlugin::onUndoImage(Ref<Image> image, PackedByteArray previousImageData) {
     if (_preventInitialDo) {
         return;
     }
 
-    Ref<Image> image = memnew(Image);
-    image->set_data(imageTexture->get_width(), imageTexture->get_height(), imageTexture->get_image()->has_mipmaps(), imageTexture->get_format(), previousImageData);
-    imageTexture->update(image);
+    image->set_data(image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), previousImageData);
 }
 
 void TerraBrushPlugin::onUndoRedo() {
@@ -343,7 +341,7 @@ void TerraBrushPlugin::onUndoRedo() {
 
     _currentTerraBrushNode->get_terrain()->terrainUpdated();
     if (!_currentTerraBrushNode->get_terrainZones().is_null()) {
-        _currentTerraBrushNode->get_terrainZones()->updateImageTextures(_currentTerraBrushNode->get_zonesSize());
+        _currentTerraBrushNode->get_terrainZones()->updateImageImages(_currentTerraBrushNode->get_zonesSize());
     }
 
     _currentTerraBrushNode->clearObjects();
@@ -370,8 +368,6 @@ Vector3 TerraBrushPlugin::getRayCastWithTerrain(Camera3D *editorCamera) {
 }
 
 Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direction) {
-    TypedDictionary<Ref<ImageTexture>, Ref<Image>> heightmapsCache = TypedDictionary<Ref<ImageTexture>, Ref<Image>>();
-
     for (int i = 0; i < 20000; i++) {
         Vector3 position = from + (direction * i * 0.1f) - _currentTerraBrushNode->get_global_position();
 
@@ -382,16 +378,7 @@ Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direct
         }
 
         if (!zone.is_null() && !zone->get_heightMapTexture().is_null()) {
-            Ref<Image> heightMapImage;
-            if (heightmapsCache.has(zone->get_heightMapTexture())) {
-                heightMapImage = heightmapsCache[zone->get_heightMapTexture()];
-            }
-
-            if (heightMapImage.is_null()) {
-                heightMapImage = zone->get_heightMapTexture()->get_image();
-                heightmapsCache[zone->get_heightMapTexture()] = heightMapImage;
-            }
-
+            Ref<Image> heightMapImage = zone->get_heightMapTexture();
             float zoneHeight = heightMapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
 
             if (zoneHeight >= position.y) {

@@ -8,7 +8,7 @@ FoliageTool::FoliageTool() {}
 
 FoliageTool::~FoliageTool() {}
 
-Ref<ImageTexture> FoliageTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> FoliageTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_foliagesTexture()[_selectedFoliageIndex];
 }
 

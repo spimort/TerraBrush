@@ -73,7 +73,6 @@ void Snow::_physics_process(const double delta) {
                 }
             }
 
-            zone->get_snowTexture()->update(compressedSnowImage);
             _terrainZones->updateZoneSnowTexture(zone);
 
             if (points.size() == 0) {
@@ -186,7 +185,6 @@ void Snow::addCompressedSnow(float x, float y) {
 
             image->set_pixel(pixelPosition.x, pixelPosition.y, Color(currentPixel.r, offsetX, offsetY, 0));
 
-            zone->get_snowTexture()->update(image);
             _terrainZones->updateZoneSnowTexture(zone);
 
             TypedDictionary<Vector2i, float> listOfPoints;
@@ -208,7 +206,7 @@ Ref<Image> Snow::getImageForZone(Ref<ZoneResource> &zone) {
     if (_imagesCache.has(zone)) {
         return _imagesCache[zone];
     } else {
-        Ref<Image> image = zone->get_snowTexture()->get_image();
+        Ref<Image> image = zone->get_snowTexture();
         _imagesCache[zone] = image;
 
         return image;

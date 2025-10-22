@@ -37,7 +37,6 @@ private:
     Node3D *_snowNodeContainer = nullptr;
     Snow *_snowNode = nullptr;
 
-    TypedDictionary<Ref<ImageTexture>, Ref<Image>> _imageTexturesCache = TypedDictionary<Ref<ImageTexture>, Ref<Image>>();
     Ref<Texture2D> _defaultNoise = nullptr;
 
     // General settings
@@ -94,7 +93,6 @@ private:
     void createWater();
     void createSnow();
     void createMetaInfo();
-    Ref<Image> getImageFromImageTexture(Ref<ImageTexture> texture);
     void initializeImagesForTerrain(Ref<ZoneResource> zone);
 
 protected:

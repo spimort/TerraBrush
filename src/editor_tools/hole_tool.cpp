@@ -27,7 +27,7 @@ void HoleTool::endPaint() {
     _terraBrush->createObjects();
 }
 
-Ref<ImageTexture> HoleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> HoleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_heightMapTexture();
 }
 

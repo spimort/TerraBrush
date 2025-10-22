@@ -93,7 +93,7 @@ void SetAngleTool::endPaint() {
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
-Ref<ImageTexture> SetAngleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> SetAngleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_heightMapTexture();
 }
 

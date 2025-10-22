@@ -8,7 +8,7 @@ MetaInfoTool::MetaInfoTool() {}
 
 MetaInfoTool::~MetaInfoTool() {}
 
-Ref<ImageTexture> MetaInfoTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> MetaInfoTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_metaInfoTexture();
 }
 

@@ -10,15 +10,15 @@ class ZoneResource : public Resource {
     GDCLASS(ZoneResource, Resource);
 
 private:
-    Ref<ImageTexture> _lockTexture = 0;
+    Ref<Image> _lockTexture = 0;
     Vector2i _zonePosition = Vector2i();
-    Ref<ImageTexture> _heightMapTexture = nullptr;
-    TypedArray<Ref<ImageTexture>> _splatmapsTexture = TypedArray<Ref<ImageTexture>>();
-    TypedArray<Ref<ImageTexture>> _foliagesTexture = TypedArray<Ref<ImageTexture>>();
-    TypedArray<Ref<ImageTexture>> _objectsTexture = TypedArray<Ref<ImageTexture>>();
-    Ref<ImageTexture> _waterTexture = nullptr;
-    Ref<ImageTexture> _snowTexture = nullptr;
-    Ref<ImageTexture> _metaInfoTexture = nullptr;
+    Ref<Image> _heightMapTexture = nullptr;
+    TypedArray<Ref<Image>> _splatmapsTexture = TypedArray<Ref<Image>>();
+    TypedArray<Ref<Image>> _foliagesTexture = TypedArray<Ref<Image>>();
+    TypedArray<Ref<Image>> _objectsTexture = TypedArray<Ref<Image>>();
+    Ref<Image> _waterTexture = nullptr;
+    Ref<Image> _snowTexture = nullptr;
+    Ref<Image> _metaInfoTexture = nullptr;
 
 protected:
     static void _bind_methods();
@@ -27,31 +27,31 @@ public:
     ZoneResource();
     ~ZoneResource();
 
-    Ref<ImageTexture> get_lockTexture() const;
-    void set_lockTexture(const Ref<ImageTexture> &value);
+    Ref<Image> get_lockTexture() const;
+    void set_lockTexture(const Ref<Image> &value);
 
     Vector2i get_zonePosition() const;
     void set_zonePosition(const Vector2i value);
 
-    Ref<ImageTexture> get_heightMapTexture() const;
-    void set_heightMapTexture(const Ref<ImageTexture> &value);
+    Ref<Image> get_heightMapTexture() const;
+    void set_heightMapTexture(const Ref<Image> &value);
 
-    TypedArray<Ref<ImageTexture>> get_splatmapsTexture() const;
-    void set_splatmapsTexture(const TypedArray<Ref<ImageTexture>> value);
+    TypedArray<Ref<Image>> get_splatmapsTexture() const;
+    void set_splatmapsTexture(const TypedArray<Ref<Image>> value);
 
-    TypedArray<Ref<ImageTexture>> get_foliagesTexture() const;
-    void set_foliagesTexture(const TypedArray<Ref<ImageTexture>> value);
+    TypedArray<Ref<Image>> get_foliagesTexture() const;
+    void set_foliagesTexture(const TypedArray<Ref<Image>> value);
 
-    TypedArray<Ref<ImageTexture>> get_objectsTexture() const;
-    void set_objectsTexture(const TypedArray<Ref<ImageTexture>> value);
+    TypedArray<Ref<Image>> get_objectsTexture() const;
+    void set_objectsTexture(const TypedArray<Ref<Image>> value);
 
-    Ref<ImageTexture> get_waterTexture() const;
-    void set_waterTexture(const Ref<ImageTexture> &value);
+    Ref<Image> get_waterTexture() const;
+    void set_waterTexture(const Ref<Image> &value);
 
-    Ref<ImageTexture> get_snowTexture() const;
-    void set_snowTexture(const Ref<ImageTexture> &value);
+    Ref<Image> get_snowTexture() const;
+    void set_snowTexture(const Ref<Image> &value);
 
-    Ref<ImageTexture> get_metaInfoTexture() const;
-    void set_metaInfoTexture(const Ref<ImageTexture> &value);
+    Ref<Image> get_metaInfoTexture() const;
+    void set_metaInfoTexture(const Ref<Image> &value);
 };
 #endif

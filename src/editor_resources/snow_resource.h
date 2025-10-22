@@ -31,36 +31,36 @@ public:
     ~SnowResource();
 
     float get_snowFactor() const;
-    void set_snowFactor (const float value);
+    void set_snowFactor(const float value);
 
     float get_snowInnerOffset() const;
-    void set_snowInnerOffset (const float value);
+    void set_snowInnerOffset(const float value);
 
     Ref<Texture2D> get_snowColorTexture() const;
-    void set_snowColorTexture (const Ref<Texture2D> &value);
+    void set_snowColorTexture(const Ref<Texture2D> &value);
 
     Ref<Texture2D> get_snowColorNormal() const;
-    void set_snowColorNormal (const Ref<Texture2D> &value);
+    void set_snowColorNormal(const Ref<Texture2D> &value);
 
     Ref<Texture2D> get_snowColorRoughness() const;
-    void set_snowColorRoughness (const Ref<Texture2D> &value);
+    void set_snowColorRoughness(const Ref<Texture2D> &value);
 
     float get_snowColorDetail() const;
-    void set_snowColorDetail (const float value);
+    void set_snowColorDetail(const float value);
 
     Ref<Texture2D> get_noise() const;
-    void set_noise (const Ref<Texture2D> &value);
+    void set_noise(const Ref<Texture2D> &value);
 
     float get_noiseFactor() const;
-    void set_noiseFactor (const float value);
+    void set_noiseFactor(const float value);
 
     float get_metallic() const;
-    void set_metallic (const float value);
+    void set_metallic(const float value);
 
     int get_visualInstanceLayers() const;
-    void set_visualInstanceLayers (const int value);
+    void set_visualInstanceLayers(const int value);
 
     Ref<ShaderMaterial> get_customShader() const;
-    void set_customShader (const Ref<ShaderMaterial> &value);
+    void set_customShader(const Ref<ShaderMaterial> &value);
 };
 #endif

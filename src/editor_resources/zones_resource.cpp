@@ -16,7 +16,7 @@ void ZonesResource::_bind_methods() {
 }
 
 ZonesResource::ZonesResource() {
-    _dirtyImageTextures = std::unordered_set<Ref<ImageTexture>>();
+    _dirtyImageTextures = std::unordered_set<Ref<Image>>();
 
     _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
@@ -71,10 +71,10 @@ void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
 void ZonesResource::updateLockTexture(int zoneSize) {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (zone->get_lockTexture().is_null() || zone->get_lockTexture()->get_image().is_null()) {
+        if (zone->get_lockTexture().is_null() || zone->get_lockTexture().is_null()) {
             images.append(Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RF));
         } else {
-            images.append(zone->get_lockTexture()->get_image());
+            images.append(zone->get_lockTexture());
         }
     }
 
@@ -86,7 +86,7 @@ void ZonesResource::updateLockTexture(int zoneSize) {
 void ZonesResource::updateHeightmaps() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        images.append(zone->get_heightMapTexture()->get_image());
+        images.append(zone->get_heightMapTexture());
     }
 
     if (images.size() > 0) {
@@ -98,8 +98,8 @@ void ZonesResource::updateSplatmapsTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (zone->get_splatmapsTexture().size() > 0) {
-            for (Ref<Texture2D> splatmap : zone->get_splatmapsTexture()) {
-                images.append(splatmap->get_image());
+            for (Ref<Image> splatmap : zone->get_splatmapsTexture()) {
+                images.append(splatmap);
             }
         }
     }
@@ -127,8 +127,8 @@ void ZonesResource::updateFoliagesTextures() {
 void ZonesResource::updateFoliagesTextures(int foliageIndex) {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        TypedArray<Ref<Texture2D>> foliagesTexture = zone->get_foliagesTexture();
-        images.append(Ref<Texture2D>(foliagesTexture[foliageIndex])->get_image());
+        TypedArray<Ref<Image>> foliagesTexture = zone->get_foliagesTexture();
+        images.append(Ref<Image>(foliagesTexture[foliageIndex]));
     }
 
     if (images.size() > 0) {
@@ -140,8 +140,8 @@ void ZonesResource::updateObjectsTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (zone->get_objectsTexture().size() > 0) {
-            for (Ref<Texture2D> objectTexture : zone->get_objectsTexture()) {
-                images.append(objectTexture->get_image());
+            for (Ref<Image> objectTexture : zone->get_objectsTexture()) {
+                images.append(objectTexture);
             }
         }
     }
@@ -155,7 +155,7 @@ void ZonesResource::updateWaterTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_waterTexture().is_null()) {
-            images.append(zone->get_waterTexture()->get_image());
+            images.append(zone->get_waterTexture());
         }
     }
 
@@ -166,14 +166,14 @@ void ZonesResource::updateWaterTextures() {
 
 void ZonesResource::updateZoneWaterTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _waterTextures->update_layer(zone->get_waterTexture()->get_image(), zoneIndex);
+    _waterTextures->update_layer(zone->get_waterTexture(), zoneIndex);
 }
 
 void ZonesResource::updateSnowTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_snowTexture().is_null()) {
-            images.append(zone->get_snowTexture()->get_image());
+            images.append(zone->get_snowTexture());
         }
     }
 
@@ -184,14 +184,14 @@ void ZonesResource::updateSnowTextures() {
 
 void ZonesResource::updateZoneSnowTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _snowTextures->update_layer(zone->get_snowTexture()->get_image(), zoneIndex);
+    _snowTextures->update_layer(zone->get_snowTexture(), zoneIndex);
 }
 
 void ZonesResource::updateMetaInfoTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone->get_metaInfoTexture().is_null()) {
-            images.append(zone->get_metaInfoTexture()->get_image());
+            images.append(zone->get_metaInfoTexture());
         }
     }
 
@@ -202,7 +202,7 @@ void ZonesResource::updateMetaInfoTextures() {
 
 void ZonesResource::updateZoneMetaInfoTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _metaInfoTextures->update_layer(zone->get_metaInfoTexture()->get_image(), zoneIndex);
+    _metaInfoTextures->update_layer(zone->get_metaInfoTexture(), zoneIndex);
 }
 
 void ZonesResource::saveResources() {
@@ -210,14 +210,14 @@ void ZonesResource::saveResources() {
         return;
     }
 
-    for (Ref<ImageTexture> dirtyImageResource : _dirtyImageTextures) {
+    for (Ref<Image> dirtyImageResource : _dirtyImageTextures) {
         saveImageResource(dirtyImageResource);
     }
 
     _dirtyImageTextures.clear();
 }
 
-void ZonesResource::saveImageResource(Ref<ImageTexture> image) {
+void ZonesResource::saveImageResource(Ref<Image> image) {
     if (!image->get_path().is_empty() && FileAccess::file_exists(image->get_path())) {
         ResourceSaver::get_singleton()->save(image, image->get_path());
     }
@@ -245,11 +245,11 @@ void ZonesResource::updateZonesMap() {
     _zonesMap->set_image(zonesMap);
 }
 
-void ZonesResource::addDirtyImageTexture(Ref<ImageTexture> imageTexture) {
+void ZonesResource::addDirtyImageTexture(Ref<Image> imageTexture) {
     _dirtyImageTextures.insert(imageTexture);
 }
 
-void ZonesResource::updateImageTextures(int zoneSize) {
+void ZonesResource::updateImageImages(int zoneSize) {
     if (Engine::get_singleton()->is_editor_hint()) {
         updateLockTexture(zoneSize);
     }

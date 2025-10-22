@@ -175,8 +175,6 @@ TerraBrush::TerraBrush() {
     _snowNodeContainer = nullptr;
     _snowNode = nullptr;
 
-    _imageTexturesCache = TypedDictionary<Ref<ImageTexture>, Ref<Image>>();
-
     _defaultNoise = Ref<Texture2D>(nullptr);
 
     // General settings
@@ -600,7 +598,7 @@ void TerraBrush::createFoliages() {
 
     for (int zoneIndex = 0; zoneIndex < _terrainZones->get_zones().size(); zoneIndex++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
-        TypedArray<Ref<ImageTexture>> newList = TypedArray<Ref<ImageTexture>>();
+        TypedArray<Ref<Image>> newList = TypedArray<Ref<Image>>();
         for (int foliageIndex = 0; foliageIndex < _foliages.size(); foliageIndex++) {
             if (zone->get_foliagesTexture().size() > foliageIndex) {
                 newList.append(zone->get_foliagesTexture()[foliageIndex]);
@@ -746,16 +744,6 @@ void TerraBrush::createMetaInfo() {
     _terrainZones->updateMetaInfoTextures();
 }
 
-Ref<Image> TerraBrush::getImageFromImageTexture(Ref<ImageTexture> texture) {
-    if (_imageTexturesCache.has(texture)) {
-        return _imageTexturesCache[texture];
-    }
-
-    Ref<Image> image = texture->get_image();
-    _imageTexturesCache[texture] = image;
-    return image;
-}
-
 Terrain *TerraBrush::get_terrain() {
     return _terrain;
 }
@@ -869,7 +857,7 @@ void TerraBrush::createSplatmaps(Ref<ZoneResource> zone) {
     int numberOfSplatmaps = (int) Math::ceil(_textureSets.is_null() ? 0 : _textureSets->get_textureSets().size() / 4.0f);
 
     if (zone->get_splatmapsTexture().size() == 0 || zone->get_splatmapsTexture().size() < numberOfSplatmaps) {
-        TypedArray<ImageTexture> newList = TypedArray<ImageTexture>();
+        TypedArray<Image> newList = TypedArray<Image>();
         newList.append_array(zone->get_splatmapsTexture());
 
         for (int i = zone->get_splatmapsTexture().size(); i < numberOfSplatmaps; i++) {
@@ -893,7 +881,7 @@ void TerraBrush::createObjects() {
 
     for (int zoneIndex = 0; zoneIndex < _terrainZones->get_zones().size(); zoneIndex++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
-        TypedArray<Texture2D> newList = TypedArray<Texture2D>();
+        TypedArray<Image> newList = TypedArray<Image>();
         for (int objectIndex = 0; objectIndex < _objects.size(); objectIndex++) {
             if (zone->get_objectsTexture().size() > objectIndex) {
                 newList.append(zone->get_objectsTexture()[objectIndex]);
@@ -1011,15 +999,15 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
         String metaInfoName = "";
 
         if (!zone->get_waterTexture().is_null()) {
-            waterFactor = getImageFromImageTexture(zone->get_waterTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+            waterFactor = zone->get_waterTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
         }
 
         if (!zone->get_snowTexture().is_null()) {
-            snowFactor = getImageFromImageTexture(zone->get_snowTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+            snowFactor = zone->get_snowTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
         }
 
         if (_metaInfoLayers.size() > 0 && !zone->get_metaInfoTexture().is_null()) {
-            Color metaInfoColor = getImageFromImageTexture(zone->get_metaInfoTexture())->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+            Color metaInfoColor = zone->get_metaInfoTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
             int metaInfoColorIndex = (int) metaInfoColor.r;
 
             if (metaInfoColorIndex >= 0 && _metaInfoLayers.size() - 1 >= metaInfoColorIndex) {
@@ -1035,8 +1023,8 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
                 Ref<TextureSetResource> textureSet = _textureSets->get_textureSets()[i];
 
                 int splatmapIndex = (int) Math::floor(i / 4.0);
-                Ref<ImageTexture> splatmapImage = zone->get_splatmapsTexture()[splatmapIndex];
-                Color pixel = getImageFromImageTexture(splatmapImage)->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+                Ref<Image> splatmapImage = zone->get_splatmapsTexture()[splatmapIndex];
+                Color pixel = splatmapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
                 int colorIndex = i % 4;
 
                 Ref<TerrainPositionTextureInformation> textureInfo = memnew(TerrainPositionTextureInformation);
@@ -1106,7 +1094,7 @@ Ref<ZoneResource> TerraBrush::addNewZone(Vector2i zonePosition) {
     newList.append(zone);
     _terrainZones->set_zones(newList);
 
-    _terrainZones->updateImageTextures(_zonesSize);
+    _terrainZones->updateImageImages(_zonesSize);
 
     if (_terrain != nullptr) {
         _terrain->get_clipmap()->updateAABB();
@@ -1126,7 +1114,7 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
 
     if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         int numberOfSplatmaps = (int) Math::ceil(_textureSets->get_textureSets().size() / 4.0f);
-        TypedArray<Ref<ImageTexture>> splatmaps = TypedArray<Ref<ImageTexture>>();
+        TypedArray<Ref<Image>> splatmaps = TypedArray<Ref<Image>>();
         for (int i = 0; i < numberOfSplatmaps; i++) {
             splatmaps.append(ZoneUtils::createSplatmapImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
@@ -1134,7 +1122,7 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
     }
 
     if (_foliages.size() > 0) {
-        TypedArray<Ref<ImageTexture>> foliagesTexture = TypedArray<Ref<ImageTexture>>();
+        TypedArray<Ref<Image>> foliagesTexture = TypedArray<Ref<Image>>();
         for (int i = 0; i < _foliages.size(); i++) {
             foliagesTexture.append(ZoneUtils::createFoliageImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
@@ -1142,7 +1130,7 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
     }
 
     if (_objects.size() > 0) {
-        TypedArray<Ref<ImageTexture>> objectsTexture = TypedArray<Ref<ImageTexture>>();
+        TypedArray<Ref<Image>> objectsTexture = TypedArray<Ref<Image>>();
         for (int i = 0; i < _objects.size(); i++) {
             objectsTexture.append(ZoneUtils::createObjectImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }

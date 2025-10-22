@@ -61,7 +61,6 @@ void Water::_physics_process(double delta) {
                 }
             }
 
-            zone->get_waterTexture()->update(rippleWaterImage);
             _terrainZones->updateZoneWaterTexture(zone);
 
             if (points.size() == 0) {
@@ -263,7 +262,6 @@ void Water::addRippleEffect(float x, float y) {
         if (currentPixel.r > 0) {
             image->set_pixel(pixelPosition.x, pixelPosition.y, Color(currentPixel.r, currentPixel.g, currentPixel.b, 0));
 
-            zone->get_waterTexture()->update(image);
             _terrainZones->updateZoneWaterTexture(zone);
 
             TypedDictionary<Vector2i, float> listOfPoints;
@@ -285,7 +283,7 @@ Ref<Image> Water::getImageForZone(Ref<ZoneResource> &zone) {
     if (_imagesCache.has(zone)) {
         return _imagesCache[zone];
     } else {
-        Ref<Image> image = zone->get_waterTexture()->get_image();
+        Ref<Image> image = zone->get_waterTexture();
         _imagesCache[zone] = image;
 
         return image;

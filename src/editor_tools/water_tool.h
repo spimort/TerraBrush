@@ -19,7 +19,7 @@ protected:
     bool getApplyResolution() const override;
     void beginPaint() override;
     void endPaint() override;
-    Ref<ImageTexture> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
 
 public:
     WaterTool();

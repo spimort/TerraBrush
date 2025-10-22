@@ -71,77 +71,77 @@ SnowResource::~SnowResource() {
 float SnowResource::get_snowFactor() const {
     return _snowFactor;
 }
-void SnowResource::set_snowFactor (const float value) {
+void SnowResource::set_snowFactor(const float value) {
     _snowFactor = value;
 }
 
 float SnowResource::get_snowInnerOffset() const {
     return _snowInnerOffset;
 }
-void SnowResource::set_snowInnerOffset (const float value) {
+void SnowResource::set_snowInnerOffset(const float value) {
     _snowInnerOffset = value;
 }
 
 Ref<Texture2D> SnowResource::get_snowColorTexture() const {
     return _snowColorTexture;
 }
-void SnowResource::set_snowColorTexture (const Ref<Texture2D> &value) {
+void SnowResource::set_snowColorTexture(const Ref<Texture2D> &value) {
     _snowColorTexture = value;
 }
 
 Ref<Texture2D> SnowResource::get_snowColorNormal() const {
     return _snowColorNormal;
 }
-void SnowResource::set_snowColorNormal (const Ref<Texture2D> &value) {
+void SnowResource::set_snowColorNormal(const Ref<Texture2D> &value) {
     _snowColorNormal = value;
 }
 
 Ref<Texture2D> SnowResource::get_snowColorRoughness() const {
     return _snowColorRoughness;
 }
-void SnowResource::set_snowColorRoughness (const Ref<Texture2D> &value) {
+void SnowResource::set_snowColorRoughness(const Ref<Texture2D> &value) {
     _snowColorRoughness = value;
 }
 
 float SnowResource::get_snowColorDetail() const {
     return _snowColorDetail;
 }
-void SnowResource::set_snowColorDetail (const float value) {
+void SnowResource::set_snowColorDetail(const float value) {
     _snowColorDetail = value;
 }
 
 Ref<Texture2D> SnowResource::get_noise() const {
     return _noise;
 }
-void SnowResource::set_noise (const Ref<Texture2D> &value) {
+void SnowResource::set_noise(const Ref<Texture2D> &value) {
     _noise = value;
 }
 
 float SnowResource::get_noiseFactor() const {
     return _noiseFactor;
 }
-void SnowResource::set_noiseFactor (const float value) {
+void SnowResource::set_noiseFactor(const float value) {
     _noiseFactor = value;
 }
 
 float SnowResource::get_metallic() const {
     return _metallic;
 }
-void SnowResource::set_metallic (const float value) {
+void SnowResource::set_metallic(const float value) {
     _metallic = value;
 }
 
 int SnowResource::get_visualInstanceLayers() const {
     return _visualInstanceLayers;
 }
-void SnowResource::set_visualInstanceLayers (const int value) {
+void SnowResource::set_visualInstanceLayers(const int value) {
     _visualInstanceLayers = value;
 }
 
 Ref<ShaderMaterial> SnowResource::get_customShader() const {
     return _customShader;
 }
-void SnowResource::set_customShader (const Ref<ShaderMaterial> &value) {
+void SnowResource::set_customShader(const Ref<ShaderMaterial> &value) {
     _customShader = value;
 
     if (!value.is_null() && value->get_shader().is_null()) {

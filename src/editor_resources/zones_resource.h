@@ -17,7 +17,7 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource);
 
 private:
-    std::unordered_set<Ref<ImageTexture>> _dirtyImageTextures = std::unordered_set<Ref<ImageTexture>>();
+    std::unordered_set<Ref<Image>> _dirtyImageTextures = std::unordered_set<Ref<Image>>();
 
     Ref<Texture2DArray> _lockTextures = nullptr;
     Ref<Texture2DArray> _heightmapTextures = nullptr;
@@ -31,7 +31,7 @@ private:
 
     TypedArray<Ref<ZoneResource>> _zones = TypedArray<Ref<ZoneResource>>();
 
-    void saveImageResource(Ref<ImageTexture> image);
+    void saveImageResource(Ref<Image> image);
 
 protected:
     static void _bind_methods();
@@ -68,8 +68,8 @@ public:
     void updateZoneMetaInfoTexture(Ref<ZoneResource> zone);
     void saveResources();
     void updateZonesMap();
-    void addDirtyImageTexture(Ref<ImageTexture> imageTexture);
-    void updateImageTextures(int zoneSize);
+    void addDirtyImageTexture(Ref<Image> imageTexture);
+    void updateImageImages(int zoneSize);
     Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
 };
 #endif

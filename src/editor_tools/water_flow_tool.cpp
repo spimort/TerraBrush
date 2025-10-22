@@ -12,7 +12,7 @@ bool WaterFlowTool::getApplyResolution() const {
     return true;
 };
 
-Ref<ImageTexture> WaterFlowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> WaterFlowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_waterTexture();
 };
 

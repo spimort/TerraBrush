@@ -12,7 +12,7 @@ bool SnowTool::getApplyResolution() const {
     return true;
 }
 
-Ref<ImageTexture> SnowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
+Ref<Image> SnowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
     return zone->get_snowTexture();
 }
 
