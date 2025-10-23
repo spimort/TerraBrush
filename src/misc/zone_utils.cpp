@@ -70,10 +70,8 @@ Ref<Image> ZoneUtils::createMetaInfoImage(int zoneSize, float resolution, Vector
 Ref<Image> ZoneUtils::getImageResource(Ref<Image> image, String filePath, String dataPath) {
     if (!dataPath.is_empty()) {
         String resourcePath = Utils::pathCombineForwardSlash(dataPath, filePath);
-        if (!FileAccess::file_exists(resourcePath)) {
-            ResourceSaver::get_singleton()->save(image, resourcePath);
-            image = ResourceLoader::get_singleton()->load(resourcePath);
-        }
+        ResourceSaver::get_singleton()->save(image, resourcePath);
+        image = ResourceLoader::get_singleton()->load(resourcePath);
     }
 
     return image;
