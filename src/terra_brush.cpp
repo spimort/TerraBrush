@@ -522,8 +522,8 @@ void TerraBrush::loadTerrain() {
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
 
-        if (zone->get_heightMapTexture().is_null()) {
-            zone->set_heightMapTexture(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        if (zone->get_heightMapImage().is_null()) {
+            zone->set_heightMapImage(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
         }
 
         createSplatmaps(zone);
@@ -600,14 +600,14 @@ void TerraBrush::createFoliages() {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
         TypedArray<Ref<Image>> newList = TypedArray<Ref<Image>>();
         for (int foliageIndex = 0; foliageIndex < _foliages.size(); foliageIndex++) {
-            if (zone->get_foliagesTexture().size() > foliageIndex) {
-                newList.append(zone->get_foliagesTexture()[foliageIndex]);
+            if (zone->get_foliagesImage().size() > foliageIndex) {
+                newList.append(zone->get_foliagesImage()[foliageIndex]);
             } else {
                 newList.append(ZoneUtils::createFoliageImage(_zonesSize, zone->get_zonePosition(), foliageIndex, _dataPath));
             }
         }
 
-        zone->set_foliagesTexture(newList);
+        zone->set_foliagesImage(newList);
     }
 
     _terrainZones->initializeFoliageTextures(_foliages.size());
@@ -644,8 +644,8 @@ void TerraBrush::createWater() {
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
 
-        if (zone->get_waterTexture().is_null()) {
-            zone->set_waterTexture(ZoneUtils::createWaterImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        if (zone->get_waterImage().is_null()) {
+            zone->set_waterImage(ZoneUtils::createWaterImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
         }
     }
 
@@ -702,8 +702,8 @@ void TerraBrush::createSnow() {
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
 
-        if (zone->get_snowTexture().is_null()) {
-            zone->set_snowTexture(ZoneUtils::createSnowImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        if (zone->get_snowImage().is_null()) {
+            zone->set_snowImage(ZoneUtils::createSnowImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
         }
     }
 
@@ -736,8 +736,8 @@ void TerraBrush::createMetaInfo() {
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
 
-        if (zone->get_metaInfoTexture().is_null()) {
-            zone->set_metaInfoTexture(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        if (zone->get_metaInfoImage().is_null()) {
+            zone->set_metaInfoImage(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
         }
     }
 
@@ -780,7 +780,7 @@ void TerraBrush::onCreateTerrain() {
     _terrainZones = Ref<ZonesResource>(memnew(ZonesResource));
 
     Ref<ZoneResource> zoneResource = memnew(ZoneResource);
-    zoneResource->set_heightMapTexture(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, Vector2i(0, 0), _dataPath));
+    zoneResource->set_heightMapImage(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, Vector2i(0, 0), _dataPath));
     _terrainZones->set_zones(Array::make(zoneResource));
 
     loadTerrain();
@@ -856,15 +856,15 @@ void TerraBrush::clearObjects() {
 void TerraBrush::createSplatmaps(Ref<ZoneResource> zone) {
     int numberOfSplatmaps = (int) Math::ceil(_textureSets.is_null() ? 0 : _textureSets->get_textureSets().size() / 4.0f);
 
-    if (zone->get_splatmapsTexture().size() == 0 || zone->get_splatmapsTexture().size() < numberOfSplatmaps) {
+    if (zone->get_splatmapsImage().size() == 0 || zone->get_splatmapsImage().size() < numberOfSplatmaps) {
         TypedArray<Image> newList = TypedArray<Image>();
-        newList.append_array(zone->get_splatmapsTexture());
+        newList.append_array(zone->get_splatmapsImage());
 
-        for (int i = zone->get_splatmapsTexture().size(); i < numberOfSplatmaps; i++) {
+        for (int i = zone->get_splatmapsImage().size(); i < numberOfSplatmaps; i++) {
             newList.append(ZoneUtils::createSplatmapImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
 
-        zone->set_splatmapsTexture(newList);
+        zone->set_splatmapsImage(newList);
     }
 }
 
@@ -883,14 +883,14 @@ void TerraBrush::createObjects() {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
         TypedArray<Image> newList = TypedArray<Image>();
         for (int objectIndex = 0; objectIndex < _objects.size(); objectIndex++) {
-            if (zone->get_objectsTexture().size() > objectIndex) {
-                newList.append(zone->get_objectsTexture()[objectIndex]);
+            if (zone->get_objectsImage().size() > objectIndex) {
+                newList.append(zone->get_objectsImage()[objectIndex]);
             } else {
                 newList.append(ZoneUtils::createObjectImage(_zonesSize, zone->get_zonePosition(), objectIndex, _dataPath));
             }
         }
 
-        zone->set_objectsTexture(newList);
+        zone->set_objectsImage(newList);
     }
 
     bool loadInThread = _objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADED || (_objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADEDINEDITORONLY && Engine::get_singleton()->is_editor_hint());
@@ -998,16 +998,16 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
         int metaInfoIndex = -1;
         String metaInfoName = "";
 
-        if (!zone->get_waterTexture().is_null()) {
-            waterFactor = zone->get_waterTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+        if (!zone->get_waterImage().is_null()) {
+            waterFactor = zone->get_waterImage()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
         }
 
-        if (!zone->get_snowTexture().is_null()) {
-            snowFactor = zone->get_snowTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+        if (!zone->get_snowImage().is_null()) {
+            snowFactor = zone->get_snowImage()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
         }
 
-        if (_metaInfoLayers.size() > 0 && !zone->get_metaInfoTexture().is_null()) {
-            Color metaInfoColor = zone->get_metaInfoTexture()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
+        if (_metaInfoLayers.size() > 0 && !zone->get_metaInfoImage().is_null()) {
+            Color metaInfoColor = zone->get_metaInfoImage()->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
             int metaInfoColorIndex = (int) metaInfoColor.r;
 
             if (metaInfoColorIndex >= 0 && _metaInfoLayers.size() - 1 >= metaInfoColorIndex) {
@@ -1017,13 +1017,13 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
         }
 
         TypedArray<Ref<TerrainPositionTextureInformation>> textures = TypedArray<Ref<TerrainPositionTextureInformation>>();
-        if (zone->get_splatmapsTexture().size() > 0) {
+        if (zone->get_splatmapsImage().size() > 0) {
             std::vector<Ref<TerrainPositionTextureInformation>> tempTextures = std::vector<Ref<TerrainPositionTextureInformation>>();
             for (int i = 0; i < _textureSets->get_textureSets().size(); i++) {
                 Ref<TextureSetResource> textureSet = _textureSets->get_textureSets()[i];
 
                 int splatmapIndex = (int) Math::floor(i / 4.0);
-                Ref<Image> splatmapImage = zone->get_splatmapsTexture()[splatmapIndex];
+                Ref<Image> splatmapImage = zone->get_splatmapsImage()[splatmapIndex];
                 Color pixel = splatmapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
                 int colorIndex = i % 4;
 
@@ -1110,7 +1110,7 @@ Ref<ZoneResource> TerraBrush::addNewZone(Vector2i zonePosition) {
 }
 
 void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
-    zone->set_heightMapTexture(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+    zone->set_heightMapImage(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
 
     if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         int numberOfSplatmaps = (int) Math::ceil(_textureSets->get_textureSets().size() / 4.0f);
@@ -1118,35 +1118,35 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
         for (int i = 0; i < numberOfSplatmaps; i++) {
             splatmaps.append(ZoneUtils::createSplatmapImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
-        zone->set_splatmapsTexture(splatmaps);
+        zone->set_splatmapsImage(splatmaps);
     }
 
     if (_foliages.size() > 0) {
-        TypedArray<Ref<Image>> foliagesTexture = TypedArray<Ref<Image>>();
+        TypedArray<Ref<Image>> foliagesImage = TypedArray<Ref<Image>>();
         for (int i = 0; i < _foliages.size(); i++) {
-            foliagesTexture.append(ZoneUtils::createFoliageImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
+            foliagesImage.append(ZoneUtils::createFoliageImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
-        zone->set_foliagesTexture(foliagesTexture);
+        zone->set_foliagesImage(foliagesImage);
     }
 
     if (_objects.size() > 0) {
-        TypedArray<Ref<Image>> objectsTexture = TypedArray<Ref<Image>>();
+        TypedArray<Ref<Image>> objectsImage = TypedArray<Ref<Image>>();
         for (int i = 0; i < _objects.size(); i++) {
-            objectsTexture.append(ZoneUtils::createObjectImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
+            objectsImage.append(ZoneUtils::createObjectImage(_zonesSize, zone->get_zonePosition(), i, _dataPath));
         }
-        zone->set_objectsTexture(objectsTexture);
+        zone->set_objectsImage(objectsImage);
     }
 
     if (!_waterDefinition.is_null()) {
-        zone->set_waterTexture(ZoneUtils::createWaterImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        zone->set_waterImage(ZoneUtils::createWaterImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
     }
 
     if (!_snowDefinition.is_null()) {
-        zone->set_snowTexture(ZoneUtils::createSnowImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        zone->set_snowImage(ZoneUtils::createSnowImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
     }
 
     if (_metaInfoLayers.size() > 0) {
-        zone->set_metaInfoTexture(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
+        zone->set_metaInfoImage(ZoneUtils::createMetaInfoImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
     }
 }
 

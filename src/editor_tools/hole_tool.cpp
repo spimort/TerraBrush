@@ -27,8 +27,8 @@ void HoleTool::endPaint() {
     _terraBrush->createObjects();
 }
 
-Ref<Image> HoleTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
-    return zone->get_heightMapTexture();
+Ref<Image> HoleTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+    return zone->get_heightMapImage();
 }
 
 void HoleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {

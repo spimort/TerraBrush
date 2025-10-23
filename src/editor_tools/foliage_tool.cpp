@@ -8,8 +8,8 @@ FoliageTool::FoliageTool() {}
 
 FoliageTool::~FoliageTool() {}
 
-Ref<Image> FoliageTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
-    return zone->get_foliagesTexture()[_selectedFoliageIndex];
+Ref<Image> FoliageTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+    return zone->get_foliagesImage()[_selectedFoliageIndex];
 }
 
 void FoliageTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {

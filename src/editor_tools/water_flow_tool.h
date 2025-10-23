@@ -18,7 +18,7 @@ protected:
     static void _bind_methods();
 
     bool getApplyResolution() const override;
-    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
 
 public:
     WaterFlowTool();

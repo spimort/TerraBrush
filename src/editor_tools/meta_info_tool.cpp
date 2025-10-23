@@ -8,8 +8,8 @@ MetaInfoTool::MetaInfoTool() {}
 
 MetaInfoTool::~MetaInfoTool() {}
 
-Ref<Image> MetaInfoTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
-    return zone->get_metaInfoTexture();
+Ref<Image> MetaInfoTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+    return zone->get_metaInfoImage();
 }
 
 void MetaInfoTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {

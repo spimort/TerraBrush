@@ -4,8 +4,6 @@
 #include "tool_base.h"
 #include "../misc/hash_utils.h"
 
-#include <godot_cpp/classes/image_texture.hpp>
-
 using namespace godot;
 
 class TextureTool : public ToolBase{

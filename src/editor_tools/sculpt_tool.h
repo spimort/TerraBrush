@@ -24,7 +24,7 @@ protected:
     bool getApplyResolution() const override;
     void beginPaint() override;
     void endPaint() override;
-    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
 
 public:
     SculptTool();

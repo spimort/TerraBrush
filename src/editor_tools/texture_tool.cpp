@@ -43,10 +43,10 @@ void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
                 splatmapColor = Color(0, 0, 0, 1);
             }
 
-            Ref<Image> currentSplatmapTexture = imageZoneInfo.zone->get_splatmapsTexture()[i];
+            Ref<Image> currentSplatmapTexture = imageZoneInfo.zone->get_splatmapsImage()[i];
             // Since we play with several textures here, the toolbase cannot add the texture to the dirty collection
-            _terraBrush->get_terrainZones()->addDirtyImageTexture(currentSplatmapTexture);
-            addTextureToUndo(currentSplatmapTexture);
+            _terraBrush->get_terrainZones()->addDirtyImage(currentSplatmapTexture);
+            addImageToUndo(currentSplatmapTexture);
 
             Ref<Image> currentSplatmapImage = currentSplatmapTexture;
             Color currentPixel = currentSplatmapImage->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);

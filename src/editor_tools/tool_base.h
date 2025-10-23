@@ -53,7 +53,7 @@ private:
     LockedAxis _lockedAxis = LockedAxis::LOCKEDAXIS_NONE;
     Vector2 _lockedAxisValue = Vector2();
     std::unordered_map<int, Ref<ZoneResource>> _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
-    std::unordered_set<Ref<Image>> _modifiedUndoTextures = std::unordered_set<Ref<Image>>();
+    std::unordered_set<Ref<Image>> _modifiedUndoImages = std::unordered_set<Ref<Image>>();
     bool _autoAddZones = false;
 
     PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zoneInfo);
@@ -66,9 +66,9 @@ protected:
     static void _bind_methods();
 
     virtual bool getApplyResolution() const;
-    virtual Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone);
+    virtual Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone);
     void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone = false);
-    void addTextureToUndo(Ref<Image> texture);
+    void addImageToUndo(Ref<Image> image);
     ImageZoneInfo getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
 
 public:

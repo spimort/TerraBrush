@@ -7,54 +7,54 @@ void ZoneResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_zonePosition", "value"), &ZoneResource::set_zonePosition);
     ADD_PROPERTY(PropertyInfo(Variant::VECTOR2I, "zonePosition"), "set_zonePosition", "get_zonePosition");
 
-    ClassDB::bind_method(D_METHOD("get_heightMapTexture"), &ZoneResource::get_heightMapTexture);
-    ClassDB::bind_method(D_METHOD("set_heightMapTexture", "value"), &ZoneResource::set_heightMapTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "heightMapTexture", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_heightMapTexture", "get_heightMapTexture");
+    ClassDB::bind_method(D_METHOD("get_heightMapImage"), &ZoneResource::get_heightMapImage);
+    ClassDB::bind_method(D_METHOD("set_heightMapImage", "value"), &ZoneResource::set_heightMapImage);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "heightMapImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_heightMapImage", "get_heightMapImage");
 
-    ClassDB::bind_method(D_METHOD("get_splatmapsTexture"), &ZoneResource::get_splatmapsTexture);
-    ClassDB::bind_method(D_METHOD("set_splatmapsTexture", "value"), &ZoneResource::set_splatmapsTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "splatmapsTexture", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_splatmapsTexture", "get_splatmapsTexture");
+    ClassDB::bind_method(D_METHOD("get_splatmapsImage"), &ZoneResource::get_splatmapsImage);
+    ClassDB::bind_method(D_METHOD("set_splatmapsImage", "value"), &ZoneResource::set_splatmapsImage);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "splatmapsImage", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_splatmapsImage", "get_splatmapsImage");
 
-    ClassDB::bind_method(D_METHOD("get_foliagesTexture"), &ZoneResource::get_foliagesTexture);
-    ClassDB::bind_method(D_METHOD("set_foliagesTexture", "value"), &ZoneResource::set_foliagesTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "foliagesTexture", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_foliagesTexture", "get_foliagesTexture");
+    ClassDB::bind_method(D_METHOD("get_foliagesImage"), &ZoneResource::get_foliagesImage);
+    ClassDB::bind_method(D_METHOD("set_foliagesImage", "value"), &ZoneResource::set_foliagesImage);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "foliagesImage", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_foliagesImage", "get_foliagesImage");
 
-    ClassDB::bind_method(D_METHOD("get_objectsTexture"), &ZoneResource::get_objectsTexture);
-    ClassDB::bind_method(D_METHOD("set_objectsTexture", "value"), &ZoneResource::set_objectsTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "objectsTexture", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_objectsTexture", "get_objectsTexture");
+    ClassDB::bind_method(D_METHOD("get_objectsImage"), &ZoneResource::get_objectsImage);
+    ClassDB::bind_method(D_METHOD("set_objectsImage", "value"), &ZoneResource::set_objectsImage);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "objectsImage", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_objectsImage", "get_objectsImage");
 
-    ClassDB::bind_method(D_METHOD("get_waterTexture"), &ZoneResource::get_waterTexture);
-    ClassDB::bind_method(D_METHOD("set_waterTexture", "value"), &ZoneResource::set_waterTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "waterTexture", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_waterTexture", "get_waterTexture");
+    ClassDB::bind_method(D_METHOD("get_waterImage"), &ZoneResource::get_waterImage);
+    ClassDB::bind_method(D_METHOD("set_waterImage", "value"), &ZoneResource::set_waterImage);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "waterImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_waterImage", "get_waterImage");
 
-    ClassDB::bind_method(D_METHOD("get_snowTexture"), &ZoneResource::get_snowTexture);
-    ClassDB::bind_method(D_METHOD("set_snowTexture", "value"), &ZoneResource::set_snowTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "snowTexture", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_snowTexture", "get_snowTexture");
+    ClassDB::bind_method(D_METHOD("get_snowImage"), &ZoneResource::get_snowImage);
+    ClassDB::bind_method(D_METHOD("set_snowImage", "value"), &ZoneResource::set_snowImage);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "snowImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_snowImage", "get_snowImage");
 
-    ClassDB::bind_method(D_METHOD("get_metaInfoTexture"), &ZoneResource::get_metaInfoTexture);
-    ClassDB::bind_method(D_METHOD("set_metaInfoTexture", "value"), &ZoneResource::set_metaInfoTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "metaInfoTexture", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_metaInfoTexture", "get_metaInfoTexture");
+    ClassDB::bind_method(D_METHOD("get_metaInfoImage"), &ZoneResource::get_metaInfoImage);
+    ClassDB::bind_method(D_METHOD("set_metaInfoImage", "value"), &ZoneResource::set_metaInfoImage);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "metaInfoImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_metaInfoImage", "get_metaInfoImage");
 }
 
 ZoneResource::ZoneResource() {
-    _lockTexture = Ref<Image>(nullptr);
+    _lockImage = Ref<Image>(nullptr);
     _zonePosition = Vector2i();
-    _heightMapTexture = Ref<Image>(nullptr);
-    _splatmapsTexture = TypedArray<Ref<Image>>();
-    _foliagesTexture = TypedArray<Ref<Image>>();
-    _objectsTexture = TypedArray<Ref<Image>>();
-    _waterTexture = Ref<Image>(nullptr);
-    _snowTexture = Ref<Image>(nullptr);
-    _metaInfoTexture = Ref<Image>(nullptr);
+    _heightMapImage = Ref<Image>(nullptr);
+    _splatmapsImage = TypedArray<Ref<Image>>();
+    _foliagesImage = TypedArray<Ref<Image>>();
+    _objectsImage = TypedArray<Ref<Image>>();
+    _waterImage = Ref<Image>(nullptr);
+    _snowImage = Ref<Image>(nullptr);
+    _metaInfoImage = Ref<Image>(nullptr);
 }
 
 ZoneResource::~ZoneResource() {}
 
 Ref<Image> ZoneResource::get_lockTexture() const {
-    return _lockTexture;
+    return _lockImage;
 }
 void ZoneResource::set_lockTexture(const Ref<Image> &value) {
-    _lockTexture = value;
+    _lockImage = value;
 }
 
 Vector2i ZoneResource::get_zonePosition() const {
@@ -64,51 +64,51 @@ void ZoneResource::set_zonePosition(const Vector2i value) {
     _zonePosition = value;
 }
 
-Ref<Image> ZoneResource::get_heightMapTexture() const {
-    return _heightMapTexture;
+Ref<Image> ZoneResource::get_heightMapImage() const {
+    return _heightMapImage;
 }
-void ZoneResource::set_heightMapTexture(const Ref<Image> &value) {
-    _heightMapTexture = value;
-}
-
-TypedArray<Ref<Image>> ZoneResource::get_splatmapsTexture() const {
-    return _splatmapsTexture;
-}
-void ZoneResource::set_splatmapsTexture(const TypedArray<Ref<Image>> value) {
-    _splatmapsTexture = value;
+void ZoneResource::set_heightMapImage(const Ref<Image> &value) {
+    _heightMapImage = value;
 }
 
-TypedArray<Ref<Image>> ZoneResource::get_foliagesTexture() const {
-    return _foliagesTexture;
+TypedArray<Ref<Image>> ZoneResource::get_splatmapsImage() const {
+    return _splatmapsImage;
 }
-void ZoneResource::set_foliagesTexture(const TypedArray<Ref<Image>> value) {
-    _foliagesTexture = value;
-}
-
-TypedArray<Ref<Image>> ZoneResource::get_objectsTexture() const {
-    return _objectsTexture;
-}
-void ZoneResource::set_objectsTexture(const TypedArray<Ref<Image>> value) {
-    _objectsTexture = value;
+void ZoneResource::set_splatmapsImage(const TypedArray<Ref<Image>> value) {
+    _splatmapsImage = value;
 }
 
-Ref<Image> ZoneResource::get_waterTexture() const {
-    return _waterTexture;
+TypedArray<Ref<Image>> ZoneResource::get_foliagesImage() const {
+    return _foliagesImage;
 }
-void ZoneResource::set_waterTexture(const Ref<Image> &value) {
-    _waterTexture = value;
-}
-
-Ref<Image> ZoneResource::get_snowTexture() const {
-    return _snowTexture;
-}
-void ZoneResource::set_snowTexture(const Ref<Image> &value) {
-    _snowTexture = value;
+void ZoneResource::set_foliagesImage(const TypedArray<Ref<Image>> value) {
+    _foliagesImage = value;
 }
 
-Ref<Image> ZoneResource::get_metaInfoTexture() const {
-    return _metaInfoTexture;
+TypedArray<Ref<Image>> ZoneResource::get_objectsImage() const {
+    return _objectsImage;
 }
-void ZoneResource::set_metaInfoTexture(const Ref<Image> &value) {
-    _metaInfoTexture = value;
+void ZoneResource::set_objectsImage(const TypedArray<Ref<Image>> value) {
+    _objectsImage = value;
+}
+
+Ref<Image> ZoneResource::get_waterImage() const {
+    return _waterImage;
+}
+void ZoneResource::set_waterImage(const Ref<Image> &value) {
+    _waterImage = value;
+}
+
+Ref<Image> ZoneResource::get_snowImage() const {
+    return _snowImage;
+}
+void ZoneResource::set_snowImage(const Ref<Image> &value) {
+    _snowImage = value;
+}
+
+Ref<Image> ZoneResource::get_metaInfoImage() const {
+    return _metaInfoImage;
+}
+void ZoneResource::set_metaInfoImage(const Ref<Image> &value) {
+    _metaInfoImage = value;
 }

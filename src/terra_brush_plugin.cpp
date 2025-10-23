@@ -377,8 +377,8 @@ Vector3 TerraBrushPlugin::getMouseClickToZoneHeight(Vector3 from, Vector3 direct
             zone = _currentTerraBrushNode->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
         }
 
-        if (!zone.is_null() && !zone->get_heightMapTexture().is_null()) {
-            Ref<Image> heightMapImage = zone->get_heightMapTexture();
+        if (!zone.is_null() && !zone->get_heightMapImage().is_null()) {
+            Ref<Image> heightMapImage = zone->get_heightMapImage();
             float zoneHeight = heightMapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
 
             if (zoneHeight >= position.y) {

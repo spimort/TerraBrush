@@ -283,7 +283,7 @@ Ref<Image> Water::getImageForZone(Ref<ZoneResource> &zone) {
     if (_imagesCache.has(zone)) {
         return _imagesCache[zone];
     } else {
-        Ref<Image> image = zone->get_waterTexture();
+        Ref<Image> image = zone->get_waterImage();
         _imagesCache[zone] = image;
 
         return image;

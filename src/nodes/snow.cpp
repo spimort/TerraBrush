@@ -206,7 +206,7 @@ Ref<Image> Snow::getImageForZone(Ref<ZoneResource> &zone) {
     if (_imagesCache.has(zone)) {
         return _imagesCache[zone];
     } else {
-        Ref<Image> image = zone->get_snowTexture();
+        Ref<Image> image = zone->get_snowImage();
         _imagesCache[zone] = image;
 
         return image;

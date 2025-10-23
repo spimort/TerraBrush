@@ -151,6 +151,10 @@
                             } else {
                                 lines[i] = `${propertyLine.substring(0, 1).toLowerCase()}${propertyLine.substring(1, propertyLine.length)}`;
                             }
+
+                            if (typeInfo.type === 'ZoneResource') {
+                                lines[i] = lines[i].replace('Texture', 'Image');
+                            }
                         }
                     });
 

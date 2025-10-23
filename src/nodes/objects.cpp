@@ -74,11 +74,11 @@ void Objects::updateObjectsAsync() {
 
         Ref<ZoneResource> zone = _terrainZones->get_zones()[zoneIndex];
 
-        Ref<Image> heightmapImage = zone->get_heightMapTexture();
+        Ref<Image> heightmapImage = zone->get_heightMapImage();
         Ref<Image> waterImage;
 
-        if (!zone->get_waterTexture().is_null()) {
-            waterImage = zone->get_waterTexture();
+        if (!zone->get_waterImage().is_null()) {
+            waterImage = zone->get_waterImage();
         }
 
         if (cancellationToken.isCancellationRequested) {
@@ -91,7 +91,7 @@ void Objects::updateObjectsAsync() {
 
         call_deferred("add_child", objectsContainerNode);
 
-        Ref<Image> objectsImage = zone->get_objectsTexture()[_objectsIndex];
+        Ref<Image> objectsImage = zone->get_objectsImage()[_objectsIndex];
 
         Ref<Texture2D> noiseTexture;
         if (_definition->get_noiseTexture().is_null()) {
@@ -214,10 +214,10 @@ void Objects::updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) {
 
     for (Ref<ZoneResource> zone : zones) {
         int zoneIndex = _terrainZones->get_zones().find(zone);
-        Ref<Image> heightmapImage = zone->get_heightMapTexture();
+        Ref<Image> heightmapImage = zone->get_heightMapImage();
         Ref<Image> waterImage;
-        if (!zone->get_waterTexture().is_null()) {
-            waterImage = zone->get_waterTexture();
+        if (!zone->get_waterImage().is_null()) {
+            waterImage = zone->get_waterImage();
         }
 
         String nodeName = String::num_int64(zoneIndex);

@@ -84,8 +84,8 @@ void SetHeightTool::endPaint() {
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
-Ref<Image> SetHeightTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
-    return zone->get_heightMapTexture();
+Ref<Image> SetHeightTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+    return zone->get_heightMapImage();
 }
 
 void SetHeightTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {

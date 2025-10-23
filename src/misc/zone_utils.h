@@ -3,8 +3,8 @@
 
 #include "zone_info.h"
 
+#include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/classes/image_texture.hpp>
 
 using namespace godot;
 
@@ -27,7 +27,7 @@ class ZoneUtils {
         static Ref<Image> createWaterImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
         static Ref<Image> createSnowImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
         static Ref<Image> createMetaInfoImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
-        static Ref<Image> getImageTextureResource(Ref<Image> image, String filePath, String dataPath);
+        static Ref<Image> getImageResource(Ref<Image> image, String filePath, String dataPath);
         static ZoneInfo getPixelToZoneInfo(float x, float y, int zonesSize, int resolution);
         static ZoneInfo getZoneInfoFromZoneOffset(ZoneInfo &startingZone, Vector2i offset, int zonesSize, int resolution);
         static int getImageSizeForResolution(int zoneSize, float resolution);

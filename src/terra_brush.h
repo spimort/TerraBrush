@@ -17,7 +17,6 @@
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
-#include <godot_cpp/classes/image_texture.hpp>
 
 using namespace godot;
 

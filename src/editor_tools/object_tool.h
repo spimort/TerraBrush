@@ -4,8 +4,6 @@
 #include "tool_base.h"
 #include "../misc/hash_utils.h"
 
-#include <godot_cpp/classes/image_texture.hpp>
-
 using namespace godot;
 
 class ObjectTool : public ToolBase{
@@ -20,7 +18,7 @@ private:
 protected:
     static void _bind_methods();
 
-    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
     void beginPaint() override;
     void endPaint() override;
 

@@ -4,8 +4,6 @@
 #include "tool_base.h"
 #include "../editor_resources/zone_resource.h"
 
-#include <godot_cpp/classes/image_texture.hpp>
-
 using namespace godot;
 
 class FoliageTool : public ToolBase{
@@ -16,7 +14,7 @@ private:
 
 protected:
     static void _bind_methods();
-    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
 
 public:
     FoliageTool();

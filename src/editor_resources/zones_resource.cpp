@@ -16,7 +16,7 @@ void ZonesResource::_bind_methods() {
 }
 
 ZonesResource::ZonesResource() {
-    _dirtyImageTextures = std::unordered_set<Ref<Image>>();
+    _dirtyImages = std::unordered_set<Ref<Image>>();
 
     _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
@@ -86,7 +86,7 @@ void ZonesResource::updateLockTexture(int zoneSize) {
 void ZonesResource::updateHeightmaps() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        images.append(zone->get_heightMapTexture());
+        images.append(zone->get_heightMapImage());
     }
 
     if (images.size() > 0) {
@@ -97,8 +97,8 @@ void ZonesResource::updateHeightmaps() {
 void ZonesResource::updateSplatmapsTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (zone->get_splatmapsTexture().size() > 0) {
-            for (Ref<Image> splatmap : zone->get_splatmapsTexture()) {
+        if (zone->get_splatmapsImage().size() > 0) {
+            for (Ref<Image> splatmap : zone->get_splatmapsImage()) {
                 images.append(splatmap);
             }
         }
@@ -127,7 +127,7 @@ void ZonesResource::updateFoliagesTextures() {
 void ZonesResource::updateFoliagesTextures(int foliageIndex) {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        TypedArray<Ref<Image>> foliagesTexture = zone->get_foliagesTexture();
+        TypedArray<Ref<Image>> foliagesTexture = zone->get_foliagesImage();
         images.append(Ref<Image>(foliagesTexture[foliageIndex]));
     }
 
@@ -139,8 +139,8 @@ void ZonesResource::updateFoliagesTextures(int foliageIndex) {
 void ZonesResource::updateObjectsTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (zone->get_objectsTexture().size() > 0) {
-            for (Ref<Image> objectTexture : zone->get_objectsTexture()) {
+        if (zone->get_objectsImage().size() > 0) {
+            for (Ref<Image> objectTexture : zone->get_objectsImage()) {
                 images.append(objectTexture);
             }
         }
@@ -154,8 +154,8 @@ void ZonesResource::updateObjectsTextures() {
 void ZonesResource::updateWaterTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (!zone->get_waterTexture().is_null()) {
-            images.append(zone->get_waterTexture());
+        if (!zone->get_waterImage().is_null()) {
+            images.append(zone->get_waterImage());
         }
     }
 
@@ -166,14 +166,14 @@ void ZonesResource::updateWaterTextures() {
 
 void ZonesResource::updateZoneWaterTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _waterTextures->update_layer(zone->get_waterTexture(), zoneIndex);
+    _waterTextures->update_layer(zone->get_waterImage(), zoneIndex);
 }
 
 void ZonesResource::updateSnowTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (!zone->get_snowTexture().is_null()) {
-            images.append(zone->get_snowTexture());
+        if (!zone->get_snowImage().is_null()) {
+            images.append(zone->get_snowImage());
         }
     }
 
@@ -184,14 +184,14 @@ void ZonesResource::updateSnowTextures() {
 
 void ZonesResource::updateZoneSnowTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _snowTextures->update_layer(zone->get_snowTexture(), zoneIndex);
+    _snowTextures->update_layer(zone->get_snowImage(), zoneIndex);
 }
 
 void ZonesResource::updateMetaInfoTextures() {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (!zone->get_metaInfoTexture().is_null()) {
-            images.append(zone->get_metaInfoTexture());
+        if (!zone->get_metaInfoImage().is_null()) {
+            images.append(zone->get_metaInfoImage());
         }
     }
 
@@ -202,19 +202,19 @@ void ZonesResource::updateMetaInfoTextures() {
 
 void ZonesResource::updateZoneMetaInfoTexture(Ref<ZoneResource> zone) {
     int zoneIndex = _zones.find(zone);
-    _metaInfoTextures->update_layer(zone->get_metaInfoTexture(), zoneIndex);
+    _metaInfoTextures->update_layer(zone->get_metaInfoImage(), zoneIndex);
 }
 
 void ZonesResource::saveResources() {
-    if (_dirtyImageTextures.size() == 0) {
+    if (_dirtyImages.size() == 0) {
         return;
     }
 
-    for (Ref<Image> dirtyImageResource : _dirtyImageTextures) {
+    for (Ref<Image> dirtyImageResource : _dirtyImages) {
         saveImageResource(dirtyImageResource);
     }
 
-    _dirtyImageTextures.clear();
+    _dirtyImages.clear();
 }
 
 void ZonesResource::saveImageResource(Ref<Image> image) {
@@ -245,8 +245,8 @@ void ZonesResource::updateZonesMap() {
     _zonesMap->set_image(zonesMap);
 }
 
-void ZonesResource::addDirtyImageTexture(Ref<Image> imageTexture) {
-    _dirtyImageTextures.insert(imageTexture);
+void ZonesResource::addDirtyImage(Ref<Image> imageTexture) {
+    _dirtyImages.insert(imageTexture);
 }
 
 void ZonesResource::updateImageImages(int zoneSize) {

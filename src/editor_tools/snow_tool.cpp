@@ -12,13 +12,13 @@ bool SnowTool::getApplyResolution() const {
     return true;
 }
 
-Ref<Image> SnowTool::getToolCurrentImageTexture(Ref<ZoneResource> zone) {
-    return zone->get_snowTexture();
+Ref<Image> SnowTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+    return zone->get_snowImage();
 }
 
 void SnowTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
     // If the snow definition is null, or it's texture we exit here
-    if (_terraBrush->get_snowDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_snowTexture().is_null()) {
+    if (_terraBrush->get_snowDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_snowImage().is_null()) {
         return;
     }
 

@@ -7,6 +7,7 @@
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/texture2d_array.hpp>
+#include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
 
 #include <unordered_set>
@@ -17,7 +18,7 @@ class ZonesResource : public Resource {
     GDCLASS(ZonesResource, Resource);
 
 private:
-    std::unordered_set<Ref<Image>> _dirtyImageTextures = std::unordered_set<Ref<Image>>();
+    std::unordered_set<Ref<Image>> _dirtyImages = std::unordered_set<Ref<Image>>();
 
     Ref<Texture2DArray> _lockTextures = nullptr;
     Ref<Texture2DArray> _heightmapTextures = nullptr;
@@ -68,7 +69,7 @@ public:
     void updateZoneMetaInfoTexture(Ref<ZoneResource> zone);
     void saveResources();
     void updateZonesMap();
-    void addDirtyImageTexture(Ref<Image> imageTexture);
+    void addDirtyImage(Ref<Image> imageTexture);
     void updateImageImages(int zoneSize);
     Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
 };

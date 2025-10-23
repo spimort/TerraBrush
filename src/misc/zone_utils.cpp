@@ -2,7 +2,6 @@
 #include "utils.h"
 
 #include <godot_cpp/classes/image.hpp>
-#include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
@@ -15,13 +14,13 @@ Ref<Image> ZoneUtils::createLockImage(int zoneSize, Vector2i zonePosition, bool 
         image->fill(Color::named("WHITE"));
     }
 
-    return getImageTextureResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), "");
+    return getImageResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), "");
 }
 
 Ref<Image> ZoneUtils::createHeightmapImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath) {
     int imageSize = getImageSizeForResolution(zoneSize, resolution);
     Ref<Image> image = Image::create_empty(imageSize, imageSize, false, Image::Format::FORMAT_RGF);
-    return getImageTextureResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
+    return getImageResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createSplatmapImage(int zoneSize, Vector2i zonePosition, int splatmapIndex, String dataPath) {
@@ -33,17 +32,17 @@ Ref<Image> ZoneUtils::createSplatmapImage(int zoneSize, Vector2i zonePosition, i
         splatmapImage->fill(Color(0, 0, 0, 0));
     }
 
-    return getImageTextureResource(splatmapImage, String(SplatmapFileName).format(Array::make(zonePosition.x, zonePosition.y, splatmapIndex)), dataPath);
+    return getImageResource(splatmapImage, String(SplatmapFileName).format(Array::make(zonePosition.x, zonePosition.y, splatmapIndex)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createFoliageImage(int zoneSize, Vector2i zonePosition, int foliageIndex, String dataPath) {
     Ref<Image> image = Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RGBA8);
-    return getImageTextureResource(image, String(FoliageFileName).format(Array::make(zonePosition.x, zonePosition.y, foliageIndex)), dataPath);
+    return getImageResource(image, String(FoliageFileName).format(Array::make(zonePosition.x, zonePosition.y, foliageIndex)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createObjectImage(int zoneSize, Vector2i zonePosition, int objectIndex, String dataPath) {
     Ref<Image> image = Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RGBA8);
-    return getImageTextureResource(image, String(ObjectFileName).format(Array::make(zonePosition.x, zonePosition.y, objectIndex)), dataPath);
+    return getImageResource(image, String(ObjectFileName).format(Array::make(zonePosition.x, zonePosition.y, objectIndex)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createWaterImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath) {
@@ -51,13 +50,13 @@ Ref<Image> ZoneUtils::createWaterImage(int zoneSize, float resolution, Vector2i 
     Ref<Image> waterImage = Image::create_empty(imageSize, imageSize, false, Image::Format::FORMAT_RGBA8);
     waterImage->fill(Color(0, 0.5f, 0.5f, 1));
 
-    return getImageTextureResource(waterImage, String(WaterFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
+    return getImageResource(waterImage, String(WaterFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createSnowImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath) {
     int imageSize = getImageSizeForResolution(zoneSize, resolution);
     Ref<Image> snowImage = Image::create_empty(imageSize, imageSize, false, Image::Format::FORMAT_RGBA8);
-    return getImageTextureResource(snowImage, String(SnowFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
+    return getImageResource(snowImage, String(SnowFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createMetaInfoImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath) {
@@ -65,14 +64,15 @@ Ref<Image> ZoneUtils::createMetaInfoImage(int zoneSize, float resolution, Vector
     Ref<Image> metaInfoImage = Image::create_empty(imageSize, imageSize, false, Image::Format::FORMAT_RF);
     metaInfoImage->fill(Color(-1, 0, 0, 0));
 
-    return getImageTextureResource(metaInfoImage, String(MetaInfoFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
+    return getImageResource(metaInfoImage, String(MetaInfoFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
 }
 
-Ref<Image> ZoneUtils::getImageTextureResource(Ref<Image> image, String filePath, String dataPath) {
+Ref<Image> ZoneUtils::getImageResource(Ref<Image> image, String filePath, String dataPath) {
     if (!dataPath.is_empty()) {
         String resourcePath = Utils::pathCombineForwardSlash(dataPath, filePath);
         if (!FileAccess::file_exists(resourcePath)) {
             ResourceSaver::get_singleton()->save(image, resourcePath);
+            image = ResourceLoader::get_singleton()->load(resourcePath);
         }
     }
 

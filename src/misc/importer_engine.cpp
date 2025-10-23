@@ -34,7 +34,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_heightMapTexture(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_heightMapImage(resultImage.imageTexture);
         }
     }
 
@@ -57,10 +57,10 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
             for (ImportImageInfo resultImage : resultImages) {
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
-                if (zone->get_splatmapsTexture().size() < i + 1) {
-                    zone->get_splatmapsTexture().append(resultImage.imageTexture);
+                if (zone->get_splatmapsImage().size() < i + 1) {
+                    zone->get_splatmapsImage().append(resultImage.imageTexture);
                 } else {
-                    zone->get_splatmapsTexture()[i] = resultImage.imageTexture;
+                    zone->get_splatmapsImage()[i] = resultImage.imageTexture;
                 }
             }
         }
@@ -85,10 +85,10 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
             for (ImportImageInfo resultImage : resultImages) {
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
-                if (zone->get_foliagesTexture().size() < i + 1) {
-                    zone->get_foliagesTexture().append(resultImage.imageTexture);
+                if (zone->get_foliagesImage().size() < i + 1) {
+                    zone->get_foliagesImage().append(resultImage.imageTexture);
                 } else {
-                    zone->get_foliagesTexture()[i] = resultImage.imageTexture;
+                    zone->get_foliagesImage()[i] = resultImage.imageTexture;
                 }
             }
         }
@@ -113,11 +113,11 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
             for (ImportImageInfo resultImage : resultImages) {
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
-                if (zone->get_objectsTexture().size() < i + 1) {
-                    zone->get_objectsTexture().append(resultImage.imageTexture);
+                if (zone->get_objectsImage().size() < i + 1) {
+                    zone->get_objectsImage().append(resultImage.imageTexture);
                 }
                 else {
-                    zone->get_objectsTexture()[i] = resultImage.imageTexture;
+                    zone->get_objectsImage()[i] = resultImage.imageTexture;
                 }
             }
         }
@@ -139,7 +139,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_waterTexture(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_waterImage(resultImage.imageTexture);
         }
     }
 
@@ -159,7 +159,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_snowTexture(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_snowImage(resultImage.imageTexture);
         }
     }
 
@@ -179,7 +179,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_metaInfoTexture(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_metaInfoImage(resultImage.imageTexture);
         }
     }
 }

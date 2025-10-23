@@ -16,7 +16,7 @@ private:
 protected:
     static void _bind_methods();
 
-    Ref<Image> getToolCurrentImageTexture(Ref<ZoneResource> zone) override;
+    Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
 
 public:
     MetaInfoTool();

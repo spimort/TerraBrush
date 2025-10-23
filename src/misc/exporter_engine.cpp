@@ -43,35 +43,35 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
 
     Ref<ZoneResource> firstZone = terrabrush->get_terrainZones()->get_zones()[0];
 
-    Ref<Image> resultHeightmapImage = Image::create_empty(resolutionWidth, resolutionHeight, false, firstZone->get_heightMapTexture()->get_format());
+    Ref<Image> resultHeightmapImage = Image::create_empty(resolutionWidth, resolutionHeight, false, firstZone->get_heightMapImage()->get_format());
     std::vector<Ref<Image>> resultSplatmapsImages = std::vector<Ref<Image>>();
-    for (Ref<Image> splatmapTexture : firstZone->get_splatmapsTexture()) {
+    for (Ref<Image> splatmapTexture : firstZone->get_splatmapsImage()) {
         resultSplatmapsImages.push_back(Image::create_empty(width, height, false, splatmapTexture->get_format()));
     }
 
     std::vector<Ref<Image>> resultFoliagesImages = std::vector<Ref<Image>>();
-    for (Ref<Image> foliageTexture : firstZone->get_foliagesTexture()) {
+    for (Ref<Image> foliageTexture : firstZone->get_foliagesImage()) {
         resultFoliagesImages.push_back(Image::create_empty(width, height, false, foliageTexture->get_format()));
     }
 
     std::vector<Ref<Image>> resultObjectsImages = std::vector<Ref<Image>>();
-    for (Ref<Image> objectTexture : firstZone->get_objectsTexture()) {
+    for (Ref<Image> objectTexture : firstZone->get_objectsImage()) {
         resultObjectsImages.push_back(Image::create_empty(width, height, false, objectTexture->get_format()));
     }
 
     Ref<Image> resultWaterImage = nullptr;
-    if (!firstZone->get_waterTexture().is_null()) {
-        resultWaterImage = Image::create_empty(width, height, false, firstZone->get_waterTexture()->get_format());
+    if (!firstZone->get_waterImage().is_null()) {
+        resultWaterImage = Image::create_empty(width, height, false, firstZone->get_waterImage()->get_format());
     }
 
     Ref<Image> resultSnowImage = nullptr;
-    if (!firstZone->get_snowTexture().is_null()) {
-        resultSnowImage = Image::create_empty(width, height, false, firstZone->get_snowTexture()->get_format());
+    if (!firstZone->get_snowImage().is_null()) {
+        resultSnowImage = Image::create_empty(width, height, false, firstZone->get_snowImage()->get_format());
     }
 
      Ref<Image> resultMetaInfoImage = nullptr;
-    if (!firstZone->get_metaInfoTexture().is_null()) {
-        resultMetaInfoImage = Image::create_empty(width, height, false, firstZone->get_metaInfoTexture()->get_format());
+    if (!firstZone->get_metaInfoImage().is_null()) {
+        resultMetaInfoImage = Image::create_empty(width, height, false, firstZone->get_metaInfoImage()->get_format());
     }
 
     for (int zoneX = minZoneX; zoneX <= maxZoneX; zoneX++) {
@@ -93,30 +93,30 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
             Ref<Image> metaInfoImage = nullptr;
 
             if (!zone.is_null()) {
-                heightMapImage = zone->get_heightMapTexture();
+                heightMapImage = zone->get_heightMapImage();
 
-                for (Ref<Image> splatmapTexture : zone->get_splatmapsTexture()) {
+                for (Ref<Image> splatmapTexture : zone->get_splatmapsImage()) {
                     splatmapsImages.push_back(splatmapTexture);
                 }
 
-                for (Ref<Image> foliageTexture : zone->get_foliagesTexture()) {
+                for (Ref<Image> foliageTexture : zone->get_foliagesImage()) {
                     foliagesImages.push_back(foliageTexture);
                 }
 
-                for (Ref<Image> objectTexture : zone->get_objectsTexture()) {
+                for (Ref<Image> objectTexture : zone->get_objectsImage()) {
                     objectsImages.push_back(objectTexture);
                 }
 
-                if (!zone->get_waterTexture().is_null()) {
-                    waterImage = zone->get_waterTexture();
+                if (!zone->get_waterImage().is_null()) {
+                    waterImage = zone->get_waterImage();
                 }
 
-                if (!zone->get_snowTexture().is_null()) {
-                    snowImage = zone->get_snowTexture();
+                if (!zone->get_snowImage().is_null()) {
+                    snowImage = zone->get_snowImage();
                 }
 
-                if (!zone->get_metaInfoTexture().is_null()) {
-                    metaInfoImage = zone->get_metaInfoTexture();
+                if (!zone->get_metaInfoImage().is_null()) {
+                    metaInfoImage = zone->get_metaInfoImage();
                 }
             }
 
