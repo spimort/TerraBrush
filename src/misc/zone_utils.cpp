@@ -71,7 +71,7 @@ Ref<Image> ZoneUtils::getImageResource(Ref<Image> image, String filePath, String
     if (!dataPath.is_empty()) {
         String resourcePath = Utils::pathCombineForwardSlash(dataPath, filePath);
         ResourceSaver::get_singleton()->save(image, resourcePath);
-        image = ResourceLoader::get_singleton()->load(resourcePath);
+        image = ResourceLoader::get_singleton()->load(resourcePath, "", ResourceLoader::CACHE_MODE_REPLACE_DEEP);
     }
 
     return image;
