@@ -239,6 +239,8 @@ void calculateHeightmapFragment(
 	inout float alpha,
 	inout float alphaScissorThreshold
 ) {
+	vec3 zoneUV = calculateZoneUV(worldVertex);
+	
     if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
 
@@ -275,8 +277,6 @@ void calculateHeightmapFragment(
         vec4 resultTexture = vec4(0.0);
         vec4 resultNormal = vec4(0.0);
         vec4 resultRoughness = vec4(0.0);
-
-        vec3 zoneUV = calculateZoneUV(worldVertex);
 
         int currentChannel = 0;
         float channelSum = 0.0;
@@ -340,8 +340,6 @@ void calculateHeightmapFragment(
             normalMap = resultNormal.xyz / channelSum;
         }
     }
-
-    vec3 zoneUV = calculateZoneUV(worldVertex);
 
     if (ApplyLockTextures) {
         vec4 lockTexture = texture(LockTextures, zoneUV);
