@@ -15,7 +15,6 @@ void Water::_bind_methods() {
 
 Water::Water() {
     _ripplePositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
-    _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
     _timeScale = 0.1;
     _strength = 0.4;
@@ -40,7 +39,7 @@ void Water::_physics_process(double delta) {
             Ref<ZoneResource> zone = _ripplePositions.keys()[imageIndex];
             TypedDictionary<Vector2i, float> points = _ripplePositions[zone];
 
-            Ref<Image> rippleWaterImage = getImageForZone(zone);
+            Ref<Image> rippleWaterImage = zone->get_waterImage();
 
             for (int i = points.size() - 1; i >= 0; i--) {
                 Vector2i position = points.keys()[i];
@@ -255,7 +254,7 @@ void Water::addRippleEffect(float x, float y) {
     Ref<ZoneResource> zone = _terrainZones->getZoneForZoneInfo(zoneInfo);
 
     if (!zone.is_null()) {
-        Ref<Image> image = getImageForZone(zone);
+        Ref<Image> image = zone->get_waterImage();
         Vector2i pixelPosition = Vector2i(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
         Color currentPixel = image->get_pixel(pixelPosition.x, pixelPosition.y);
 
@@ -279,13 +278,3 @@ void Water::addRippleEffect(float x, float y) {
     }
 }
 
-Ref<Image> Water::getImageForZone(Ref<ZoneResource> &zone) {
-    if (_imagesCache.has(zone)) {
-        return _imagesCache[zone];
-    } else {
-        Ref<Image> image = zone->get_waterImage();
-        _imagesCache[zone] = image;
-
-        return image;
-    }
-}

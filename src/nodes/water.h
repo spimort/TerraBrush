@@ -18,7 +18,6 @@ private:
     const float RippleResetSpeed = 0.9f;
 
     TypedDictionary<Ref<ZoneResource>, Dictionary> _ripplePositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
-    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
     Clipmap *_clipmap = nullptr;
 
@@ -52,8 +51,6 @@ private:
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth;
     Ref<ShaderMaterial> _customShader = nullptr;
-
-    Ref<Image> getImageForZone(Ref<ZoneResource> &zone);
 
 protected:
     static void _bind_methods();

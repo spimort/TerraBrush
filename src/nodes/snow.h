@@ -19,7 +19,6 @@ private:
     const float DeCompressOffsetSpeed = 2.0f;
 
     TypedDictionary<Ref<ZoneResource>, Dictionary> _compressedPositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
-    TypedDictionary<Ref<ZoneResource>, Ref<Image>> _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
     Clipmap *_clipmap = nullptr;
 
@@ -30,8 +29,6 @@ private:
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;
-
-    Ref<Image> getImageForZone(Ref<ZoneResource> &zone);
 
 protected:
     static void _bind_methods();

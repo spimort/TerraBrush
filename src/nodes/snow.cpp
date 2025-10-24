@@ -14,7 +14,6 @@ void Snow::_bind_methods() {
 
 Snow::Snow() {
     _compressedPositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
-    _imagesCache = TypedDictionary<Ref<ZoneResource>, Ref<Image>>();
 
     _lodLevels = 8;
     _lodRowsPerLevel = 21;
@@ -36,7 +35,7 @@ void Snow::_physics_process(const double delta) {
             Ref<ZoneResource> zone = _compressedPositions.keys()[imageIndex];
             TypedDictionary<Vector2i, float> points = _compressedPositions[zone];
 
-            Ref<Image> compressedSnowImage = getImageForZone(zone);
+            Ref<Image> compressedSnowImage = zone->get_snowImage();
 
             for (int i = points.size() - 1; i >= 0; i--) {
                 Vector2i position = points.keys()[i];
@@ -175,7 +174,7 @@ void Snow::addCompressedSnow(float x, float y) {
     Ref<ZoneResource> zone = _terrainZones->getZoneForZoneInfo(zoneInfo);
 
     if (!zone.is_null()) {
-        Ref<Image> image = getImageForZone(zone);
+        Ref<Image> image = zone->get_snowImage();
         Vector2i pixelPosition = Vector2i(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y);
         Color currentPixel = image->get_pixel(pixelPosition.x, pixelPosition.y);
 
@@ -199,16 +198,5 @@ void Snow::addCompressedSnow(float x, float y) {
                 listOfPoints[pixelPosition] = 0;
             }
         }
-    }
-}
-
-Ref<Image> Snow::getImageForZone(Ref<ZoneResource> &zone) {
-    if (_imagesCache.has(zone)) {
-        return _imagesCache[zone];
-    } else {
-        Ref<Image> image = zone->get_snowImage();
-        _imagesCache[zone] = image;
-
-        return image;
     }
 }
