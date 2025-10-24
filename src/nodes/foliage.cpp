@@ -247,12 +247,7 @@ void Foliage::updateFoliage() {
 
     Ref<Texture2D> noiseTexture = _definition->get_noiseTexture().is_null() ? _defaultNoise : _definition->get_noiseTexture();
     if (!noiseTexture.is_null()) {
-
-        Ref<Image> noiseImage = memnew(Image);
-        noiseImage->copy_from(noiseTexture->get_image());
-        noiseImage->resize(_zonesSize, _zonesSize);
-
-        _foliageShader->set_shader_parameter(StringNames::NoiseTexture(), ImageTexture::create_from_image(noiseImage));
+        _foliageShader->set_shader_parameter(StringNames::NoiseTexture(), noiseTexture);
     }
 }
 
