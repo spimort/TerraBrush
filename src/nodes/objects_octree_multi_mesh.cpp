@@ -15,6 +15,7 @@
 using namespace godot;
 
 void ObjectsOctreeMultiMesh::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("initialize"), &ObjectsOctreeMultiMesh::initialize);
     ClassDB::bind_method(D_METHOD("sortLODs", "lodA", "loadB"), &ObjectsOctreeMultiMesh::sortLODs);
     ClassDB::bind_method(D_METHOD("updateMeshesAsync"), &ObjectsOctreeMultiMesh::updateMeshesAsync);
     ClassDB::bind_method(D_METHOD("assignMultiMesheInstances", "multiMesh", "instances"), &ObjectsOctreeMultiMesh::assignMultiMesheInstances);
@@ -47,8 +48,6 @@ void ObjectsOctreeMultiMesh::_ready() {
         return;
     }
 
-    _defaultNoise = ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/DefaultNoise.tres");
-
     if (Engine::get_singleton()->is_editor_hint()) {
         _camera = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
     }
@@ -57,7 +56,7 @@ void ObjectsOctreeMultiMesh::_ready() {
         _camera = get_viewport()->get_camera_3d();
     }
 
-    initialize();
+    call_deferred("initialize");
 }
 
 void ObjectsOctreeMultiMesh::_physics_process(double delta) {
@@ -79,6 +78,13 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
 }
 
 void ObjectsOctreeMultiMesh::initialize() {
+    if (_definition->get_noiseTexture().is_null()) {
+        Ref<Texture2D> defaultNoise = ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/DefaultNoise.tres");
+        _noiseImageCache = defaultNoise->get_image();
+    } else {
+        _noiseImageCache = _definition->get_noiseTexture()->get_image();
+    }
+
     initializeSortedLODs();
     initializeMeshesAndCollision();
     initializeOctree();
@@ -271,19 +277,6 @@ void ObjectsOctreeMultiMesh::initializeOctree() {
 
         Ref<Image> imageTexture = zone->get_objectsImage()[_objectsIndex];
 
-        Ref<Texture2D> noiseTexture;
-        if (_definition->get_noiseTexture().is_null()) {
-            noiseTexture = _defaultNoise;
-        } else {
-            noiseTexture = _definition->get_noiseTexture();
-        }
-
-        Ref<Image> noiseImage;
-        if (!noiseTexture.is_null()) {
-            noiseImage = Ref<Image>(memnew(Image));
-            noiseImage->copy_from(noiseTexture->get_image());
-        }
-
         // Load all the objects from the image
         Ref<Image> objectsImage = imageTexture;
 
@@ -294,7 +287,6 @@ void ObjectsOctreeMultiMesh::initializeOctree() {
                     zone,
                     heightmapImage,
                     waterImage,
-                    noiseImage,
                     x,
                     y,
                     objectPixel,
@@ -504,14 +496,14 @@ CollisionShape3D* ObjectsOctreeMultiMesh::getCollisionForSceneNode(Node *node) {
     return nullptr;
 }
 
-void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage, int x, int y, Color pixelValue, bool add, bool checkExistingNode) {
+void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, int x, int y, Color pixelValue, bool add, bool checkExistingNode) {
     if (pixelValue.a > 0.0f) {
         int objectFrequency = _definition->get_objectFrequency() < 1 ? _defaultObjectFrequency : _definition->get_objectFrequency();
         if (x % objectFrequency != 0 || y % objectFrequency != 0) {
             return;
         }
 
-        Vector3 resultPosition = getPositionWithNoise(noiseImage, x, y);
+        Vector3 resultPosition = getPositionWithNoise(_noiseImageCache, x, y);
         if (isImagePositionInRange(resultPosition.x, resultPosition.z)) {
             int resolutionZoneSize = ZoneUtils::getImageSizeForResolution(_zonesSize, _resolution);
             Vector2 heightImagePosition = getHeightPositionForResolution(Vector2(resultPosition.x, resultPosition.z), resolutionZoneSize);
@@ -581,12 +573,11 @@ void ObjectsOctreeMultiMesh::updateObjectsHeight(TypedArray<Ref<ZoneResource>> z
     updateMeshesAsync();
 }
 
-void ObjectsOctreeMultiMesh::addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage) {
+void ObjectsOctreeMultiMesh::addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage) {
     calculateObjectPresenceForPixel(
         zone,
         heightmapImage,
         waterImage,
-        noiseImage,
         x,
         y,
         Color(1, 1, 1, 1), // White

@@ -91,7 +91,7 @@ private:
 
     Camera3D *_camera = nullptr;
     StaticBody3D *_staticBodyContainer = nullptr;
-    Ref<Texture2D> _defaultNoise = nullptr;
+    Ref<Image> _noiseImageCache = nullptr;
     Vector3 _lastUpdatedPosition = Vector3();
     float _updateTime = 0;
     Ref<PointOctree> _octree = nullptr;
@@ -115,7 +115,7 @@ private:
     void assignMultiMesheInstances(const Ref<MultiMesh> &multiMesh, const PackedFloat32Array instances);
     MeshInstance3D* getMeshForSceneNode(Node *node);
     CollisionShape3D* getCollisionForSceneNode(Node *node);
-    void calculateObjectPresenceForPixel(Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage, int x, int y, Color pixelValue, bool add, bool checkExistingNode);
+    void calculateObjectPresenceForPixel(Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, int x, int y, Color pixelValue, bool add, bool checkExistingNode);
     Vector3 getPositionWithNoise(Ref<Image> noiseImage, int x, int y);
     bool isImagePositionInRange(float x, float y);
     float getObjectHeight(Ref<Image> heightmapImage, Ref<Image> waterImage, float imageX, float imageY);
@@ -133,7 +133,7 @@ public:
 
     void updateMeshesFromTool() override;
     void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
-    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage) override;
+    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage) override;
     Vector2 getHeightPositionForResolution(Vector2 position, int resolutionZoneSize);
 };
 #endif

@@ -40,6 +40,6 @@ public:
 
     virtual void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones);
     virtual void updateMeshesFromTool();
-    virtual void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage);
+    virtual void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage);
 };
 #endif

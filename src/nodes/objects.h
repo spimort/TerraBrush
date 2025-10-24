@@ -17,14 +17,14 @@ class Objects : public ObjectsBase {
     GDCLASS(Objects, ObjectsBase);
 
 private:
-    Ref<Texture2D> _defaultNoise = nullptr;
+    Ref<Image> _noiseImageCache = nullptr;
     CancellationSource _objectsCreationCancellationTokenSource = CancellationSource();
     Ref<Thread> _objectsThread = nullptr;
 
     void updateObjects();
     void updateObjectsAsync();
     void addObjectNode(const Node3D *parentNode, const String nodeName, const Vector3 nodePosition, const Vector3 nodeRotation, const float nodeSizeFactor, const int packedSceneIndex);
-    void calculateObjectPresenceForPixel(Node3D *parentNode, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage, int x, int y, Color pixelValue);
+    void calculateObjectPresenceForPixel(Node3D *parentNode, Ref<Image> heightmapImage, Ref<Image> waterImage, int x, int y, Color pixelValue);
     Vector3 getPositionWithNoise(Ref<Image> noiseImage, int x, int y);
     bool isImagePositionInRange(float x, float y);
     float getObjectHeight(Ref<Image> heightmapImage, Ref<Image> waterImage, float imageX, float imageY);
@@ -42,6 +42,6 @@ public:
 
     void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
     void updateMeshesFromTool() override;
-    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage, Ref<Image> noiseImage) override;
+    void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage) override;
 };
 #endif

@@ -12,8 +12,6 @@ class ObjectTool : public ToolBase{
 private:
     int _selectedObjectIndex = -1;
     std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
-    std::unordered_map<Ref<ZoneResource>, Ref<Image>> _heightmapImagesCache = std::unordered_map<Ref<ZoneResource>, Ref<Image>>();
-    std::unordered_map<Ref<ZoneResource>, Ref<Image>> _waterImagesCache = std::unordered_map<Ref<ZoneResource>, Ref<Image>>();
 
 protected:
     static void _bind_methods();
