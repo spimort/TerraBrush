@@ -108,14 +108,14 @@ void Clipmap::updateEditorCameraPosition(Camera3D *viewportCamera) {
 }
 
 void Clipmap::updateClipmapMeshPosition(Vector3 position) {
-    auto offset = 0.0f;
-    auto isEven = _zonesSize % 2 == 0;
+    float offset = 0.0f;
+    bool isEven = _zonesSize % 2 == 0;
     if (isEven) {
         offset = _initialCellWidth / 2.0f;
     }
 
-    auto xPosition = ((int) Math::floor(position.x)) + offset;
-    auto zPosition = ((int) Math::floor(position.z)) + offset;
+    float xPosition = ((int) Math::floor(position.x)) + offset;
+    float zPosition = ((int) Math::floor(position.z)) + offset;
 
     float maxCellWidth = _initialCellWidth * Math::pow(2.0, _levels - 1);
 
@@ -127,7 +127,7 @@ void Clipmap::updateClipmapMeshPosition(Vector3 position) {
         zPosition -= _initialCellWidth / 2.0f;
     }
 
-    auto newPosition = Vector3(xPosition, get_global_position().y, zPosition);
+    Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
     if (newPosition.distance_to(_clipmapMesh->get_global_position()) > maxCellWidth) {
         _clipmapMesh->set_global_position(newPosition);
     }

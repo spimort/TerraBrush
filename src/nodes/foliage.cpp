@@ -262,8 +262,8 @@ void Foliage::updateFoliagePosition(Vector3 position) {
         offset = _definition->get_lodInitialCellWidth() / 2.0f;
     }
 
-    int xPosition = ((int) Math::floor(position.x)) + offset;
-    int zPosition = ((int) Math::floor(position.z)) + offset;
+    float xPosition = ((int) Math::floor(position.x)) + offset;
+    float zPosition = ((int) Math::floor(position.z)) + offset;
 
     float maxCellWidth = _definition->get_lodInitialCellWidth() * Math::pow(2.0, _definition->get_lodLevels() - 1);
 
