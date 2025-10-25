@@ -212,7 +212,7 @@ void Water::updateWater() {
         shaderMaterial->set_shader(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/Shaders/water_clipmap_shader.gdshader"));
         _clipmap->set_shader(shaderMaterial);
     } else {
-        _clipmap->get_shader() = Utils::createCustomShaderCopy(_customShader);
+        _clipmap->set_shader(Utils::createCustomShaderCopy(_customShader));
     }
 
     _clipmap->createMesh();
