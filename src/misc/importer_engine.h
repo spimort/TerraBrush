@@ -29,14 +29,14 @@ struct ImporterSettings {
 struct ImportImageInfo {
     int zoneX;
     int zoneY;
-    Ref<ImageTexture> imageTexture;
+    Ref<Image> image;
 };
 
 class ImporterEngine {
     public:
         static void importTerrain(TerraBrush *terrabrush, ImporterSettings settings);
         static Ref<ZoneResource> getZoneForImageInfo(TerraBrush *terrabrush, ImportImageInfo imageInfo);
-        static std::vector<ImportImageInfo> generateImageTextureForZones(TerraBrush *terrabrush, Ref<Image> image, std::function<Ref<ImageTexture>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage, bool applyResolution = false, bool scaleToResolution = true);
-        static ImportImageInfo generateImageTextureForZone(Ref<Image> image, int zoneX, int zoneY, std::function<Ref<ImageTexture>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage);
+        static std::vector<ImportImageInfo> generateImageTextureForZones(TerraBrush *terrabrush, Ref<Image> image, std::function<Ref<Image>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage, bool applyResolution = false, bool scaleToResolution = true);
+        static ImportImageInfo generateImageTextureForZone(Ref<Image> image, int zoneX, int zoneY, std::function<Ref<Image>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage);
 };
 #endif

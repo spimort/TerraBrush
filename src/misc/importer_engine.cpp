@@ -5,6 +5,7 @@
 
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
 
 using namespace godot;
 
@@ -34,7 +35,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_heightMapImage(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_heightMapImage(resultImage.image);
         }
     }
 
@@ -58,9 +59,9 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
                 if (zone->get_splatmapsImage().size() < i + 1) {
-                    zone->get_splatmapsImage().append(resultImage.imageTexture);
+                    zone->get_splatmapsImage().append(resultImage.image);
                 } else {
-                    zone->get_splatmapsImage()[i] = resultImage.imageTexture;
+                    zone->get_splatmapsImage()[i] = resultImage.image;
                 }
             }
         }
@@ -86,9 +87,9 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
                 if (zone->get_foliagesImage().size() < i + 1) {
-                    zone->get_foliagesImage().append(resultImage.imageTexture);
+                    zone->get_foliagesImage().append(resultImage.image);
                 } else {
-                    zone->get_foliagesImage()[i] = resultImage.imageTexture;
+                    zone->get_foliagesImage()[i] = resultImage.image;
                 }
             }
         }
@@ -114,10 +115,10 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
                 Ref<ZoneResource> zone = getZoneForImageInfo(terrabrush, resultImage);
 
                 if (zone->get_objectsImage().size() < i + 1) {
-                    zone->get_objectsImage().append(resultImage.imageTexture);
+                    zone->get_objectsImage().append(resultImage.image);
                 }
                 else {
-                    zone->get_objectsImage()[i] = resultImage.imageTexture;
+                    zone->get_objectsImage()[i] = resultImage.image;
                 }
             }
         }
@@ -139,7 +140,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_waterImage(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_waterImage(resultImage.image);
         }
     }
 
@@ -159,7 +160,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_snowImage(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_snowImage(resultImage.image);
         }
     }
 
@@ -179,7 +180,7 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         );
 
         for (ImportImageInfo resultImage : resultImages) {
-            getZoneForImageInfo(terrabrush, resultImage)->set_metaInfoImage(resultImage.imageTexture);
+            getZoneForImageInfo(terrabrush, resultImage)->set_metaInfoImage(resultImage.image);
         }
     }
 }
@@ -198,7 +199,7 @@ Ref<ZoneResource> ImporterEngine::getZoneForImageInfo(TerraBrush *terrabrush, Im
         zone = Ref<ZoneResource>(memnew(ZoneResource));
         zone->set_zonePosition(Vector2i(imageInfo.zoneX, imageInfo.zoneY));
 
-        TypedArray<Ref<ZoneResource>> zones = TypedArray<Ref<ZoneResource>>();
+        TypedArray<Ref<ZoneResource>> zones = terrabrush->get_terrainZones()->get_zones();
         zones.append(zone);
         terrabrush->get_terrainZones()->set_zones(zones);
     }
@@ -206,7 +207,7 @@ Ref<ZoneResource> ImporterEngine::getZoneForImageInfo(TerraBrush *terrabrush, Im
     return zone;
 }
 
-std::vector<ImportImageInfo> ImporterEngine::generateImageTextureForZones(TerraBrush *terrabrush, Ref<Image> image, std::function<Ref<ImageTexture>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage, bool applyResolution, bool scaleToResolution) {
+std::vector<ImportImageInfo> ImporterEngine::generateImageTextureForZones(TerraBrush *terrabrush, Ref<Image> image, std::function<Ref<Image>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage, bool applyResolution, bool scaleToResolution) {
     if (terrabrush->get_resolution() != 1 && applyResolution && scaleToResolution) {
         Ref<Image> newImage = memnew(Image);
         newImage->copy_from(image);
@@ -229,9 +230,8 @@ std::vector<ImportImageInfo> ImporterEngine::generateImageTextureForZones(TerraB
     return resultList;
 }
 
-ImportImageInfo ImporterEngine::generateImageTextureForZone(Ref<Image> image, int zoneX, int zoneY, std::function<Ref<ImageTexture>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage) {
-    Ref<ImageTexture> newImageTexture = generateNewImageCallback(zoneX, zoneY);
-    Ref<Image> newImage = newImageTexture->get_image();
+ImportImageInfo ImporterEngine::generateImageTextureForZone(Ref<Image> image, int zoneX, int zoneY, std::function<Ref<Image>(int, int)> generateNewImageCallback, std::function<void(int, int, Color, Ref<Image>)> applyPixelToNewImage) {
+    Ref<Image> newImage = generateNewImageCallback(zoneX, zoneY);
     int newImageSize = newImage->get_width();
 
     int startingX = newImageSize * zoneX;
@@ -260,13 +260,14 @@ ImportImageInfo ImporterEngine::generateImageTextureForZone(Ref<Image> image, in
         }
     }
 
-    if (!newImageTexture->get_path().is_empty()) {
-        ResourceSaver::get_singleton()->save(newImageTexture);
+    if (!newImage->get_path().is_empty()) {
+        ResourceSaver::get_singleton()->save(newImage, newImage->get_path());
+        newImage = ResourceLoader::get_singleton()->load(newImage->get_path());
     }
 
     ImportImageInfo info = ImportImageInfo();
     info.zoneX = zoneX;
     info.zoneY = zoneY;
-    info.imageTexture = newImageTexture;
+    info.image = newImage;
     return info;
 }
