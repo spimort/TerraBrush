@@ -19,7 +19,7 @@ bool SculptTool::getApplyResolution() const {
 void SculptTool::beginPaint() {
     ToolBase::beginPaint();
 
-    _sculptingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SculptingMultiplier());
+    _sculptingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SculptingMultiplier(), SettingContants::SculptingMultiplierDefaultValue());
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
@@ -63,6 +63,7 @@ void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int bru
     forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         float newValue = pixelBrushStrength * brushStrength * _sculptingMultiplier;
+
         if (toolType == TerrainToolType::TERRAINTOOLTYPE_TERRAINADD) {
             newValue = currentPixel.r + newValue;
         } else if (toolType == TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE) {

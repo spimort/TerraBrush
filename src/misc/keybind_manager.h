@@ -57,7 +57,7 @@ public:
     TypedArray<StringName> get_actionNames() const;
     TypedDictionary<StringName, Ref<InputEventKey>> get_defaultKeys() const;
 
-    void registerInputMap();
+    void registerInputMap(bool registerDefaultKey = false);
     void loadEditorSettings();
     void saveEditorSettings();
     void updateKeybind(StringName action, Ref<InputEventKey> key);

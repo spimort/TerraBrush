@@ -1,10 +1,14 @@
 #include "utils.h"
+#include "setting_contants.h"
 
 #include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/texture2d_array.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
+#include <godot_cpp/classes/dir_access.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
 
 using namespace godot;
 
@@ -132,4 +136,35 @@ Color Utils::getPixelLinear(Ref<Image> image, float x, float y) {
 float Utils::roundToDecimalPlace(float value, int decimalPlace) {
     const double multiplier = std::pow(10.0, decimalPlace);
     return std::ceil(value * multiplier) / multiplier;
+}
+
+Ref<Image> Utils::getBrushImageForIndex(const int targetIndex) {
+    TypedArray<Ref<DirAccess>> directories = TypedArray<Ref<DirAccess>>();
+    directories.append(DirAccess::open("res://addons/terrabrush/Assets/Brushes/"));
+
+    String customBrushesDirectory = ProjectSettings::get_singleton()->get_setting(SettingContants::CustomBrushesFolder(), SettingContants::CustomBrushesFolderDefaultValue());
+    if (!customBrushesDirectory.is_empty() && DirAccess::dir_exists_absolute(customBrushesDirectory)) {
+        directories.append(DirAccess::open(customBrushesDirectory));
+    }
+
+    int index = 0;
+    for (int directoryIndex = 0; directoryIndex < directories.size(); directoryIndex++) {
+        Ref<DirAccess> directory = directories[directoryIndex];
+
+        PackedStringArray files = directory->get_files();
+        for (int fileIndex = 0; fileIndex < files.size(); fileIndex++) {
+            String file = files[fileIndex];
+
+            if (file.ends_with(".png") || file.ends_with(".PNG")) {
+                if (index == targetIndex) {
+                    Ref<Texture2D> brushImage = ResourceLoader::get_singleton()->load(directory->get_current_dir() + "/" + file);
+                    return brushImage->get_image();
+                }
+
+                index++;
+            }
+        }
+    }
+
+    return nullptr;
 }

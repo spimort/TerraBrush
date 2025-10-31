@@ -70,7 +70,7 @@ void DockPreviewButton::_ready() {
 
     calculateTextures();
 
-    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor());
+    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue());
 
     _normalColor = iconsColor;
     _hoverColor = _normalColor.lightened(0.4f);
@@ -147,6 +147,9 @@ void DockPreviewButton::setTextureColor(DrawMode drawMode) {
             break;
         case DrawMode::DRAW_HOVER_PRESSED:
             newColor = _pressedColor;
+            break;
+        default:
+            newColor = _normalColor;
             break;
     }
 

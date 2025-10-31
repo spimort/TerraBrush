@@ -1,6 +1,7 @@
 #include "entry_point.h"
 
 #include "terra_brush.h"
+#include "terra_brush_editor.h"
 #include "terra_brush_plugin.h"
 
 #include "editor_nodes/brush_decal.h"
@@ -128,6 +129,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
 
         // Public nodes
         GDREGISTER_CLASS(TerraBrush);
+        GDREGISTER_CLASS(TerraBrushEditor);
 
         return;
     }

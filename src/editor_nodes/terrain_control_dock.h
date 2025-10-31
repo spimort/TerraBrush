@@ -1,7 +1,6 @@
 #ifndef TERRAIN_CONTROL_DOCK_H
 #define TERRAIN_CONTROL_DOCK_H
 
-#include "brush_decal.h"
 #include "../terra_brush.h"
 #include "../misc/enums.h"
 
@@ -18,7 +17,6 @@ class TerrainControlDock : public Control {
 private:
     int _selectedBrushIndex = 0;
     TerrainToolType _selectedTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
-    TerrainToolType _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
     int _selectedTextureIndex = 0;
     int _selectedFoliageIndex = 0;
     int _selectedObjectIndex = 0;
@@ -34,7 +32,6 @@ private:
     Slider *_brushStrengthSlider = nullptr;
 
     TerraBrush *_terraBrush = nullptr;
-    BrushDecal *_brushDecal = nullptr;
     EditorResourcePreview *_editorResourcePreview = nullptr;
 
     void buildLayout();
@@ -63,7 +60,6 @@ public:
     void _ready() override;
 
     void set_terraBrush(TerraBrush *value);
-    void set_brushDecal(BrushDecal *value);
     void set_editorResourcePreview(EditorResourcePreview *value);
 
     void setBrushSize(int value);
@@ -74,6 +70,5 @@ public:
     void setSelectedFoliageIndex(const int index);
     void setSelectedObjectIndex(const int index);
     void setSelectedMetaInfoIndex(const int index);
-    void setShiftPressed(bool pressed);
 };
 #endif

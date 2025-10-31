@@ -20,5 +20,6 @@ class Utils {
         static bool isPowerOfTwo(int x);
         static Color getPixelLinear(Ref<Image> image, float x, float y);
         static float roundToDecimalPlace(float value, int decimalPlace);
+        static Ref<Image> getBrushImageForIndex(const int targetIndex);
 };
 #endif

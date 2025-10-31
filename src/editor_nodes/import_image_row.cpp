@@ -35,7 +35,7 @@ void ImportImageRow::_ready() {
     gradientTexture->set_gradient(gradient);
     _originalNormalTexture = gradientTexture;
 
-    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor());
+    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue());
 
     set_size(Vector2(93, 88));
 

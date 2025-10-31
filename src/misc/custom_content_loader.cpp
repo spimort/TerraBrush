@@ -24,7 +24,7 @@ void CustomContentLoader::addBrushesPreviewToParent(Node *parentNode, Callable o
     TypedArray<Ref<DirAccess>> directories = TypedArray<Ref<DirAccess>>();
     directories.append(DirAccess::open("res://addons/terrabrush/Assets/Brushes/"));
 
-    String customBrushesDirectory = ProjectSettings::get_singleton()->get_setting(SettingContants::CustomBrushesFolder());
+    String customBrushesDirectory = ProjectSettings::get_singleton()->get_setting(SettingContants::CustomBrushesFolder(), SettingContants::CustomBrushesFolderDefaultValue());
     if (!customBrushesDirectory.is_empty() && DirAccess::dir_exists_absolute(customBrushesDirectory)) {
         directories.append(DirAccess::open(customBrushesDirectory));
     }

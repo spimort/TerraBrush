@@ -57,7 +57,7 @@ void PieMenu::_ready() {
     _menuLabel->set((StringName)"theme_override_constants/outline_size", 3);
     _menuLabel->set((StringName)"theme_override_font_sizes/font_size", 20);
 
-    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor());
+    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue());
     Ref<StyleBoxFlat> normalStyle = memnew(StyleBoxFlat);
     normalStyle->set_bg_color(iconsColor);
     normalStyle->set_corner_radius_all(5);

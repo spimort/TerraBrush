@@ -29,7 +29,7 @@ void TerrainControlDock::_bind_methods() {
     ClassDB::bind_method(D_METHOD("setSelectedMetaInfoIndex", "index"), &TerrainControlDock::setSelectedMetaInfoIndex);
 
     ADD_SIGNAL(MethodInfo("toolTypeSelected", PropertyInfo(Variant::INT, "toolType")));
-    ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::OBJECT, "image", PROPERTY_HINT_RESOURCE_TYPE, "Image")));
+    ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("brushSizeChanged", PropertyInfo(Variant::INT, "value")));
     ADD_SIGNAL(MethodInfo("brushStrengthChanged", PropertyInfo(Variant::FLOAT, "value")));
     ADD_SIGNAL(MethodInfo("textureSelected", PropertyInfo(Variant::INT, "index")));
@@ -41,7 +41,6 @@ void TerrainControlDock::_bind_methods() {
 TerrainControlDock::TerrainControlDock() {
     _selectedBrushIndex = 0;
     _selectedTool = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
-    _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
     _selectedTextureIndex = -1;
     _selectedFoliageIndex = -1;
     _selectedObjectIndex = -1;
@@ -68,10 +67,6 @@ void TerrainControlDock::_ready() {
 
 void TerrainControlDock::set_terraBrush(TerraBrush *value) {
     _terraBrush = value;
-}
-
-void TerrainControlDock::set_brushDecal(BrushDecal *value) {
-    _brushDecal = value;
 }
 
 void TerrainControlDock::set_editorResourcePreview(EditorResourcePreview *value) {
@@ -121,18 +116,14 @@ void TerrainControlDock::updateSelectedBrush() {
     Node *selectedNode = _brushesContainer->get_child(_selectedBrushIndex);
     DockPreviewButton *selectedDockButton = Object::cast_to<DockPreviewButton>(selectedNode);
 
-    Ref<Image> brushImage = selectedDockButton->get_buttonImage()->get_image();
-    emit_signal("brushSelected", _selectedBrushIndex, brushImage);
-    if (_brushDecal != nullptr) {
-        _brushDecal->setBrushImage(brushImage);
-    }
+    emit_signal("brushSelected", _selectedBrushIndex);
 }
 
 void TerrainControlDock::updateSelectedTerrainTool() {
     for (int i = 0; i < _toolTypesContainer->get_child_count(); i++) {
         Node *childNode = _toolTypesContainer->get_child(i);
         ToolPreview *toolPreview = Object::cast_to<ToolPreview>(childNode);
-        toolPreview->set_pressed(toolPreview->get_toolType() == (_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool));
+        toolPreview->set_pressed(toolPreview->get_toolType() == _selectedTool);
     }
 }
 
@@ -191,9 +182,6 @@ void TerrainControlDock::onBrushStrengthValueChange(const float value) {
 void TerrainControlDock::setBrushSize(int value) {
     _brushSizeSlider->set_value(value);
     emit_signal("brushSizeChanged", value);
-    if (_brushDecal != nullptr) {
-        _brushDecal->setSize(value);
-    }
 }
 
 void TerrainControlDock::setBrushStrength(float value) {
@@ -235,47 +223,6 @@ void TerrainControlDock::setSelectedMetaInfoIndex(const int index) {
     _selectedMetaInfoIndex = index;
 
     updateSelectedMetaInfo();
-}
-
-void TerrainControlDock::setShiftPressed(bool pressed) {
-    if (pressed) {
-        if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINADD || _selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINREMOVE || _selectedTool == TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_OBJECTADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_WATERADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_WATERREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_WATERFLOWADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_WATERFLOWREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_SNOWADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_SNOWREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_HOLEADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_HOLEREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_LOCKADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_LOCKREMOVE;
-        }
-        else if (_selectedTool == TerrainToolType::TERRAINTOOLTYPE_METAINFOADD) {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE;
-        }
-        else {
-            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
-        }
-    }
-    else {
-        _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
-    }
-
-    emit_signal("toolTypeSelected", _temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE ? _selectedTool : _temporaryTool);
-    updateSelectedTerrainTool();
 }
 
 // This component has some complexe ui so I create a kinda of structure using {} for better visualization

@@ -11,5 +11,10 @@ class SettingContants {
         const static StringName CustomBrushesFolder();
         const static StringName SculptingMultiplier();
         const static StringName IconsColor();
+
+        const static Color DecalColorDefaultValue();
+        const static StringName CustomBrushesFolderDefaultValue();
+        const static int SculptingMultiplierDefaultValue();
+        const static Color IconsColorDefaultValue();
 };
 #endif

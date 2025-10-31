@@ -33,5 +33,5 @@ void BrushDecal::setBrushImage(const Ref<Image> image) {
     }
 
     _decal->set_texture(Decal::DecalTexture::TEXTURE_ALBEDO, ImageTexture::create_from_image(imageCopy));
-    _decal->set_modulate(ProjectSettings::get_singleton()->get_setting(SettingContants::DecalColor()));
+    _decal->set_modulate(ProjectSettings::get_singleton()->get_setting(SettingContants::DecalColor(), SettingContants::DecalColorDefaultValue()));
 }

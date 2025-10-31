@@ -2,11 +2,8 @@
 #define TERRA_BRUSH_PLUGIN_H
 
 #include "terra_brush.h"
+#include "terra_brush_editor.h"
 #include "editor_nodes/terrain_control_dock.h"
-#include "editor_nodes/brush_decal.h"
-#include "editor_nodes/tool_info.h"
-#include "editor_nodes/custom_content_pie_menu.h"
-#include "editor_tools/tool_base.h"
 #include "misc/utils.h"
 
 #include <godot_cpp/classes/editor_plugin.hpp>
@@ -31,84 +28,41 @@ class TerraBrushPlugin : public EditorPlugin {
     };
 
 private:
-    const float UpdateDelay = 0.005f;
-    const int ToolInfoOffset = 20;
-    static constexpr const char* OverlayActionNameKey = "ActionName";
-
+    TerraBrushEditor *_terraBrushEditor = nullptr;
+    TerraBrush *_currentTerraBrushNode = nullptr;
     Control *_terrainDockContainer = nullptr;
     TerrainControlDock *_terrainControlDock = nullptr;
-    BrushDecal *_brushDecal = nullptr;
-    TerraBrush *_currentTerraBrushNode = nullptr;
-    ToolInfo *_toolInfo = nullptr;
-    EditorUndoRedoManager *_undoRedo = nullptr;
-    Node *_editorViewportsContainer = nullptr;
-    Array _editorViewports = Array();
-    Control *_overlaySelector = nullptr;
     MenuButton *_terrainMenuButton = nullptr;
     Button *_updateTerrainSettingsButton = nullptr;
     CheckBox *_autoAddZonesCheckbox = nullptr;
 
-    Ref<ToolBase> _currentTool = nullptr;
-    TerrainToolType _currentToolType = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
-    Ref<Image> _brushImage = nullptr;
-    Ref<Image> _originalBrushImage = nullptr;
-    int _brushSize = 0;
-    float _brushStrength = 0;
-    int _brushIndex = 0;
-    int _textureIndex = 0;
-    int _foliageIndex = 0;
-    int _objectIndex = 0;
-    int _metaInfoLayerIndex = 0;
-    float _selectedSetHeight = 0;
-    float _selectedSetAngle = 0;
-    Vector3 _selectedSetAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
-
-    bool _isMousePressed = false;
-    Vector3 _mouseHitPosition = Vector3();
-    float _updateTime = 0;
-    bool _preventInitialDo = false;
-    bool _autoAddZones = false;
-
     void createCustomSetting(String name, Variant defaultValue, Variant::Type type, PropertyHint hint = PropertyHint::PROPERTY_HINT_NONE, String hintString = "");
     void handleKeyBindings();
-    void onUndoImage(Ref<Image> image, PackedByteArray previousImageData);
-    void onUndoRedo();
-    Vector3 getRayCastWithTerrain(Camera3D *editorCamera);
-    Vector3 getMouseClickToZoneHeight(Vector3 from, Vector3 direction);
     void removeDock();
     void onEditTerrainNode(TerraBrush *terraBrush);
     void addDock();
     void onExitEditTerrainNode();
-    Node *getEditorViewportsContainer();
-    Node *getEditorViewportsContainerRecursive(Node *node);
-    Node *getActiveViewport();
-    StringName hideOverlaySelector();
-    void showToolPieMenu(StringName actionName);
-    void showCustomContentPieMenu(String label, std::function<void(CustomContentPieMenu*)> addItems);
-    void showCurrentToolMenu();
-    void showBrushNumericSelector(int minVale, int maxValue, Color widgetColor, int initialValue, Callable onValueSelected, StringName actionName);
     void updateTerrainSettings();
     void updateAutoAddZonesSetting();
-    void onPieMenuBrushSelected(const CustomContentPieMenu *customContentPieMenu);
-    void onPieMenuBrushIndexSelected(const int brushIndex);
-    void onBrushSizeSelected(const int value);
-    void onBrushStrengthSelected(const int value);
-    void onToolSelected(const TerrainToolType value);
+
     void onDockToolTypeSelected(const TerrainToolType toolType);
-    void onDockBrushSelected(const int index, const Ref<Image> &image);
+    void onDockBrushSelected(const int index);
     void onDockBrushSizeChanged(const int value);
     void onDockBrushStrengthChanged(const float value);
     void onDockTextureSelected(const int index);
-    void onCustomContentSelectorTextureSelected(const int index);
     void onDockFoliageSelected(const int index);
-    void onCustomContentSelectorFoliageSelected(const int index);
     void onDockObjectSelected(const int index);
-    void onCustomContentSelectorObjectSelected(const int index);
     void onDockMetaInfoSelected(const int index);
-    void onCustomContentSelectorMetaInfoSelected(const int index);
-    void updateCurrentTool();
-    Ref<ToolBase> getToolForType(TerrainToolType toolType);
-    void beforeDeselectTool();
+
+    void onTerraBrushEditorToolTypeSelected(const TerrainToolType toolType);
+    void onTerraBrushEditorBrushSelected(const int index);
+    void onTerraBrushEditorBrushSizeChanged(const int value);
+    void onTerraBrushEditorBrushStrengthChanged(const float value);
+    void onTerraBrushEditorTextureSelected(const int index);
+    void onTerraBrushEditorFoliageSelected(const int index);
+    void onTerraBrushEditorObjectSelected(const int index);
+    void onTerraBrushEditorMetaInfoSelected(const int index);
+
     void importTerrain();
     void exportTerrain();
     void onTerrainMenuItemPressed(const int id);
@@ -120,7 +74,6 @@ public:
     TerraBrushPlugin();
     ~TerraBrushPlugin();
 
-    void _physics_process(double delta) override;
     void _enter_tree() override;
     void _exit_tree() override;
     void _edit(Object *object) override;

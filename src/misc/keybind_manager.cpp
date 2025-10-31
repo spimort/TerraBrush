@@ -97,11 +97,14 @@ TypedDictionary<StringName, Ref<InputEventKey>> KeybindManager::get_defaultKeys(
 /// <summary>
 /// Register's the Action Names with the Godot Editor InputMap.
 /// </summary>
-void KeybindManager::registerInputMap() {
+void KeybindManager::registerInputMap(bool registerDefaultKey) {
     InputMap *im = InputMap::get_singleton();
     for (StringName action : _actionNames) {
         if (!im->has_action(action)) {
             im->add_action(action); // Register the Action, as we don't have the Action.
+            if (registerDefaultKey) {
+                im->action_add_event(action, _defaultKeys[action]);
+            }
         }
     }
 }
