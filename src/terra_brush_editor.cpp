@@ -114,7 +114,7 @@ void TerraBrushEditor::_physics_process(double delta) {
     }
 }
 
-void TerraBrushEditor::_input(const Ref<InputEvent> &event) {
+void TerraBrushEditor::_unhandled_input(const Ref<InputEvent> &event) {
     if (!_enabled || _terraBrushNode == nullptr || _containerNode == nullptr) {
         return;
     }
@@ -826,9 +826,7 @@ TerrainToolType TerraBrushEditor::get_selectedToolType() const {
 ;
 }
 void TerraBrushEditor::set_selectedToolType(const TerrainToolType value) {
-    print_line("asdaf");
     if (_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE) {
-    print_line("asdafddfsdf ", value);
         _currentToolType = value;
 
         _currentTool = Ref<ToolBase>(nullptr);

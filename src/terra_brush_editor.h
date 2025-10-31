@@ -93,7 +93,7 @@ public:
 
     void _ready() override;
     void _physics_process(double delta) override;
-    void _input(const Ref<InputEvent> &event) override;
+    void _unhandled_input(const Ref<InputEvent> &event) override;
 
     void set_containerNode(Node *containerNode);
     void set_undoRedo(EditorUndoRedoManager *undoRedo);
