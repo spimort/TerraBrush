@@ -127,14 +127,6 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_RUNTIME_CLASS(TerrainPositionInformation);
         GDREGISTER_RUNTIME_CLASS(TerrainPositionTextureInformation);
 
-        // Public nodes
-        GDREGISTER_CLASS(TerraBrush);
-        GDREGISTER_CLASS(TerraBrushEditor);
-
-        return;
-    }
-
-    if (level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
         // Editor tools
         GDREGISTER_INTERNAL_CLASS(ToolBase);
         GDREGISTER_INTERNAL_CLASS(SculptTool);
@@ -153,6 +145,14 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(FileDialogEventsWrapper);
         GDREGISTER_INTERNAL_CLASS(NumericSelectorDialog);
 
+        // Public nodes
+        GDREGISTER_CLASS(TerraBrush);
+        GDREGISTER_CLASS(TerraBrushEditor);
+
+        return;
+    }
+
+    if (level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
         GDREGISTER_INTERNAL_CLASS(TerraBrushPlugin);
         EditorPlugins::add_by_type<TerraBrushPlugin>();
 

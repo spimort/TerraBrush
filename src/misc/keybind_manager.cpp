@@ -50,7 +50,7 @@ KeybindManager::KeybindManager() {
     _brushStrengthKey->set_keycode(Key::KEY_H);
 
     _escapeKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _escapeKey->set_keycode(Key::KEY_E);
+    _escapeKey->set_keycode(Key::KEY_ESCAPE);
 
     _toggleAutoAddZonesKey = Ref<InputEventKey>(memnew(InputEventKey));
     _toggleAutoAddZonesKey->set_keycode(Key::KEY_K);

@@ -151,7 +151,7 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
             _brushDecal->set_visible(false);
         } else {
             _brushDecal->set_visible(true);
-            _brushDecal->set_position(Vector3(meshPosition.x, 0, meshPosition.z));
+            _brushDecal->set_position(Vector3(meshPosition.x, meshPosition.y, meshPosition.z));
         }
 
         _mouseHitPosition = meshPosition - _terraBrushNode->get_global_position();

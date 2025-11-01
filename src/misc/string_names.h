@@ -87,5 +87,7 @@ class StringNames {
         const static StringName ApplyMetaInfoTextures();
         const static StringName MetaInfoTextures();
         const static StringName MetaInfoColors();
+        const static StringName Color();
+        const static StringName Compatibility();
 };
 #endif

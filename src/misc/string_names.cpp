@@ -82,3 +82,5 @@ const StringName StringNames::UseSharpTransitions() { return "UseSharpTransition
 const StringName StringNames::ApplyMetaInfoTextures() { return "ApplyMetaInfoTextures"; }
 const StringName StringNames::MetaInfoTextures() { return "MetaInfoTextures"; }
 const StringName StringNames::MetaInfoColors() { return "MetaInfoColors"; }
+const StringName StringNames::Color() { return "Color"; }
+const StringName StringNames::Compatibility() { return "Compatibility"; }
