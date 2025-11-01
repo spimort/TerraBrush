@@ -9,6 +9,7 @@
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/os.hpp>
 
 using namespace godot;
 
@@ -154,6 +155,12 @@ Ref<Image> Utils::getBrushImageForIndex(const int targetIndex) {
         PackedStringArray files = directory->get_files();
         for (int fileIndex = 0; fileIndex < files.size(); fileIndex++) {
             String file = files[fileIndex];
+
+            // Images are not listed on the web export, only the .import files.
+            // The .import file name will be used to find the .png files.
+            if (OS::get_singleton()->get_name() == "Web") {
+                file = file.replace(".import", "");
+            }
 
             if (file.ends_with(".png") || file.ends_with(".PNG")) {
                 if (index == targetIndex) {

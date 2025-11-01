@@ -17,6 +17,7 @@
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/os.hpp>
 
 using namespace godot;
 
@@ -36,6 +37,12 @@ void CustomContentLoader::addBrushesPreviewToParent(Node *parentNode, Callable o
         PackedStringArray files = directory->get_files();
         for (int fileIndex = 0; fileIndex < files.size(); fileIndex++) {
             String file = files[fileIndex];
+
+            // Images are not listed on the web export, only the .import files.
+            // The .import file name will be used to find the .png files.
+            if (OS::get_singleton()->get_name() == "Web") {
+                file = file.replace(".import", "");
+            }
 
             if (file.ends_with(".png") || file.ends_with(".PNG")) {
                 Ref<Texture2D> brushImage = ResourceLoader::get_singleton()->load(directory->get_current_dir() + "/" + file);
