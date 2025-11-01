@@ -829,7 +829,6 @@ void TerraBrushEditor::set_selectedToolType(const TerrainToolType value) {
     if (_temporaryTool == TerrainToolType::TERRAINTOOLTYPE_NONE) {
         _currentToolType = value;
 
-        _currentTool = Ref<ToolBase>(nullptr);
         updateCurrentTool();
     }
 }
