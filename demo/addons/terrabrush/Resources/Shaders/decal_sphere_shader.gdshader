@@ -5,8 +5,8 @@ render_mode unshaded, cull_disabled;
 uniform sampler2D depth_texture : source_color, hint_depth_texture;
 uniform vec3 Color: source_color = vec3(1,0,0);
 uniform float ColorAlpha = 0.01;
-uniform float Threshold = 5.0;
-uniform float FresnelSharpness = 2.0;
+uniform float Threshold = 1.0;
+uniform float FresnelSharpness = 5.0;
 uniform bool Compatibility = true;
 
 void fragment() {
