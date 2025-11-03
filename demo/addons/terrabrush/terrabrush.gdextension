@@ -6,7 +6,8 @@ reloadable = true
 
 [icons]
 
-TerraBrush = "res://addons/terrabrush/icon.png"
+TerraBrush = "res://addons/terrabrush/terrabrush_node.png"
+TerraBrushEditor = "res://addons/terrabrush/terrabrush_editor_node.png"
 
 [libraries]
 

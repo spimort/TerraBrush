@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf7hb41gr6bwx"
-path="res://.godot/imported/icon.png-677cd55fbe835235202f560f216a282c.ctex"
+uid="uid://ytxgf623gls8"
+path="res://.godot/imported/terrabrush_editor_node.png-3447f5fe52a654d1b9667247cd400ebe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/terrabrush/icon.png"
-dest_files=["res://.godot/imported/icon.png-677cd55fbe835235202f560f216a282c.ctex"]
+source_file="res://addons/terrabrush/terrabrush_editor_node.png"
+dest_files=["res://.godot/imported/terrabrush_editor_node.png-3447f5fe52a654d1b9667247cd400ebe.ctex"]
 
 [params]
 
