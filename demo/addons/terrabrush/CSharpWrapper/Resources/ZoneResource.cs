@@ -16,63 +16,63 @@ public partial class ZoneResource : Resource {
         }
     }
 
-    public ImageTexture HeightMapTexture {
+    public Image HeightMapTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_heightMapTexture").As<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_heightMapTexture").As<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_heightMapTexture", value);
         }
     }
 
-    public ImageTexture[] SplatmapsTexture {
+    public Image[] SplatmapsTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_splatmapsTexture").AsGodotObjectArray<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_splatmapsTexture").AsGodotObjectArray<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_splatmapsTexture", value);
         }
     }
 
-    public ImageTexture[] FoliagesTexture {
+    public Image[] FoliagesTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_foliagesTexture").AsGodotObjectArray<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_foliagesTexture").AsGodotObjectArray<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_foliagesTexture", value);
         }
     }
 
-    public ImageTexture[] ObjectsTexture {
+    public Image[] ObjectsTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_objectsTexture").AsGodotObjectArray<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_objectsTexture").AsGodotObjectArray<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_objectsTexture", value);
         }
     }
 
-    public ImageTexture WaterTexture {
+    public Image WaterTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_waterTexture").As<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_waterTexture").As<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_waterTexture", value);
         }
     }
 
-    public ImageTexture SnowTexture {
+    public Image SnowTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_snowTexture").As<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_snowTexture").As<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_snowTexture", value);
         }
     }
 
-    public ImageTexture MetaInfoTexture {
+    public Image MetaInfoTexture {
         get {
-            return _godotHandle.AsGodotObject().Call("get_metaInfoTexture").As<ImageTexture>();
+            return _godotHandle.AsGodotObject().Call("get_metaInfoTexture").As<Image>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_metaInfoTexture", value);
