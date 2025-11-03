@@ -59,6 +59,8 @@ private:
     bool _preventInitialDo = false;
 
     bool _enabled = false;
+    bool _enableOnReady = false;
+    bool _allowBuiltInToolSelectors = true;
 
     void onUndoRedo();
     Vector3 getRayCastWithTerrain(Camera3D *camera);
@@ -101,7 +103,11 @@ public:
     bool get_enabled() const;
     void set_enabled(const bool value);
 
-    BrushDecal *get_brushDecal() const;
+    bool get_enableOnReady() const;
+    void set_enableOnReady(const bool value);
+
+    bool get_allowBuiltInToolSelectors() const;
+    void set_allowBuiltInToolSelectors(const bool value);
 
     TerraBrush *get_terraBrushNode() const;
     void set_terraBrushNode(const TerraBrush *terraBrushNode);

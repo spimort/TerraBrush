@@ -57,12 +57,72 @@ void TerraBrushEditor::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorObjectSelected", "index"), &TerraBrushEditor::onCustomContentSelectorObjectSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorMetaInfoSelected", "index"), &TerraBrushEditor::onCustomContentSelectorMetaInfoSelected);
 
+    ClassDB::bind_method(D_METHOD("get_enabled"), &TerraBrushEditor::get_enabled);
+    ClassDB::bind_method(D_METHOD("set_enabled", "value"), &TerraBrushEditor::set_enabled);
+
+    ClassDB::bind_method(D_METHOD("get_brushIndex"), &TerraBrushEditor::get_brushIndex);
+    ClassDB::bind_method(D_METHOD("set_brushIndex", "value"), &TerraBrushEditor::set_brushIndex);
+
+    ClassDB::bind_method(D_METHOD("get_brushSize"), &TerraBrushEditor::get_brushSize);
+    ClassDB::bind_method(D_METHOD("set_brushSize", "value"), &TerraBrushEditor::set_brushSize);
+
+    ClassDB::bind_method(D_METHOD("get_brushStrength"), &TerraBrushEditor::get_brushStrength);
+    ClassDB::bind_method(D_METHOD("set_brushStrength", "value"), &TerraBrushEditor::set_brushStrength);
+
+    ClassDB::bind_method(D_METHOD("get_selectedToolType"), &TerraBrushEditor::get_selectedToolType);
+    ClassDB::bind_method(D_METHOD("set_selectedToolType", "value"), &TerraBrushEditor::set_selectedToolType);
+
+    ClassDB::bind_method(D_METHOD("get_selectedTextureIndex"), &TerraBrushEditor::get_selectedTextureIndex);
+    ClassDB::bind_method(D_METHOD("set_selectedTextureIndex", "value"), &TerraBrushEditor::set_selectedTextureIndex);
+
+    ClassDB::bind_method(D_METHOD("get_selectedFoliageIndex"), &TerraBrushEditor::get_selectedFoliageIndex);
+    ClassDB::bind_method(D_METHOD("set_selectedFoliageIndex", "value"), &TerraBrushEditor::set_selectedFoliageIndex);
+
+    ClassDB::bind_method(D_METHOD("get_selectedObjectIndex"), &TerraBrushEditor::get_selectedObjectIndex);
+    ClassDB::bind_method(D_METHOD("set_selectedObjectIndex", "value"), &TerraBrushEditor::set_selectedObjectIndex);
+
+    ClassDB::bind_method(D_METHOD("get_selectedMetaInfoIndex"), &TerraBrushEditor::get_selectedMetaInfoIndex);
+    ClassDB::bind_method(D_METHOD("set_selectedMetaInfoIndex", "value"), &TerraBrushEditor::set_selectedMetaInfoIndex);
+
+    ClassDB::bind_method(D_METHOD("get_autoAddZones"), &TerraBrushEditor::get_autoAddZones);
+    ClassDB::bind_method(D_METHOD("set_autoAddZones", "value"), &TerraBrushEditor::set_autoAddZones);
+
     ClassDB::bind_method(D_METHOD("get_terraBrushNode"), &TerraBrushEditor::get_terraBrushNode);
     ClassDB::bind_method(D_METHOD("set_terraBrushNode", "value"), &TerraBrushEditor::set_terraBrushNode);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "terraBrushNode", PROPERTY_HINT_NODE_TYPE, "TerraBrush"), "set_terraBrushNode", "get_terraBrushNode");
 
-    ClassDB::bind_method(D_METHOD("get_enabled"), &TerraBrushEditor::get_enabled);
-    ClassDB::bind_method(D_METHOD("set_enabled", "value"), &TerraBrushEditor::set_enabled);
+    ClassDB::bind_method(D_METHOD("get_enableOnReady"), &TerraBrushEditor::get_enableOnReady);
+    ClassDB::bind_method(D_METHOD("set_enableOnReady", "value"), &TerraBrushEditor::set_enableOnReady);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enableOnReady"), "set_enableOnReady", "get_enableOnReady");
+
+    ClassDB::bind_method(D_METHOD("get_allowBuiltInToolSelectors"), &TerraBrushEditor::get_allowBuiltInToolSelectors);
+    ClassDB::bind_method(D_METHOD("set_allowBuiltInToolSelectors", "value"), &TerraBrushEditor::set_allowBuiltInToolSelectors);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allowBuiltInToolSelectors"), "set_allowBuiltInToolSelectors", "get_allowBuiltInToolSelectors");
+
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_NONE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSMOOTH);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINFLATTEN);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSETHEIGHT);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSETANGLE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_PAINT);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_FOLIAGEADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_FOLIAGEREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_OBJECTADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_OBJECTREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_WATERADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_WATERREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_WATERFLOWADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_WATERFLOWREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_SNOWADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_SNOWREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_HOLEADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_HOLEREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_LOCKADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_LOCKREMOVE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_METAINFOADD);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_METAINFOREMOVE);
 }
 
 TerraBrushEditor::TerraBrushEditor() {
@@ -84,14 +144,18 @@ TerraBrushEditor::TerraBrushEditor() {
 TerraBrushEditor::~TerraBrushEditor() {}
 
 void TerraBrushEditor::_ready() {
+    set_brushIndex(0);
+
     if (!Engine::get_singleton()->is_editor_hint()) {
         Ref<KeybindManager> keybindManager = memnew(KeybindManager);
         keybindManager->registerInputMap(true);
 
         _containerNode = this;
-    }
 
-    set_brushIndex(0);
+        if (_enableOnReady) {
+            set_enabled(true);
+        }
+    }
 }
 
 void TerraBrushEditor::_physics_process(double delta) {
@@ -132,18 +196,6 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
 
     bool preventGuiInput = false;
 
-    if (_toolInfo != nullptr) {
-        Vector2 globalMousePosition = Vector2(0, 0);
-        if (camera->get_viewport()->get_parent() != nullptr) {
-            globalMousePosition =  Object::cast_to<Control>(camera->get_viewport()->get_parent())->get_global_position();
-        }
-        _toolInfo->set_position(camera->get_viewport()->get_mouse_position() + globalMousePosition + Vector2i(ToolInfoOffset, ToolInfoOffset));
-
-        if (!_currentTool.is_null()) {
-            _toolInfo->setText(_currentTool->getToolInfo(get_selectedToolType()));
-        }
-    }
-
     if (Object::cast_to<InputEventMouseMotion>(event.ptr()) != nullptr) {
         Ref<InputEventMouseMotion> inputMotion = Object::cast_to<InputEventMouseMotion>(event.ptr());
         Vector3 meshPosition = getRayCastWithTerrain(camera);
@@ -157,57 +209,71 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
         _mouseHitPosition = meshPosition - _terraBrushNode->get_global_position();
     }
 
-    if (Object::cast_to<InputEventKey>(event.ptr()) != nullptr) {
-        Ref<InputEventKey> inputEvent = Object::cast_to<InputEventKey>(event.ptr());
+    if (_allowBuiltInToolSelectors) {
+        if (_toolInfo != nullptr) {
+            Vector2 globalMousePosition = Vector2(0, 0);
+            if (camera->get_viewport()->get_parent() != nullptr) {
+                globalMousePosition =  Object::cast_to<Control>(camera->get_viewport()->get_parent())->get_global_position();
+            }
+            _toolInfo->set_position(camera->get_viewport()->get_mouse_position() + globalMousePosition + Vector2i(ToolInfoOffset, ToolInfoOffset));
 
-        if (inputEvent->get_keycode() == Key::KEY_SHIFT && !inputEvent->is_echo()) {
-            if (inputEvent->is_pressed()) {
-                setShiftPressed(true);
-            } else {
-                setShiftPressed(false);
+            if (!_currentTool.is_null()) {
+                _toolInfo->setText(_currentTool->getToolInfo(get_selectedToolType()));
             }
         }
 
-        if (!inputEvent->is_pressed() || inputEvent->is_echo()) return false;
+        if (Object::cast_to<InputEventKey>(event.ptr()) != nullptr) {
+            Ref<InputEventKey> inputEvent = Object::cast_to<InputEventKey>(event.ptr());
 
-        if (inputEvent->is_action(KeybindManager::StringNames::ToolPie())) {
-            showToolPieMenu(camera->get_viewport(), KeybindManager::StringNames::ToolPie());
-            return true;
-        }
+            if (inputEvent->get_keycode() == Key::KEY_SHIFT && !inputEvent->is_echo()) {
+                if (inputEvent->is_pressed()) {
+                    setShiftPressed(true);
+                } else {
+                    setShiftPressed(false);
+                }
+            }
 
-        if (inputEvent->is_action(KeybindManager::StringNames::BrushPie())) {
-            showCustomContentPieMenu(camera->get_viewport(), "Brushes", ([&](CustomContentPieMenu *customContentPieMenu) {
-                onPieMenuBrushSelected(customContentPieMenu);
-            }));
-            return true;
-        }
+            if (!inputEvent->is_pressed() || inputEvent->is_echo()) return false;
 
-        if (inputEvent->is_action(KeybindManager::StringNames::ToolContentPie())) {
-            showCurrentToolMenu(camera->get_viewport());
-            return true;
-        }
+            if (inputEvent->is_action(KeybindManager::StringNames::ToolPie())) {
+                showToolPieMenu(camera->get_viewport(), KeybindManager::StringNames::ToolPie());
+                return true;
+            }
 
-        if (inputEvent->is_action(KeybindManager::StringNames::BrushSizeSelector())) {
-            showBrushNumericSelector(camera->get_viewport(), 1, 200, Color::named("LIME_GREEN"), _brushSize, Callable(this, "onBrushSizeSelected"), KeybindManager::StringNames::BrushSizeSelector());
+            if (inputEvent->is_action(KeybindManager::StringNames::BrushPie())) {
+                showCustomContentPieMenu(camera->get_viewport(), "Brushes", ([&](CustomContentPieMenu *customContentPieMenu) {
+                    onPieMenuBrushSelected(customContentPieMenu);
+                }));
+                return true;
+            }
 
-            return true;
-        }
+            if (inputEvent->is_action(KeybindManager::StringNames::ToolContentPie())) {
+                showCurrentToolMenu(camera->get_viewport());
+                return true;
+            }
 
-        if (inputEvent->is_action(KeybindManager::StringNames::BrushStrengthSelector())) {
-            showBrushNumericSelector(camera->get_viewport(), 1, 100, Color::named("CRIMSON"), (int) (_brushStrength * 100), Callable(this, "onBrushStrengthSelected"), KeybindManager::StringNames::BrushStrengthSelector());
+            if (inputEvent->is_action(KeybindManager::StringNames::BrushSizeSelector())) {
+                showBrushNumericSelector(camera->get_viewport(), 1, 200, Color::named("LIME_GREEN"), _brushSize, Callable(this, "onBrushSizeSelected"), KeybindManager::StringNames::BrushSizeSelector());
 
-            return true;
-        }
+                return true;
+            }
 
-        if (inputEvent->is_action(KeybindManager::StringNames::EscapeSelector()) && _overlaySelector != nullptr) {
-            hideOverlaySelector();
-            return true;
-        }
+            if (inputEvent->is_action(KeybindManager::StringNames::BrushStrengthSelector())) {
+                showBrushNumericSelector(camera->get_viewport(), 1, 100, Color::named("CRIMSON"), (int) (_brushStrength * 100), Callable(this, "onBrushStrengthSelected"), KeybindManager::StringNames::BrushStrengthSelector());
 
-        if (inputEvent->is_action(KeybindManager::StringNames::ToggleAutoAddZones())) {
-            _autoAddZones = !_autoAddZones;
-            updateAutoAddZonesSetting();
-            return true;
+                return true;
+            }
+
+            if (inputEvent->is_action(KeybindManager::StringNames::EscapeSelector()) && _overlaySelector != nullptr) {
+                hideOverlaySelector();
+                return true;
+            }
+
+            if (inputEvent->is_action(KeybindManager::StringNames::ToggleAutoAddZones())) {
+                _autoAddZones = !_autoAddZones;
+                updateAutoAddZonesSetting();
+                return true;
+            }
         }
     }
 
@@ -718,10 +784,6 @@ void TerraBrushEditor::setShiftPressed(bool pressed) {
     emit_signal("toolTypeSelected", toolType);
 }
 
-BrushDecal *TerraBrushEditor::get_brushDecal() const {
-    return _brushDecal;
-}
-
 void TerraBrushEditor::set_containerNode(Node *containerNode) {
     _containerNode = containerNode;
 }
@@ -788,6 +850,20 @@ void TerraBrushEditor::set_enabled(const bool value) {
             _metaInfoLayerIndex = 0;
         }
     }
+}
+
+bool TerraBrushEditor::get_enableOnReady() const {
+    return _enableOnReady;
+}
+void TerraBrushEditor::set_enableOnReady(const bool value) {
+    _enableOnReady = value;
+}
+
+bool TerraBrushEditor::get_allowBuiltInToolSelectors() const {
+    return _allowBuiltInToolSelectors;
+}
+void TerraBrushEditor::set_allowBuiltInToolSelectors(const bool value) {
+    _allowBuiltInToolSelectors = value;
 }
 
 int TerraBrushEditor::get_brushIndex() const {
