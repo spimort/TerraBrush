@@ -43,6 +43,12 @@ private:
     void initializeMetaInfoLayers();
     void onBrushSizeValueChange(const float value);
     void onBrushStrengthValueChange(const float value);
+    void onSelectedBrushIndexChange(const int index);
+    void onSelectedToolTypeChange(const TerrainToolType toolType);
+    void onSelectedTextureIndexChange(const int index);
+    void onSelectedFoliageIndexChange(const int index);
+    void onSelectedObjectIndexChange(const int index);
+    void onSelectedMetaInfoIndexChange(const int index);
     void updateSelectedBrush();
     void updateSelectedTerrainTool();
     void upateSelectedTextureSet();

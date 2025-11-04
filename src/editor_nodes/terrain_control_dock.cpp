@@ -21,12 +21,12 @@ using namespace godot;
 void TerrainControlDock::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onBrushSizeValueChange", "value"), &TerrainControlDock::onBrushSizeValueChange);
     ClassDB::bind_method(D_METHOD("onBrushStrengthValueChange", "value"), &TerrainControlDock::onBrushStrengthValueChange);
-    ClassDB::bind_method(D_METHOD("selectToolType", "toolType"), &TerrainControlDock::selectToolType);
-    ClassDB::bind_method(D_METHOD("setSelectedBrushIndex", "index"), &TerrainControlDock::setSelectedBrushIndex);
-    ClassDB::bind_method(D_METHOD("setSelectedTextureIndex", "index"), &TerrainControlDock::setSelectedTextureIndex);
-    ClassDB::bind_method(D_METHOD("setSelectedFoliageIndex", "index"), &TerrainControlDock::setSelectedFoliageIndex);
-    ClassDB::bind_method(D_METHOD("setSelectedObjectIndex", "index"), &TerrainControlDock::setSelectedObjectIndex);
-    ClassDB::bind_method(D_METHOD("setSelectedMetaInfoIndex", "index"), &TerrainControlDock::setSelectedMetaInfoIndex);
+    ClassDB::bind_method(D_METHOD("onSelectedBrushIndexChange", "index"), &TerrainControlDock::onSelectedBrushIndexChange);
+    ClassDB::bind_method(D_METHOD("onSelectedToolTypeChange", "toolType"), &TerrainControlDock::onSelectedToolTypeChange);
+    ClassDB::bind_method(D_METHOD("onSelectedTextureIndexChange", "index"), &TerrainControlDock::onSelectedTextureIndexChange);
+    ClassDB::bind_method(D_METHOD("onSelectedFoliageIndexChange", "index"), &TerrainControlDock::onSelectedFoliageIndexChange);
+    ClassDB::bind_method(D_METHOD("onSelectedObjectIndexChange", "index"), &TerrainControlDock::onSelectedObjectIndexChange);
+    ClassDB::bind_method(D_METHOD("onSelectedMetaInfoIndexChange", "index"), &TerrainControlDock::onSelectedMetaInfoIndexChange);
 
     ADD_SIGNAL(MethodInfo("toolTypeSelected", PropertyInfo(Variant::INT, "toolType")));
     ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index")));
@@ -74,7 +74,7 @@ void TerrainControlDock::set_editorResourcePreview(EditorResourcePreview *value)
 }
 
 void TerrainControlDock::initializeBrushes() {
-    CustomContentLoader::addBrushesPreviewToParent(_brushesContainer, Callable(this, "setSelectedBrushIndex"));
+    CustomContentLoader::addBrushesPreviewToParent(_brushesContainer, Callable(this, "onSelectedBrushIndexChange"));
 
     updateSelectedBrush();
 }
@@ -83,26 +83,26 @@ void TerrainControlDock::initializeToolPreview() {
     for (int i = 0; i < _toolTypesContainer->get_child_count(); i++) {
         Node *childNode = _toolTypesContainer->get_child(i);
         ToolPreview *toolPreview = Object::cast_to<ToolPreview>(childNode);
-        toolPreview->set_onSelect(Callable(this, "selectToolType").bind(toolPreview->get_toolType()));
+        toolPreview->set_onSelect(Callable(this, "onSelectedToolTypeChange").bind(toolPreview->get_toolType()));
     }
 
     updateSelectedTerrainTool();
 }
 
 void TerrainControlDock::initializeTextures() {
-    CustomContentLoader::addTexturesPreviewToParent(_terraBrush, _texturesContainer, Callable(this, "setSelectedTextureIndex"));
+    CustomContentLoader::addTexturesPreviewToParent(_terraBrush, _texturesContainer, Callable(this, "onSelectedTextureIndexChange"));
 }
 
 void TerrainControlDock::initializeFoliages() {
-    CustomContentLoader::addFoliagesPreviewToParent(_terraBrush, _foliagesContainer, Callable(this, "setSelectedFoliageIndex"));
+    CustomContentLoader::addFoliagesPreviewToParent(_terraBrush, _foliagesContainer, Callable(this, "onSelectedFoliageIndexChange"));
 }
 
 void TerrainControlDock::initializeObjects() {
-    CustomContentLoader::addObjectsPreviewToParent(_terraBrush, _objectsContainer, Callable(this, "setSelectedObjectIndex"));
+    CustomContentLoader::addObjectsPreviewToParent(_terraBrush, _objectsContainer, Callable(this, "onSelectedObjectIndexChange"));
 }
 
 void TerrainControlDock::initializeMetaInfoLayers() {
-    CustomContentLoader::addMetaInfoLayersPreviewToParent(_terraBrush, _metaInfoLayersContainer, Callable(this, "setSelectedMetaInfoIndex"));
+    CustomContentLoader::addMetaInfoLayersPreviewToParent(_terraBrush, _metaInfoLayersContainer, Callable(this, "onSelectedMetaInfoIndexChange"));
 }
 
 void TerrainControlDock::updateSelectedBrush() {
@@ -112,11 +112,6 @@ void TerrainControlDock::updateSelectedBrush() {
 
         brushPreview->set_pressed(i == _selectedBrushIndex);
     }
-
-    Node *selectedNode = _brushesContainer->get_child(_selectedBrushIndex);
-    DockPreviewButton *selectedDockButton = Object::cast_to<DockPreviewButton>(selectedNode);
-
-    emit_signal("brushSelected", _selectedBrushIndex);
 }
 
 void TerrainControlDock::updateSelectedTerrainTool() {
@@ -134,8 +129,6 @@ void TerrainControlDock::upateSelectedTextureSet() {
 
         previewButton->set_pressed(i == _selectedTextureIndex);
     }
-
-    emit_signal("textureSelected", _selectedTextureIndex);
 }
 
 void TerrainControlDock::updateSelectedFoliage() {
@@ -145,8 +138,6 @@ void TerrainControlDock::updateSelectedFoliage() {
 
         previewButton->set_pressed(i == _selectedFoliageIndex);
     }
-
-    emit_signal("foliageSelected", _selectedFoliageIndex);
 }
 
 void TerrainControlDock::updateSelectedObject() {
@@ -156,8 +147,6 @@ void TerrainControlDock::updateSelectedObject() {
 
         previewButton->set_pressed(i == _selectedObjectIndex);
     }
-
-    emit_signal("objectSelected", _selectedObjectIndex);
 }
 
 void TerrainControlDock::updateSelectedMetaInfo() {
@@ -167,26 +156,54 @@ void TerrainControlDock::updateSelectedMetaInfo() {
 
         previewButton->set_pressed(i == _selectedMetaInfoIndex);
     }
-
-    emit_signal("metaInfoSelected", _selectedMetaInfoIndex);
 }
 
 void TerrainControlDock::onBrushSizeValueChange(const float value) {
     setBrushSize((int)value);
+    emit_signal("brushSizeChanged", value);
 }
 
 void TerrainControlDock::onBrushStrengthValueChange(const float value) {
     setBrushStrength((float)value);
+    emit_signal("brushStrengthChanged", value);
+}
+
+void TerrainControlDock::onSelectedBrushIndexChange(const int index) {
+    setSelectedBrushIndex(index);
+    emit_signal("brushSelected", index);
+}
+
+void TerrainControlDock::onSelectedToolTypeChange(const TerrainToolType toolType) {
+    selectToolType(toolType);
+    emit_signal("toolTypeSelected", toolType);
+}
+
+void TerrainControlDock::onSelectedTextureIndexChange(const int index) {
+    setSelectedTextureIndex(index);
+    emit_signal("textureSelected", index);
+}
+
+void TerrainControlDock::onSelectedFoliageIndexChange(const int index) {
+    setSelectedFoliageIndex(index);
+    emit_signal("foliageSelected", index);
+}
+
+void TerrainControlDock::onSelectedObjectIndexChange(const int index) {
+    setSelectedObjectIndex(index);
+    emit_signal("objectSelected", index);
+}
+
+void TerrainControlDock::onSelectedMetaInfoIndexChange(const int index) {
+    setSelectedMetaInfoIndex(index);
+    emit_signal("metaInfoSelected", index);
 }
 
 void TerrainControlDock::setBrushSize(int value) {
     _brushSizeSlider->set_value(value);
-    emit_signal("brushSizeChanged", value);
 }
 
 void TerrainControlDock::setBrushStrength(float value) {
     _brushStrengthSlider->set_value(value);
-    emit_signal("brushStrengthChanged", value);
 }
 
 void TerrainControlDock::setSelectedBrushIndex(const int index) {
@@ -198,7 +215,6 @@ void TerrainControlDock::setSelectedBrushIndex(const int index) {
 void TerrainControlDock::selectToolType(const TerrainToolType toolType) {
     _selectedTool = toolType;
     updateSelectedTerrainTool();
-    emit_signal("toolTypeSelected", toolType);
 }
 
 void TerrainControlDock::setSelectedTextureIndex(const int index) {

@@ -59,7 +59,7 @@ private:
     bool _preventInitialDo = false;
 
     bool _enabled = false;
-    bool _enableOnReady = false;
+    bool _enableOnReady = true;
     bool _allowBuiltInToolSelectors = true;
 
     void onUndoRedo();
