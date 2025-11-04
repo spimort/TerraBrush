@@ -1,0 +1,1 @@
+scons platform=macos target=template_release

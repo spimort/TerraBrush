@@ -1,0 +1,55 @@
+[gd_resource type="WaterResource" load_steps=8 format=3 uid="uid://bf3nx6nl2obra"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ls6ha"]
+noise_type = 3
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oiqqo"]
+seamless = true
+seamless_blend_skirt = 1.0
+as_normal_map = true
+noise = SubResource("FastNoiseLite_ls6ha")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_n0sjn"]
+noise_type = 3
+seed = 11
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wwiqx"]
+seamless = true
+seamless_blend_skirt = 1.0
+as_normal_map = true
+noise = SubResource("FastNoiseLite_n0sjn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kw8us"]
+noise_type = 0
+seed = 1
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nbiyt"]
+seamless = true
+noise = SubResource("FastNoiseLite_kw8us")
+
+[resource]
+waterFactor = 1.5
+waterInnerOffset = 0.3
+waterColor = Color(0, 0.379049, 0.615767, 1)
+waterFresnelColor = Color(0, 0.746725, 0.635823, 1)
+waterMetallic = 1.0
+waterRoughness = 1.0
+waterNormalMap = SubResource("NoiseTexture2D_oiqqo")
+waterNormalMap2 = SubResource("NoiseTexture2D_wwiqx")
+waterTimeScale = 0.1
+waterStrength = 15.0
+waterWave = SubResource("NoiseTexture2D_nbiyt")
+waterNoiseScale = 10.0
+waterHeightScale = 0.05
+waterColorDeep = Color(1, 1, 1, 1)
+waterColorShallow = Color(1, 1, 1, 1)
+waterBeersLaw = 2.0
+waterDepthOffset = -0.75
+waterEdgeScale = 0.1
+waterNear = 0.5
+waterFar = 1000.0
+waterEdgeColor = Color(1, 1, 1, 1)
+visualInstanceLayers = 1

@@ -1,0 +1,76 @@
+#ifndef ZONES_RESOURCE_H
+#define ZONES_RESOURCE_H
+
+#include "zone_resource.h"
+#include "../misc/zone_info.h"
+#include "../misc/hash_utils.h"
+
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/texture2d_array.hpp>
+#include <godot_cpp/classes/image_texture.hpp>
+#include <godot_cpp/templates/hash_set.hpp>
+
+#include <unordered_set>
+
+using namespace godot;
+
+class ZonesResource : public Resource {
+    GDCLASS(ZonesResource, Resource);
+
+private:
+    std::unordered_set<Ref<Image>> _dirtyImages = std::unordered_set<Ref<Image>>();
+
+    Ref<Texture2DArray> _lockTextures = nullptr;
+    Ref<Texture2DArray> _heightmapTextures = nullptr;
+    Ref<Texture2DArray> _splatmapsTextures = nullptr;
+    TypedArray<Ref<Texture2DArray>> _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
+    Ref<Texture2DArray> _objectsTextures = nullptr; // This should be TypedArray<Ref<Texture2DArray>> like foliages but it's unused for now. Might remove it later.
+    Ref<Texture2DArray> _waterTextures = nullptr;
+    Ref<Texture2DArray> _snowTextures = nullptr;
+    Ref<Texture2DArray> _metaInfoTextures = nullptr;
+    Ref<ImageTexture> _zonesMap = nullptr;
+
+    TypedArray<Ref<ZoneResource>> _zones = TypedArray<Ref<ZoneResource>>();
+
+    void saveImageResource(Ref<Image> image);
+
+protected:
+    static void _bind_methods();
+
+public:
+    ZonesResource();
+    ~ZonesResource();
+
+    Ref<Texture2DArray> get_lockTextures() const;
+    Ref<Texture2DArray> get_heightmapTextures() const;
+    Ref<Texture2DArray> get_splatmapsTextures() const;
+    TypedArray<Ref<Texture2DArray>> get_foliagesTextures() const;
+    Ref<Texture2DArray> get_objectsTextures() const;
+    Ref<Texture2DArray> get_waterTextures() const;
+    Ref<Texture2DArray> get_snowTextures() const;
+    Ref<Texture2DArray> get_metaInfoTextures() const;
+    Ref<ImageTexture> get_zonesMap() const;
+
+    TypedArray<Ref<ZoneResource>> get_zones() const;
+    void set_zones(const TypedArray<Ref<ZoneResource>> value);
+
+    void updateLockTexture(int zoneSize);
+    void updateHeightmaps();
+    void updateSplatmapsTextures();
+    void initializeFoliageTextures(int foliageCount);
+    void updateFoliagesTextures();
+    void updateFoliagesTextures(int foliageIndex);
+    void updateObjectsTextures();
+    void updateWaterTextures();
+    void updateZoneWaterTexture(Ref<ZoneResource> zone);
+    void updateSnowTextures();
+    void updateZoneSnowTexture(Ref<ZoneResource> zone);
+    void updateMetaInfoTextures();
+    void updateZoneMetaInfoTexture(Ref<ZoneResource> zone);
+    void saveResources();
+    void updateZonesMap();
+    void addDirtyImage(Ref<Image> imageTexture);
+    void updateImageImages(int zoneSize);
+    Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
+};
+#endif

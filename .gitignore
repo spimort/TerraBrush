@@ -15,3 +15,22 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 /.idea
+
+# Godot CPP
+*.obj
+*.o
+*.dll
+*.lib
+*.exp
+*.pdb
+*.os
+
+# vscode
+/.vscode
+
+# SCons
+.sconsign.dblite
+
+# TerraBrush
+demo/addons/terrabrush/bin
+demo/bin
