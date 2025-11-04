@@ -75,7 +75,7 @@ public:
     ToolBase();
     ~ToolBase();
 
-    void init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones);
+    virtual void init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones);
     virtual void beforeDeselect();
     virtual String getToolInfo(TerrainToolType toolType);
     virtual bool handleInput(TerrainToolType toolType, Ref<InputEvent> event);

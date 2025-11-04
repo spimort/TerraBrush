@@ -20,6 +20,12 @@ SetAngleTool::SetAngleTool() {}
 
 SetAngleTool::~SetAngleTool() {}
 
+void SetAngleTool::init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones) {
+    ToolBase::init(terraBrush, undoRedoManager, autoAddZones);
+
+    updateInitialPointMesh();
+}
+
 bool SetAngleTool::getApplyResolution() const {
     return true;
 }

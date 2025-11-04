@@ -37,6 +37,8 @@ public:
     SetAngleTool();
     ~SetAngleTool();
 
+    void init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones) override;
+
     void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) override;
 
     float getSetAngleValue();
