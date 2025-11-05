@@ -1,4 +1,4 @@
-name: Build GDExtension
+name: Build TerraBrush
 on: workflow_dispatch
 
 jobs:
@@ -12,22 +12,21 @@ jobs:
         target:
           [
             { platform: linux, arch: x86_64, os: ubuntu-22.04 },
-            # { platform: linux, arch: x86_32, os: ubuntu-22.04 },
-            # { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
-            # { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
-            # { platform: windows, arch: x86_64, os: windows-latest },
-            # { platform: windows, arch: x86_32, os: windows-latest },
-            # { platform: windows, arch: arm64, os: windows-latest },
-            # { platform: macos, arch: universal, os: macos-latest },
+            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_32, os: windows-latest },
+            { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
             # { platform: android, arch: x86_64, os: ubuntu-22.04 },
             # { platform: android, arch: x86_32, os: ubuntu-22.04 },
             # { platform: android, arch: arm64, os: ubuntu-22.04 },
             # { platform: android, arch: arm32, os: ubuntu-22.04 },
             # { platform: ios, arch: arm64, os: macos-latest },
-            # { platform: web, arch: wasm32, os: ubuntu-22.04 },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 },
           ]
         target-type: [template_debug, template_release]
-        float-precision: [single, double]
 
     runs-on: ${{ matrix.target.os }}
     steps:
@@ -66,20 +65,20 @@ jobs:
         uses: ./godot-cpp/.github/actions/godot-cache-restore
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
-          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.target-type }}
 
       - name: Build GDExtension Debug Build
         shell: sh
         env:
           SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
         run: |
-          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }}
 
       - name: Save .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
-          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.target-type }}
 
       # Clean up compilation files
       - name: Windows - Delete compilation files
@@ -92,7 +91,7 @@ jobs:
   #     - name: Upload Artifact
   #       uses: actions/upload-artifact@v4
   #       with:
-  #         name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+  #         name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.target-type }}
   #         path: |
   #           ${{ github.workspace }}/bin/**
 
