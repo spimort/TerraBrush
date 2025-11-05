@@ -85,25 +85,25 @@ jobs:
         if: ${{ matrix.target.platform == 'windows' }}
         shell: pwsh
         run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+          Remove-Item demo/addons/terrabrush/bin/* -Include *.exp,*.lib,*.pdb -Force
 
-  #     # Upload the build
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.target-type }}
-  #         path: |
-  #           ${{ github.workspace }}/bin/**
+      # Upload the build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.target-type }}
+          path: |
+            ${{ github.workspace }}/bin/**
 
-  # # Merges all the build artifacts together into a single godot-cpp-template artifact.
-  # # If you comment out this step, all the builds will be uploaded individually.
-  # merge:
-  #   runs-on: ubuntu-22.04
-  #   needs: build
-  #   steps:
-  #     - name: Merge Artifacts
-  #       uses: actions/upload-artifact/merge@v4
-  #       with:
-  #         name: godot-cpp-template
-  #         pattern: godot-cpp-template-*
-  #         delete-merged: true
+  # Merges all the build artifacts together into a single godot-cpp-template artifact.
+  # If you comment out this step, all the builds will be uploaded individually.
+  merge:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: godot-cpp-template
+          pattern: godot-cpp-template-*
+          delete-merged: true
