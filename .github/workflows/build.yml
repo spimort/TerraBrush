@@ -1,0 +1,32 @@
+name: Build
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            os: ubuntu-latest
+          - platform: windows
+            os: windows-latest
+          - platform: macos
+            os: macos-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download godot-cpp Builds
+        uses: NodotProject/godot-cpp-builds@v1
+        with:
+          godot-version: '4.5-stable'
+          godot-cpp-path: './godot-cpp'
+
+      - name: Build GDExtension
+        run: |
+          scons platform=${{ matrix.platform }} target=template_release
