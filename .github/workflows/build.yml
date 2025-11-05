@@ -1,32 +1,114 @@
-name: Build
-
-on: workflow_dispatch
+name: Build GDExtension
+on:
+  workflow_call:
+  push:
+  pull_request:
+  merge_group:
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - platform: linux
-            os: ubuntu-latest
-          - platform: windows
-            os: windows-latest
-          - platform: macos
-            os: macos-latest
+        # A build is made for every possible combination of parameters
+        # You can add or remove entries from the arrays of each parameter to customize which builds you want to run
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_32, os: windows-latest },
+            { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+            # { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            # { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            # { platform: android, arch: arm64, os: ubuntu-22.04 },
+            # { platform: android, arch: arm32, os: ubuntu-22.04 },
+            # { platform: ios, arch: arm64, os: macos-latest },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 },
+          ]
+        target-type: [template_debug, template_release]
+        float-precision: [single, double]
 
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: actions/checkout@v4
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
 
-      - name: Download godot-cpp Builds
-        uses: NodotProject/godot-cpp-builds@v1
-        with:
-          godot-version: '4.5-stable'
-          godot-cpp-path: './godot-cpp'
+      # Lint
+      #- name: Setup clang-format
+      #  shell: bash
+      #  run: |
+      #    python -m pip install clang-format
+      #- name: Run clang-format
+      #  shell: bash
+      #  run: |
+      #    clang-format src/** --dry-run --Werror
 
-      - name: Build GDExtension
+      # Add linux x86_32 toolchain
+      - name: Install multilib support
+        if: ${{ matrix.target.platform == 'linux' && matrix.target.arch == 'x86_32' }}
         run: |
-          scons platform=${{ matrix.platform }} target=template_release
+          sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      # Build GDExtension (with caches)
+
+      - name: Restore .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension Debug Build
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+
+      - name: Save .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      # Clean up compilation files
+      - name: Windows - Delete compilation files
+        if: ${{ matrix.target.platform == 'windows' }}
+        shell: pwsh
+        run: |
+          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+
+      # Upload the build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          path: |
+            ${{ github.workspace }}/bin/**
+
+  # Merges all the build artifacts together into a single godot-cpp-template artifact.
+  # If you comment out this step, all the builds will be uploaded individually.
+  merge:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: godot-cpp-template
+          pattern: godot-cpp-template-*
+          delete-merged: true
