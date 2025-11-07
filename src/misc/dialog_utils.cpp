@@ -55,10 +55,10 @@ void DialogUtils::showConfirmDialog(Node *sourceNode, String title, String conte
 
 }
 
-void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBursh, std::function<void(ImporterSettings)> onAccept) {
+void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBrush, std::function<void(ImporterSettings)> onAccept) {
     ImportDialog *importDialog = memnew(ImportDialog);
     importDialog->init(onAccept);
-    importDialog->set_originialTerraBrush(originalTerraBursh);
+    importDialog->set_originialTerraBrush(originalTerraBrush);
 
     sourceNode->get_tree()->get_root()->add_child(importDialog);
     importDialog->popup_centered();

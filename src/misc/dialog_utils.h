@@ -17,7 +17,7 @@ class DialogUtils {
         static void showFileDialog(Node *sourceNode, std::function<void(String)> onSelect, EditorFileDialog::Access access = EditorFileDialog::Access::ACCESS_FILESYSTEM, EditorFileDialog::FileMode fileMode = EditorFileDialog::FileMode::FILE_MODE_OPEN_FILE, TypedArray<String> filters = TypedArray<String>(), bool transient = false);
         static void showNumericSelector(Node *sourceNode, std::function<void(float)> onSelect, float defaultValue = 0, float minValue = std::numeric_limits<float>::min(), float maxValue = std::numeric_limits<float>::max());
         static void showConfirmDialog(Node *sourceNode, String title, String content, std::function<void(bool)> onSelect);
-        static void showImportDialog(Node *sourceNode, TerraBrush *originalTerraBursh, std::function<void(ImporterSettings)> onAccept);
+        static void showImportDialog(Node *sourceNode, TerraBrush *originalTerraBrush, std::function<void(ImporterSettings)> onAccept);
 };
 
 class FileDialogEventsWrapper : public Node {
