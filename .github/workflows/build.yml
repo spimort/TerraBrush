@@ -12,12 +12,12 @@ jobs:
         target:
           [
             { platform: linux, arch: x86_64, os: ubuntu-22.04 },
-            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
-            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
-            { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
+            # { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            # { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            # { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
             { platform: windows, arch: x86_64, os: windows-latest },
-            { platform: windows, arch: x86_32, os: windows-latest },
-            { platform: windows, arch: arm64, os: windows-latest },
+            # { platform: windows, arch: x86_32, os: windows-latest },
+            # { platform: windows, arch: arm64, os: windows-latest },
             { platform: macos, arch: universal, os: macos-latest },
             # { platform: android, arch: x86_64, os: ubuntu-22.04 },
             # { platform: android, arch: x86_32, os: ubuntu-22.04 },
@@ -95,8 +95,21 @@ jobs:
           path: |
             ${{ github.workspace }}/demo/addons/terrabrush/bin/**
 
-  # Merges all the build artifacts together into a single terrabrush artifact.
-  # If you comment out this step, all the builds will be uploaded individually.
+  # # Merges all the build artifacts together into a single terrabrush artifact.
+  # # If you comment out this step, all the builds will be uploaded individually.
+  # merge:
+  #   runs-on: ubuntu-22.04
+  #   needs: build
+  #   steps:
+  #     - name: Merge Artifacts
+  #       uses: actions/upload-artifact/merge@v4
+  #       with:
+  #         name: terrabrush
+  #         pattern: terrabrush-*
+  #         delete-merged: true
+
+
+  # Merge all builds into a single ZIP artifact
   merge:
     runs-on: ubuntu-22.04
     needs: build
@@ -104,6 +117,36 @@ jobs:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: terrabrush
+          name: terrabrush-merged
           pattern: terrabrush-*
           delete-merged: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Download merged artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: terrabrush-merged
+          path: demo/addons/terrabrush/bin/
+
+      - name: Create ZIP
+        run: |
+          cd demo
+          zip -r terrabrush.zip addons/terrabrush
+
+      - name: Upload final artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrabrush
+          path: demo/terrabrush.zip
+
+      # - name: Delete merged artifact
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh api \
+      #       --method DELETE \
+      #       repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-merged") | .id')
