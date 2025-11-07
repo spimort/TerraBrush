@@ -95,53 +95,59 @@ jobs:
           path: |
             ${{ github.workspace }}/demo/addons/terrabrush/bin/**
 
-  # # Merges all the build artifacts together into a single terrabrush artifact.
-  # # If you comment out this step, all the builds will be uploaded individually.
-  # merge:
-  #   runs-on: ubuntu-22.04
-  #   needs: build
-  #   steps:
-  #     - name: Merge Artifacts
-  #       uses: actions/upload-artifact/merge@v4
-  #       with:
-  #         name: terrabrush
-  #         pattern: terrabrush-*
-  #         delete-merged: true
-
-
-  # Merge all builds into a single ZIP artifact
-  merge:
+  # Merges all the build artifacts together into a single terrabrush artifact.
+  # If you comment out this step, all the builds will be uploaded individually.
+  merge-builds:
     runs-on: ubuntu-22.04
     needs: build
     steps:
-      - name: Merge Artifacts
+      - name: Merge binaries Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: terrabrush-merged
+          name: terrabrush-binaries
           pattern: terrabrush-*
           delete-merged: true
 
+
+  # Merge all builds into a single ZIP artifact
+  merge-addon:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: false
 
-      - name: Download merged artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: terrabrush-merged
-          path: demo/addons/terrabrush/bin/
-
-      - name: Create ZIP
-        run: |
-          cd demo
-          zip -r terrabrush.zip addons/terrabrush
-
-      - name: Upload final artifact
+      - name: Upload addon folder
         uses: actions/upload-artifact@v4
         with:
+          name: terrabrush-addon
+          path: demo/addons/
+
+      - name: Merge addon+binaries Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
           name: terrabrush
-          path: demo/terrabrush.zip
+          pattern: terrabrush-*
+          delete-merged: true
+
+      # - name: Download merged artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: terrabrush-merged
+      #     path: demo/addons/terrabrush/bin/
+
+      # - name: Create ZIP
+      #   run: |
+      #     cd demo
+      #     zip -r terrabrush.zip addons/terrabrush
+
+      # - name: Upload final artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: terrabrush
+      #     path: demo/terrabrush.zip
 
       # - name: Delete merged artifact
       #   env:
