@@ -22,27 +22,31 @@ sources += Glob("src/misc/*.cpp")
 sources += Glob("src/nodes/*.cpp")
 sources += Glob("src/octree/*.cpp")
 
+targetEnv = "debug"
+if env["target"] == "template_release":
+    targetEnv = "release"
+
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "demo/addons/terrabrush/bin/terrabrush.{}.{}.framework/terrabrush.{}.{}".format(
-            env["platform"], env["target"], env["platform"], env["target"]
+        "demo/addons/terrabrush/bin/libterrabrush.{}.{}.framework/terrabrush.{}.{}".format(
+            env["platform"], targetEnv, env["platform"], targetEnv
         ),
         source=sources,
     )
 elif env["platform"] == "ios":
     if env["ios_simulator"]:
         library = env.StaticLibrary(
-            "demo/addons/terrabrush/bin/terrabrush.{}.{}.simulator.a".format(env["platform"], env["target"]),
+            "demo/addons/terrabrush/bin/terrabrush.{}.{}.simulator.a".format(env["platform"], targetEnv),
             source=sources,
         )
     else:
         library = env.StaticLibrary(
-            "demo/addons/terrabrush/bin/terrabrush.{}.{}.a".format(env["platform"], env["target"]),
+            "demo/addons/terrabrush/bin/terrabrush.{}.{}.a".format(env["platform"], targetEnv),
             source=sources,
         )
 else:
     library = env.SharedLibrary(
-        "demo/addons/terrabrush/bin/terrabrush{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "demo/addons/terrabrush/bin/libterrabrush.{}.{}.{}{}".format(env["platform"], targetEnv, env["arch"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 
