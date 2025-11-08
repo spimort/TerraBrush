@@ -15,16 +15,16 @@ jobs:
             # { platform: linux, arch: x86_32, os: ubuntu-22.04 },
             # { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
             # { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
-            # { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_64, os: windows-latest },
             # { platform: windows, arch: x86_32, os: windows-latest },
             # { platform: windows, arch: arm64, os: windows-latest },
-            # { platform: macos, arch: universal, os: macos-latest },
+            { platform: macos, arch: universal, os: macos-latest },
             # { platform: android, arch: x86_64, os: ubuntu-22.04 },
             # { platform: android, arch: x86_32, os: ubuntu-22.04 },
             # { platform: android, arch: arm64, os: ubuntu-22.04 },
             # { platform: android, arch: arm32, os: ubuntu-22.04 },
             # { platform: ios, arch: arm64, os: macos-latest },
-            # { platform: web, arch: wasm32, os: ubuntu-22.04 },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 },
           ]
         target-type: [template_debug, template_release]
 
@@ -131,58 +131,7 @@ jobs:
           name: terrabrush
           path: demo/addons/
 
-      - uses: geekyeggo/delete-artifact@v5
+      - name: Remove binaries artifact
+        uses: geekyeggo/delete-artifact@v5
         with:
             name: terrabrush-binaries
-
-      # - name: Delete binaries from current run
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      #     RUN_ID: ${{ github.run_id }}
-      #   run: |
-      #     echo "Fetching artifacts for run $RUN_ID..."
-      #     ids=$(gh api repos/${{ github.repository }}/actions/runs/$RUN_ID/artifacts \
-      #       --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
-
-      #     if [ -z "$ids" ]; then
-      #       echo "No artifacts named terrabrush-binaries found for this run."
-      #     else
-      #       echo "Found artifacts:"
-      #       echo "$ids"
-      #       for id in $ids; do
-      #         echo "Deleting artifact ID $id..."
-      #         gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$id
-      #       done
-      #     fi
-
-      # - name: Merge addon+binaries Artifacts
-      #   uses: actions/upload-artifact/merge@v4
-      #   with:
-      #     name: terrabrush
-      #     pattern: terrabrush-*
-      #     delete-merged: true
-
-      # - name: Download merged artifact
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: terrabrush-merged
-      #     path: demo/addons/terrabrush/bin/
-
-      # - name: Create ZIP
-      #   run: |
-      #     cd demo
-      #     zip -r terrabrush.zip addons/terrabrush
-
-      # - name: Upload final artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: terrabrush
-      #     path: demo/terrabrush.zip
-
-      # - name: Delete merged artifact
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      #   run: |
-      #     gh api \
-      #       --method DELETE \
-      #       repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-merged") | .id')
