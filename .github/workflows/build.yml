@@ -128,16 +128,16 @@ jobs:
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
         with:
-          name: terrabrush-addon
+          name: terrabrush
           path: demo/addons/
 
-      # - name: Delete merged artifact
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      #   run: |
-      #     gh api \
-      #       --method DELETE \
-      #       repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-merged") | .id')
+      - name: Delete merged artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method DELETE \
+            repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
 
       # - name: Merge addon+binaries Artifacts
       #   uses: actions/upload-artifact/merge@v4
