@@ -112,12 +112,18 @@ jobs:
   # Merge all builds into a single ZIP artifact
   merge-addon:
     runs-on: ubuntu-22.04
-    needs: build
+    needs: merge-builds
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: false
+
+      - name: Download binaries artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: terrabrush-binaries
+          path: demo/addons/terrabrush/bin/
 
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
@@ -125,12 +131,20 @@ jobs:
           name: terrabrush-addon
           path: demo/addons/
 
-      - name: Merge addon+binaries Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: terrabrush
-          pattern: terrabrush-*
-          delete-merged: true
+      # - name: Delete merged artifact
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh api \
+      #       --method DELETE \
+      #       repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-merged") | .id')
+
+      # - name: Merge addon+binaries Artifacts
+      #   uses: actions/upload-artifact/merge@v4
+      #   with:
+      #     name: terrabrush
+      #     pattern: terrabrush-*
+      #     delete-merged: true
 
       # - name: Download merged artifact
       #   uses: actions/download-artifact@v4
