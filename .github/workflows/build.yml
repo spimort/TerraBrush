@@ -131,16 +131,24 @@ jobs:
           name: terrabrush
           path: demo/addons/
 
-      - name: Delete merged artifact
+      - name: Delete binaries from current run
         env:
           GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
         run: |
-          id=$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
-          if [ -n "$id" ]; then
-            echo "Deleting artifact ID $id (terrabrush-binaries)..."
-            gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$id
+          echo "Fetching artifacts for run $RUN_ID..."
+          ids=$(gh api repos/${{ github.repository }}/actions/runs/$RUN_ID/artifacts \
+            --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
+
+          if [ -z "$ids" ]; then
+            echo "No artifacts named terrabrush-binaries found for this run."
           else
-            echo "No artifact named terrabrush-binaries found."
+            echo "Found artifacts:"
+            echo "$ids"
+            for id in $ids; do
+              echo "Deleting artifact ID $id..."
+              gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$id
+            done
           fi
 
       # - name: Merge addon+binaries Artifacts
