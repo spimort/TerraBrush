@@ -135,9 +135,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api \
-            --method DELETE \
-            repos/${{ github.repository }}/actions/artifacts/$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
+          id=$(gh api repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name=="terrabrush-binaries") | .id')
+          if [ -n "$id" ]; then
+            echo "Deleting artifact ID $id (terrabrush-binaries)..."
+            gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$id
+          else
+            echo "No artifact named terrabrush-binaries found."
+          fi
 
       # - name: Merge addon+binaries Artifacts
       #   uses: actions/upload-artifact/merge@v4
