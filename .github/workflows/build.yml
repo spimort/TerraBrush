@@ -136,7 +136,7 @@ jobs:
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
         with:
-          name: terrabrush
+          name: terrabrush-${{ steps.version.outputs.version }}
           path: demo/addons/
 
       - name: Remove binaries artifact
