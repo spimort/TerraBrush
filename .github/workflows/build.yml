@@ -125,6 +125,14 @@ jobs:
           name: terrabrush-binaries
           path: demo/addons/terrabrush/bin/
 
+      - name: Read TerraBrush version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(grep -oP '(?<=_version = ")[^"]+' src/terra_brush.h)
+          echo "Found version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
         with:
