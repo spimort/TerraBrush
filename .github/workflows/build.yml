@@ -137,7 +137,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: terrabrush-${{ steps.version.outputs.version }}
-          path: demo/addons/
+          path: demo/addons
 
       - name: Remove binaries artifact
         uses: geekyeggo/delete-artifact@v5
