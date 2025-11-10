@@ -133,11 +133,17 @@ jobs:
           echo "Found version: $VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Prepare release folder
+        shell: bash
+        run: |
+          mkdir demo/addons-release
+          mv demo/addons demo/addons-release
+
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
         with:
           name: terrabrush-${{ steps.version.outputs.version }}
-          path: demo/addons
+          path: demo/addons-release/
 
       - name: Remove binaries artifact
         uses: geekyeggo/delete-artifact@v5
