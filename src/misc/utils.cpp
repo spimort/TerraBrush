@@ -165,6 +165,10 @@ Ref<Image> Utils::getBrushImageForIndex(const int targetIndex) {
             if (file.ends_with(".png") || file.ends_with(".PNG")) {
                 if (index == targetIndex) {
                     Ref<Texture2D> brushImage = ResourceLoader::get_singleton()->load(directory->get_current_dir() + "/" + file);
+                    if (brushImage.is_null()) {
+                        return nullptr;
+                    }
+
                     return brushImage->get_image();
                 }
 

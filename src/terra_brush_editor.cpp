@@ -792,6 +792,10 @@ TerraBrush *TerraBrushEditor::get_terraBrushNode() const {
     return _terraBrushNode;
 }
 void TerraBrushEditor::set_terraBrushNode(const TerraBrush *terraBrushNode) {
+    if (_originalBrushImage.is_null()) {
+        set_brushIndex(0);
+    }
+
     _terraBrushNode = const_cast<TerraBrush*>(terraBrushNode);
 }
 
