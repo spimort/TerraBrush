@@ -36,9 +36,9 @@ void fragment() {
 	
 	if (linear_depth - linear_object_depth > Threshold) {
 		ALBEDO = Color.rgb;
-		ALPHA = ColorAlpha+fresnel;
+		ALPHA = clamp(ColorAlpha+fresnel, 0.0, 1.0);
 	} else {
 		ALBEDO = Color;
-		ALPHA = 0.5+fresnel;
+		ALPHA = clamp(0.5+fresnel, 0.0, 1.0);
 	}
 }

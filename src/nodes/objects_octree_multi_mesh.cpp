@@ -78,6 +78,24 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
 }
 
 void ObjectsOctreeMultiMesh::initialize() {
+    for (int i = 0; i < _definition->get_lodList().size(); i++) {
+        if (Ref<ObjectOctreeLODDefinitionResource>(_definition->get_lodList()[i]).is_null()) {
+            return;
+        }
+    }
+
+    for (int i = 0; i < _definition->get_lodMeshes().size(); i++) {
+        if (Ref<ObjectOctreeLODMeshesDefinitionResource>(_definition->get_lodMeshes()[i]).is_null()) {
+            return;
+        }
+    }
+
+    for (int i = 0; i < _definition->get_objectScenes().size(); i++) {
+        if (Ref<PackedScene>(_definition->get_objectScenes()[i]).is_null()) {
+            return;
+        }
+    }
+
     if (_definition->get_noiseTexture().is_null()) {
         Ref<Texture2D> defaultNoise = ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/DefaultNoise.tres");
         _noiseImageCache = defaultNoise->get_image();
