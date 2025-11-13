@@ -17,7 +17,6 @@
   [Disclaimer](#disclaimer) •
   [Key Features](#key-features) •
   [How To Use](#how-to-use) •
-  [FAQ](#faq) •
   [Support](#support) •
   [License](#license)
 
