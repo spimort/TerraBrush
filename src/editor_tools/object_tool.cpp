@@ -33,7 +33,11 @@ void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
     }
 
     Ref<ObjectResource> currentObject = _terraBrush->get_objects()[_selectedObjectIndex];
-    if (currentObject->get_definition()->get_objectScenes().size() == 0 || currentObject->get_hide()) {
+    if (
+        (currentObject->get_definition()->get_strategy() == ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES && currentObject->get_definition()->get_objectScenes().size() == 0) ||
+        (currentObject->get_definition()->get_strategy() == ObjectStrategy::OBJECTSTRATEGY_OCTREEMULTIMESHES && currentObject->get_definition()->get_lodMeshes().size() == 0) ||
+        currentObject->get_hide()
+    ) {
         return;
     }
 
