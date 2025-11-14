@@ -58,6 +58,7 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
+          windows-compiler: ${{ matrix.target.platform == 'windows' && 'msvc' || 'mingw' }}
 
       # Build GDExtension (with caches)
 
@@ -72,7 +73,12 @@ jobs:
         env:
           SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
         run: |
-          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }}
+          if [ "${{ matrix.target.platform }}" = "windows" ]; then
+            scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} use_mingw=no
+          else
+            scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }}
+          fi
+        # scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }}
 
       - name: Save .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-save
