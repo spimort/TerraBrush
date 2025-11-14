@@ -190,7 +190,7 @@ void TerraBrushEditor::_unhandled_input(const Ref<InputEvent> &event) {
 };
 
 bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event) {
-    if (!_enabled ||_terraBrushNode == nullptr || _containerNode == nullptr) {
+    if (!_enabled ||_terraBrushNode == nullptr || _containerNode == nullptr || camera == nullptr) {
         return false;
     }
 
