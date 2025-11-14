@@ -130,12 +130,6 @@ jobs:
           name: terrabrush-binaries
           path: demo/addons/terrabrush/bin/
 
-      - name: Upload demo folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: demo
-          path: demo
-
       - name: Read TerraBrush version
         id: version
         shell: bash
