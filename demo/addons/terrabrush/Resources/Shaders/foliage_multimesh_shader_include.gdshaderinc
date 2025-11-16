@@ -85,9 +85,10 @@ mat3 rotateX(float theta) {
 }
 
 bool calculateTexturePresence(vec3 zoneUV) {
+	float splatmapLayers = (zoneUV.z * ceil(float(NumberOfTextures) / 4.0));
 	for (int i = 0; i < NumberOfTexturesToApplyOn; i++) {
 		int textureIndex = ApplyOnTextureIndexes[i];
-		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(textureIndex/4)) + (zoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		vec3 splatmapUV = vec3(zoneUV.x, zoneUV.y, floor(float(textureIndex/4)) + splatmapLayers);
 
 		int channelIndex = textureIndex % 4;
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
@@ -104,33 +105,22 @@ bool calculateTexturePresence(vec3 zoneUV) {
 vec4 calculateGroundColor(vec3 zoneUV) {
 	vec4 resultTexture = vec4(0.0);
 
-	int currentChannel = 0;
+	vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
+	float splatmapLayers = (detailUV.z * ceil(float(NumberOfTextures) / 4.0));
 	for (int i = 0; i < NumberOfTextures; i++) {
-		vec3 detailUV = vec3(zoneUV.x, zoneUV.y, zoneUV.z);
 		vec3 textureUV = vec3(detailUV.x * float(TextureDetail), detailUV.y * float(TextureDetail), float(i));
-		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + (detailUV.z * ceil(float(NumberOfTextures) / 4.0)));
+		vec3 splatmapUV = vec3(detailUV.x, detailUV.y, floor(float(i/4)) + splatmapLayers);
 
 		vec4 currentTexture = texture(Textures, textureUV);
 		vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
 
-		float channelValue = 0.0;
-		if (currentChannel == 0) {
-			channelValue = currentSplatmap.x;
-		} else if (currentChannel == 1) {
-			channelValue = currentSplatmap.y;
-		} else if (currentChannel == 2) {
-			channelValue = currentSplatmap.z;
-		} else if (currentChannel == 3) {
-			channelValue = currentSplatmap.w;
-		}
+		int currentChannel = i % 4;
+		float channelValue = currentSplatmap[currentChannel];
+        if (channelValue <= 0.0001) {
+            continue;
+        }		
 
 		resultTexture += currentTexture * channelValue;
-
-		if (currentChannel == 3) {
-			currentChannel = 0;
-		} else {
-			currentChannel++;
-		}
 	}
 
 	return resultTexture;
