@@ -16,7 +16,7 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 		// Calculate the average height for mid zone vertices
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
 			int level = int(levelsMeta.a * 100.0);
-			float levelMultiplicator = pow(2.0, float(level));
+			float levelMultiplicator = exp2(float(level));
 			vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
 			vec3 previousZoneUV = calculateZoneUV(offsetWorldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
 			vec3 nextZoneUV = calculateZoneUV(offsetWorldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
