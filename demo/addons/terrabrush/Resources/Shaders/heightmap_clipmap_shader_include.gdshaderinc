@@ -240,7 +240,7 @@ void calculateHeightmapFragment(
 	inout float alphaScissorThreshold
 ) {
 	vec3 zoneUV = calculateZoneUV(worldVertex);
-	
+
     if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
 
@@ -274,21 +274,32 @@ void calculateHeightmapFragment(
             }
         }
     } else {
+		bool useHeightTextures = HasHeightTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT;
         vec4 resultTexture = vec4(0.0);
         vec4 resultNormal = vec4(0.0);
         vec4 resultRoughness = vec4(0.0);
 
-        int currentChannel = 0;
         float channelSum = 0.0;
+
+        vec3 textureZoneUV = zoneUV;
+        if (Resolution > 1.0) {
+            textureZoneUV = calculateZoneUVResolution(worldVertex, false);
+        }
+        float splatmapLayers = (textureZoneUV.z * ceil(float(NumberOfTextures) / 4.0));
+
         for (int i = 0; i < NumberOfTextures; i++) {
             int textureDetail = TexturesDetail[i];
             vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
             vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
-            vec3 textureZoneUV = zoneUV;
-            if (Resolution > 1.0) {
-                textureZoneUV = calculateZoneUVResolution(worldVertex, false);
+            vec3 splatmapUV = vec3(textureZoneUV.x, textureZoneUV.y, floor(float(i/4)) + splatmapLayers);
+
+            vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
+            int currentChannel = i % 4;
+            float channelValue = getChannelValue(currentChannel, currentSplatmap);
+
+            if (channelValue <= 0.0001) {
+                continue;
             }
-            vec3 splatmapUV = vec3(textureZoneUV.x, textureZoneUV.y, floor(float(i/4)) + (textureZoneUV.z * ceil(float(NumberOfTextures) / 4.0)));
 
             vec4 currentTexture = vec4(0);
             vec4 currentNormal = vec4(0);
@@ -310,35 +321,37 @@ void calculateHeightmapFragment(
                 currentHeight = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, HeightTextures, HeightTexturesNearest, false);
             }
 
-            vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
-            float channelValue = getChannelValue(currentChannel, currentSplatmap);
-
             float heightBlendedChannelValue = channelValue;
-            if (HasHeightTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT) {
+            if (useHeightTextures) {
                 heightBlendedChannelValue = min(contrast(BlendFactor, currentHeight.x) + channelValue, 1.0) * sqrt(channelValue);
             }
+
+            if (heightBlendedChannelValue <= 0.0001) {
+                continue;
+            }
+
             channelSum += heightBlendedChannelValue;
 
             resultTexture += currentTexture * heightBlendedChannelValue;
             resultNormal += currentNormal * heightBlendedChannelValue;
             resultRoughness += currentRoughness * heightBlendedChannelValue;
-
-            if (currentChannel == 3) {
-                currentChannel = 0;
-            } else {
-                currentChannel++;
-            }
         }
 
-        albedo = resultTexture.xyz / channelSum;
+		if (channelSum > 0.0) {
+	        albedo = resultTexture.xyz / channelSum;
 
-        if (HasRoughnessTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS) {
-            roughness = resultRoughness.x / channelSum;
-        }
+	        if (HasRoughnessTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS) {
+	            roughness = resultRoughness.x / channelSum;
+	        }
 
-        if (HasNormalTextures) {
-            normalMap = resultNormal.xyz / channelSum;
-        }
+	        if (HasNormalTextures) {
+	            normalMap = resultNormal.xyz / channelSum;
+	        }
+		} else {
+            albedo = vec3(0.0);
+            normalMap = vec3(0.0, 1.0, 0.0);
+            roughness = 1.0;
+		}
     }
 
     if (ApplyLockTextures) {
@@ -346,13 +359,13 @@ void calculateHeightmapFragment(
         float lockValue = (1.0 - lockTexture.r);
         albedo *= vec3(max(lockValue, 0.5), lockValue, lockValue);
     }
-	
+
     if (ApplyMetaInfoTextures) {
         vec4 metaInfoTexture = texture(MetaInfoTextures, zoneUV);
 		if (metaInfoTexture.r >= 0.0) {
 			albedo *= MetaInfoColors[int(metaInfoTexture.r)].rgb;
 		}
-    }	
+    }
 
     alpha = 1.0;
     alphaScissorThreshold = 1.0;
