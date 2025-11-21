@@ -843,9 +843,7 @@ void TerraBrushEditor::set_enabled(const bool value) {
         add_child(_brushDecal);
 
         _brushDecal->setSize(_brushSize);
-        if (!_brushImage.is_null()) {
-            _brushDecal->setBrushImage(_brushImage);
-        }
+        updateBrushImage();
 
         _toolInfo = memnew(ToolInfo);
         _toolInfo->set_name("ToolInfo");
