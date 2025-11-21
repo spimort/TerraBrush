@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/tween.hpp>
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 using namespace godot;
 
@@ -185,5 +186,8 @@ void DockPreviewButton::clearMouseOver() {
 }
 
 void DockPreviewButton::loadResourcePreview(const Ref<Resource> &resource) {
-    EditorInterface::get_singleton()->get_resource_previewer()->queue_edited_resource_preview(resource, this, "onPreviewThumbnailReady", resource->get_path().get_file());
+    // TODO : Find a way to load a preview at runtime, for the editor node
+    if (Engine::get_singleton()->is_editor_hint()) {
+        EditorInterface::get_singleton()->get_resource_previewer()->queue_edited_resource_preview(resource, this, "onPreviewThumbnailReady", resource->get_path().get_file());
+    }
 }
