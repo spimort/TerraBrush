@@ -61,6 +61,9 @@ private:
     bool _enabled = false;
     bool _enableOnReady = true;
     bool _allowBuiltInToolSelectors = true;
+    int _defaultBrushSize = 100;
+    int _maxBrushSize = 200;
+    float _defaultBrushStrength = 0.1;
 
     void onUndoRedo();
     Vector3 getRayCastWithTerrain(Camera3D *camera);
@@ -108,6 +111,15 @@ public:
 
     bool get_allowBuiltInToolSelectors() const;
     void set_allowBuiltInToolSelectors(const bool value);
+
+    int get_defaultBrushSize() const;
+    void set_defaultBrushSize(const int value);
+
+    int get_maxBrushSize() const;
+    void set_maxBrushSize(const int value);
+
+    float get_defaultBrushStrength() const;
+    void set_defaultBrushStrength(const float value);
 
     TerraBrush *get_terraBrushNode() const;
     void set_terraBrushNode(const TerraBrush *terraBrushNode);

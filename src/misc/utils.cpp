@@ -72,7 +72,7 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
                 ERR_FAIL_COND_V_MSG(textureImage->get_format() != expectedFormat, nullptr, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedFormat) + "'. Actual format : '" + String::num_int64(textureImage->get_format()) + "'");
                 ERR_FAIL_COND_V_MSG(textureImage->has_mipmaps() != expectedMipmaps, nullptr, "The image '" + texture->get_path() + "' does not have the expected mipmaps : '" + expectedMipmaps + "'. Actual mipmaps : '" + textureImage->has_mipmaps() + "'");
                 ERR_FAIL_COND_V_MSG(textureImage->get_width() != expectedWidth, nullptr, "The image '" + texture->get_path() + "' does not have the expected width : '" + String::num_int64(expectedWidth) + "'. Actual width : '" + String::num_int64(textureImage->get_width()) + "'");
-                ERR_FAIL_COND_V_MSG(textureImage->get_height() != expectedHeight, nullptr, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedHeight) + "'. Actual height : '" + String::num_int64(textureImage->get_height()) + "'");
+                ERR_FAIL_COND_V_MSG(textureImage->get_height() != expectedHeight, nullptr, "The image '" + texture->get_path() + "' does not have the expected height : '" + String::num_int64(expectedHeight) + "'. Actual height : '" + String::num_int64(textureImage->get_height()) + "'");
 
                 if (!textureImage.is_null()) {
                     if (width == 0) {

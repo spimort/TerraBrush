@@ -99,6 +99,18 @@ void TerraBrushEditor::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_allowBuiltInToolSelectors", "value"), &TerraBrushEditor::set_allowBuiltInToolSelectors);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "allowBuiltInToolSelectors"), "set_allowBuiltInToolSelectors", "get_allowBuiltInToolSelectors");
 
+    ClassDB::bind_method(D_METHOD("get_defaultBrushSize"), &TerraBrushEditor::get_defaultBrushSize);
+    ClassDB::bind_method(D_METHOD("set_defaultBrushSize", "value"), &TerraBrushEditor::set_defaultBrushSize);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "defaultBrushSize"), "set_defaultBrushSize", "get_defaultBrushSize");
+
+    ClassDB::bind_method(D_METHOD("get_maxBrushSize"), &TerraBrushEditor::get_maxBrushSize);
+    ClassDB::bind_method(D_METHOD("set_maxBrushSize", "value"), &TerraBrushEditor::set_maxBrushSize);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "maxBrushSize"), "set_maxBrushSize", "get_maxBrushSize");
+
+    ClassDB::bind_method(D_METHOD("get_defaultBrushStrength"), &TerraBrushEditor::get_defaultBrushStrength);
+    ClassDB::bind_method(D_METHOD("set_defaultBrushStrength", "value"), &TerraBrushEditor::set_defaultBrushStrength);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "defaultBrushStrength"), "set_defaultBrushStrength", "get_defaultBrushStrength");
+
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_NONE);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINADD);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINREMOVE);
@@ -147,6 +159,9 @@ void TerraBrushEditor::_ready() {
     set_brushIndex(0);
 
     if (!Engine::get_singleton()->is_editor_hint()) {
+        _brushSize = _defaultBrushSize;
+        _brushStrength = _defaultBrushStrength;
+
         Ref<KeybindManager> keybindManager = memnew(KeybindManager);
         keybindManager->registerInputMap(true);
 
@@ -253,7 +268,7 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
             }
 
             if (inputEvent->is_action(KeybindManager::StringNames::BrushSizeSelector())) {
-                showBrushNumericSelector(camera->get_viewport(), 1, 200, Color::named("LIME_GREEN"), _brushSize, Callable(this, "onBrushSizeSelected"), KeybindManager::StringNames::BrushSizeSelector());
+                showBrushNumericSelector(camera->get_viewport(), 1, _maxBrushSize, Color::named("LIME_GREEN"), _brushSize, Callable(this, "onBrushSizeSelected"), KeybindManager::StringNames::BrushSizeSelector());
 
                 return true;
             }
@@ -868,6 +883,27 @@ bool TerraBrushEditor::get_allowBuiltInToolSelectors() const {
 }
 void TerraBrushEditor::set_allowBuiltInToolSelectors(const bool value) {
     _allowBuiltInToolSelectors = value;
+}
+
+int TerraBrushEditor::get_defaultBrushSize() const {
+    return _defaultBrushSize;
+}
+void TerraBrushEditor::set_defaultBrushSize(const int value) {
+    _defaultBrushSize = value;
+}
+
+int TerraBrushEditor::get_maxBrushSize() const {
+    return _maxBrushSize;
+}
+void TerraBrushEditor::set_maxBrushSize(const int value) {
+    _maxBrushSize = value;
+}
+
+float TerraBrushEditor::get_defaultBrushStrength() const {
+    return _defaultBrushStrength;
+}
+void TerraBrushEditor::set_defaultBrushStrength(const float value) {
+    _defaultBrushStrength = value;
 }
 
 int TerraBrushEditor::get_brushIndex() const {
