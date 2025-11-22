@@ -116,7 +116,7 @@ It runs in the browser, hosted on itch.io :
 
 As I said, I cannot make the old terrain from C# work as is. But! I made a script that let you convert a terrain from the old C# version.
 
-The script is available here : https://github.com/spimort/TerraBrush/blob/feature/main/demo/terra_brush_legacy_converter.gd
+The script is available here : https://github.com/spimort/TerraBrush/blob/main/demo/terra_brush_legacy_converter.gd
 
 - Just create a scene, with a node.
 - Set the script to the node.
