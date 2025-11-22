@@ -152,7 +152,7 @@ https://youtu.be/n5WeAqeea1c
 > [!NOTE]
 > You don't need to enable/disable the plugin, just having it present in the project under **addons** is enough to enable it.
 
-**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/blob/feature/main/demo/addons/terrabrush/terrabrush_node.png?raw=true))
+**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/blob/main/demo/addons/terrabrush/terrabrush_node.png))
 
 **Create the terrain**
 
