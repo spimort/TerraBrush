@@ -103,7 +103,7 @@ It runs in the browser, hosted on itch.io :
 ## GDExtension
 
 > [!NOTE]
-> TerraBrush used to be a C# addon, it's not the case anymore!!!
+> TerraBrush used to be a C# addon, it's not the case anymore!!! (https://youtu.be/m3Iq8OZ3XZk)
 >
 > The whole project has be rewritten in C++ as a GDExtension, to make it work with more systems (Web Exports, Godot without .Net, etc.)
 >
