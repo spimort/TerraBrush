@@ -44,7 +44,7 @@ The demo scene was made for a previous version of the addon. A new one has been 
 ## Live demo
 
 A live demo has been created to let you try the addon without the need of having Godot installed.
-It runs in the browser, hosted on itch.io:
+It runs in the browser, hosted on itch.io :
 
 [![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-color.png)](https://spimort.itch.io/terrabrush-live-demo)
 
@@ -385,6 +385,16 @@ if is_on_floor() and get_last_slide_collision() != null:
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
+
+## Mac version
+
+> [!IMPORTANT]
+> On mac, files can be signed, to be "Trusted" by the OS. I cannot do that right now (💰).
+>
+> If you see a message saying something like "**Apple could not verify...**", you can run the following command to "Trust" the addon (from your project folder) :
+> ```sh
+> xattr -dr com.apple.quarantine ./addons/terrabrush
+> ```
 
 ## Support
 
