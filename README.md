@@ -116,7 +116,7 @@ It runs in the browser, hosted on itch.io :
 
 As I said, I cannot make the old terrain from C# work as is. But! I made a script that let you convert a terrain from the old C# version.
 
-The script is available here : https://github.com/spimort/TerraBrush/blob/feature/gdextension/demo/terra_brush_legacy_converter.gd
+The script is available here : https://github.com/spimort/TerraBrush/blob/feature/main/demo/terra_brush_legacy_converter.gd
 
 - Just create a scene, with a node.
 - Set the script to the node.
@@ -152,7 +152,7 @@ https://youtu.be/n5WeAqeea1c
 > [!NOTE]
 > You don't need to enable/disable the plugin, just having it present in the project under **addons** is enough to enable it.
 
-**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/blob/feature/gdextension/demo/addons/terrabrush/terrabrush_node.png?raw=true))
+**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/blob/feature/main/demo/addons/terrabrush/terrabrush_node.png?raw=true))
 
 **Create the terrain**
 
