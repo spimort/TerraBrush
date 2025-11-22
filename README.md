@@ -40,10 +40,6 @@ I'm gonna be happy to accept PR for new features if it fits.
 
 The demo scene was made for a previous version of the addon. A new one has been made to work with the new version.
 
-## Live demo
-
-<iframe frameborder="0" src="https://itch.io/embed/4057669" width="552" height="167"><a href="https://spimort.itch.io/terrabrush-live-demo">TerraBrush Live Demo by spimort</a></iframe>
-
 ## Key Features
 
 * **Sculpt** - Sculpt your terrain with a heightmap
