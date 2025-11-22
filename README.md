@@ -15,6 +15,7 @@
 <div align="center">
 
   [Disclaimer](#disclaimer) •
+  [Live demo](#live-demo) •
   [Key Features](#key-features) •
   [How To Use](#how-to-use) •
   [Support](#support) •
@@ -39,6 +40,13 @@ I'm gonna be happy to accept PR for new features if it fits.
 ## Godot 4.4 and lower (4.x)
 
 The demo scene was made for a previous version of the addon. A new one has been made to work with the new version.
+
+## Live demo
+
+A live demo has been created to let you try the addon without the need of having Godot installed.
+It runs in the browser, hosted on itch.io:
+
+[![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-color.png)](https://spimort.itch.io/terrabrush-live-demo)
 
 ## Key Features
 
