@@ -1,0 +1,1 @@
+scons platform=linux target=template_release

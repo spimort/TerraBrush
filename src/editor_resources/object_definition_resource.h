@@ -1,0 +1,83 @@
+#ifndef OBJECT_DEFINITION_RESOURCE_H
+#define OBJECT_DEFINITION_RESOURCE_H
+
+#include "object_octree_lod_definition_resource.h"
+#include "object_octree_lod_meshes_definition_resource.h"
+#include "../misc/enums.h"
+
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+
+using namespace godot;
+
+class ObjectDefinitionResource : public Resource {
+    GDCLASS(ObjectDefinitionResource, Resource);
+
+private:
+    ObjectStrategy _strategy = ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES;
+    int _objectFrequency = 0;
+    float _randomRange = 0;
+    Ref<Texture2D> _noiseTexture = nullptr;
+    bool _randomYRotation = false;
+    bool _randomSize = false;
+    float _randomSizeFactorMin = 0;
+    float _randomSizeFactorMax = 0;
+    TypedArray<Ref<PackedScene>> _objectScenes = TypedArray<Ref<PackedScene>>();
+    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> _lodList = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
+    TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> _lodMeshes = TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>>();
+    float _updateDistanceThreshold = 0;
+    float _updateTimeFrequency = 0;
+    int _visualInstanceLayers = 0;
+
+protected:
+    static void _bind_methods();
+    void _validate_property(PropertyInfo &property) const;
+
+public:
+    ObjectDefinitionResource();
+    ~ObjectDefinitionResource();
+
+    ObjectStrategy get_strategy() const;
+    void set_strategy(const ObjectStrategy value);
+
+    int get_objectFrequency() const;
+    void set_objectFrequency(const int value);
+
+    float get_randomRange() const;
+    void set_randomRange(const float value);
+
+    Ref<Texture2D> get_noiseTexture() const;
+    void set_noiseTexture(const Ref<Texture2D> &value);
+
+    bool get_randomYRotation() const;
+    void set_randomYRotation(const bool value);
+
+    bool get_randomSize() const;
+    void set_randomSize(const bool value);
+
+    float get_randomSizeFactorMin() const;
+    void set_randomSizeFactorMin(const float value);
+
+    float get_randomSizeFactorMax() const;
+    void set_randomSizeFactorMax(const float value);
+
+    TypedArray<Ref<PackedScene>> get_objectScenes() const;
+    void set_objectScenes(const TypedArray<Ref<PackedScene>> &value);
+
+    TypedArray<Ref<ObjectOctreeLODDefinitionResource>> get_lodList() const;
+    void set_lodList(const TypedArray<Ref<ObjectOctreeLODDefinitionResource>> &value);
+
+    TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> get_lodMeshes() const;
+    void set_lodMeshes(const TypedArray<Ref<ObjectOctreeLODMeshesDefinitionResource>> &value);
+
+    float get_updateDistanceThreshold() const;
+    void set_updateDistanceThreshold(const float value);
+
+    float get_updateTimeFrequency() const;
+    void set_updateTimeFrequency(const float value);
+
+    int get_visualInstanceLayers() const;
+    void set_visualInstanceLayers(const int value);
+};
+#endif

@@ -1,0 +1,24 @@
+[configuration]
+
+entry_symbol = "terrabrush_library_init"
+compatibility_minimum = "4.5"
+reloadable = true
+
+[icons]
+
+TerraBrush = "res://addons/terrabrush/terrabrush_node.png"
+TerraBrushEditor = "res://addons/terrabrush/terrabrush_editor_node.png"
+
+[libraries]
+
+windows.debug.x86_64 = "res://addons/terrabrush/bin/libterrabrush.windows.debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.windows.release.x86_64.dll"
+
+linux.debug.x86_64 = "res://addons/terrabrush/bin/libterrabrush.linux.debug.x86_64.so"
+linux.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.linux.release.x86_64.so"
+
+macos.debug = "res://addons/terrabrush/bin/libterrabrush.macos.debug.framework/libterrabrush.macos.debug"
+macos.release = "res://addons/terrabrush/bin/libterrabrush.macos.release.framework/libterrabrush.macos.release"
+
+web.debug = "res://addons/terrabrush/bin/libterrabrush.web.debug.wasm32.wasm"
+web.release = "res://addons/terrabrush/bin/libterrabrush.web.release.wasm32.wasm"

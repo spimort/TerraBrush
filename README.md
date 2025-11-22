@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-<h4 align="center">A C# Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.4</a></h4>
+<h4 align="center">A simple <b>GDExtension</b> Terrain heightmap editor for <a href="https://godotengine.org/" target="_blank">Godot engine 4.5</a></h4>
 
 <p align="center">
   <a href="https://godotengine.org/">
@@ -15,9 +15,9 @@
 <div align="center">
 
   [Disclaimer](#disclaimer) •
+  [Live demo](#live-demo) •
   [Key Features](#key-features) •
   [How To Use](#how-to-use) •
-  [FAQ](#faq) •
   [Support](#support) •
   [License](#license)
 
@@ -31,15 +31,22 @@
 
 ## Disclaimer
 
-This project has been made mainly for my own project. I'm pretty new to gamedev so if something is not done the way it should, feel free to contact me!
+This project has been made mainly for my own project.
 <br>
 I'm happy to share it with the community but it's possible that some features that you would expect are not there.
 <br>
 I'm gonna be happy to accept PR for new features if it fits.
 
-## Godot 4.3 and lower (4.x)
+## Godot 4.4 and lower (4.x)
 
-The demo scene has been updated to Godot 4.4 which makes it break with older version of Godot.
+The demo scene was made for a previous version of the addon. A new one has been made to work with the new version.
+
+## Live demo
+
+A live demo has been created to let you try the addon without the need of having Godot installed.
+It runs in the browser, hosted on itch.io :
+
+[![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-color.png)](https://spimort.itch.io/terrabrush-live-demo)
 
 ## Key Features
 
@@ -85,40 +92,79 @@ The demo scene has been updated to Godot 4.4 which makes it break with older ver
   - Shortcuts can be Re-Assigned.  To Access them, Goto '**Project->Tools->TerraBrush Key bindings**' to access the keymap, and ability to re-assign keys. - Implemented by @eumario
 * **Settings** - Some settings are available in the "ProjectSettings->TerraBrush" (ex. The decal color)
 * **LOD** - The terrain is created using a custom clipmap mesh so less vertices are needed. https://youtu.be/BardvKC0HF0
-* **MultiZones** - The terrain support creates multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
+* **MultiZones** - The terrain supports multiple zones (or chunks or regions) to improve performances on bigger terrain. https://youtu.be/X_klfk-kdSE
 * **Heightmap based blending** - Textures can be blended with heightmaps/bumpmaps with custom intensity. - Implemented by @ZaPx64
 * **Paint locked areas** - Areas on the terrain can be locked so you don't modify completed parts
 * **Paint meta info** - Define meta info on parts of the terrain. This can be retrieved using the `GetPositionInformation` function.
 * **Import and Export** - Import and export terrain from/to various images.
+* **In game editor** - TerraBrush supports In game editing from the node **TerraBrushEditor**, perfect to make custom maps from your game (experimental)
+* **Web Export** - The TerraBrush node and the TerraBrushEditor node both works with Web Exports (experimental)
+
+## GDExtension
+
+> [!NOTE]
+> TerraBrush used to be a C# addon, it's not the case anymore!!! (https://youtu.be/m3Iq8OZ3XZk)
+>
+> The whole project has be rewritten in C++ as a GDExtension, to make it work with more systems (Web Exports, Godot without .Net, etc.)
+>
+> Starting from the version **0.14.0-alpha, C# is not required anymore**.
+
+> [!IMPORTANT]
+> Since everything has been rewritten, from C# to C++, I could not make it work automatically with previously created terrain (before 0.14.0-alpha).
+
+### Using a terrain created with the C# version
+
+As I said, I cannot make the old terrain from C# work as is. But! I made a script that let you convert a terrain from the old C# version.
+
+The script is available here : https://github.com/spimort/TerraBrush/blob/feature/main/demo/terra_brush_legacy_converter.gd
+
+- Just create a scene, with a node.
+- Set the script to the node.
+- Set the property for the existing scene that has a TerraBrush node in it, and the folder of the Data (from DataPath).
+- Hit that convert button.
+
+The script will try its best to cover the conversion but it might not be perfect. Feel free to adapt the script to your needs.
+
+## TerraBrushEditor Node
+
+The addon includes a node called TerraBrushEditor that let you paint your terrain in game. This can be useful to allow your community to help you build your terrain.
+
+**This feature is still a work in progress so expect some changes on it in the future.**
+
+## WebExport ##
+
+The web export works just fine with TerraBrush (and with the TerraBrushEditor node). Since the web uses the compatibility renderer (OpenGL), you could see some noticable visual differences.
+
+**The web export is still experimental and could change in the future.**
 
 ## How To Use
 
-Watch the tutorial video!
+Watch the tutorial video (it was made for the C# version but most of the stuff are about the same, until a new video is created for the new version) !
 https://youtu.be/n5WeAqeea1c
 
-> **Note**
-> Make sure you have the **.Net** version of Godot Engine.
+**Download** one of the release from https://github.com/spimort/TerraBrush/releases.
 
-**Clone** this repository - If you only want to try out the demo scene, you can run this project in Godot directly. Else, copy the folder **"addons/terrabrush"** to your **"addons"** folder.
+**Extract** the downloaded zip file into your project. The zip file should have an **addons** folder with the TerraBrush content.
 
-```bash
-# Clone this repository
-$ git clone https://github.com/spimort/TerraBrush
-```
+> [!IMPORTANT]
+> If Godot was open when you extrated the addon to the project, sometimes, Godot just closes. Just reopen it, it should be fine.
 
-**Add a C# Solution** - To make sure that your project has C# enabled, go under "Project->Tools->C#->Create C# Solution".
+> [!NOTE]
+> You don't need to enable/disable the plugin, just having it present in the project under **addons** is enough to enable it.
 
-**Compile** - It's really important to compile using this icon ![image](https://github.com/spimort/TerraBrush/assets/6035485/cf47eb92-3660-4038-9ef7-dfedd255dcb1) so Godot can run the plugin.
+**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/blob/feature/main/demo/addons/terrabrush/terrabrush_node.png?raw=true))
 
-**Enable the plugin** - When the game has been compiled once, you should be able to enable the plugin. To do that, go under "Project->ProjectSettings->Plugins" and enable the checkbox next to TerraBrush.
+**Create the terrain**
 
-**Add the node** - To add a terrain node, in the "Add node" screen, search for "Node3D->TerraBrush" (![image](https://github.com/spimort/TerraBrush/assets/6035485/627ab85c-e84e-443d-89b1-0bd7ac4ad73e))
+To **create** the terrain, there is a popup menu called "Terrain" with some options to create/update/remove, located in the tool menu of Godot (close to your viewport options). Make sure you have a **DataPath** set for your terrain before to create it. **This DataPath should be unique per terrain**.
 
 **Update the terrain**
 
 Some properties of the node require the terrain to refresh (mainly for the shaders and stuff). If something does not refresh, hit that "UpdateTerrain" button!
 <br>
 For example, if you add a new texture, add foliage, add an object, add a water definition or add snow, you'll have to hit the "UpdateTerrain" button.
+
+This was designed this way to avoid spamming the properties of the terrain to update too often. This let you play with the settings before to force the terrain to recreate itself.
 
 **Node properties**
 
@@ -263,6 +309,27 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 |---|---|
 |**TerrainLoaded**|Occurs when the terrain is done loading all the different components.|
 
+### C# Wrapper
+
+Wrapper nodes has been created to let you interact with the GDExtension while having the C# types available.
+You can use it like that :
+
+```c#
+private TerraBrush.TerraBrush _terraBrush;
+
+public override void _Ready() {
+    base._Ready();
+
+    _terraBrush = new TerraBrush.TerraBrush(Terrain);
+}
+```
+
+When this is done, you can interact with the terrain from the wrapper node :
+
+```c#
+_terraBrush.GetTerrainCollider();
+```
+
 ### Interact with the terrain
 
 To interact with the terrain (for example, to make water ripple), you can call the function `AddInteractionPoint` on the TerraBrush node. This function requires an x and y position, corresponding to the x and y coordinates on the map, in meters.
@@ -273,16 +340,16 @@ These two functions can be called from **GDScript** and **C#**.
 
 #### C# Snippet
 ```c#
-// Let's assume we have a variable called "TerraBrush" that is a TerraBrush Node.
+// Let's assume we have a variable called "_terraBrush" that is a TerraBrush Wrapper Node.
 // Let's validate that we are on the ground
 if (IsOnFloor() && GetLastSlideCollision() != null) {
     // Get the current collision
     var collision = GetLastSlideCollision();
 
     // Let's make sure the collider is the collider of the Terrain
-    if (collision?.GetCollider() == TerraBrush?.Terrain?.TerrainCollider) {
+    if (collision == _terraBrush.GetTerrainCollider()) {
         // The variable playerX and playerZ are the variables for the global position of the player
-        var result = TerraBrush.GetPositionInformation(playerX, playerZ);
+        var result = _terraBrush.GetPositionInformation(playerX, playerZ);
         // If we don't get a result, it means we are out of the terrain
         if (result != null) {
             // The texture at position 0 is the most present one
@@ -297,16 +364,16 @@ if (IsOnFloor() && GetLastSlideCollision() != null) {
 
 #### GDScript Snippet
 ```gdscript
-# Let's assume we have a variable called "%TerraBrush" that is a TerraBrush Node.
+# Let's assume we have a variable called "_terraBrush" that is a TerraBrush Node.
 # Let's validate that we are on the ground
 if is_on_floor() and get_last_slide_collision() != null:
     # Get the current collision
     var collision = get_last_slide_collision()
 
     # Let's make sure the collider is the collider of the Terrain
-    if collision.get_collider() == %TerraBrush.Terrain.TerrainCollider:
+		if collision == _terrain.getTerrainCollider():
         # The variable playerX and playerZ are the variables for the global position of the player
-        var result = %TerraBrush.GetPositionInformation(playerX, playerZ)
+			  var result = _terrain.getPositionInformation(playerX, playerZ)
         # If we don't get a result, it means we are out of the terrain
         if result != null:
             # The texture at position 0 is the most present one
@@ -319,11 +386,15 @@ if is_on_floor() and get_last_slide_collision() != null:
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
 
-## FAQ
+## Mac version
 
-### Unable to load addon script
-* Make sure to use the .Net version of Godot. See the following issue for more details : https://github.com/spimort/TerraBrush/issues/201
-* If you you delete the folder **.godot**, make sure to rebuilt the project with either the **hammer button** or the `dotnet build` command. See the following issue for more details : https://github.com/spimort/TerraBrush/issues/215
+> [!IMPORTANT]
+> On mac, files can be signed, to be "Trusted" by the OS. I cannot do that right now (💰).
+>
+> If you see a message saying something like "**Apple could not verify...**", you can run the following command to "Trust" the addon (from your project folder) :
+> ```sh
+> xattr -dr com.apple.quarantine ./addons/terrabrush
+> ```
 
 ## Support
 
@@ -344,5 +415,7 @@ MIT
 
 ---
 > Youtube [@spimortdev](https://www.youtube.com/@spimortdev) &nbsp;&middot;&nbsp;
-> Twitter [@spimortdev](https://twitter.com/spimortdev)
+> Twitter [@spimortdev](https://twitter.com/spimortdev) &nbsp;&middot;&nbsp;
+> BSky [@spimort](https://bsky.app/profile/spimort.bsky.social) &nbsp;&middot;&nbsp;
+> Mastodon [@spimort](https://mastodon.gamedev.place/@spimort)
 

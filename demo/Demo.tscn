@@ -1,0 +1,217 @@
+[gd_scene load_steps=71 format=3 uid="uid://v4o1p7h4rn3j"]
+
+[ext_resource type="Texture2D" uid="uid://b8oilw31hv88p" path="res://Assets/hdri/hilly_terrain_01_puresky_1k.hdr" id="1_iuqbl"]
+[ext_resource type="Image" uid="uid://mt1iq0ehpi76" path="res://Demo/Heightmap.res" id="3_ckogt"]
+[ext_resource type="Texture2D" uid="uid://b5w0aj68co7mc" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Color.jpg" id="3_dxgqb"]
+[ext_resource type="Texture2D" uid="uid://f6k5xa1are2a" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Displacement.jpg" id="4_w0eiu"]
+[ext_resource type="Texture2D" uid="uid://cfhrarnnkgmul" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_NormalGL.jpg" id="5_6an3f"]
+[ext_resource type="Texture2D" uid="uid://btm7xw6mknurq" path="res://Assets/cc0_textures/Grass/Grass004_1K-JPG_Roughness - inverted.jpg" id="6_oy27c"]
+[ext_resource type="Texture2D" uid="uid://c564h6uniucsk" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_color_1k.jpg" id="8_7f4ek"]
+[ext_resource type="Texture2D" uid="uid://c7h0hrakrlkpq" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_height_1k.png" id="8_srk7a"]
+[ext_resource type="Texture2D" uid="uid://b34wpvg5h4p4q" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_normal_opengl_1k.png" id="9_satbt"]
+[ext_resource type="Texture2D" uid="uid://ctdtau2iwdkla" path="res://Assets/cc0_textures/bricks_0019_1k_2UNbry/bricks_0019_roughness_1k.jpg" id="10_lt8js"]
+[ext_resource type="Texture2D" uid="uid://dfcyx4fhnyqmp" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_color_1k.jpg" id="11_1mp7w"]
+[ext_resource type="Texture2D" uid="uid://dtmmmald6xw7v" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_height_1k.png" id="11_b3m5x"]
+[ext_resource type="Texture2D" uid="uid://hosywlyneaqc" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_normal_opengl_1k.png" id="12_36x75"]
+[ext_resource type="Texture2D" uid="uid://6xypy41ao85" path="res://Assets/cc0_textures/dirt_ground_0013_1k_zW2rzw/ground_0013_roughness_1k.jpg" id="13_43kc8"]
+[ext_resource type="Texture2D" uid="uid://kb1h7trfm56o" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_color_1k.jpg" id="14_v2wx4"]
+[ext_resource type="Texture2D" uid="uid://tait6si8fhul" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_normal_opengl_1k.png" id="15_6s3cb"]
+[ext_resource type="Texture2D" uid="uid://b1e8mhs42h3a1" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_roughness_1k.jpg" id="16_d4u8t"]
+[ext_resource type="Texture2D" uid="uid://cwjyrocs7hah6" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_height_1k.png" id="17_l1sku"]
+[ext_resource type="Texture2D" uid="uid://bi45fiplhg6an" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_color_1k.jpg" id="17_ngv3d"]
+[ext_resource type="Texture2D" uid="uid://dmtgcaq3rd8c2" path="res://Assets/cc0_textures/ice_0001_1k_APRx3a/ice_0001_height_1k.png" id="17_quhjx"]
+[ext_resource type="Texture2D" uid="uid://ckjbys2om7wsa" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_normal_opengl_1k.png" id="18_3axer"]
+[ext_resource type="Texture2D" uid="uid://ci2ebkk666awq" path="res://Assets/cc0_textures/sand_ground_0043_1k_jtamM8/ground_0043_roughness_1k.jpg" id="19_b7yqj"]
+[ext_resource type="Image" uid="uid://c4o743jmncnva" path="res://Demo/Splatmap0.res" id="21_uuhvh"]
+[ext_resource type="Image" uid="uid://dw5eoaubpj8ca" path="res://Demo/Splatmap1.res" id="22_rxty4"]
+[ext_resource type="Image" uid="uid://btqvtq3waf3m6" path="res://Demo/Water.res" id="23_e5br0"]
+[ext_resource type="WaterResource" uid="uid://bf3nx6nl2obra" path="res://Resources/DefaultWater.tres" id="23_rpaxe"]
+[ext_resource type="Image" uid="uid://b68a2ljs41avw" path="res://Demo/Foliage0.res" id="25_001cp"]
+[ext_resource type="Image" uid="uid://bu3p6spdkfd42" path="res://Demo/Snow.res" id="25_4k6f3"]
+[ext_resource type="Texture2D" uid="uid://oym5iluojwnn" path="res://Assets/Images/grassbushcc008.png" id="25_e6dcx"]
+[ext_resource type="ArrayMesh" uid="uid://b3jybvl4hcmx5" path="res://Assets/Models/Foliage/foliage.obj" id="26_eqy4b"]
+[ext_resource type="PackedScene" uid="uid://bcw1uunyy5sdy" path="res://Assets/PackedScenes/Tree1.tscn" id="28_7kh4w"]
+[ext_resource type="PackedScene" uid="uid://by5jhpanviatg" path="res://Assets/PackedScenes/Tree2.tscn" id="29_lcqjd"]
+[ext_resource type="PackedScene" uid="uid://dd0rnuhitww8y" path="res://Assets/PackedScenes/Tree3.tscn" id="30_iv0fo"]
+[ext_resource type="PackedScene" uid="uid://8itaivqs7rvc" path="res://Assets/PackedScenes/Tree4.tscn" id="31_eut0r"]
+[ext_resource type="PackedScene" uid="uid://clkvfnxdtmfyx" path="res://Assets/PackedScenes/Tree5.tscn" id="32_bygrd"]
+[ext_resource type="PackedScene" uid="uid://c2vy78l7nndg2" path="res://Assets/PackedScenes/Tree6.tscn" id="33_b356k"]
+[ext_resource type="PackedScene" uid="uid://bfmq8pd3i7n4i" path="res://Assets/PackedScenes/Tree7.tscn" id="34_fbx31"]
+[ext_resource type="PackedScene" uid="uid://banx7d8lqnxjg" path="res://Assets/PackedScenes/Tree8.tscn" id="35_bfsrw"]
+[ext_resource type="PackedScene" uid="uid://b3yvmg6bk1bcx" path="res://Assets/PackedScenes/Tree9.tscn" id="36_0lkg2"]
+[ext_resource type="PackedScene" uid="uid://cwh3uwqhgvdh3" path="res://Assets/PackedScenes/Tree10.tscn" id="37_53qnf"]
+[ext_resource type="PackedScene" uid="uid://71itdw6m0jou" path="res://Assets/PackedScenes/Tree11.tscn" id="38_ch8bs"]
+[ext_resource type="PackedScene" uid="uid://bworhtcsluxw7" path="res://Assets/PackedScenes/Tree12.tscn" id="39_6yo16"]
+[ext_resource type="Image" uid="uid://d0qwv6p6dgdg" path="res://Demo/Object0.res" id="43_4bivk"]
+[ext_resource type="Script" uid="uid://ctibeka8wsgyc" path="res://Demo.gd" id="45_lgtep"]
+[ext_resource type="Image" uid="uid://bqan2knipfmpx" path="res://Demo/MetaInfo_0_0.res" id="48_ph4rl"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_a58er"]
+panorama = ExtResource("1_iuqbl")
+
+[sub_resource type="Sky" id="Sky_jyr7x"]
+sky_material = SubResource("PanoramaSkyMaterial_a58er")
+
+[sub_resource type="Environment" id="Environment_via5m"]
+background_mode = 2
+sky = SubResource("Sky_jyr7x")
+tonemap_mode = 3
+fog_light_color = Color(0.916252, 0.702711, 0.0144581, 1)
+volumetric_fog_density = 0.0158
+volumetric_fog_albedo = Color(0.975389, 0.862045, 0.25784, 1)
+volumetric_fog_anisotropy = 0.9
+
+[sub_resource type="TextureSetResource" id="Resource_wm6o8"]
+name = "Grass"
+albedoTexture = ExtResource("3_dxgqb")
+normalTexture = ExtResource("5_6an3f")
+roughnessTexture = ExtResource("6_oy27c")
+heightTexture = ExtResource("4_w0eiu")
+
+[sub_resource type="TextureSetResource" id="Resource_al3h6"]
+name = "Brick"
+albedoTexture = ExtResource("8_7f4ek")
+normalTexture = ExtResource("9_satbt")
+roughnessTexture = ExtResource("10_lt8js")
+heightTexture = ExtResource("8_srk7a")
+
+[sub_resource type="TextureSetResource" id="Resource_0e1fb"]
+name = "Dirt"
+albedoTexture = ExtResource("11_1mp7w")
+normalTexture = ExtResource("12_36x75")
+roughnessTexture = ExtResource("13_43kc8")
+heightTexture = ExtResource("11_b3m5x")
+
+[sub_resource type="TextureSetResource" id="Resource_1laah"]
+name = "Snow"
+albedoTexture = ExtResource("14_v2wx4")
+normalTexture = ExtResource("15_6s3cb")
+roughnessTexture = ExtResource("16_d4u8t")
+heightTexture = ExtResource("17_quhjx")
+
+[sub_resource type="TextureSetResource" id="Resource_xss3l"]
+name = "Sand"
+albedoTexture = ExtResource("17_ngv3d")
+normalTexture = ExtResource("18_3axer")
+roughnessTexture = ExtResource("19_b7yqj")
+heightTexture = ExtResource("17_l1sku")
+
+[sub_resource type="TextureSetsResource" id="Resource_nwvvi"]
+textureSets = Array[TextureSetResource]([SubResource("Resource_wm6o8"), SubResource("Resource_al3h6"), SubResource("Resource_0e1fb"), SubResource("Resource_1laah"), SubResource("Resource_xss3l")])
+
+[sub_resource type="Gradient" id="Gradient_andab"]
+colors = PackedColorArray(0.162066, 0.162066, 0.162066, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6gfss"]
+noise_type = 0
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rb8l3"]
+noise = SubResource("FastNoiseLite_6gfss")
+color_ramp = SubResource("Gradient_andab")
+seamless = true
+
+[sub_resource type="FoliageDefinitionResource" id="Resource_uou6r"]
+mesh = ExtResource("26_eqy4b")
+meshScale = Vector3(3, 3, 3)
+albedoTextures = Array[Texture2D]([ExtResource("25_e6dcx")])
+useGroundColor = true
+scaleNoiseTexture = SubResource("NoiseTexture2D_rb8l3")
+
+[sub_resource type="FoliageResource" id="Resource_msipp"]
+definition = SubResource("Resource_uou6r")
+
+[sub_resource type="ObjectDefinitionResource" id="Resource_edv2t"]
+randomRange = 4.0
+randomYRotation = true
+randomSize = true
+objectScenes = Array[PackedScene]([ExtResource("28_7kh4w"), ExtResource("29_lcqjd"), ExtResource("30_iv0fo"), ExtResource("31_eut0r"), ExtResource("32_bygrd"), ExtResource("33_b356k"), ExtResource("34_fbx31"), ExtResource("35_bfsrw"), ExtResource("36_0lkg2"), ExtResource("37_53qnf"), ExtResource("38_ch8bs"), ExtResource("39_6yo16")])
+
+[sub_resource type="ObjectResource" id="Resource_0o1vb"]
+definition = SubResource("Resource_edv2t")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_cj3iw"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nbj8i"]
+noise = SubResource("FastNoiseLite_cj3iw")
+seamless = true
+
+[sub_resource type="SnowResource" id="Resource_ibahd"]
+snowColorTexture = ExtResource("14_v2wx4")
+snowColorNormal = ExtResource("15_6s3cb")
+snowColorRoughness = ExtResource("16_d4u8t")
+noise = SubResource("NoiseTexture2D_nbj8i")
+
+[sub_resource type="MetaInfoLayerResource" id="Resource_ji8n5"]
+name = "LeftSide"
+color = Color(0, 0.439101, 0.842805, 1)
+metadata/_custom_type_script = "uid://1jhl1ptx6ntv"
+
+[sub_resource type="MetaInfoLayerResource" id="Resource_ph4rl"]
+name = "RightSide"
+color = Color(0.647393, 0, 0.133757, 1)
+metadata/_custom_type_script = "uid://1jhl1ptx6ntv"
+
+[sub_resource type="ZoneResource" id="Resource_cwvp6"]
+heightMapImage = ExtResource("3_ckogt")
+splatmapsImage = Array[Image]([ExtResource("21_uuhvh"), ExtResource("22_rxty4")])
+foliagesImage = Array[Image]([ExtResource("25_001cp")])
+objectsImage = Array[Image]([ExtResource("43_4bivk")])
+waterImage = ExtResource("23_e5br0")
+snowImage = ExtResource("25_4k6f3")
+metaInfoImage = ExtResource("48_ph4rl")
+
+[sub_resource type="ZonesResource" id="Resource_dp21i"]
+zones = Array[ZoneResource]([SubResource("Resource_cwvp6")])
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7807j"]
+height = 4.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ph4rl"]
+
+[node name="Demo" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.819021, 0.113909, -0.562343, -0.010378, 0.982876, 0.183978, 0.57367, -0.144846, 0.806177, 16.3787, 65.155, 42.0747)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_via5m")
+
+[node name="TerraBrush" type="TerraBrush" parent="."]
+dataPath = "res://Demo"
+lodLevels = 3
+textureSets = SubResource("Resource_nwvvi")
+foliages = Array[FoliageResource]([SubResource("Resource_msipp")])
+objects = Array[ObjectResource]([SubResource("Resource_0o1vb")])
+waterDefinition = ExtResource("23_rpaxe")
+snowDefinition = SubResource("Resource_ibahd")
+metaInfoLayers = Array[MetaInfoLayerResource]([SubResource("Resource_ji8n5"), SubResource("Resource_ph4rl")])
+terrainZones = SubResource("Resource_dp21i")
+metadata/_edit_lock_ = true
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("_camera", "_terrain", "_debugLabel", "_shapeCast")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.4413, 21.1014, 57.3405)
+floor_max_angle = 1.13446
+script = ExtResource("45_lgtep")
+_camera = NodePath("Camera3D")
+_terrain = NodePath("../TerraBrush")
+_debugLabel = NodePath("../Debug")
+_shapeCast = NodePath("ShapeCast3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_7807j")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.313061, 0)
+shape = SubResource("CapsuleShape3D_ph4rl")
+collide_with_areas = true
+
+[node name="Debug" type="Label" parent="."]
+offset_left = 26.0
+offset_top = 16.0
+offset_right = 66.0
+offset_bottom = 39.0

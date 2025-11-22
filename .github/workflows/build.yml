@@ -1,32 +1,156 @@
-name: Build
-
+name: Build TerraBrush
 on: workflow_dispatch
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - platform: linux
-            os: ubuntu-latest
-          - platform: windows
-            os: windows-latest
-          - platform: macos
-            os: macos-latest
+        # A build is made for every possible combination of parameters
+        # You can add or remove entries from the arrays of each parameter to customize which builds you want to run
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            # { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            # { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            # { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            # { platform: windows, arch: x86_32, os: windows-latest },
+            # { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+            # { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            # { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            # { platform: android, arch: arm64, os: ubuntu-22.04 },
+            # { platform: android, arch: arm32, os: ubuntu-22.04 },
+            # { platform: ios, arch: arm64, os: macos-latest },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 },
+          ]
+        target-type: [template_debug, template_release]
 
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: actions/checkout@v4
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
 
-      - name: Download godot-cpp Builds
-        uses: NodotProject/godot-cpp-builds@v1
-        with:
-          godot-version: '4.5-stable'
-          godot-cpp-path: './godot-cpp'
+      # Lint
+      #- name: Setup clang-format
+      #  shell: bash
+      #  run: |
+      #    python -m pip install clang-format
+      #- name: Run clang-format
+      #  shell: bash
+      #  run: |
+      #    clang-format src/** --dry-run --Werror
 
-      - name: Build GDExtension
+      # Add linux x86_32 toolchain
+      - name: Install multilib support
+        if: ${{ matrix.target.platform == 'linux' && matrix.target.arch == 'x86_32' }}
         run: |
-          scons platform=${{ matrix.platform }} target=template_release
+          sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+          windows-compiler: ${{ matrix.target.platform == 'windows' && 'msvc' || 'mingw' }}
+
+      # Build GDExtension (with caches)
+
+      - name: Restore .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension Debug Build
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          if [ "${{ matrix.target.platform }}" = "windows" ]; then
+            scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} use_mingw=no
+          else
+            scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }}
+          fi
+
+      - name: Save .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.target-type }}
+
+      # Clean up compilation files
+      - name: Windows - Delete compilation files
+        if: ${{ matrix.target.platform == 'windows' }}
+        shell: pwsh
+        run: |
+          Remove-Item demo/addons/terrabrush/bin/* -Include *.exp,*.lib,*.pdb -Force
+
+      # Upload the build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrabrush-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.target-type }}
+          path: |
+            ${{ github.workspace }}/demo/addons/terrabrush/bin/**
+
+  # Merges all the build artifacts together into a single terrabrush artifact.
+  # If you comment out this step, all the builds will be uploaded individually.
+  merge-builds:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Merge binaries Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: terrabrush-binaries
+          pattern: terrabrush-*
+          delete-merged: true
+
+
+  # Merge all builds into a single ZIP artifact
+  merge-addon:
+    runs-on: ubuntu-22.04
+    needs: merge-builds
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Download binaries artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: terrabrush-binaries
+          path: demo/addons/terrabrush/bin/
+
+      - name: Read TerraBrush version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(grep -oP '(?<=_version = ")[^"]+' src/terra_brush.h)
+          echo "Found version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare release folder
+        shell: bash
+        run: |
+          mkdir demo/addons-release
+          mv demo/addons demo/addons-release
+
+      - name: Upload addon folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrabrush-${{ steps.version.outputs.version }}
+          path: demo/addons-release/
+
+      - name: Remove binaries artifact
+        uses: geekyeggo/delete-artifact@v5
+        with:
+            name: terrabrush-binaries
