@@ -172,6 +172,7 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
 
                 Dictionary collisionShapeInfoInfo = Dictionary();
                 collisionShapeInfoInfo[CollisionShapeInfoInfo_ShapeKey] = lodMeshDefinition->get_collisionShape();
+                collisionShapeInfoInfo[CollisionShapeInfoInfo_OffsetKey] = lodMeshDefinition->get_collisionOffset();
 
                 _collisionShapes[i] = collisionShapeInfoInfo;
             }

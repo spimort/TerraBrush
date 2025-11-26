@@ -14,6 +14,7 @@ class ObjectOctreeLODMeshesDefinitionResource : public Resource {
 private:
     TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>> _meshes = TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>>();
     Ref<Shape3D> _collisionShape = nullptr;
+    Vector3 _collisionOffset = Vector3(0, 0, 0);
 
 protected:
     static void _bind_methods();
@@ -27,5 +28,8 @@ public:
 
     Ref<Shape3D> get_collisionShape() const;
     void set_collisionShape(const Ref<Shape3D> &value);
+
+    Vector3 get_collisionOffset() const;
+    void set_collisionOffset(const Vector3 &value);
 };
 #endif
