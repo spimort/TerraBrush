@@ -22,3 +22,6 @@ macos.release = "res://addons/terrabrush/bin/libterrabrush.macos.release.framewo
 
 web.debug = "res://addons/terrabrush/bin/libterrabrush.web.debug.wasm32.wasm"
 web.release = "res://addons/terrabrush/bin/libterrabrush.web.release.wasm32.wasm"
+
+ios.debug = "res://addons/terrabrush/bin/libterrabrush.ios.debug.a"
+ios.release = "res://addons/terrabrush/bin/libterrabrush.ios.release.a"
