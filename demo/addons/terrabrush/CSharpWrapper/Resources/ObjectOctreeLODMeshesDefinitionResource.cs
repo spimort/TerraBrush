@@ -24,6 +24,15 @@ public partial class ObjectOctreeLODMeshesDefinitionResource : Resource {
         }
     }
 
+    public Vector3 CollisionOffset {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_collisionOffset").As<Vector3>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_collisionOffset", value);
+        }
+    }
+
     public static implicit operator ObjectOctreeLODMeshesDefinitionResource(Variant handle) => new(handle);
 
     public ObjectOctreeLODMeshesDefinitionResource(Variant handle) {

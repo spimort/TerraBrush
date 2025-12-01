@@ -172,6 +172,7 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
 
                 Dictionary collisionShapeInfoInfo = Dictionary();
                 collisionShapeInfoInfo[CollisionShapeInfoInfo_ShapeKey] = lodMeshDefinition->get_collisionShape();
+                collisionShapeInfoInfo[CollisionShapeInfoInfo_OffsetKey] = lodMeshDefinition->get_collisionOffset();
 
                 _collisionShapes[i] = collisionShapeInfoInfo;
             }
@@ -415,7 +416,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                     CollisionShape3D *collisionShape = memnew(CollisionShape3D);
                     collisionShape->set_shape(shapeInfo[CollisionShapeInfoInfo_ShapeKey]);
                     collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);
-                    collisionShape->set_scale(lodMeshDefinition->get_scale());
+                    collisionShape->set_scale(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
                     nodeInfo->set_collisionShape(collisionShape);
                     _staticBodyContainer->call_deferred("add_child", collisionShape);
                 }
