@@ -22,3 +22,8 @@ macos.release = "res://addons/terrabrush/bin/libterrabrush.macos.release.framewo
 
 web.debug = "res://addons/terrabrush/bin/libterrabrush.web.debug.wasm32.wasm"
 web.release = "res://addons/terrabrush/bin/libterrabrush.web.release.wasm32.wasm"
+
+android.debug.arm64 = "res://addons/terrabrush/bin/libterrabrush.android.debug.arm64.so"
+android.release.arm64 = "res://addons/terrabrush/bin/libterrabrush.android.release.arm64.so"
+android.debug.x86_64 = "res://addons/terrabrush/bin/libterrabrush.android.debug.arm64.so"
+android.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.android.release.arm64.so"
