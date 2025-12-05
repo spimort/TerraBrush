@@ -21,7 +21,7 @@ jobs:
             { platform: macos, arch: universal, os: macos-latest },
             # { platform: android, arch: x86_64, os: ubuntu-22.04 },
             # { platform: android, arch: x86_32, os: ubuntu-22.04 },
-            # { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
             # { platform: android, arch: arm32, os: ubuntu-22.04 },
             # { platform: ios, arch: arm64, os: macos-latest },
             { platform: web, arch: wasm32, os: ubuntu-22.04 },
