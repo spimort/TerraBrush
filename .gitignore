@@ -17,7 +17,7 @@ mono_crash.*.json
 /.idea
 
 # Godot CPP
-*.obj
+/src/**/*.obj
 *.o
 *.dll
 *.lib

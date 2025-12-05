@@ -21,7 +21,7 @@ jobs:
             { platform: macos, arch: universal, os: macos-latest },
             # { platform: android, arch: x86_64, os: ubuntu-22.04 },
             # { platform: android, arch: x86_32, os: ubuntu-22.04 },
-            # { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
             # { platform: android, arch: arm32, os: ubuntu-22.04 },
             # { platform: ios, arch: arm64, os: macos-latest },
             { platform: web, arch: wasm32, os: ubuntu-22.04 },
@@ -142,7 +142,8 @@ jobs:
         shell: bash
         run: |
           mkdir demo/addons-release
-          mv demo/addons demo/addons-release
+          mkdir demo/addons-release/terrabrush
+          mv demo/addons demo/addons-release/terrabrush
 
       - name: Upload addon folder
         uses: actions/upload-artifact@v4

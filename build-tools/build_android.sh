@@ -1,0 +1,1 @@
+scons platform=android target=template_release
