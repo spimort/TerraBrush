@@ -141,8 +141,8 @@ jobs:
       - name: Prepare release folder
         shell: bash
         run: |
-          mkdir demo/addons-release
-          mv demo/addons demo/addons-release
+          mkdir demo/addons-release/terrabrush
+          mv demo/addons demo/addons-release/terrabrush
 
       - name: Upload addon folder
         uses: actions/upload-artifact@v4
