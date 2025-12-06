@@ -255,41 +255,53 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
             return;
         }
 
-        TypedArray<float> terrainData = TypedArray<float>();
+        PackedFloat32Array terrainData = PackedFloat32Array();
         for (int y = 0; y < imageHeight; y++) {
             for (int x = 0; x < imageWidth; x++) {
                 if (token.isCancellationRequested) {
                     return;
                 }
 
-                Ref<ZoneResource> currentZone = zone;
+                PackedByteArray currentHeightMapImage = heightMapImage;
+                PackedByteArray currentWaterImage = waterImage;
+
+                Ref<ZoneResource> neighbourZone = nullptr;
                 int lookupX = x;
                 int lookupY = y;
                 // TODO : This does not always work but it does most of the time.
                 // We should ensure of the direction of the pixel directly in the shader, so it works all the time.
                 if (_zonesSize % 2 == 0) {
                     if (x == 0 && !leftNeighbourZone.is_null()) {
-                        currentZone = leftNeighbourZone;
+                        neighbourZone = leftNeighbourZone;
                         lookupX = imageWidth - 1;
                     } else if (y == 0 && !topNeighbourZone.is_null()) {
-                        currentZone = topNeighbourZone;
+                        neighbourZone = topNeighbourZone;
                         lookupY = imageHeight - 1;
                     }
                 } else {
                     if (x == imageWidth - 1 && y == imageHeight - 1 && !bottomRightNeighbourZone.is_null()) {
-                        currentZone = bottomRightNeighbourZone;
+                        neighbourZone = bottomRightNeighbourZone;
                         lookupX = 0;
                         lookupY = 0;
                     } else if (x == imageWidth - 1 && !rightNeighbourZone.is_null()) {
-                        currentZone = rightNeighbourZone;
+                        neighbourZone = rightNeighbourZone;
                         lookupX = 0;
                     } else if (y == imageHeight - 1 && !bottomNeighbourZone.is_null()) {
-                        currentZone = bottomNeighbourZone;
+                        neighbourZone = bottomNeighbourZone;
                         lookupY = 0;
                     }
                 }
 
-                float pixelHeight = getHeightForZone(lookupX, lookupY, imageWidth, heightMapImage, waterImage);
+                if (!neighbourZone.is_null()) {
+                    Dictionary neighbourCollisionData = zonesData[neighbourZone];
+                    currentHeightMapImage = neighbourCollisionData[CollisionDataHeightmapImageKey];
+
+                    if (neighbourCollisionData.has(CollisionDataWaterImageKey)) {
+                        currentWaterImage = neighbourCollisionData[CollisionDataWaterImageKey];
+                    }
+                }
+
+                float pixelHeight = getHeightForZone(lookupX, lookupY, imageWidth, currentHeightMapImage, currentWaterImage);
                 terrainData.append(pixelHeight);
             }
         }
@@ -299,7 +311,7 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
         }
 
         Ref<HeightMapShape3D> heightMapShape3D = collisionData[CollisionDataShapeKey];
-        call_deferred("assignCollisionData", heightMapShape3D, PackedFloat32Array(terrainData));
+        call_deferred("assignCollisionData", heightMapShape3D, terrainData);
     }
 }
 
@@ -519,6 +531,8 @@ Ref<HeightMapShape3D> Terrain::addZoneCollision(Ref<ZoneResource> zone) {
 
     CollisionShape3D* collisionShape = memnew(CollisionShape3D);
     _terrainCollider->add_child(collisionShape);
+    // Uncomment to see collisions in the editor
+    // collisionShape->set_owner(get_tree()->get_edited_scene_root());
 
     collisionShape->set_position(Vector3((_zonesSize - 1) * zone->get_zonePosition().x, 0, (_zonesSize - 1) * zone->get_zonePosition().y));
     collisionShape->set_scale(Vector3(_resolution, 1, _resolution));
