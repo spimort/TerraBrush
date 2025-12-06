@@ -67,7 +67,6 @@ private:
 
     void onUndoRedo();
     Vector3 getRayCastWithTerrain(Camera3D *camera);
-    Vector3 getMouseClickToZoneHeight(Vector3 from, Vector3 direction);
     StringName hideOverlaySelector();
     void showToolPieMenu(Viewport *viewport, StringName actionName);
     void showCustomContentPieMenu(Viewport *viewport, String label, std::function<void(CustomContentPieMenu*)> addItems);

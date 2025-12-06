@@ -26,7 +26,6 @@
 #include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
-#include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/sub_viewport.hpp>
 #include <godot_cpp/classes/sub_viewport_container.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -377,42 +376,7 @@ Vector3 TerraBrushEditor::getRayCastWithTerrain(Camera3D *camera) {
         return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
     }
 
-    PhysicsDirectSpaceState3D *spaceState = _terraBrushNode->get_world_3d()->get_direct_space_state();
-
-    Vector2 screenPosition = camera->get_viewport()->get_mouse_position();
-
-    Vector3 from = camera->project_ray_origin(screenPosition);
-    Vector3 dir = camera->project_ray_normal(screenPosition);
-
-    return getMouseClickToZoneHeight(from, dir);
-}
-
-Vector3 TerraBrushEditor::getMouseClickToZoneHeight(Vector3 from, Vector3 direction) {
-    if (!_enabled || _terraBrushNode == nullptr || _containerNode == nullptr) {
-        return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
-    }
-
-    for (int i = 0; i < 20000; i++) {
-        Vector3 position = from + (direction * i * 0.1f) - _terraBrushNode->get_global_position();
-
-        ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(position.x + (_terraBrushNode->get_zonesSize() / 2), position.z + (_terraBrushNode->get_zonesSize() / 2), _terraBrushNode->get_zonesSize(), _terraBrushNode->get_resolution());
-        Ref<ZoneResource> zone;
-        if (!_terraBrushNode->get_terrainZones().is_null()) {
-            zone = _terraBrushNode->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
-        }
-
-        if (!zone.is_null() && !zone->get_heightMapImage().is_null()) {
-            Ref<Image> heightMapImage = zone->get_heightMapImage();
-            float zoneHeight = heightMapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
-
-            if (zoneHeight >= position.y) {
-                return Vector3(position.x, zoneHeight, position.z) + _terraBrushNode->get_global_position();
-            }
-        }
-
-    }
-
-    return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    return _terraBrushNode->getHeightForMousePosition(camera);
 }
 
 StringName TerraBrushEditor::hideOverlaySelector() {

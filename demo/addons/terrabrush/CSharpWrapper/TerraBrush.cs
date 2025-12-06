@@ -300,4 +300,16 @@ public partial class TerraBrush : Node {
     public StaticBody3D GetTerrainCollider() {
         return _godotHandle.AsGodotObject().Call("getTerrainCollider").As<StaticBody3D>();
     }
+
+    public float GetHeightAtPosition(float x, float z, bool useGlobalPosition) {
+        return (float) _godotHandle.AsGodotObject().Call("getHeightAtPosition", x, z, useGlobalPosition).AsDouble();
+    }
+
+    public Vector3 GetHeightForMousePosition(Camera3D camera) {
+        return _godotHandle.AsGodotObject().Call("getHeightForMousePosition", camera).AsVector3();
+    }
+
+    public Vector3 GetHeightForScreenPosition(Camera3D camera, Vector2 screenPosition) {
+        return _godotHandle.AsGodotObject().Call("getHeightForScreenPosition", camera, screenPosition).AsVector3();
+    }
 }
