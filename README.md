@@ -382,6 +382,16 @@ if is_on_floor() and get_last_slide_collision() != null:
             ...
 ```
 
+#### Get Height
+
+You also have access to the following functions to get the height of the terrain at a given point, from the TerraBrush node :
+
+`getHeightAtPosition`
+<br>
+`getHeightForMousePosition`
+<br>
+`getHeightForScreenPosition`
+
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
