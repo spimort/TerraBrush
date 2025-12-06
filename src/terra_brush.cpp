@@ -1158,7 +1158,7 @@ StaticBody3D *TerraBrush::getTerrainCollider() const {
     return _terrain->get_terrainCollider();
 }
 
-float TerraBrush::getHeightAtPosition(int x, int z, bool useGlobalPosition) const {
+float TerraBrush::getHeightAtPosition(float x, float z, bool useGlobalPosition) const {
     int zoneSize = get_zonesSize();
     int resolution = get_resolution();
 
