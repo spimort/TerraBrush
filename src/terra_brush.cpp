@@ -13,6 +13,7 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
+#include <godot_cpp/classes/viewport.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -24,6 +25,9 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("addInteractionPoint", "x", "y"), &TerraBrush::addInteractionPoint);
     ClassDB::bind_method(D_METHOD("onUpdateTerrainSettings"), &TerraBrush::onUpdateTerrainSettings);
     ClassDB::bind_method(D_METHOD("getTerrainCollider"), &TerraBrush::getTerrainCollider);
+    ClassDB::bind_method(D_METHOD("getHeightAtPosition", "x", "z", "useGlobalPosition"), &TerraBrush::getHeightAtPosition);
+    ClassDB::bind_method(D_METHOD("getHeightForMousePosition", "camera"), &TerraBrush::getHeightForMousePosition);
+    ClassDB::bind_method(D_METHOD("getHeightForScreenPosition", "camera", "screenPosition"), &TerraBrush::getHeightForScreenPosition);
 
     ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
@@ -1152,4 +1156,51 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
 
 StaticBody3D *TerraBrush::getTerrainCollider() const {
     return _terrain->get_terrainCollider();
+}
+
+float TerraBrush::getHeightAtPosition(int x, int z, bool useGlobalPosition) const {
+    int zoneSize = get_zonesSize();
+    int resolution = get_resolution();
+
+    Vector3 globalPosition = Vector3(0, 0, 0);
+    if (useGlobalPosition) {
+        globalPosition = get_global_position();
+        x -= globalPosition.x;
+        z -= globalPosition.z;
+    }
+
+    ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(x + (zoneSize / 2), z + (zoneSize / 2), zoneSize, resolution);
+    Ref<ZoneResource> zone;
+    if (!get_terrainZones().is_null()) {
+        zone = get_terrainZones()->getZoneForZoneInfo(zoneInfo);
+    }
+
+    if (!zone.is_null() && !zone->get_heightMapImage().is_null()) {
+        Ref<Image> heightMapImage = zone->get_heightMapImage();
+        float zoneHeight = heightMapImage->get_pixel(zoneInfo.imagePosition.x, zoneInfo.imagePosition.y).r;
+        return zoneHeight + globalPosition.y;
+    }
+
+    return Utils::InfinityValue;
+}
+
+Vector3 TerraBrush::getHeightForMousePosition(Camera3D *camera) const {
+    Vector2 screenPosition = camera->get_viewport()->get_mouse_position();
+    return getHeightForScreenPosition(camera, screenPosition);
+}
+
+Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const {
+    Vector3 from = camera->project_ray_origin(screenPosition);
+    Vector3 direction = camera->project_ray_normal(screenPosition);
+
+    for (int i = 0; i < 20000; i++) {
+        Vector3 position = from + (direction * i * 0.1f) - get_global_position();
+
+        float zoneHeight = getHeightAtPosition(position.x, position.z, false);
+        if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y) {
+            return Vector3(position.x, zoneHeight, position.z) + get_global_position();
+        }
+    }
+
+    return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 }

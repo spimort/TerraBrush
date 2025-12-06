@@ -212,5 +212,8 @@ public:
     void onUnlockTerrain();
     Ref<ZoneResource> addNewZone(Vector2i zonePosition);
     StaticBody3D *getTerrainCollider() const;
+    float getHeightAtPosition(int x, int z, bool useGlobalPosition) const;
+    Vector3 getHeightForMousePosition(Camera3D *camera) const;
+    Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const;
 };
 #endif
