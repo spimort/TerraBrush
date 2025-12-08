@@ -111,17 +111,24 @@ void calculateHeightmapVertex(
 	inout vec3 triplanarPowerNormal
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
-
-	vec3 zoneUV = calculateZoneUV(worldVertex);
+	
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
 	float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
 	float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
 	float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
 	normal = normalize(vec3(hL - hR, 2.0, hB - hF));
-
-	vec4 waterTexture = texture(WaterTextures, zoneUV);
-	vertex.y -= waterTexture.r * WaterFactor;
+	
+	if (WaterFactor > 0.0) {
+		vec4 levelsMeta = color;
+		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+			vertex.y -= calculateMidZoneHeightValue(WaterTextures, levelsMeta, worldVertex);
+		} else {
+			vec3 zoneUV = calculateZoneUV(worldVertex);
+			vec4 waterTexture = texture(WaterTextures, zoneUV);
+			vertex.y -= waterTexture.r * WaterFactor;		
+		}		
+	}
 
 	if (Triplanar) {
 		triplanarPowerNormal = pow(abs(normal), vec3(150.0));
