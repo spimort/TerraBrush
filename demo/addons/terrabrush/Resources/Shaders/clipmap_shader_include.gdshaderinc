@@ -19,8 +19,8 @@ float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3
 
 			return (previousHeight + nextHeight) / 2.0;
 		}
-	}	
-	
+	}
+
 	return 0.0;
 }
 
@@ -31,11 +31,11 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 	float height = vertex.y;
 
 	if (zoneUV.z >= 0.0) {
-		height = texture(HeightmapTextures, zoneUV).r;
-
 		// Calculate the average height for mid zone vertices
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
 			height = calculateMidZoneHeightValue(HeightmapTextures, levelsMeta, offsetWorldVertex);
+		} else {
+			height = texture(HeightmapTextures, zoneUV).r;
 		}
 	} else {
 		// Try to match the height of neighbors zones for a specific range so the transition to go hidden is easier
