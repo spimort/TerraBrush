@@ -4,6 +4,26 @@ uniform vec3 OffsetPosition;
 
 #include "zones_shader_include.gdshaderinc"
 
+float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3 worldVertex) {
+	// Calculate the average height for mid zone vertices
+	if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+		int level = int(levelsMeta.a * 100.0);
+		float levelMultiplicator = exp2(float(level));
+		vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
+		vec3 previousZoneUV = calculateZoneUV(worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+		vec3 nextZoneUV = calculateZoneUV(worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
+
+		if (previousZoneUV.z >= 0.0 && nextZoneUV.z >= 0.0) {
+			float previousHeight = texture(textures, previousZoneUV).r;
+			float nextHeight = texture(textures, nextZoneUV).r;
+
+			return (previousHeight + nextHeight) / 2.0;
+		}
+	}
+
+	return 0.0;
+}
+
 float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2 offset) {
 	vec3 offsetWorldVertex = worldVertex + vec3(offset.x, 0.0, offset.y);
 	ivec2 zonesMapPosition = ivec2(0);
@@ -11,22 +31,11 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 	float height = vertex.y;
 
 	if (zoneUV.z >= 0.0) {
-		height = texture(HeightmapTextures, zoneUV).r;
-
 		// Calculate the average height for mid zone vertices
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
-			int level = int(levelsMeta.a * 100.0);
-			float levelMultiplicator = exp2(float(level));
-			vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
-			vec3 previousZoneUV = calculateZoneUV(offsetWorldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
-			vec3 nextZoneUV = calculateZoneUV(offsetWorldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
-
-			if (previousZoneUV.z >= 0.0 && nextZoneUV.z >= 0.0) {
-				float previousHeight = texture(HeightmapTextures, previousZoneUV).r;
-				float nextHeight = texture(HeightmapTextures, nextZoneUV).r;
-
-				height = (previousHeight + nextHeight) / 2.0;
-			}
+			height = calculateMidZoneHeightValue(HeightmapTextures, levelsMeta, offsetWorldVertex);
+		} else {
+			height = texture(HeightmapTextures, zoneUV).r;
 		}
 	} else {
 		// Try to match the height of neighbors zones for a specific range so the transition to go hidden is easier
