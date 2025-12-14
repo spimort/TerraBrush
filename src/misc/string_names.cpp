@@ -84,3 +84,4 @@ const StringName StringNames::MetaInfoTextures() { return "MetaInfoTextures"; }
 const StringName StringNames::MetaInfoColors() { return "MetaInfoColors"; }
 const StringName StringNames::Color() { return "Color"; }
 const StringName StringNames::Compatibility() { return "Compatibility"; }
+const StringName StringNames::ColorTextures() { return "ColorTextures"; }

@@ -15,11 +15,13 @@
 #include "editor_tools/hole_tool.h"
 #include "editor_tools/lock_tool.h"
 #include "editor_tools/meta_info_tool.h"
+#include "editor_tools/color_tool.h"
 
 #include "misc/zone_utils.h"
 #include "misc/custom_content_loader.h"
 #include "misc/dialog_utils.h"
 #include "misc/keybind_manager.h"
+#include "misc/setting_contants.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
@@ -29,6 +31,9 @@
 #include <godot_cpp/classes/sub_viewport.hpp>
 #include <godot_cpp/classes/sub_viewport_container.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/color_picker.hpp>
+#include <godot_cpp/classes/style_box_flat.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -42,19 +47,22 @@ void TerraBrushEditor::_bind_methods() {
     ADD_SIGNAL(MethodInfo("foliageSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("objectSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("metaInfoSelected", PropertyInfo(Variant::INT, "index")));
+    ADD_SIGNAL(MethodInfo("colorSelected", PropertyInfo(Variant::COLOR, "value")));
+    ADD_SIGNAL(MethodInfo("autoAddZoneChanged", PropertyInfo(Variant::BOOL, "value")));
 
     ClassDB::bind_method(D_METHOD("onPieMenuBrushSelected", "customContentPieMenu"), &TerraBrushEditor::onPieMenuBrushSelected);
     ClassDB::bind_method(D_METHOD("onPieMenuBrushIndexSelected", "brushIndex"), &TerraBrushEditor::onPieMenuBrushIndexSelected);
     ClassDB::bind_method(D_METHOD("onBrushSizeSelected", "value"), &TerraBrushEditor::onBrushSizeSelected);
     ClassDB::bind_method(D_METHOD("onBrushStrengthSelected", "value"), &TerraBrushEditor::onBrushStrengthSelected);
-    ClassDB::bind_method(D_METHOD("onUndoRedo"), &TerraBrushEditor::onUndoRedo);
     ClassDB::bind_method(D_METHOD("onToolSelected", "value"), &TerraBrushEditor::onToolSelected);
-    ClassDB::bind_method(D_METHOD("hideOverlaySelector"), &TerraBrushEditor::hideOverlaySelector);
-
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorTextureSelected", "index"), &TerraBrushEditor::onCustomContentSelectorTextureSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorFoliageSelected", "index"), &TerraBrushEditor::onCustomContentSelectorFoliageSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorObjectSelected", "index"), &TerraBrushEditor::onCustomContentSelectorObjectSelected);
     ClassDB::bind_method(D_METHOD("onCustomContentSelectorMetaInfoSelected", "index"), &TerraBrushEditor::onCustomContentSelectorMetaInfoSelected);
+    ClassDB::bind_method(D_METHOD("onColorSelected", "value"), &TerraBrushEditor::onColorSelected);
+    ClassDB::bind_method(D_METHOD("hideOverlaySelector"), &TerraBrushEditor::hideOverlaySelector);
+
+    ClassDB::bind_method(D_METHOD("onUndoRedo"), &TerraBrushEditor::onUndoRedo);
 
     ClassDB::bind_method(D_METHOD("get_enabled"), &TerraBrushEditor::get_enabled);
     ClassDB::bind_method(D_METHOD("set_enabled", "value"), &TerraBrushEditor::set_enabled);
@@ -472,7 +480,16 @@ void TerraBrushEditor::showCurrentToolMenu(Viewport *viewport) {
                 _selectedSetAngle
             );
             break;
+        case TerrainToolType::TERRAINTOOLTYPE_COLORADD:
+        case TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE:
+            showColorPickerSelector(viewport);
+
+            break;
         case TerrainToolType::TERRAINTOOLTYPE_PAINT:
+            if (_terraBrushNode->get_textureSets().is_null() || _terraBrushNode->get_textureSets()->get_textureSets().size() == 0) {
+                return;
+            }
+
             showCustomContentPieMenu(viewport, "Textures", ([&](CustomContentPieMenu *customContentPieMenu) {
                 CustomContentLoader::addTexturesPreviewToParent(_terraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorTextureSelected"), true);
             }));
@@ -480,6 +497,10 @@ void TerraBrushEditor::showCurrentToolMenu(Viewport *viewport) {
             break;
         case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD:
         case TerrainToolType::TERRAINTOOLTYPE_FOLIAGEREMOVE:
+            if (_terraBrushNode->get_foliages().size() == 0) {
+                return;
+            }
+
             showCustomContentPieMenu(viewport, "Foliages", ([&](CustomContentPieMenu *customContentPieMenu) {
                 CustomContentLoader::addFoliagesPreviewToParent(_terraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorFoliageSelected"), true);
             }));
@@ -487,6 +508,10 @@ void TerraBrushEditor::showCurrentToolMenu(Viewport *viewport) {
             break;
         case TerrainToolType::TERRAINTOOLTYPE_OBJECTADD:
         case TerrainToolType::TERRAINTOOLTYPE_OBJECTREMOVE:
+            if (_terraBrushNode->get_objects().size() == 0) {
+                return;
+            }
+
             showCustomContentPieMenu(viewport, "Objects", ([&](CustomContentPieMenu *customContentPieMenu) {
                 CustomContentLoader::addObjectsPreviewToParent(_terraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorObjectSelected"), true);
             }));
@@ -494,6 +519,10 @@ void TerraBrushEditor::showCurrentToolMenu(Viewport *viewport) {
             break;
         case TerrainToolType::TERRAINTOOLTYPE_METAINFOADD:
         case TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE:
+            if (_terraBrushNode->get_metaInfoLayers().size() == 0) {
+                return;
+            }
+
             showCustomContentPieMenu(viewport, "MetaInfo", ([&](CustomContentPieMenu *customContentPieMenu) {
                 CustomContentLoader::addMetaInfoLayersPreviewToParent(_terraBrushNode, customContentPieMenu->get_pieMenu(), Callable(this, "onCustomContentSelectorMetaInfoSelected"), true);
             }));
@@ -534,6 +563,39 @@ void TerraBrushEditor::showBrushNumericSelector(Viewport *viewport, int minVale,
         selector->set_onValueSelected(onValueSelected);
         selector->set_onCancel(Callable(this, "hideOverlaySelector"));
     }
+}
+
+void TerraBrushEditor::showColorPickerSelector(Viewport *viewport) {
+    hideOverlaySelector();
+    ColorPicker *colorPicker = memnew(ColorPicker);
+    colorPicker->set_pick_color(_selectedColor);
+    colorPicker->set_deferred_mode(true);
+    colorPicker->set_sampler_visible(false);
+    colorPicker->set_modes_visible(false);
+    colorPicker->set_sliders_visible(false);
+    colorPicker->set_presets_visible(false);
+    colorPicker->connect("color_changed", Callable(this, "onColorSelected"));
+
+    PanelContainer *panelContainer = memnew(PanelContainer);
+
+    Ref<StyleBoxFlat> panelContainerStyle = memnew(StyleBoxFlat);
+    Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue());
+    panelContainerStyle->set_bg_color(iconsColor);
+    panelContainerStyle->set_corner_radius_all(5);
+    panelContainerStyle->set_expand_margin_all(5);
+
+    panelContainer->set("theme_override_styles/panel", panelContainerStyle);
+    panelContainer->add_child(colorPicker);
+
+    _overlaySelector = panelContainer;
+
+    Vector2 mousePosition = viewport->get_mouse_position();
+    if (viewport->get_parent() != nullptr) {
+        mousePosition = Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
+    }
+    _overlaySelector->set_position(mousePosition);
+
+    _containerNode->add_child(_overlaySelector);
 }
 
 void TerraBrushEditor::onPieMenuBrushSelected(const CustomContentPieMenu *customContentPieMenu) {
@@ -592,6 +654,13 @@ void TerraBrushEditor::onCustomContentSelectorObjectSelected(const int index) {
 void TerraBrushEditor::onCustomContentSelectorMetaInfoSelected(const int index) {
     set_selectedMetaInfoIndex(index);
     emit_signal("metaInfoSelected", index);
+
+    hideOverlaySelector();
+}
+
+void TerraBrushEditor::onColorSelected(const Color value) {
+    set_selectedColor(value);
+    emit_signal("colorSelected", value);
 
     hideOverlaySelector();
 }
@@ -692,6 +761,12 @@ Ref<ToolBase> TerraBrushEditor::getToolForType(TerrainToolType toolType) {
             metaInfoTool->updateSelectedMetaInfoIndex(_metaInfoLayerIndex);
             return metaInfoTool;
         }
+        case TerrainToolType::TERRAINTOOLTYPE_COLORADD:
+        case TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE: {
+            Ref<ColorTool> colorTool = memnew(ColorTool);
+            colorTool->updateSelectedColor(_selectedColor);
+            return colorTool;
+        }
         case TerrainToolType::TERRAINTOOLTYPE_NONE: {
             return nullptr;
         }
@@ -708,6 +783,8 @@ void TerraBrushEditor::updateAutoAddZonesSetting() {
     if (!_currentTool.is_null()) {
         _currentTool->set_autoAddZones(_autoAddZones);
     }
+
+    emit_signal("autoAddZoneChanged", _autoAddZones);
 }
 
 void TerraBrushEditor::updateBrushImage() {
@@ -750,6 +827,9 @@ void TerraBrushEditor::setShiftPressed(bool pressed) {
         }
         else if (_currentToolType == TerrainToolType::TERRAINTOOLTYPE_METAINFOADD) {
             _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_METAINFOREMOVE;
+        }
+        else if (_currentToolType == TerrainToolType::TERRAINTOOLTYPE_COLORADD) {
+            _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE;
         }
         else {
             _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
@@ -954,6 +1034,18 @@ void TerraBrushEditor::set_selectedMetaInfoIndex(const int value) {
     if (!_currentTool.is_null() && Object::cast_to<MetaInfoTool>(_currentTool.ptr()) != nullptr) {
         Ref<MetaInfoTool> metaInfoTool = Object::cast_to<MetaInfoTool>(_currentTool.ptr());
         metaInfoTool->updateSelectedMetaInfoIndex(value);
+    }
+}
+
+Color TerraBrushEditor::get_selectedColor() const {
+    return _selectedColor;
+}
+void TerraBrushEditor::set_selectedColor(const Color value) {
+    _selectedColor = value;
+
+    if (!_currentTool.is_null() && Object::cast_to<ColorTool>(_currentTool.ptr()) != nullptr) {
+        Ref<ColorTool> colorTool = Object::cast_to<ColorTool>(_currentTool.ptr());
+        colorTool->updateSelectedColor(value);
     }
 }
 

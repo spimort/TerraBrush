@@ -11,6 +11,7 @@ using namespace godot;
 class ZoneUtils {
     private:
         static constexpr const char* HeightmapFileName = "Heightmap_{0}_{1}.res";
+        static constexpr const char* ColorFileName = "Color_{0}_{1}.res";
         static constexpr const char* SplatmapFileName = "Splatmap_{0}_{1}_{2}.res";
         static constexpr const char* FoliageFileName = "Foliage_{0}_{1}_{2}.res";
         static constexpr const char* ObjectFileName = "Object_{0}_{1}_{2}.res";
@@ -21,6 +22,7 @@ class ZoneUtils {
     public:
         static Ref<Image> createLockImage(int zoneSize, Vector2i zonePosition, bool lockAll = false);
         static Ref<Image> createHeightmapImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath);
+        static Ref<Image> createColorImage(int zoneSize, Vector2i zonePosition, String dataPath);
         static Ref<Image> createSplatmapImage(int zoneSize, Vector2i zonePosition, int splatmapIndex, String dataPath);
         static Ref<Image> createFoliageImage(int zoneSize, Vector2i zonePosition, int foliageIndex, String dataPath);
         static Ref<Image> createObjectImage(int zoneSize, Vector2i zonePosition, int objectIndex, String dataPath);

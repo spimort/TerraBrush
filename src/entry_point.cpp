@@ -48,6 +48,7 @@
 #include "editor_tools/hole_tool.h"
 #include "editor_tools/lock_tool.h"
 #include "editor_tools/meta_info_tool.h"
+#include "editor_tools/color_tool.h"
 
 #include "misc/keybind_manager.h"
 #include "misc/dialog_utils.h"
@@ -141,6 +142,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(HoleTool);
         GDREGISTER_INTERNAL_CLASS(LockTool);
         GDREGISTER_INTERNAL_CLASS(MetaInfoTool);
+        GDREGISTER_INTERNAL_CLASS(ColorTool);
 
         GDREGISTER_INTERNAL_CLASS(FileDialogEventsWrapper);
         GDREGISTER_INTERNAL_CLASS(NumericSelectorDialog);

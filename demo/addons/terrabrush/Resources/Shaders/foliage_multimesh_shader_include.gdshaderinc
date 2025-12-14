@@ -25,6 +25,7 @@ uniform sampler2D NoiseTexture : hint_default_transparent, repeat_disable;
 
 // Textures to calculate ground color
 uniform sampler2DArray Textures : source_color;
+uniform sampler2DArray ColorTextures: hint_default_transparent, repeat_disable;
 uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int TextureDetail;
 uniform int NumberOfTextures;
@@ -122,6 +123,9 @@ vec4 calculateGroundColor(vec3 zoneUV) {
 
 		resultTexture += currentTexture * channelValue;
 	}
+	
+	vec4 color = texture(ColorTextures, zoneUV);
+	resultTexture = vec4(mix(resultTexture.rgb, color.rgb, color.a), 1.0); 
 
 	return resultTexture;
 }

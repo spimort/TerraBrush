@@ -13,6 +13,7 @@ private:
     Ref<Image> _lockImage = 0;
     Vector2i _zonePosition = Vector2i();
     Ref<Image> _heightMapImage = nullptr;
+    Ref<Image> _colorImage = nullptr;
     TypedArray<Ref<Image>> _splatmapsImage = TypedArray<Ref<Image>>();
     TypedArray<Ref<Image>> _foliagesImage = TypedArray<Ref<Image>>();
     TypedArray<Ref<Image>> _objectsImage = TypedArray<Ref<Image>>();
@@ -35,6 +36,9 @@ public:
 
     Ref<Image> get_heightMapImage() const;
     void set_heightMapImage(const Ref<Image> &value);
+
+    Ref<Image> get_colorImage() const;
+    void set_colorImage(const Ref<Image> &value);
 
     TypedArray<Ref<Image>> get_splatmapsImage() const;
     void set_splatmapsImage(const TypedArray<Ref<Image>> value);

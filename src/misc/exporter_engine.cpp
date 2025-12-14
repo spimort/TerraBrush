@@ -44,6 +44,11 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
     Ref<ZoneResource> firstZone = terrabrush->get_terrainZones()->get_zones()[0];
 
     Ref<Image> resultHeightmapImage = Image::create_empty(resolutionWidth, resolutionHeight, false, firstZone->get_heightMapImage()->get_format());
+    Ref<Image> resultColorImage = nullptr;
+    if (!firstZone->get_colorImage().is_null()) {
+        resultColorImage = Image::create_empty(width, height, false, firstZone->get_colorImage()->get_format());
+    }
+
     std::vector<Ref<Image>> resultSplatmapsImages = std::vector<Ref<Image>>();
     for (Ref<Image> splatmapTexture : firstZone->get_splatmapsImage()) {
         resultSplatmapsImages.push_back(Image::create_empty(width, height, false, splatmapTexture->get_format()));
@@ -85,6 +90,7 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
             }
 
             Ref<Image> heightMapImage = nullptr;
+            Ref<Image> colorImage = nullptr;
             std::vector<Ref<Image>> splatmapsImages = std::vector<Ref<Image>>();
             std::vector<Ref<Image>> foliagesImages = std::vector<Ref<Image>>();
             std::vector<Ref<Image>> objectsImages = std::vector<Ref<Image>>();
@@ -94,6 +100,10 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
 
             if (!zone.is_null()) {
                 heightMapImage = zone->get_heightMapImage();
+
+                if (!zone->get_colorImage().is_null()) {
+                    colorImage = zone->get_colorImage();
+                }
 
                 for (Ref<Image> splatmapTexture : zone->get_splatmapsImage()) {
                     splatmapsImages.push_back(splatmapTexture);
@@ -148,6 +158,10 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
                     int globalX = x + (zoneX - minZoneX) * terrabrush->get_zonesSize();
                     int globalY = y + (zoneY - minZoneY) * terrabrush->get_zonesSize();
 
+                    if (!colorImage.is_null()) {
+                        resultColorImage->set_pixel(globalX, globalY, colorImage->get_pixel(x, y));
+                    }
+
                     if (splatmapsImages.size() > 0) {
                         for (int itemIndex = 0; itemIndex < splatmapsImages.size(); itemIndex++) {
                             Ref<Image> itemItem = splatmapsImages[itemIndex];
@@ -172,6 +186,10 @@ void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
     }
 
     resultHeightmapImage->save_exr(dataPath + "/heightmap.exr");
+
+    if (!resultColorImage.is_null()) {
+        resultColorImage->save_png(dataPath + "/color.png");
+    }
 
     for (int i = 0; i < resultSplatmapsImages.size(); i++) {
         Ref<Image> itemImage = resultSplatmapsImages[i];

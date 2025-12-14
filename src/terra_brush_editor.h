@@ -50,6 +50,7 @@ private:
     int _metaInfoLayerIndex = 0;
     float _selectedSetHeight = 0;
     float _selectedSetAngle = 0;
+    Color _selectedColor = Color(0, 0, 0, 1.0);
     bool _autoAddZones = false;
     Vector3 _selectedSetAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 
@@ -72,6 +73,7 @@ private:
     void showCustomContentPieMenu(Viewport *viewport, String label, std::function<void(CustomContentPieMenu*)> addItems);
     void showCurrentToolMenu(Viewport *viewport);
     void showBrushNumericSelector(Viewport *viewport, int minVale, int maxValue, Color widgetColor, int initialValue, Callable onValueSelected, StringName actionName);
+    void showColorPickerSelector(Viewport *viewport);
     void onPieMenuBrushSelected(const CustomContentPieMenu *customContentPieMenu);
     void onPieMenuBrushIndexSelected(const int brushIndex);
     void onBrushSizeSelected(const int value);
@@ -81,6 +83,7 @@ private:
     void onCustomContentSelectorFoliageSelected(const int index);
     void onCustomContentSelectorObjectSelected(const int index);
     void onCustomContentSelectorMetaInfoSelected(const int index);
+    void onColorSelected(const Color value);
     void updateCurrentTool();
     Ref<ToolBase> getToolForType(TerrainToolType toolType);
     void beforeDeselectTool();
@@ -146,6 +149,9 @@ public:
 
     int get_selectedMetaInfoIndex() const;
     void set_selectedMetaInfoIndex(const int value);
+
+    Color get_selectedColor() const;
+    void set_selectedColor(const Color value);
 
     bool get_autoAddZones() const;
     void set_autoAddZones(const bool value);

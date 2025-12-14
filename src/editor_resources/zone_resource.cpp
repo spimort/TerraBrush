@@ -11,6 +11,10 @@ void ZoneResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_heightMapImage", "value"), &ZoneResource::set_heightMapImage);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "heightMapImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_heightMapImage", "get_heightMapImage");
 
+    ClassDB::bind_method(D_METHOD("get_colorImage"), &ZoneResource::get_colorImage);
+    ClassDB::bind_method(D_METHOD("set_colorImage", "value"), &ZoneResource::set_colorImage);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "colorImage", PROPERTY_HINT_RESOURCE_TYPE, "Image"), "set_colorImage", "get_colorImage");
+
     ClassDB::bind_method(D_METHOD("get_splatmapsImage"), &ZoneResource::get_splatmapsImage);
     ClassDB::bind_method(D_METHOD("set_splatmapsImage", "value"), &ZoneResource::set_splatmapsImage);
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "splatmapsImage", PROPERTY_HINT_TYPE_STRING, "24/17:Image"), "set_splatmapsImage", "get_splatmapsImage");
@@ -69,6 +73,13 @@ Ref<Image> ZoneResource::get_heightMapImage() const {
 }
 void ZoneResource::set_heightMapImage(const Ref<Image> &value) {
     _heightMapImage = value;
+}
+
+Ref<Image> ZoneResource::get_colorImage() const {
+    return _colorImage;
+}
+void ZoneResource::set_colorImage(const Ref<Image> &value) {
+    _colorImage = value;
 }
 
 TypedArray<Ref<Image>> ZoneResource::get_splatmapsImage() const {

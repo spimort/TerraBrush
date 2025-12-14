@@ -68,6 +68,20 @@ void ToolsPieMenu::_ready() {
     _pieMenu->add_child(memnew(Control)); // Splitter
 
     toolPreview = memnew(ToolPreview);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_COLORADD);
+    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/color_add.png"));
+    toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
+    toolPreview->set_tooltip_text("Add color");
+    _pieMenu->add_child(toolPreview);
+
+    toolPreview = memnew(ToolPreview);
+    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE);
+    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/color_remove.png"));
+    toolPreview->set_iconType(DockPreviewButton::IconType::CircleWithSign);
+    toolPreview->set_tooltip_text("Remove color");
+    _pieMenu->add_child(toolPreview);
+
+    toolPreview = memnew(ToolPreview);
     toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_PAINT);
     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/paint.png"));
     toolPreview->set_iconType(DockPreviewButton::IconType::Circle);

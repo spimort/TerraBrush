@@ -26,6 +26,7 @@ private:
     SpinBox *_heightmapScaleSpinBox = nullptr;
     CheckBox *_useGreenChannelForHolesCheckbox = nullptr;
     CheckBox *_scaleToResolutionCheckbox = nullptr;
+    ImportImageRow *_colorRow = nullptr;
     VBoxContainer *_splatmapsContainer = nullptr;
     VBoxContainer *_foliagesContainer = nullptr;
     VBoxContainer *_objectsContainer = nullptr;

@@ -20,6 +20,7 @@ ZonesResource::ZonesResource() {
 
     _lockTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _heightmapTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
+    _colorTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _splatmapsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
     _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
     _objectsTextures = Ref<Texture2DArray>(memnew(Texture2DArray));
@@ -38,6 +39,9 @@ Ref<Texture2DArray> ZonesResource::get_lockTextures() const {
 }
 Ref<Texture2DArray> ZonesResource::get_heightmapTextures() const {
     return _heightmapTextures;
+}
+Ref<Texture2DArray> ZonesResource::get_colorTextures() const {
+    return _colorTextures;
 }
 Ref<Texture2DArray> ZonesResource::get_splatmapsTextures() const {
     return _splatmapsTextures;
@@ -71,7 +75,7 @@ void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
 void ZonesResource::updateLockTexture(int zoneSize) {
     TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
     for (Ref<ZoneResource> zone : _zones) {
-        if (zone->get_lockTexture().is_null() || zone->get_lockTexture().is_null()) {
+        if (zone->get_lockTexture().is_null()) {
             images.append(Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RF));
         } else {
             images.append(zone->get_lockTexture());
@@ -91,6 +95,21 @@ void ZonesResource::updateHeightmaps() {
 
     if (images.size() > 0) {
         _heightmapTextures->create_from_images(images);
+    }
+}
+
+void ZonesResource::updateColorTextures(int zoneSize) {
+    TypedArray<Ref<Image>> images = TypedArray<Ref<Image>>();
+    for (Ref<ZoneResource> zone : _zones) {
+        if (zone->get_colorImage().is_null()) {
+            images.append(Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RGBA8));
+        } else {
+            images.append(zone->get_colorImage());
+        }
+    }
+
+    if (images.size() > 0) {
+        _colorTextures->create_from_images(images);
     }
 }
 
@@ -254,6 +273,7 @@ void ZonesResource::updateImageImages(int zoneSize) {
         updateLockTexture(zoneSize);
     }
     updateHeightmaps();
+    updateColorTextures(zoneSize);
     updateSplatmapsTextures();
     updateFoliagesTextures();
     updateObjectsTextures();

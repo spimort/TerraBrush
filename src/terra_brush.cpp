@@ -539,6 +539,7 @@ void TerraBrush::loadTerrain() {
     }
     _terrainZones->updateZonesMap();
     _terrainZones->updateHeightmaps();
+    _terrainZones->updateColorTextures(_zonesSize);
 
     if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) {
         // Water needs to be created first so we have the reference to the image texture

@@ -15,6 +15,7 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/h_slider.hpp>
+#include <godot_cpp/classes/v_split_container.hpp>
 
 using namespace godot;
 
@@ -27,6 +28,7 @@ void TerrainControlDock::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onSelectedFoliageIndexChange", "index"), &TerrainControlDock::onSelectedFoliageIndexChange);
     ClassDB::bind_method(D_METHOD("onSelectedObjectIndexChange", "index"), &TerrainControlDock::onSelectedObjectIndexChange);
     ClassDB::bind_method(D_METHOD("onSelectedMetaInfoIndexChange", "index"), &TerrainControlDock::onSelectedMetaInfoIndexChange);
+    ClassDB::bind_method(D_METHOD("onSelectedColorChange", "value"), &TerrainControlDock::onSelectedColorChange);
 
     ADD_SIGNAL(MethodInfo("toolTypeSelected", PropertyInfo(Variant::INT, "toolType")));
     ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index")));
@@ -36,6 +38,7 @@ void TerrainControlDock::_bind_methods() {
     ADD_SIGNAL(MethodInfo("foliageSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("objectSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("metaInfoSelected", PropertyInfo(Variant::INT, "index")));
+    ADD_SIGNAL(MethodInfo("colorSelected", PropertyInfo(Variant::COLOR, "value")));
 }
 
 TerrainControlDock::TerrainControlDock() {
@@ -45,6 +48,7 @@ TerrainControlDock::TerrainControlDock() {
     _selectedFoliageIndex = -1;
     _selectedObjectIndex = -1;
     _selectedMetaInfoIndex = -1;
+    _selectedColor = Color(0, 0, 0, 1.0);
 }
 
 TerrainControlDock::~TerrainControlDock() {}
@@ -63,6 +67,7 @@ void TerrainControlDock::_ready() {
 
     _brushSizeSlider->connect("value_changed", Callable(this, "onBrushSizeValueChange"));
     _brushStrengthSlider->connect("value_changed", Callable(this, "onBrushStrengthValueChange"));
+    _colorPickerButton->connect("color_changed", Callable(this, "onSelectedColorChange"));
 }
 
 void TerrainControlDock::set_terraBrush(TerraBrush *value) {
@@ -158,6 +163,10 @@ void TerrainControlDock::updateSelectedMetaInfo() {
     }
 }
 
+void TerrainControlDock::updateSelectedColor() {
+    _colorPickerButton->set_pick_color(_selectedColor);
+}
+
 void TerrainControlDock::onBrushSizeValueChange(const float value) {
     setBrushSize((int)value);
     emit_signal("brushSizeChanged", value);
@@ -196,6 +205,11 @@ void TerrainControlDock::onSelectedObjectIndexChange(const int index) {
 void TerrainControlDock::onSelectedMetaInfoIndexChange(const int index) {
     setSelectedMetaInfoIndex(index);
     emit_signal("metaInfoSelected", index);
+}
+
+void TerrainControlDock::onSelectedColorChange(const Color value) {
+    setSelectedColor(value);
+    emit_signal("colorSelected", value);
 }
 
 void TerrainControlDock::setBrushSize(int value) {
@@ -241,6 +255,12 @@ void TerrainControlDock::setSelectedMetaInfoIndex(const int index) {
     updateSelectedMetaInfo();
 }
 
+void TerrainControlDock::setSelectedColor(const Color value) {
+    _selectedColor = value;
+
+    updateSelectedColor();
+}
+
 // This component has some complexe ui so I create a kinda of structure using {} for better visualization
 void TerrainControlDock::buildLayout() {
     set_anchors_and_offsets_preset(LayoutPreset::PRESET_FULL_RECT);
@@ -253,13 +273,13 @@ void TerrainControlDock::buildLayout() {
     marginContainer->set((StringName)"theme_override_constants/margin_bottom", 5);
     add_child(marginContainer);
     { // MarginContainer
-        VBoxContainer *vBoxContainer = memnew(VBoxContainer);
-        marginContainer->add_child(vBoxContainer);
+        VSplitContainer *splitterContainer = memnew(VSplitContainer);
+        marginContainer->add_child(splitterContainer);
         { // VBoxContainer
             TabContainer *tabContainer1 = memnew(TabContainer);
             tabContainer1->set_current_tab(0);
             tabContainer1->set_v_size_flags(SizeFlags::SIZE_EXPAND_FILL);
-            vBoxContainer->add_child(tabContainer1);
+            splitterContainer->add_child(tabContainer1);
             { // TabContainer
                 Control *toolsTab = memnew(Control);
                 toolsTab->set_name("Tools");
@@ -318,6 +338,18 @@ void TerrainControlDock::buildLayout() {
                                     toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE);
                                     toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_angle.png"));
                                     toolPreview->set_tooltip_text("Set terrain angle");
+                                    _toolTypesContainer->add_child(toolPreview);
+
+                                    toolPreview = memnew(ToolPreview);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_COLORADD);
+                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/color_add.png"));
+                                    toolPreview->set_tooltip_text("Add color");
+                                    _toolTypesContainer->add_child(toolPreview);
+
+                                    toolPreview = memnew(ToolPreview);
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE);
+                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/color_remove.png"));
+                                    toolPreview->set_tooltip_text("Remove color");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
@@ -452,6 +484,19 @@ void TerrainControlDock::buildLayout() {
                                     toolsBrushStrengthVBoxContainer->add_child(_brushStrengthSlider);
                                 }
 
+                                VBoxContainer *colorVBoxContainer = memnew(VBoxContainer);
+                                toolsVBoxContainer->add_child(colorVBoxContainer);
+                                { // VBoxContainer
+                                    Label *label = memnew(Label);
+                                    label->set_text("Color");
+                                    colorVBoxContainer->add_child(label);
+
+                                    _colorPickerButton = memnew(ColorPickerButton);
+                                    _colorPickerButton->set_custom_minimum_size(Vector2(48, 48));
+                                    _colorPickerButton->set_h_size_flags(Control::SizeFlags::SIZE_SHRINK_BEGIN);
+                                    colorVBoxContainer->add_child(_colorPickerButton);
+                                }
+
                                 VBoxContainer *toolsBrushesVBoxContainer = memnew(VBoxContainer);
                                 toolsVBoxContainer->add_child(toolsBrushesVBoxContainer);
                                 { // VBoxContainer
@@ -470,8 +515,8 @@ void TerrainControlDock::buildLayout() {
 
             TabContainer *tabContainer2 = memnew(TabContainer);
             tabContainer2->set_current_tab(0);
-            tabContainer2->set_v_size_flags(SizeFlags::SIZE_EXPAND_FILL);
-            vBoxContainer->add_child(tabContainer2);
+            tabContainer2->set_custom_minimum_size(Vector2(0, 100));
+            splitterContainer->add_child(tabContainer2);
             { // TabContainer
                 Control *texturesTab = memnew(Control);
                 texturesTab->set_name("Textures");
