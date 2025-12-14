@@ -57,7 +57,8 @@ It runs in the browser, hosted on itch.io :
   - Flatten the terrain
   - Set height (paint to a specific height)
   - Set angle (paint from a starting point with a specific angle)
-* **Paint textures** - Add colors to your terrain with the textures painting tool
+* **Paint color** - Add colors to your terrain
+* **Paint textures** - Add textures to your terrain with the painting tool
   - Normal map and roughness texture are supported
 * **Foliage** - Add foliage to your terrain (ex. Grass)
   - The foliage follows the main camera with a given maximum distance
@@ -296,12 +297,13 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |MetaInfoLayer[x].Color|The color of a meta layer. This is the color that is gonna be used while in the editor to show the meta layer.|
 |**Zones**||
 |Zones[x].ZonePosition|The position of the zone. This position is multiplied by the zone's size to position it in the world. The zones can be disconnected from each other. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**|
-|Zones[x].HeightMapTexture|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
-|Zones[x].SplatmapsTexture|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
+|Zones[x].HeightMapImage|Unless you want to reuse an existing heightmap, leave this option to null. The tool will create it by itself.|
+|Zones[x].ColorImage|Unless you want to reuse an existing color, leave this option to null. The tool will create it by itself.|
+|Zones[x].SplatmapsImage|Unless you have existing splatmaps, leave this option empty, the tool will create them by itself.|
 |Zones[x].FoliagesTexture[x]|Unless you have existing foliage painting, leave this option empty, the tool will create it by itself.|
 |Zones[x].ObjectsTexture[x]|Unless you have existing object painting, leave this option empty, the tool will create it by itself.|
-|Zones[x].WaterTexture|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
-|Zones[x].SnowTexture|Unless you have an existing snow painting, leave this option empty, the tool will create it by itself.|
+|Zones[x].WaterImage|Unless you have existing water painting, leave this option empty, the tool will create it by itself.|
+|Zones[x].SnowImage|Unless you have an existing snow painting, leave this option empty, the tool will create it by itself.|
 
 **Node Signals**
 
