@@ -47,4 +47,6 @@ public enum TerrainToolType {
     LockRemove = 21,
     MetaInfoAdd = 22,
     MetaInfoRemove = 23,
+    ColorAdd = 24,
+    ColorRemove = 25,
 }
