@@ -224,7 +224,7 @@ void Foliage::updateFoliage() {
     _foliageShader->set_shader_parameter(StringNames::NumberOfZones(), (float) _terrainZones->get_zones().size());
     _foliageShader->set_shader_parameter(StringNames::ZonesMap(), _terrainZones->get_zonesMap());
 
-    if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
+    if ((_definition->get_useGroundColor() || _definition->get_applyOnTextureIndexes().size() > 0) && !_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
         _foliageShader->set_shader_parameter(StringNames::Splatmaps(), _terrainZones->get_splatmapsTextures());
 
         TypedArray<Ref<Texture2D>> groundTextures = TypedArray<Ref<Texture2D>>();
@@ -236,6 +236,10 @@ void Foliage::updateFoliage() {
         _foliageShader->set_shader_parameter(StringNames::Textures(), Utils::texturesToTextureArray(groundTextures));
         _foliageShader->set_shader_parameter(StringNames::NumberOfTextures(), _textureSets->get_textureSets().size());
         _foliageShader->set_shader_parameter(StringNames::TextureDetail(), _textureDetail);
+    }
+
+    if (_definition->get_useGroundColor()) {
+        _foliageShader->set_shader_parameter(StringNames::ColorTextures(), _terrainZones->get_colorTextures());
     }
 
     _foliageShader->set_shader_parameter(StringNames::FoliageTextures(), _terrainZones->get_foliagesTextures()[_foliageIndex]);

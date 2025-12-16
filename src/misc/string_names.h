@@ -89,5 +89,6 @@ class StringNames {
         const static StringName MetaInfoColors();
         const static StringName Color();
         const static StringName Compatibility();
+        const static StringName ColorTextures();
 };
 #endif

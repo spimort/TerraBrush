@@ -14,13 +14,18 @@ Ref<Image> ZoneUtils::createLockImage(int zoneSize, Vector2i zonePosition, bool 
         image->fill(Color::named("WHITE"));
     }
 
-    return getImageResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), "");
+    return getImageResource(image, "", "");
 }
 
 Ref<Image> ZoneUtils::createHeightmapImage(int zoneSize, float resolution, Vector2i zonePosition, String dataPath) {
     int imageSize = getImageSizeForResolution(zoneSize, resolution);
     Ref<Image> image = Image::create_empty(imageSize, imageSize, false, Image::Format::FORMAT_RGF);
     return getImageResource(image, String(HeightmapFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
+}
+
+Ref<Image> ZoneUtils::createColorImage(int zoneSize, Vector2i zonePosition, String dataPath) {
+    Ref<Image> image = Image::create_empty(zoneSize, zoneSize, false, Image::Format::FORMAT_RGBA8);
+    return getImageResource(image, String(ColorFileName).format(Array::make(zonePosition.x, zonePosition.y)), dataPath);
 }
 
 Ref<Image> ZoneUtils::createSplatmapImage(int zoneSize, Vector2i zonePosition, int splatmapIndex, String dataPath) {

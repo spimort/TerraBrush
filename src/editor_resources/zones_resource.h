@@ -22,6 +22,7 @@ private:
 
     Ref<Texture2DArray> _lockTextures = nullptr;
     Ref<Texture2DArray> _heightmapTextures = nullptr;
+    Ref<Texture2DArray> _colorTextures = nullptr;
     Ref<Texture2DArray> _splatmapsTextures = nullptr;
     TypedArray<Ref<Texture2DArray>> _foliagesTextures = TypedArray<Ref<Texture2DArray>>();
     Ref<Texture2DArray> _objectsTextures = nullptr; // This should be TypedArray<Ref<Texture2DArray>> like foliages but it's unused for now. Might remove it later.
@@ -43,6 +44,7 @@ public:
 
     Ref<Texture2DArray> get_lockTextures() const;
     Ref<Texture2DArray> get_heightmapTextures() const;
+    Ref<Texture2DArray> get_colorTextures() const;
     Ref<Texture2DArray> get_splatmapsTextures() const;
     TypedArray<Ref<Texture2DArray>> get_foliagesTextures() const;
     Ref<Texture2DArray> get_objectsTextures() const;
@@ -56,6 +58,7 @@ public:
 
     void updateLockTexture(int zoneSize);
     void updateHeightmaps();
+    void updateColorTextures(int zoneSize);
     void updateSplatmapsTextures();
     void initializeFoliageTextures(int foliageCount);
     void updateFoliagesTextures();

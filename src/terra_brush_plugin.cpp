@@ -65,6 +65,7 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onDockFoliageSelected", "index"), &TerraBrushPlugin::onDockFoliageSelected);
     ClassDB::bind_method(D_METHOD("onDockObjectSelected", "index"), &TerraBrushPlugin::onDockObjectSelected);
     ClassDB::bind_method(D_METHOD("onDockMetaInfoSelected", "index"), &TerraBrushPlugin::onDockMetaInfoSelected);
+    ClassDB::bind_method(D_METHOD("onDockColorSelected", "value"), &TerraBrushPlugin::onDockColorSelected);
 
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorToolTypeSelected", "toolType"), &TerraBrushPlugin::onTerraBrushEditorToolTypeSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorBrushSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorBrushSelected);
@@ -74,6 +75,8 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorFoliageSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorFoliageSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorObjectSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorObjectSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorMetaInfoSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorMetaInfoSelected);
+    ClassDB::bind_method(D_METHOD("onTerraBrushEditorColorSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorColorSelected);
+    ClassDB::bind_method(D_METHOD("onTerraBrushEditorAutoAddZoneChanged", "value"), &TerraBrushPlugin::onTerraBrushEditorAutoAddZoneChanged);
 
     ClassDB::bind_method(D_METHOD("onTerrainMenuItemPressed", "id"), &TerraBrushPlugin::onTerrainMenuItemPressed);
 }
@@ -109,6 +112,8 @@ void TerraBrushPlugin::_enter_tree() {
     _terraBrushEditor->connect("foliageSelected", Callable(this, "onTerraBrushEditorFoliageSelected"));
     _terraBrushEditor->connect("objectSelected", Callable(this, "onTerraBrushEditorObjectSelected"));
     _terraBrushEditor->connect("metaInfoSelected", Callable(this, "onTerraBrushEditorMetaInfoSelected"));
+    _terraBrushEditor->connect("colorSelected", Callable(this, "onTerraBrushEditorColorSelected"));
+    _terraBrushEditor->connect("autoAddZoneChanged", Callable(this, "onTerraBrushEditorAutoAddZoneChanged"));
     EditorInterface::get_singleton()->get_base_control()->add_child(_terraBrushEditor);
 }
 
@@ -242,6 +247,7 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->connect("foliageSelected", Callable(this, "onDockFoliageSelected"));
     _terrainControlDock->connect("objectSelected", Callable(this, "onDockObjectSelected"));
     _terrainControlDock->connect("metaInfoSelected", Callable(this, "onDockMetaInfoSelected"));
+    _terrainControlDock->connect("colorSelected", Callable(this, "onDockColorSelected"));
 
     _terrainControlDock->setBrushSize(_terraBrushEditor->get_brushSize());
     _terrainControlDock->setBrushStrength(_terraBrushEditor->get_brushStrength());
@@ -251,6 +257,7 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->setSelectedFoliageIndex(_terraBrushEditor->get_selectedFoliageIndex());
     _terrainControlDock->setSelectedObjectIndex(_terraBrushEditor->get_selectedObjectIndex());
     _terrainControlDock->setSelectedMetaInfoIndex(_terraBrushEditor->get_selectedMetaInfoIndex());
+    _terrainControlDock->setSelectedColor(_terraBrushEditor->get_selectedColor());
 
     Ref<Theme> iconTheme = EditorInterface::get_singleton()->get_editor_theme();
 
@@ -332,6 +339,10 @@ void TerraBrushPlugin::onDockMetaInfoSelected(const int index) {
     _terraBrushEditor->set_selectedMetaInfoIndex(index);
 }
 
+void TerraBrushPlugin::onDockColorSelected(const Color value) {
+    _terraBrushEditor->set_selectedColor(value);
+}
+
 void TerraBrushPlugin::onTerraBrushEditorToolTypeSelected(const TerrainToolType toolType) {
     _terrainControlDock->selectToolType(toolType);
 }
@@ -362,6 +373,14 @@ void TerraBrushPlugin::onTerraBrushEditorObjectSelected(const int index) {
 
 void TerraBrushPlugin::onTerraBrushEditorMetaInfoSelected(const int index) {
     _terrainControlDock->setSelectedMetaInfoIndex(index);
+}
+
+void TerraBrushPlugin::onTerraBrushEditorColorSelected(const Color value) {
+    _terrainControlDock->setSelectedColor(value);
+}
+
+void TerraBrushPlugin::onTerraBrushEditorAutoAddZoneChanged(const bool value) {
+    _autoAddZonesCheckbox->set_pressed(value);
 }
 
 void TerraBrushPlugin::importTerrain() {

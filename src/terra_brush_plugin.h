@@ -53,6 +53,7 @@ private:
     void onDockFoliageSelected(const int index);
     void onDockObjectSelected(const int index);
     void onDockMetaInfoSelected(const int index);
+    void onDockColorSelected(const Color value);
 
     void onTerraBrushEditorToolTypeSelected(const TerrainToolType toolType);
     void onTerraBrushEditorBrushSelected(const int index);
@@ -62,6 +63,8 @@ private:
     void onTerraBrushEditorFoliageSelected(const int index);
     void onTerraBrushEditorObjectSelected(const int index);
     void onTerraBrushEditorMetaInfoSelected(const int index);
+    void onTerraBrushEditorColorSelected(const Color value);
+    void onTerraBrushEditorAutoAddZoneChanged(const bool value);
 
     void importTerrain();
     void exportTerrain();

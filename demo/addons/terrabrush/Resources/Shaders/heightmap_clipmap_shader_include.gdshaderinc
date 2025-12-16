@@ -1,6 +1,7 @@
 #include "clipmap_shader_include.gdshaderinc"
 
 uniform bool ApplyLockTextures = false;
+uniform sampler2DArray ColorTextures: hint_default_transparent, repeat_disable;
 uniform sampler2DArray LockTextures : hint_default_black;
 uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
@@ -111,14 +112,14 @@ void calculateHeightmapVertex(
 	inout vec3 triplanarPowerNormal
 ) {
 	calculateVertex(modelMatrix, color, vertex, worldVertex);
-	
+
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
 	float hR = calculateVertexHeight(color, vertex, worldVertex, off.xz);
 	float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
 	float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
 	normal = normalize(vec3(hL - hR, 2.0, hB - hF));
-	
+
 	if (WaterFactor > 0.0) {
 		vec4 levelsMeta = color;
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
@@ -126,8 +127,8 @@ void calculateHeightmapVertex(
 		} else {
 			vec3 zoneUV = calculateZoneUV(worldVertex);
 			vec4 waterTexture = texture(WaterTextures, zoneUV);
-			vertex.y -= waterTexture.r * WaterFactor;		
-		}		
+			vertex.y -= waterTexture.r * WaterFactor;
+		}
 	}
 
 	if (Triplanar) {
@@ -248,7 +249,7 @@ void calculateHeightmapFragment(
 ) {
 	vec3 zoneUV = calculateZoneUV(worldVertex);
 
-    if (UseSharpTransitions) {
+	if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
 
         int textureDetail = TexturesDetail[dominantTextureIndex];
@@ -360,6 +361,9 @@ void calculateHeightmapFragment(
             roughness = 1.0;
 		}
     }
+
+	vec4 color = texture(ColorTextures, zoneUV);
+	albedo = mix(albedo, color.rgb, color.a);
 
     if (ApplyLockTextures) {
         vec4 lockTexture = texture(LockTextures, zoneUV);

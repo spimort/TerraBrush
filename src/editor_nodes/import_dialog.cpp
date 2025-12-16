@@ -95,6 +95,8 @@ ImporterSettings ImportDialog::getImporterSettings() {
         settings.scaleToResolution = _scaleToResolutionCheckbox->is_pressed();
     }
 
+    settings.color = _colorRow->get_imageTexture();
+
     if (_splatmapsContainer != nullptr && _splatmapsContainer->get_child_count() > 0) {
         TypedArray<Ref<Texture2D>> splatmaps = TypedArray<Ref<Texture2D>>();
 
@@ -197,6 +199,10 @@ void ImportDialog::buildLayout() {
                             _heightmapRow = memnew(ImportImageRow);
                             _heightmapRow->set_imageTypeName("Heightmap");
                             rowsVboxContainer->add_child(_heightmapRow);
+
+                            _colorRow = memnew(ImportImageRow);
+                            _colorRow->set_imageTypeName("Color");
+                            rowsVboxContainer->add_child(_colorRow);
 
                             if (!_originialTerraBrush->get_textureSets().is_null() && _originialTerraBrush->get_textureSets()->get_textureSets().size() > 0) {
                                 _splatmapsContainer = memnew(VBoxContainer);

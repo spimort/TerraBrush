@@ -18,6 +18,7 @@ struct ImporterSettings {
     bool useGreenChannelForHoles = false;
     bool scaleToResolution = true;
     float heightmapScale = 1.0;
+    Ref<Texture2D> color = nullptr;
     TypedArray<Ref<Texture2D>> splatmaps = TypedArray<Ref<Texture2D>>();
     TypedArray<Ref<Texture2D>> foliages = TypedArray<Ref<Texture2D>>();
     TypedArray<Ref<Texture2D>> objects = TypedArray<Ref<Texture2D>>();

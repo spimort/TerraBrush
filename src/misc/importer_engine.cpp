@@ -39,6 +39,24 @@ void ImporterEngine::importTerrain(TerraBrush *terrabrush, ImporterSettings sett
         }
     }
 
+    // Color
+    if (!settings.color.is_null()) {
+        std::vector<ImportImageInfo> resultImages = generateImageTextureForZones(
+            terrabrush,
+            settings.color->get_image(),
+            ([terrabrush](int zoneX, int zoneY) {
+                return ZoneUtils::createColorImage(terrabrush->get_zonesSize(), Vector2i(zoneX, zoneY), terrabrush->get_dataPath());
+            }),
+            ([settings](int x, int y, Color pixel, Ref<Image> image) {
+                image->set_pixel(x, y, pixel);
+            })
+        );
+
+        for (ImportImageInfo resultImage : resultImages) {
+            getZoneForImageInfo(terrabrush, resultImage)->set_colorImage(resultImage.image);
+        }
+    }
+
     // Splatmaps
     if (settings.splatmaps.size() > 0) {
         for (int i = 0; i < settings.splatmaps.size(); i++) {

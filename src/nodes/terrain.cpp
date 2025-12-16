@@ -511,6 +511,8 @@ void Terrain::buildTerrain() {
             }
         }
 
+        _clipmap->get_shader()->set_shader_parameter(StringNames::ColorTextures(), _terrainZones->get_colorTextures());
+
         terrainUpdated();
         terrainTextureUpdated();
         terrainWaterUpdated();
