@@ -7,11 +7,13 @@ using namespace godot;
 
 class SettingContants {
     public:
+        const static StringName ShowDecalBubble();
         const static StringName DecalColor();
         const static StringName CustomBrushesFolder();
         const static StringName SculptingMultiplier();
         const static StringName IconsColor();
 
+        const static bool ShowDecalBubbleDefaultValue();
         const static Color DecalColorDefaultValue();
         const static StringName CustomBrushesFolderDefaultValue();
         const static int SculptingMultiplierDefaultValue();

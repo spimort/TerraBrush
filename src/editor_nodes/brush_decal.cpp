@@ -21,24 +21,31 @@ void BrushDecal::_ready() {
     _decal = memnew(Decal);
     add_child(_decal);
 
-    MeshInstance3D *sphereMeshInstance = memnew(MeshInstance3D);
-    add_child(sphereMeshInstance);
+    bool showBubble = ProjectSettings::get_singleton()->get_setting(SettingContants::ShowDecalBubble(), SettingContants::ShowDecalBubbleDefaultValue());
 
-    _sphereMesh = Ref<SphereMesh>(memnew(SphereMesh));
-    sphereMeshInstance->set_mesh(_sphereMesh);
+    if (showBubble) {
+        MeshInstance3D *sphereMeshInstance = memnew(MeshInstance3D);
+        add_child(sphereMeshInstance);
 
-    Ref<ShaderMaterial> sphereMaterial = memnew(ShaderMaterial);
-    sphereMaterial->set_shader(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/Shaders/decal_sphere_shader.gdshader"));
-    sphereMeshInstance->set_material_override(sphereMaterial);
+        _sphereMesh = Ref<SphereMesh>(memnew(SphereMesh));
+        sphereMeshInstance->set_mesh(_sphereMesh);
 
-    sphereMaterial->set_shader_parameter(StringNames::Color(), ProjectSettings::get_singleton()->get_setting(SettingContants::DecalColor(), SettingContants::DecalColorDefaultValue()));
-    sphereMaterial->set_shader_parameter(StringNames::Compatibility(), RenderingServer::get_singleton()->get_current_rendering_method() == "gl_compatibility");
+        Ref<ShaderMaterial> sphereMaterial = memnew(ShaderMaterial);
+        sphereMaterial->set_shader(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/Shaders/decal_sphere_shader.gdshader"));
+        sphereMeshInstance->set_material_override(sphereMaterial);
+
+        sphereMaterial->set_shader_parameter(StringNames::Color(), ProjectSettings::get_singleton()->get_setting(SettingContants::DecalColor(), SettingContants::DecalColorDefaultValue()));
+        sphereMaterial->set_shader_parameter(StringNames::Compatibility(), RenderingServer::get_singleton()->get_current_rendering_method() == "gl_compatibility");
+    }
 }
 
 void BrushDecal::setSize(const int size) {
     _decal->set_size(Vector3(size, 1000, size));
-    _sphereMesh->set_radius(size / 2.0);
-    _sphereMesh->set_height(size);
+
+    if (!_sphereMesh.is_null()) {
+        _sphereMesh->set_radius(size / 2.0);
+        _sphereMesh->set_height(size);
+    }
 }
 
 void BrushDecal::setBrushImage(const Ref<Image> image) {

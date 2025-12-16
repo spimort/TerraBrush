@@ -89,7 +89,8 @@ TerraBrushPlugin::~TerraBrushPlugin() {}
 void TerraBrushPlugin::_enter_tree() {
     Ref<KeybindManager> keybindManager = memnew(KeybindManager);
 
-    createCustomSetting(SettingContants::DecalColor(),SettingContants::DecalColorDefaultValue(), Variant::Type::COLOR);
+    createCustomSetting(SettingContants::ShowDecalBubble(), SettingContants::ShowDecalBubbleDefaultValue(), Variant::Type::BOOL);
+    createCustomSetting(SettingContants::DecalColor(), SettingContants::DecalColorDefaultValue(), Variant::Type::COLOR);
     createCustomSetting(SettingContants::CustomBrushesFolder(), SettingContants::CustomBrushesFolderDefaultValue(), Variant::Type::STRING);
     createCustomSetting(SettingContants::SculptingMultiplier(), SettingContants::SculptingMultiplierDefaultValue(), Variant::Type::INT);
     createCustomSetting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue(), Variant::Type::COLOR);
