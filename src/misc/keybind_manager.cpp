@@ -19,7 +19,13 @@ String KeybindManager::describeInputKey(Ref<InputEventKey> key) {
     String desc = "";
     if (key->is_ctrl_pressed()) desc += "Ctrl + ";
     if (key->is_alt_pressed()) desc += "Alt + ";
-    desc += OS::get_singleton()->get_keycode_string(key->get_keycode());
+
+    Key keyCode = key->get_physical_keycode();
+    if (keyCode == Key::KEY_NONE) {
+        keyCode = key->get_keycode();
+    }
+
+    desc += OS::get_singleton()->get_keycode_string(keyCode);
     return desc;
 }
 
@@ -35,31 +41,31 @@ const StringName KeybindManager::StringNames::LockZAxis() { return StringName("t
 
 KeybindManager::KeybindManager() {
     _toolPieKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _toolPieKey->set_keycode(Key::KEY_V);
+    _toolPieKey->set_physical_keycode(Key::KEY_V);
 
     _brushPieKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _brushPieKey->set_keycode(Key::KEY_B);
+    _brushPieKey->set_physical_keycode(Key::KEY_B);
 
     _toolContentKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _toolContentKey->set_keycode(Key::KEY_N);
+    _toolContentKey->set_physical_keycode(Key::KEY_N);
 
     _brushSizeKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _brushSizeKey->set_keycode(Key::KEY_G);
+    _brushSizeKey->set_physical_keycode(Key::KEY_G);
 
     _brushStrengthKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _brushStrengthKey->set_keycode(Key::KEY_H);
+    _brushStrengthKey->set_physical_keycode(Key::KEY_H);
 
     _escapeKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _escapeKey->set_keycode(Key::KEY_ESCAPE);
+    _escapeKey->set_physical_keycode(Key::KEY_ESCAPE);
 
     _toggleAutoAddZonesKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _toggleAutoAddZonesKey->set_keycode(Key::KEY_K);
+    _toggleAutoAddZonesKey->set_physical_keycode(Key::KEY_K);
 
     _lockXAxis = Ref<InputEventKey>(memnew(InputEventKey));
-    _lockXAxis->set_keycode(Key::KEY_X);
+    _lockXAxis->set_physical_keycode(Key::KEY_X);
 
     _lockZAxis = Ref<InputEventKey>(memnew(InputEventKey));
-    _lockZAxis->set_keycode(Key::KEY_Z);
+    _lockZAxis->set_physical_keycode(Key::KEY_Z);
 
     _actionNames = TypedArray<StringName>({
         StringNames::ToolPie(),
