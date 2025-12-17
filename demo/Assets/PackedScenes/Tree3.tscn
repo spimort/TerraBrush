@@ -116,6 +116,7 @@ albedo_texture = ExtResource("3_s0uxs")
 [node name="Tree-01-3" type="MeshInstance3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 visibility_range_end = 1000.0
+visibility_range_end_margin = 1100.0
 visibility_range_fade_mode = 1
 mesh = SubResource("ArrayMesh_rs6dg")
 skeleton = NodePath("")
