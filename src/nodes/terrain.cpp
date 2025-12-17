@@ -342,6 +342,8 @@ void Terrain::updateTextures() {
         TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();
         TypedArray<int> textureDetails = TypedArray<int>();
         TypedArray<int> texturesTriplanar = TypedArray<int>();
+        TypedArray<float> texturesMetallic = TypedArray<float>();
+        TypedArray<float> texturesSpecular = TypedArray<float>();
         bool triplanar = false;
         TypedArray<Ref<Texture2D>> normalTextures = TypedArray<Ref<Texture2D>>();
         TypedArray<Ref<Texture2D>> roughnessTextures = TypedArray<Ref<Texture2D>>();
@@ -361,6 +363,8 @@ void Terrain::updateTextures() {
             } else {
                 texturesTriplanar.append(0);
             }
+            texturesMetallic.append(textureSet->get_metallic());
+            texturesSpecular.append(textureSet->get_specular());
 
             if (!textureSet->get_normalTexture().is_null()) {
                 normalTextures.append(textureSet->get_normalTexture());
@@ -384,6 +388,8 @@ void Terrain::updateTextures() {
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), textureDetails);
         _clipmap->get_shader()->set_shader_parameter(StringNames::Triplanar(), triplanar);
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesTriplanar(), texturesTriplanar);
+        _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesMetallic(), texturesMetallic);
+        _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesSpecular(), texturesSpecular);
         if (!textureArray.is_null()) {
             _clipmap->get_shader()->set_shader_parameter(StringNames::NumberOfTextures(), textureArray->get_layers());
         }

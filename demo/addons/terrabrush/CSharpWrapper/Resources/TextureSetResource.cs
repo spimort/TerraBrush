@@ -69,6 +69,24 @@ public partial class TextureSetResource : Resource {
         }
     }
 
+    public float Metallic {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_metallic").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_metallic", value);
+        }
+    }
+
+    public float Specular {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_specular").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_specular", value);
+        }
+    }
+
     public static implicit operator TextureSetResource(Variant handle) => new(handle);
 
     public TextureSetResource(Variant handle) {

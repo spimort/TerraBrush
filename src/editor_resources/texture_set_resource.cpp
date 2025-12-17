@@ -35,6 +35,14 @@ void TextureSetResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_triplanar"), &TextureSetResource::get_triplanar);
     ClassDB::bind_method(D_METHOD("set_triplanar", "value"), &TextureSetResource::set_triplanar);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "triplanar"), "set_triplanar", "get_triplanar");
+
+    ClassDB::bind_method(D_METHOD("get_metallic"), &TextureSetResource::get_metallic);
+    ClassDB::bind_method(D_METHOD("set_metallic", "value"), &TextureSetResource::set_metallic);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "metallic", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_metallic", "get_metallic");
+
+    ClassDB::bind_method(D_METHOD("get_specular"), &TextureSetResource::get_specular);
+    ClassDB::bind_method(D_METHOD("set_specular", "value"), &TextureSetResource::set_specular);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "specular", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_specular", "get_specular");
 }
 
 TextureSetResource::TextureSetResource() {
@@ -45,6 +53,8 @@ TextureSetResource::TextureSetResource() {
     _roughnessTexture = Ref<Texture2D>(nullptr);
     _heightTexture = Ref<Texture2D>(nullptr);
     _triplanar = false;
+    _metallic = 0.0;
+    _specular = 0.5;
 }
 
 TextureSetResource::~TextureSetResource() {}
@@ -129,4 +139,18 @@ bool TextureSetResource::get_triplanar() const {
 }
 void TextureSetResource::set_triplanar(const bool value) {
     _triplanar = value;
+}
+
+float TextureSetResource::get_metallic() const {
+    return _metallic;
+}
+void TextureSetResource::set_metallic(const float value) {
+    _metallic = value;
+}
+
+float TextureSetResource::get_specular() const {
+    return _specular;
+}
+void TextureSetResource::set_specular(const float value) {
+    _specular = value;
 }
