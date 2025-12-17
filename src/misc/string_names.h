@@ -90,5 +90,7 @@ class StringNames {
         const static StringName Color();
         const static StringName Compatibility();
         const static StringName ColorTextures();
+        const static StringName TexturesMetallic();
+        const static StringName TexturesSpecular();
 };
 #endif

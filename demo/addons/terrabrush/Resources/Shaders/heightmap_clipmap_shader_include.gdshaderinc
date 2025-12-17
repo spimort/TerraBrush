@@ -26,6 +26,8 @@ uniform int AlbedoAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
 uniform int NormalAlphaChannelUsage = 0; // None = 0; Roughness = 1; Height = 2
 uniform bool Triplanar = true;
 uniform int[100] TexturesTriplanar;
+uniform float[100] TexturesMetallic;
+uniform float[100] TexturesSpecular;
 uniform bool UseSharpTransitions = false;
 uniform bool ApplyMetaInfoTextures = false;
 uniform sampler2DArray MetaInfoTextures: filter_nearest;
@@ -243,6 +245,8 @@ void calculateHeightmapFragment(
 	vec3 triplanarPowerNormal,
 	inout vec3 albedo,
 	inout vec3 normalMap,
+	inout float metallic,
+	inout float specular,
 	inout float roughness,
 	inout float alpha,
 	inout float alphaScissorThreshold
@@ -281,11 +285,16 @@ void calculateHeightmapFragment(
                 roughness = normalTexture.a;
             }
         }
+		
+		metallic = TexturesMetallic[dominantTextureIndex];
+		specular = TexturesSpecular[dominantTextureIndex];
     } else {
 		bool useHeightTextures = HasHeightTextures || AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT || NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT;
         vec4 resultTexture = vec4(0.0);
         vec4 resultNormal = vec4(0.0);
         vec4 resultRoughness = vec4(0.0);
+		float resultMetallic = 0.0;
+		float resultSpecular = 0.0;
 
         float channelSum = 0.0;
 
@@ -313,6 +322,8 @@ void calculateHeightmapFragment(
             vec4 currentNormal = vec4(0);
             vec4 currentRoughness = vec4(0);
             vec4 currentHeight = vec4(0);
+			float currentMetallic = 0.0;
+			float currentSpecular = 0.0;
 
             currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
             currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
@@ -328,6 +339,9 @@ void calculateHeightmapFragment(
             if (HasHeightTextures) {
                 currentHeight = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, HeightTextures, HeightTexturesNearest, false);
             }
+			
+			currentMetallic = TexturesMetallic[i];
+			currentSpecular = TexturesSpecular[i];
 
             float heightBlendedChannelValue = channelValue;
             if (useHeightTextures) {
@@ -343,6 +357,8 @@ void calculateHeightmapFragment(
             resultTexture += currentTexture * heightBlendedChannelValue;
             resultNormal += currentNormal * heightBlendedChannelValue;
             resultRoughness += currentRoughness * heightBlendedChannelValue;
+			resultMetallic += currentMetallic * heightBlendedChannelValue;
+			resultSpecular += currentSpecular * heightBlendedChannelValue;			
         }
 
 		if (channelSum > 0.0) {
@@ -355,10 +371,15 @@ void calculateHeightmapFragment(
 	        if (HasNormalTextures) {
 	            normalMap = resultNormal.xyz / channelSum;
 	        }
+			
+			metallic = resultMetallic / channelSum;
+			specular = resultSpecular / channelSum;
 		} else {
             albedo = vec3(0.0);
             normalMap = vec3(0.0, 1.0, 0.0);
             roughness = 1.0;
+			metallic = 0.0;
+			specular = 0.5;
 		}
     }
 

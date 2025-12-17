@@ -26,7 +26,7 @@ class TerraBrush : public Node3D {
 private:
     const int HeightMapFactor = 1;
 
-    String _version = "0.14.1-alpha";
+    String _version = "0.14.2-alpha";
 
     Terrain *_terrain = nullptr;
     Node3D *_foliagesNode = nullptr;

@@ -29,6 +29,8 @@ void fragment() {
 		_triplanarPowerNormal,
 		ALBEDO,
 		NORMAL_MAP,
+		METALLIC,
+		SPECULAR,
 		ROUGHNESS,
 		ALPHA,
 		ALPHA_SCISSOR_THRESHOLD

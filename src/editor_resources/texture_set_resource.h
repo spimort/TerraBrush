@@ -17,6 +17,8 @@ private:
     Ref<Texture2D> _heightTexture = nullptr;
     int _textureDetail = 0;
     bool _triplanar = false;
+    float _metallic = 0.0;
+    float _specular = 0.5;
 
 protected:
     static void _bind_methods();
@@ -45,5 +47,11 @@ public:
 
     bool get_triplanar() const;
     void set_triplanar(const bool value);
+
+    float get_metallic() const;
+    void set_metallic(const float value);
+
+    float get_specular() const;
+    void set_specular(const float value);
 };
 #endif
