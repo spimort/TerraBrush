@@ -7,8 +7,8 @@ uniform int LODRowsPerLevel = 10;
 uniform int LODLevels = 5;
 uniform float WindStrength = 0.1;
 uniform vec4 FoliageAlbedo: source_color = vec4(1.0);
-uniform sampler2DArray FoliageAlbedoTextures: hint_default_white, repeat_disable;
-uniform sampler2DArray FoliageAlbedoTexturesNearest: hint_default_white, repeat_disable, filter_nearest_mipmap;
+uniform sampler2DArray FoliageAlbedoTextures: source_color, hint_default_white, repeat_disable;
+uniform sampler2DArray FoliageAlbedoTexturesNearest: source_color, hint_default_white, repeat_disable, filter_nearest_mipmap;
 uniform int FoliageNumberOfTexture;
 uniform bool UseGroundColor = true;
 uniform vec3 MeshScale = vec3(1.0);
@@ -119,13 +119,13 @@ vec4 calculateGroundColor(vec3 zoneUV) {
 		float channelValue = currentSplatmap[currentChannel];
         if (channelValue <= 0.0001) {
             continue;
-        }		
+        }
 
 		resultTexture += currentTexture * channelValue;
 	}
-	
+
 	vec4 color = texture(ColorTextures, zoneUV);
-	resultTexture = vec4(mix(resultTexture.rgb, color.rgb, color.a), 1.0); 
+	resultTexture = vec4(mix(resultTexture.rgb, color.rgb, color.a), 1.0);
 
 	return resultTexture;
 }
