@@ -1,9 +1,11 @@
 #include "texture_set_resource.h"
+#include "../misc/setting_contants.h"
 
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 using namespace godot;
 
@@ -70,7 +72,8 @@ Ref<Texture2D> TextureSetResource::get_albedoTexture() const {
     return _albedoTexture;
 }
 void TextureSetResource::set_albedoTexture(const Ref<Texture2D> &value) {
-    if (Engine::get_singleton()->is_editor_hint() && !value.is_null() && !value->get_path().is_empty() && (_albedoTexture.is_null() || value->get_path() != _albedoTexture->get_path())) {
+    bool autoDetectTextures = ProjectSettings::get_singleton()->get_setting(SettingContants::AutoDetectTextures(), SettingContants::AutoDetectTexturesDefaultValue());
+    if (autoDetectTextures && Engine::get_singleton()->is_editor_hint() && !value.is_null() && !value->get_path().is_empty() && (_albedoTexture.is_null() || value->get_path() != _albedoTexture->get_path())) {
         static const String NormalFilesHint = "normal";
         static const String RoughnessFilesHint = "roughness";
         static const String HeightFilesHint = "height";
