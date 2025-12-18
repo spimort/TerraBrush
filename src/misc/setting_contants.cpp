@@ -7,9 +7,11 @@ const StringName SettingContants::DecalColor() { return "terraBrush/brushes/deca
 const StringName SettingContants::CustomBrushesFolder() { return "terraBrush/brushes/custom_brushes_folder"; }
 const StringName SettingContants::SculptingMultiplier() { return "terraBrush/brushes/sculpting_multiplier"; }
 const StringName SettingContants::IconsColor() { return "terraBrush/interface/icons_color"; }
+const StringName SettingContants::AutoDetectTextures() { return "terraBrush/interface/auto_detect_textures"; }
 
 const bool SettingContants::ShowDecalBubbleDefaultValue() { return true; }
 const Color SettingContants::DecalColorDefaultValue() { return Color::html("#244ab580"); }
 const StringName SettingContants::CustomBrushesFolderDefaultValue() { return "res://TerraBrush_CustomBrushes"; }
 const int SettingContants::SculptingMultiplierDefaultValue() { return 10; }
 const Color SettingContants::IconsColorDefaultValue() { return Color::html("#00151F"); }
+const bool SettingContants::AutoDetectTexturesDefaultValue() { return true; }

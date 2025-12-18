@@ -94,6 +94,7 @@ void TerraBrushPlugin::_enter_tree() {
     createCustomSetting(SettingContants::CustomBrushesFolder(), SettingContants::CustomBrushesFolderDefaultValue(), Variant::Type::STRING);
     createCustomSetting(SettingContants::SculptingMultiplier(), SettingContants::SculptingMultiplierDefaultValue(), Variant::Type::INT);
     createCustomSetting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue(), Variant::Type::COLOR);
+    createCustomSetting(SettingContants::AutoDetectTextures(), SettingContants::AutoDetectTexturesDefaultValue(), Variant::Type::BOOL);
 
     _terrainDockContainer = memnew(Control);
     _terrainDockContainer->set_name("Terrain Editor");
