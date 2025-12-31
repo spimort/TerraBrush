@@ -14,6 +14,7 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/display_server.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -541,7 +542,7 @@ void TerraBrush::loadTerrain() {
     _terrainZones->updateHeightmaps();
     _terrainZones->updateColorTextures(_zonesSize);
 
-    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) {
+    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly && DisplayServer::get_singleton()->window_can_draw())) {
         // Water needs to be created first so we have the reference to the image texture
         createWater();
     }
@@ -576,7 +577,7 @@ void TerraBrush::loadTerrain() {
 
     createObjects();
 
-    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly)) {
+    if (Engine::get_singleton()->is_editor_hint() || (!_collisionOnly && DisplayServer::get_singleton()->window_can_draw())) {
         createFoliages();
         createSnow();
     }

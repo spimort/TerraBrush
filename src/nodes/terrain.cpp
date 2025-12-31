@@ -13,6 +13,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/height_map_shape3d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
 using namespace godot;
@@ -487,7 +488,7 @@ void Terrain::buildTerrain() {
     _terrainCollider->set_collision_layer(_collisionLayers);
     _terrainCollider->set_collision_mask(_collisionMask);
 
-    if (!Engine::get_singleton()->is_editor_hint() && (_collisionOnly)) {
+    if (!Engine::get_singleton()->is_editor_hint() && (_collisionOnly || !DisplayServer::get_singleton()->window_can_draw())) {
         updateCollisionShape();
         _clipmap->get_clipmapMesh()->set_visible(false);
     } else {
