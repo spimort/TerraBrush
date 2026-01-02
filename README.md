@@ -381,7 +381,7 @@ if is_on_floor() and get_last_slide_collision() != null:
         # If we don't get a result, it means we are out of the terrain
         if result != null:
             # The texture at position 0 is the most present one
-            var mainTexture = result.Textures[0].Name if result.Textures.size() > 0 else ""
+            var mainTexture = result.get_textures()[0].get_name() if result.get_textures().size() > 0 else ""
             # Do something with the mainTexture information
             ...
 ```
