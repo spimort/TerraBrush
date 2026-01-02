@@ -89,7 +89,6 @@ private:
     static constexpr const char* CollisionShapeInfoInfo_OffsetKey = "Offset";
     static constexpr const char* CollisionShapeInfoInfo_ShapeKey = "Shape";
 
-    Camera3D *_camera = nullptr;
     StaticBody3D *_staticBodyContainer = nullptr;
     Ref<Image> _noiseImageCache = nullptr;
     Vector3 _lastUpdatedPosition = Vector3();
