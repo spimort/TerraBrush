@@ -48,14 +48,6 @@ void ObjectsOctreeMultiMesh::_ready() {
         return;
     }
 
-    if (Engine::get_singleton()->is_editor_hint()) {
-        _camera = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
-    }
-
-    if (_camera == nullptr && get_viewport() != nullptr) {
-        _camera = get_viewport()->get_camera_3d();
-    }
-
     call_deferred("initialize");
 }
 
@@ -66,7 +58,20 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
 
     _updateTime += (float) delta;
     if (_updateTime >= _definition->get_updateTimeFrequency()) {
-        Vector3 currentPosition = to_local(_camera->get_global_position());
+        Camera3D *camera = nullptr;
+        if (Engine::get_singleton()->is_editor_hint()) {
+            camera = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
+        }
+
+        if (camera == nullptr && get_viewport() != nullptr) {
+            camera = get_viewport()->get_camera_3d();
+        }
+
+        if (camera == nullptr) {
+            return;
+        }
+
+        Vector3 currentPosition = to_local(camera->get_global_position());
         if (currentPosition.distance_to(_lastUpdatedPosition) > _definition->get_updateDistanceThreshold()) {
             updateMeshes();
 
