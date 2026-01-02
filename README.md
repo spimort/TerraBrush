@@ -375,9 +375,9 @@ if is_on_floor() and get_last_slide_collision() != null:
     var collision = get_last_slide_collision()
 
     # Let's make sure the collider is the collider of the Terrain
-		if collision == _terrain.getTerrainCollider():
+    if collision == _terrain.getTerrainCollider():
         # The variable playerX and playerZ are the variables for the global position of the player
-			  var result = _terrain.getPositionInformation(playerX, playerZ)
+        var result = _terrain.getPositionInformation(playerX, playerZ)
         # If we don't get a result, it means we are out of the terrain
         if result != null:
             # The texture at position 0 is the most present one
