@@ -87,3 +87,4 @@ const StringName StringNames::Compatibility() { return "Compatibility"; }
 const StringName StringNames::ColorTextures() { return "ColorTextures"; }
 const StringName StringNames::TexturesMetallic() { return "TexturesMetallic"; }
 const StringName StringNames::TexturesSpecular() { return "TexturesSpecular"; }
+const StringName StringNames::TerrainCollisionUpdated() { return "TerrainCollisionUpdated"; }

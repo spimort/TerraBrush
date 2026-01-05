@@ -22,6 +22,7 @@
 using namespace godot;
 
 void TerraBrush::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("onTerrainCollisionUpdated"), &TerraBrush::onTerrainCollisionUpdated);
     ClassDB::bind_method(D_METHOD("getPositionInformation", "x", "y"), &TerraBrush::getPositionInformation);
     ClassDB::bind_method(D_METHOD("addInteractionPoint", "x", "y"), &TerraBrush::addInteractionPoint);
     ClassDB::bind_method(D_METHOD("onUpdateTerrainSettings"), &TerraBrush::onUpdateTerrainSettings);
@@ -573,6 +574,9 @@ void TerraBrush::loadTerrain() {
     _terrain->set_showMetaInfo(_showMetaInfo);
     _terrain->set_metaInfoLayers(_metaInfoLayers);
 
+    // This is attached to emit the initialized event
+    _terrain->connect(StringNames::TerrainCollisionUpdated(), Callable(this, "onTerrainCollisionUpdated"));
+
     add_child(_terrain);
 
     createObjects();
@@ -583,8 +587,6 @@ void TerraBrush::loadTerrain() {
     }
 
     createMetaInfo();
-
-    emit_signal(StringNames::TerrainLoaded());
 }
 
 void TerraBrush::createFoliages() {
@@ -760,6 +762,13 @@ Node3D *TerraBrush::get_objectsContainer() {
 
 Ref<Texture2D> TerraBrush::get_defaultNoise() {
     return _defaultNoise;
+}
+
+void TerraBrush::onTerrainCollisionUpdated() {
+    if (!_initialized) {
+        _initialized = true;
+        emit_signal(StringNames::TerrainLoaded());
+    }
 }
 
 void TerraBrush::onCreateTerrain() {

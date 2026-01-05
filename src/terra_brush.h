@@ -28,6 +28,8 @@ private:
 
     String _version = "0.14.2-alpha";
 
+    bool _initialized = false;
+
     Terrain *_terrain = nullptr;
     Node3D *_foliagesNode = nullptr;
     Node3D *_objectsContainerNode = nullptr;
@@ -197,6 +199,7 @@ public:
     Node3D *get_objectsContainer();
     Ref<Texture2D> get_defaultNoise();
 
+    void onTerrainCollisionUpdated();
     void onCreateTerrain();
     void onRemoveTerrain();
     void onUpdateTerrainSettings();
