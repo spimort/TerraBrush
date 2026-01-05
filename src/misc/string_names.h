@@ -92,5 +92,6 @@ class StringNames {
         const static StringName ColorTextures();
         const static StringName TexturesMetallic();
         const static StringName TexturesSpecular();
+        const static StringName TerrainCollisionUpdated();
 };
 #endif

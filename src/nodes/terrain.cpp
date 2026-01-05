@@ -19,6 +19,8 @@
 using namespace godot;
 
 void Terrain::_bind_methods() {
+    ADD_SIGNAL(MethodInfo(StringNames::TerrainCollisionUpdated()));
+
     ClassDB::bind_method(D_METHOD("onUpdateTerrainCollision", "shapes"), &Terrain::onUpdateTerrainCollision);
     ClassDB::bind_method(D_METHOD("assignCollisionData", "shape", "data"), &Terrain::assignCollisionData);
 }
@@ -329,6 +331,8 @@ Ref<ZoneResource> Terrain::getZoneForPosition(int x, int y) {
 
 void Terrain::assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data) {
     shape->set_map_data(data);
+
+    emit_signal(StringNames::TerrainCollisionUpdated());
 }
 
 void Terrain::updateTextures() {
