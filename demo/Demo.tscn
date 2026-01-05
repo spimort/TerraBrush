@@ -215,3 +215,5 @@ offset_left = 26.0
 offset_top = 16.0
 offset_right = 66.0
 offset_bottom = 39.0
+
+[connection signal="TerrainLoaded" from="TerraBrush" to="CharacterBody3D" method="_on_terra_brush_terrain_loaded"]
