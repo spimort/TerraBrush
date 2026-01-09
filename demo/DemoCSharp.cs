@@ -10,7 +10,7 @@ public partial class DemoCSharp : CharacterBody3D {
     private TerraBrush.TerraBrush _terraBrush;
 
     [Export] private Camera3D Camera { get;set; }
-    [Export] public Node3D Terrain { get;set; }
+    [Export(PropertyHint.NodeType, "TerraBrush")] public Node3D Terrain { get;set; }
     [Export] public Label DebugLabel { get;set; }
     [Export] public ShapeCast3D ShapeCast { get;set; }
 
