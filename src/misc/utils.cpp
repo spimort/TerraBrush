@@ -115,6 +115,10 @@ bool Utils::isPowerOfTwo(int x) {
 }
 
 Color Utils::getPixelLinear(Ref<Image> image, float x, float y) {
+    // Align to pixel centers (GPU-equivalent)
+    x -= 0.5f;
+    y -= 0.5f;
+
     int x0 = Math::max(0, (int)Math::floor(x));
     int x1 = Math::min(x0 + 1, image->get_width() - 1);
     int y0 = Math::max(0, (int) Math::floor(y));
