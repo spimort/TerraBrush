@@ -31,6 +31,10 @@ mono_crash.*.json
 # SCons
 .sconsign.dblite
 
+# CLang
+.cache/clangd
+compile_commands.json
+
 # TerraBrush
 demo/addons/terrabrush/bin
 demo/bin

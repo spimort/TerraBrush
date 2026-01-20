@@ -1,6 +1,7 @@
 #include "objects_octree_multi_mesh.h"
 #include "../misc/zone_utils.h"
 #include "../misc/utils.h"
+#include "godot_cpp/variant/vector3.hpp"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -384,14 +385,21 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             if (cancellationToken.isCancellationRequested) return;
             int lodDefinitionIndex = _sortedLODDefinitions.find(lodDefinition);
 
+            if (nodeInfo->get_hidden()) {
+                toRemoveNodes.push_back(nodeInfo);
+                continue;
+            }
+
             // It means that the mesh for the lod level has not been provided, we skip it
             if (Array(_multiMeshIntances[nodeInfo->get_meshIndex()]).size() <= lodDefinitionIndex) {
+                toRemoveNodes.push_back(nodeInfo);
                 continue;
             }
 
             // We can have different frequency per lod level so check if we need to skip a node
             int objectFrequency = lodDefinition->get_objectFrequency() < 1 ? _definition->get_objectFrequency() < 1 ? _defaultObjectFrequency : _definition->get_objectFrequency() : lodDefinition->get_objectFrequency();
             if (nodeInfo->get_imagePosition().x % objectFrequency != 0 ||nodeInfo->get_imagePosition().y % objectFrequency != 0) {
+                toRemoveNodes.push_back(nodeInfo);
                 continue;
             }
 
@@ -423,6 +431,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                     collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);
                     collisionShape->set_scale(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
                     nodeInfo->set_collisionShape(collisionShape);
+                    collisionShape->set_meta("TerraBrush_OctreeNodeInfo_Id", nodeInfo->get_id());
                     _staticBodyContainer->call_deferred("add_child", collisionShape);
                 }
 
@@ -543,14 +552,18 @@ void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> z
 
                 std::vector<Ref<RefCounted>> existingNodes = checkExistingNode ? _octree->getNearby(resultPosition, 0.1f) : std::vector<Ref<RefCounted>>();
                 if (add && existingNodes.size() == 0) {
+                    int64_t nextId = _lastId;
+                    _lastId++;
+
                     Ref<ObjectsOctreeNodeInfo> octreeNodeInfo = memnew(ObjectsOctreeNodeInfo);
+                    octreeNodeInfo->set_id(nextId);
                     octreeNodeInfo->set_imagePosition(Vector2i(x, y));
                     octreeNodeInfo->set_position(resultPosition);
                     octreeNodeInfo->set_meshIndex(randomItemIndex);
                     octreeNodeInfo->set_meshRotation(resultRotation);
                     octreeNodeInfo->set_meshSizeFactor(resultSizeFactor);
 
-                    _octree->add(octreeNodeInfo, octreeNodeInfo->get_position());
+                    _octree->add(octreeNodeInfo, octreeNodeInfo->get_position(), octreeNodeInfo->get_id());
                 } else if (!add && existingNodes.size() == 1) {
                     _octree->remove(existingNodes[0]);
                 }
@@ -621,6 +634,28 @@ Vector2 ObjectsOctreeMultiMesh::getHeightPositionForResolution(Vector2 position,
     return position;
 }
 
+void ObjectsOctreeMultiMesh::hideObject(int64_t objectId) {
+    Ref<RefCounted> object = _octree->getById(objectId);
+    if (!object.is_null()) {
+        Ref<ObjectsOctreeNodeInfo> objectInfo = (Ref<ObjectsOctreeNodeInfo>)object;
+        if (!objectInfo.is_null()) {
+            objectInfo->set_hidden(true);
+            updateMeshes();
+        }
+    }
+}
+
+void ObjectsOctreeMultiMesh::showObject(int64_t objectId) {
+    Ref<RefCounted> object = _octree->getById(objectId);
+    if (!object.is_null()) {
+        Ref<ObjectsOctreeNodeInfo> objectInfo = (Ref<ObjectsOctreeNodeInfo>)object;
+        if (!objectInfo.is_null()) {
+            objectInfo->set_hidden(false);
+            updateMeshes();
+        }
+    }
+}
+
 // ObjectsOctreeNodeInfo (Octree class)
 
 void ObjectsOctreeNodeInfo::_bind_methods() {}
@@ -636,6 +671,13 @@ ObjectsOctreeNodeInfo::ObjectsOctreeNodeInfo() {
 }
 
 ObjectsOctreeNodeInfo::~ObjectsOctreeNodeInfo() {}
+
+int64_t ObjectsOctreeNodeInfo::get_id() const {
+    return _id;
+}
+void ObjectsOctreeNodeInfo::set_id(const int64_t value) {
+    _id = value;
+}
 
 Vector2i ObjectsOctreeNodeInfo::get_imagePosition() const {
     return _imagePosition;
@@ -684,4 +726,11 @@ int ObjectsOctreeNodeInfo::get_previousLodIndex() const {
 }
 void ObjectsOctreeNodeInfo::set_previousLodIndex(const int value) {
     _previousLodIndex = value;
+}
+
+bool ObjectsOctreeNodeInfo::get_hidden() const {
+    return _hidden;
+}
+void ObjectsOctreeNodeInfo::set_hidden(const bool value) {
+    _hidden = value;
 }

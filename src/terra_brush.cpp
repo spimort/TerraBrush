@@ -30,6 +30,8 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("getHeightAtPosition", "x", "z", "useGlobalPosition"), &TerraBrush::getHeightAtPosition);
     ClassDB::bind_method(D_METHOD("getHeightForMousePosition", "camera"), &TerraBrush::getHeightForMousePosition);
     ClassDB::bind_method(D_METHOD("getHeightForScreenPosition", "camera", "screenPosition"), &TerraBrush::getHeightForScreenPosition);
+    ClassDB::bind_method(D_METHOD("hideObject", "objectLayerIndex", "objectId"), &TerraBrush::hideObject);
+    ClassDB::bind_method(D_METHOD("showObject", "objectLayerIndex", "objectId"), &TerraBrush::showObject);
 
     ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
@@ -1214,4 +1216,28 @@ Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenP
     }
 
     return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+}
+
+void TerraBrush::hideObject(int objectLayerIndex, int64_t objectId) const {
+    ObjectsBase *objectsNode = Object::cast_to<ObjectsBase>(_objectsContainerNode->get_node_or_null(String::num_int64(objectLayerIndex)));
+    if (objectsNode != nullptr) {
+        ObjectsOctreeMultiMesh *octreeObjects = Object::cast_to<ObjectsOctreeMultiMesh>(objectsNode);
+        if (octreeObjects != nullptr) {
+            return octreeObjects->hideObject(objectId);
+        } else {
+            ERR_FAIL_MSG("Only the octree objects can use the removeObject function. For the PackedScene objects, you can remove them using queue_free()");
+        }
+    }
+}
+
+void TerraBrush::showObject(int objectLayerIndex, int64_t objectId) const {
+        ObjectsBase *objectsNode = Object::cast_to<ObjectsBase>(_objectsContainerNode->get_node_or_null(String::num_int64(objectLayerIndex)));
+        if (objectsNode != nullptr) {
+        ObjectsOctreeMultiMesh *octreeObjects = Object::cast_to<ObjectsOctreeMultiMesh>(objectsNode);
+        if (octreeObjects != nullptr) {
+            return octreeObjects->showObject(objectId);
+        } else {
+            ERR_FAIL_MSG("Only the octree objects can use the removeObject function. For the PackedScene objects, you can add them using add_child()");
+        }
+    }
 }

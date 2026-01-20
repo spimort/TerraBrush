@@ -312,4 +312,12 @@ public partial class TerraBrush : Node {
     public Vector3 GetHeightForScreenPosition(Camera3D camera, Vector2 screenPosition) {
         return _godotHandle.AsGodotObject().Call("getHeightForScreenPosition", camera, screenPosition).AsVector3();
     }
+
+    public void HideObject(int objectLayerIndex, long objectId) {
+        _godotHandle.AsGodotObject().Call("hideObject", objectLayerIndex, objectId);
+    }
+
+    public void ShowObject(int objectLayerIndex, long objectId) {
+        _godotHandle.AsGodotObject().Call("showObject", objectLayerIndex, objectId);
+    }
 }

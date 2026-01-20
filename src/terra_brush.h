@@ -1,7 +1,6 @@
 #ifndef TERRA_BRUSH_H
 #define TERRA_BRUSH_H
 
-#include "editor_resources/texture_set_resource.h"
 #include "editor_resources/texture_sets_resource.h"
 #include "editor_resources/foliage_resource.h"
 #include "editor_resources/object_resource.h"
@@ -218,5 +217,7 @@ public:
     float getHeightAtPosition(float x, float z, bool useGlobalPosition) const;
     Vector3 getHeightForMousePosition(Camera3D *camera) const;
     Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const;
+    void hideObject(int objectLayerIndex, int64_t objectId) const;
+    void showObject(int objectLayerIndex, int64_t objectId) const;
 };
 #endif
