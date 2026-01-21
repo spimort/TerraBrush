@@ -396,6 +396,39 @@ You also have access to the following functions to get the height of the terrain
 <br>
 `getHeightForScreenPosition`
 
+#### Remove object from the octree
+
+When using the octree strategy with the objects, you cannot remove them like you would with a script on a packed scene. This is why the TerraBrush node exposes two functions to do so.
+
+```gdscript
+void hideObject(objectLayerIndex: int, objectId: int) const
+```
+
+This function hides/removes an instance of the object in the multimesh. If this one has a collider, it is also removed.
+The `objectLayerIndex` correspond to the index of the object definition in the TerraBrush properties.
+The `objectId` correspond to the internal object id in the octree. It can be obtained from a collision shape, with the meta called `TerraBrush_OctreeNodeInfo_Id`.
+
+```gdscript
+void showObject(objectLayerIndex: int, objectId: int) const
+```
+
+This function shows/adds an existing instance of the object in the multimesh. If this one has a collider, it is also added. This function is useful if you want the object to come back in the scene (ex. a tree that grows back).
+The `objectLayerIndex` correspond to the index of the object definition in the TerraBrush properties.
+The `objectId` correspond to the internal object id in the octree.
+
+Here is an example of how to obtain an object id to remove it from the scene, using a `RayCast3D` :
+
+```gdscript
+var collider: StaticBody3D = $RayCast3D.get_collider()
+if collider != null:
+  var colliderShapeId: int = $RayCast3D.get_collider_shape()
+  var colliderShapeOwner = collider.shape_find_owner(colliderShapeId)
+  var shape = collider.shape_owner_get_owner(colliderShapeOwner)
+  if shape != null:
+    var objectId: int = shape.get_meta("TerraBrush_OctreeNodeInfo_Id")
+    $TerraBrush.hideObject(0, objectId)
+```
+
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.

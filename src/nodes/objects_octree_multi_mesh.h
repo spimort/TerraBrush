@@ -2,9 +2,7 @@
 #define OBJECTS_OCTREE_MULTI_MESH_H
 
 #include "../editor_resources/object_octree_lod_definition_resource.h"
-#include "../editor_resources/zones_resource.h"
 #include "../editor_resources/zone_resource.h"
-#include "../editor_resources/object_definition_resource.h"
 #include "../misc/thread_utils.h"
 #include "octree/point_octree.h"
 #include "objects_base.h"
@@ -28,6 +26,7 @@ class ObjectsOctreeNodeInfo : public RefCounted {
     GDCLASS(ObjectsOctreeNodeInfo, RefCounted);
 
 private:
+    int64_t _id;
     Vector2i _imagePosition = Vector2i();
     Vector3 _position = Vector3();
     int _meshIndex = 0;
@@ -35,6 +34,7 @@ private:
     float _meshSizeFactor = 0;
     CollisionShape3D* _collisionShape = nullptr;
     int _previousLodIndex = 0;
+    bool _hidden = false;
 
 protected:
     static void _bind_methods();
@@ -42,6 +42,9 @@ protected:
 public:
     ObjectsOctreeNodeInfo();
     ~ObjectsOctreeNodeInfo();
+
+    int64_t get_id() const;
+    void set_id(const int64_t value);
 
     Vector2i get_imagePosition() const;
     void set_imagePosition(const Vector2i value);
@@ -63,6 +66,9 @@ public:
 
     int get_previousLodIndex() const;
     void set_previousLodIndex(const int value);
+
+    bool get_hidden() const;
+    void set_hidden(const bool value);
 };
 
 class ObjectsOctreeMultiMesh : public ObjectsBase {
@@ -102,6 +108,7 @@ private:
     CancellationSource _cancellationTokenSource = CancellationSource();
     Ref<Thread> _objectsThread = nullptr;
     bool _initialized = false;
+    int64_t _lastId = 0;
 
     void initialize();
     void initializeSortedLODs();
@@ -134,5 +141,7 @@ public:
     void updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) override;
     void addRemoveObjectFromTool(bool add, int x, int y, Ref<ZoneResource> zone, Ref<Image> heightmapImage, Ref<Image> waterImage) override;
     Vector2 getHeightPositionForResolution(Vector2 position, int resolutionZoneSize);
+    void hideObject(int64_t objectId);
+    void showObject(int64_t objectId);
 };
 #endif

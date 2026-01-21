@@ -92,8 +92,9 @@ public:
     /// </summary>
     /// <param name="obj">Object to add.</param>
     /// <param name="objPos">Position of the object.</param>
+    /// <param name="id">Id of the object.</param>
     /// <exception cref="InvalidOperationException">Add operation required growing the octree too much.</exception>
-    void add(Ref<RefCounted> obj, Vector3 objPos);
+    void add(Ref<RefCounted> obj, Vector3 objPos, int64_t id);
 
     /// <summary>
     /// Remove an object. Makes the assumption that the object only exists once in the tree.
@@ -109,6 +110,14 @@ public:
     /// <param name="objPos">Position of the object.</param>
     /// <returns>True if the object was removed successfully.</returns>
     bool remove(Ref<RefCounted> obj, Vector3 objPos);
+
+    /// <summary>
+    /// Returns object by its <paramref name="id"/>.
+    /// If none, returns a null object.
+    /// </summary>
+    /// <param name="id">The id of the object to search for.</param>
+    /// <returns>Object with the provided id</returns>
+    Ref<RefCounted> getById(int64_t id);
 
     /// <summary>
     /// Returns objects that are within <paramref name="maxDistance"/> of the specified ray.

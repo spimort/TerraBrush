@@ -21,6 +21,13 @@ PointOctreeObject::PointOctreeObject() {
 
 PointOctreeObject::~PointOctreeObject() {}
 
+int64_t PointOctreeObject::get_id() const {
+    return _id;
+}
+void PointOctreeObject::set_id(const int64_t value) {
+    _id = value;
+}
+
 Ref<RefCounted> PointOctreeObject::get_obj() const {
     return _obj;
 }

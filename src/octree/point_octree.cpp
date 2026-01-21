@@ -96,10 +96,10 @@ std::vector<Ref<PointOctreeBoundingBox>> PointOctree::getChildBounds() {
     return bounds;
 }
 
-void PointOctree::add(Ref<RefCounted> obj, Vector3 objPos) {
+void PointOctree::add(Ref<RefCounted> obj, Vector3 objPos, int64_t id) {
     // Add object or expand the octree until it can be added
     int count = 0; // Safety check against infinite/excessive growth
-    while (!_rootNode->add(obj, objPos))
+    while (!_rootNode->add(obj, objPos, id))
     {
         grow(objPos - _rootNode->get_center());
         ERR_FAIL_COND_MSG(++count > 20, "Aborted Add operation as it seemed to be going on forever (" + String::num_int64(count - 1) +  " attempts at growing the octree).");
@@ -131,6 +131,10 @@ bool PointOctree::remove(Ref<RefCounted> obj, Vector3 objPos) {
     }
 
     return removed;
+}
+
+Ref<RefCounted> PointOctree::getById(int64_t id) {
+    return _rootNode->getById(id);
 }
 
 std::vector<Ref<RefCounted>> PointOctree::getNearby(Ref<PointOctreeRay> ray, float maxDistance) {

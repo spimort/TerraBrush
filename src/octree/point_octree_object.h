@@ -23,6 +23,11 @@ class PointOctreeObject : public RefCounted {
 
 private:
     /// <summary>
+    /// Object Id
+    /// </summary>
+    int64_t _id;
+
+    /// <summary>
     /// Object content
     /// </summary>
     Ref<RefCounted> _obj = nullptr;
@@ -38,6 +43,16 @@ protected:
 public:
     PointOctreeObject();
     ~PointOctreeObject();
+
+    /// <summary>
+    /// Get the object id
+    /// </summary>
+    int64_t get_id() const;
+
+    /// <summary>
+    /// Set the object id
+    /// </summary>
+    void set_id(const int64_t value);
 
     /// <summary>
     /// Get the object content
