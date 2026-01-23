@@ -85,7 +85,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
     float startingY = imagePosition.y - (brushSize / 2);
     ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
-    std::unordered_set<int> pointsCache = std::unordered_set<int>();
+    std::unordered_set<uint64_t> pointsCache = std::unordered_set<uint64_t>();
     for (int x = 0; x < brushSize; x++) {
         for (int y = 0; y < brushSize; y++) {
             int offsetX = x;
@@ -99,9 +99,8 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
             if (!imageZoneInfo.zone.is_null()) {
                 int zoneKey = imageZoneInfo.zoneInfo.zoneKey;
                 Vector2i zoneImagePosition = imageZoneInfo.zoneInfo.imagePosition;
-                int positionKey = (zoneImagePosition.x << 8) + zoneImagePosition.y;
                 // Create a cache key with the zone and the position
-                int zonePositionKey = (zoneKey << 8) + positionKey;
+                uint64_t zonePositionKey = (static_cast<uint64_t>(zoneKey) << 32) | (static_cast<uint64_t>(zoneImagePosition.x) << 16) | static_cast<uint64_t>(zoneImagePosition.y);
 
                 if (_terraBrush->get_resolution() == 1 || !getApplyResolution() || pointsCache.count(zonePositionKey) == 0) {
                     if (_terraBrush->get_resolution() != 1) {
