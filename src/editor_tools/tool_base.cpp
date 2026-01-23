@@ -95,7 +95,6 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
                 offsetY = (int) Math::floor(Math::remap((float) y, 0, brushSize, 0, (int) Math::ceil(((float) brushSize) / _terraBrush->get_resolution())));
             }
             ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
-            // print_line("zonekey ", imageZoneInfo.zoneInfo.zonePosition, " image position ", imageZoneInfo.zoneInfo.imagePosition, " x ", x, " y ", y, " offsetx ", offsetX, " offsety ", offsetY);
 
             if (!imageZoneInfo.zone.is_null()) {
                 int zoneKey = imageZoneInfo.zoneInfo.zoneKey;
