@@ -695,6 +695,7 @@ void TerraBrush::createWater() {
         _waterNode->set_lodRowsPerLevel(_lodRowsPerLevel);
         _waterNode->set_lodInitialCellWidth(_lodInitialCellWidth);
         _waterNode->set_customShader(_waterDefinition->get_customShader());
+        _waterNode->set_rippleResetSpeed(_waterDefinition->get_rippleResetSpeed());
 
         _waterNode->set_wave(_waterDefinition->get_waterWave());
         _waterNode->set_normalMap(_waterDefinition->get_waterNormalMap());

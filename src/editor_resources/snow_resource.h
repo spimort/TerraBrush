@@ -22,6 +22,8 @@ private:
     float _metallic = 0;
     int _visualInstanceLayers = 0;
     Ref<ShaderMaterial> _customShader = nullptr;
+    float _decompressSpeed = 0.5f;
+    float _decompressOffsetSpeed = 2.0f;
 
 protected:
     static void _bind_methods();
@@ -62,5 +64,11 @@ public:
 
     Ref<ShaderMaterial> get_customShader() const;
     void set_customShader(const Ref<ShaderMaterial> &value);
+
+    float get_decompressSpeed() const;
+    void set_decompressSpeed(const float value);
+
+    float get_decompressOffsetSpeed() const;
+    void set_decompressOffsetSpeed(const float value);
 };
 #endif

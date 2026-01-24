@@ -34,6 +34,7 @@ private:
     Color _waterEdgeColor = Color();
     int _visualInstanceLayers = 0;
     Ref<ShaderMaterial> _customShader = nullptr;
+    float _rippleResetSpeed = 0.9f;
 
 protected:
     static void _bind_methods();
@@ -111,5 +112,7 @@ public:
     Ref<ShaderMaterial> get_customShader() const;
     void set_customShader(const Ref<ShaderMaterial> &value);
 
+    float get_rippleResetSpeed() const;
+    void set_rippleResetSpeed(const float value);
 };
 #endif

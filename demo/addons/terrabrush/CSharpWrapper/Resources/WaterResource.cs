@@ -213,6 +213,15 @@ public partial class WaterResource : Resource {
         }
     }
 
+    public float RippleResetSpeed {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_rippleResetSpeed").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_rippleResetSpeed", value);
+        }
+    }
+
     public static implicit operator WaterResource(Variant handle) => new(handle);
 
     public WaterResource(Variant handle) {

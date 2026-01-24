@@ -96,6 +96,10 @@ void WaterResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_customShader"), &WaterResource::get_customShader);
     ClassDB::bind_method(D_METHOD("set_customShader", "value"), &WaterResource::set_customShader);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "customShader", PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial"), "set_customShader", "get_customShader");
+
+    ClassDB::bind_method(D_METHOD("get_rippleResetSpeed"), &WaterResource::get_rippleResetSpeed);
+    ClassDB::bind_method(D_METHOD("set_rippleResetSpeed", "value"), &WaterResource::set_rippleResetSpeed);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rippleResetSpeed"), "set_rippleResetSpeed", "get_rippleResetSpeed");
 }
 
 WaterResource::WaterResource() {
@@ -122,6 +126,7 @@ WaterResource::WaterResource() {
     _waterEdgeColor = Color::named("WHITE");
     _visualInstanceLayers = 1;
     _customShader = Ref<ShaderMaterial>(nullptr);
+    _rippleResetSpeed = 0.9f;
 }
 
 WaterResource::~WaterResource() {}
@@ -294,4 +299,11 @@ void WaterResource::set_customShader(const Ref<ShaderMaterial> &value) {
         newShader->set_code(defaultCode);
         value->set_shader(newShader);
     }
+}
+
+float WaterResource::get_rippleResetSpeed() const {
+    return _rippleResetSpeed;
+}
+void WaterResource::set_rippleResetSpeed(const float value) {
+    _rippleResetSpeed = value;
 }
