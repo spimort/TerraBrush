@@ -280,6 +280,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |WaterResource.WaterEdgeColor|This is the color of the "foam".|
 |WaterResource.VisualInstanceLayers|The godot layer on which the water will be displayed.|
 |WaterResource.CustomShader|A custom shader for ther water.|
+|WaterResource.RippleResetSpeed|Determine of fast the "ripple" in the water will go away when using the function `AddInteractionPoint` (Higher number is fater).|
 |**Snow**||
 |Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
@@ -293,6 +294,8 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
 |SnowResource.CustomShader|A custom shader for the snow.|
+|SnowResource.DecompressSpeed|Determine how fast the snow will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
+|SnowResource.DecompressOffsetSpeed|Determine how fast the snow vertices will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
 |**Meta**||
 |ShowMetaInfo|Show the meta layers while in the editor. This has no effect in runtime (outside of the editor).|
 |MetaInfoLayer[x].Name|The name of a meta layer. Useful to get the information about a location using the `GetPositionInformation` function.|

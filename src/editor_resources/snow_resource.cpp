@@ -48,6 +48,14 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_customShader"), &SnowResource::get_customShader);
     ClassDB::bind_method(D_METHOD("set_customShader", "value"), &SnowResource::set_customShader);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "customShader", PROPERTY_HINT_RESOURCE_TYPE, "ShaderMaterial"), "set_customShader", "get_customShader");
+
+    ClassDB::bind_method(D_METHOD("get_decompressSpeed"), &SnowResource::get_decompressSpeed);
+    ClassDB::bind_method(D_METHOD("set_decompressSpeed", "value"), &SnowResource::set_decompressSpeed);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "decompressSpeed"), "set_decompressSpeed", "get_decompressSpeed");
+
+    ClassDB::bind_method(D_METHOD("get_decompressOffsetSpeed"), &SnowResource::get_decompressOffsetSpeed);
+    ClassDB::bind_method(D_METHOD("set_decompressOffsetSpeed", "value"), &SnowResource::set_decompressOffsetSpeed);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "decompressOffsetSpeed"), "set_decompressOffsetSpeed", "get_decompressOffsetSpeed");
 }
 
 SnowResource::SnowResource() {
@@ -62,6 +70,8 @@ SnowResource::SnowResource() {
     _noiseFactor = 0;
     _metallic = 0;
     _customShader = Ref<ShaderMaterial>(nullptr);
+    _decompressSpeed = 0.5f;
+    _decompressOffsetSpeed = 2.0f;
 }
 
 SnowResource::~SnowResource() {
@@ -152,4 +162,18 @@ void SnowResource::set_customShader(const Ref<ShaderMaterial> &value) {
         newShader->set_code(defaultCode);
         value->set_shader(newShader);
     }
+}
+
+float SnowResource::get_decompressSpeed() const {
+    return _decompressSpeed;
+}
+void SnowResource::set_decompressSpeed(const float value) {
+    _decompressSpeed = value;
+}
+
+float SnowResource::get_decompressOffsetSpeed() const {
+    return _decompressOffsetSpeed;
+}
+void SnowResource::set_decompressOffsetSpeed(const float value) {
+    _decompressOffsetSpeed = value;
 }

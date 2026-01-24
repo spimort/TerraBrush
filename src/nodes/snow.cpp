@@ -45,7 +45,7 @@ void Snow::_physics_process(const double delta) {
                 float offsetY = pixel.b;
 
                 if (compressionValue < 1) {
-                    compressionValue += (float) delta * DeCompressSpeed;
+                    compressionValue += (float) delta * _snowDefinition->get_decompressSpeed();
 
                     if (compressionValue >= 1.0) {
                         compressionValue = 1.0f;
@@ -56,8 +56,8 @@ void Snow::_physics_process(const double delta) {
                     } else {
                         points[position] = compressionValue;
 
-                        offsetX -= (float) delta * DeCompressOffsetSpeed;
-                        offsetY -= (float) delta * DeCompressOffsetSpeed;
+                        offsetX -= (float) delta * _snowDefinition->get_decompressOffsetSpeed();
+                        offsetY -= (float) delta * _snowDefinition->get_decompressOffsetSpeed();
 
                         if (offsetX < 0.0) {
                             offsetX = 0.0f;

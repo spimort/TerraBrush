@@ -47,7 +47,7 @@ void Water::_physics_process(double delta) {
                 float rippleValue = points[position];
 
                 if (rippleValue < 1.0) {
-                    rippleValue += (float) delta * RippleResetSpeed;
+                    rippleValue += (float) delta * _rippleResetSpeed;
 
                     if (rippleValue >= 1.0) {
                         rippleValue = 1.0f;
@@ -186,8 +186,11 @@ void Water::set_lodInitialCellWidth(const float value) {
 }
 
 void Water::set_customShader(const Ref<ShaderMaterial> &value) {
-
     _customShader = value;
+}
+
+void Water::set_rippleResetSpeed(const float value) {
+    _rippleResetSpeed = value;
 }
 
 Clipmap *Water::get_clipmap() const {

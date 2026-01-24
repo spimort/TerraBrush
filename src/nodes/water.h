@@ -15,8 +15,6 @@ class Water : public Node3D {
     GDCLASS(Water, Node3D);
 
 private:
-    const float RippleResetSpeed = 0.9f;
-
     TypedDictionary<Ref<ZoneResource>, Dictionary> _ripplePositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
 
     Clipmap *_clipmap = nullptr;
@@ -51,6 +49,7 @@ private:
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth;
     Ref<ShaderMaterial> _customShader = nullptr;
+    float _rippleResetSpeed = 0.9f;
 
 protected:
     static void _bind_methods();
@@ -92,6 +91,7 @@ public:
     void set_lodRowsPerLevel(const int value);
     void set_lodInitialCellWidth(const float value);
     void set_customShader(const Ref<ShaderMaterial> &value);
+    void set_rippleResetSpeed(const float value);
 
     Clipmap *get_clipmap() const;
 

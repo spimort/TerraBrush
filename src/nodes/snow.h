@@ -15,9 +15,6 @@ class Snow : public Node3D {
     GDCLASS(Snow, Node3D);
 
 private:
-    const float DeCompressSpeed = 0.5f;
-    const float DeCompressOffsetSpeed = 2.0f;
-
     TypedDictionary<Ref<ZoneResource>, Dictionary> _compressedPositions = TypedDictionary<Ref<ZoneResource>, Dictionary>();
 
     Clipmap *_clipmap = nullptr;
