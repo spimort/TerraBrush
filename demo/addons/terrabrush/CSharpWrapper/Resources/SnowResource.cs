@@ -104,6 +104,23 @@ public partial class SnowResource : Resource {
         }
     }
 
+    public float DecompressSpeed {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_decompressSpeed").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_decompressSpeed", value);
+        }
+    }
+
+    public float DecompressOffsetSpeed {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_decompressOffsetSpeed").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_decompressOffsetSpeed", value);
+        }
+    }
 
     public static implicit operator SnowResource(Variant handle) => new(handle);
 
