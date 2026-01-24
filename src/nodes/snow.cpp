@@ -179,8 +179,8 @@ void Snow::addCompressedSnow(float x, float y) {
         Color currentPixel = image->get_pixel(pixelPosition.x, pixelPosition.y);
 
         if (currentPixel.r > 0) {
-            int offsetX = x - pixelPosition.x;
-            int offsetY = y - pixelPosition.y;
+            float offsetX = x - pixelPosition.x;
+            float offsetY = y - pixelPosition.y;
 
             image->set_pixel(pixelPosition.x, pixelPosition.y, Color(currentPixel.r, offsetX, offsetY, 0));
 
