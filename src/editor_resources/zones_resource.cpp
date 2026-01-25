@@ -284,6 +284,10 @@ void ZonesResource::updateImageImages(int zoneSize) {
 }
 
 Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(ZoneInfo zoneInfo) {
+    if (_zones.size() == 0) {
+        return nullptr;
+    }
+
     for (Ref<ZoneResource> zone : _zones) {
         if (zone.is_null()) {
             return nullptr;
