@@ -529,6 +529,9 @@ void TerraBrush::loadTerrain() {
 
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
+        if (zone.is_null()) {
+            return;
+        }
 
         if (zone->get_heightMapImage().is_null()) {
             zone->set_heightMapImage(ZoneUtils::createHeightmapImage(_zonesSize, _resolution, zone->get_zonePosition(), _dataPath));
