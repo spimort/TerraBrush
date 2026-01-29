@@ -238,9 +238,7 @@ void Foliage::updateFoliage() {
         _foliageShader->set_shader_parameter(StringNames::TextureDetail(), _textureDetail);
     }
 
-    if (_definition->get_useGroundColor()) {
-        _foliageShader->set_shader_parameter(StringNames::ColorTextures(), _terrainZones->get_colorTextures());
-    }
+    _foliageShader->set_shader_parameter(StringNames::ColorTextures(), _terrainZones->get_colorTextures());
 
     _foliageShader->set_shader_parameter(StringNames::FoliageTextures(), _terrainZones->get_foliagesTextures()[_foliageIndex]);
     _foliageShader->set_shader_parameter(StringNames::MeshScale(), _definition->get_meshScale());
