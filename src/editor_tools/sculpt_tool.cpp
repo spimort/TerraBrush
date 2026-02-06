@@ -52,7 +52,7 @@ void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
             break;
         default:
             sculpt(toolType, brushImage, brushSize, brushStrength, imagePosition);
-            smooth(brushImage, brushSize, brushStrength, imagePosition);
+            smooth(brushImage, brushSize, 1.0, imagePosition);
             break;
     }
 
