@@ -247,9 +247,7 @@ void calculateHeightmapFragment(
 	inout vec3 normalMap,
 	inout float metallic,
 	inout float specular,
-	inout float roughness,
-	inout float alpha,
-	inout float alphaScissorThreshold
+	inout float roughness
 ) {
 	vec3 zoneUV = calculateZoneUV(worldVertex);
 
@@ -397,17 +395,14 @@ void calculateHeightmapFragment(
 		if (metaInfoTexture.r >= 0.0) {
 			albedo *= MetaInfoColors[int(metaInfoTexture.r)].rgb;
 		}
-    }
-
-    alpha = 1.0;
-    alphaScissorThreshold = 1.0;
+    }    
 
     if (zoneUV.z < 0.0) {
-        alpha = 0.0;
+        discard;
     } else {
         float hole = texture(HeightmapTextures, zoneUV).g;
         if (hole > 0.0) {
-            alpha = 0.0;
+            discard;
         }
     }
 }

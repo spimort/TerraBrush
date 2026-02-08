@@ -59,8 +59,7 @@ void calculateSnowFragment(
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float metallic,
-	inout float roughness,
-	inout float alpha		
+	inout float roughness
 ) {
 	if (color[0] > 0.0f) {
 		vec3 zoneUV = calculateZoneUV(worldVertex);			
@@ -72,14 +71,14 @@ void calculateSnowFragment(
 		roughness = texture(SnowColorRoughness, worldVertexUV).r;
 		
 		if (zoneUV.z < 0.0) {
-			alpha = 0.0;
+			discard;
 		} else {
 			float hole = texture(HeightmapTextures, zoneUV).g;
 			if (hole > 0.0) {
-				alpha = 0.0;
+				discard;
 			}			
 		}
 	} else {
-		alpha = 0.0;
+		discard;
 	}
 }
