@@ -239,6 +239,8 @@ TerraBrush::TerraBrush() {
 TerraBrush::~TerraBrush() {}
 
 void TerraBrush::_ready() {
+    set_physics_interpolation_mode(PhysicsInterpolationMode::PHYSICS_INTERPOLATION_MODE_OFF);
+
     _defaultNoise = ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/DefaultNoise.tres");
 
     if (_dataPath.is_empty()) {
