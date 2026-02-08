@@ -23,7 +23,6 @@ void fragment() {
 		ALBEDO,
 		NORMAL_MAP,
 		METALLIC,
-		ROUGHNESS,
-		ALPHA	
+		ROUGHNESS
 	);
 }

@@ -95,8 +95,7 @@ void calculateWaterFragment(
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float metallic,
-	inout float roughness,
-	inout float alpha
+	inout float roughness
 ) {
 	if (color[0] > 0.0f) {
 		float depthTextureValue = texture(depthTexture, screenUV).r * 2.0 - 1.0;
@@ -141,14 +140,14 @@ void calculateWaterFragment(
 		}
 
 		if (zoneUV.z < 0.0) {
-			alpha = 0.0;
+			discard;
 		} else {
 			float hole = texture(HeightmapTextures, zoneUV).g;
 			if (hole > 0.0f) {
-				alpha = 0.0f;
+				discard;
 			}
 		}
 	} else {
-		alpha = 0.0;
+		discard;
 	}
 }
