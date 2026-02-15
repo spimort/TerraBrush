@@ -67,4 +67,10 @@ enum LockedAxis {
     LOCKEDAXIS_Z = 2
 };
 VARIANT_ENUM_CAST(LockedAxis);
+
+enum ToolsSpawnLocation {
+    TOOLSSPAWNLOCATION_ATCURSOR = 1,
+    TOOLSSPAWNLOCATION_SCREENCENTER = 2
+};
+VARIANT_ENUM_CAST(ToolsSpawnLocation);
 #endif

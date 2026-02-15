@@ -67,6 +67,7 @@ private:
     int _defaultBrushSize = 100;
     int _maxBrushSize = 200;
     float _defaultBrushStrength = 0.1;
+    ToolsSpawnLocation _toolsSpawnLocation = ToolsSpawnLocation::TOOLSSPAWNLOCATION_ATCURSOR;
 
     void onUndoRedo();
     Vector3 getRayCastWithTerrain(Camera3D *camera);
@@ -92,6 +93,7 @@ private:
     void updateAutoAddZonesSetting();
     void updateBrushImage();
     void setShiftPressed(const bool pressed);
+    Vector2 getToolSpawnPosition(Viewport *viewport) const;
 
 protected:
     static void _bind_methods();
@@ -125,6 +127,9 @@ public:
 
     float get_defaultBrushStrength() const;
     void set_defaultBrushStrength(const float value);
+
+    ToolsSpawnLocation get_toolsSpawnLocation() const;
+    void set_toolsSpawnLocation(const ToolsSpawnLocation value);
 
     TerraBrush *get_terraBrushNode() const;
     void set_terraBrushNode(const TerraBrush *terraBrushNode);

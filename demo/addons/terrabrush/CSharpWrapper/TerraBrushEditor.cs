@@ -35,6 +35,42 @@ public partial class TerraBrushEditor : Node {
         }
     }
 
+    public int DefaultBrushSize {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_defaultBrushSize").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_defaultBrushSize", value);
+        }
+    }
+
+    public int MaxBrushSize {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_maxBrushSize").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_maxBrushSize", value);
+        }
+    }
+
+    public float DefaultBrushStrength {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_defaultBrushStrength").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_defaultBrushStrength", value);
+        }
+    }
+
+    public ToolsSpawnLocation ToolsSpawnLocation {
+        get {
+            return (ToolsSpawnLocation) _godotHandle.AsGodotObject().Call("get_toolsSpawnLocation").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_toolsSpawnLocation", (int) value);
+        }
+    }
+
     public TerraBrush TerraBrushNode {
         get {
             var node = _godotHandle.AsGodotObject().Call("get_terraBrushNode").As<Node>();

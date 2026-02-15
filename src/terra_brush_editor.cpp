@@ -119,6 +119,10 @@ void TerraBrushEditor::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_defaultBrushStrength", "value"), &TerraBrushEditor::set_defaultBrushStrength);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "defaultBrushStrength"), "set_defaultBrushStrength", "get_defaultBrushStrength");
 
+    ClassDB::bind_method(D_METHOD("get_toolsSpawnLocation"), &TerraBrushEditor::get_toolsSpawnLocation);
+    ClassDB::bind_method(D_METHOD("set_toolsSpawnLocation", "value"), &TerraBrushEditor::set_toolsSpawnLocation);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "toolsSpawnLocation", PROPERTY_HINT_ENUM, "AtCursor:1,ScreenCenter:2"), "set_toolsSpawnLocation", "get_toolsSpawnLocation");
+
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_NONE);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINADD);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINREMOVE);
@@ -415,11 +419,7 @@ void TerraBrushEditor::showToolPieMenu(Viewport *viewport, StringName actionName
 
         _overlaySelector = pieMenu;
 
-        Vector2 mousePosition = viewport->get_mouse_position();
-        if (viewport->get_parent() != nullptr) {
-            mousePosition = Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
-        }
-        _overlaySelector->set_position(mousePosition);
+        _overlaySelector->set_position(getToolSpawnPosition(viewport));
         _overlaySelector->set_meta(OverlayActionNameKey, actionName);
 
         _containerNode->add_child(_overlaySelector);
@@ -438,11 +438,7 @@ void TerraBrushEditor::showCustomContentPieMenu(Viewport *viewport, String label
 
         _overlaySelector = customContentPieMenu;
 
-        Vector2 mousePosition = viewport->get_mouse_position();
-        if (viewport->get_parent() != nullptr) {
-            mousePosition = Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
-        }
-        _overlaySelector->set_position(mousePosition);
+        _overlaySelector->set_position(getToolSpawnPosition(viewport));
         _overlaySelector->set_meta((StringName)OverlayActionNameKey, label);
 
         _containerNode->add_child(_overlaySelector);
@@ -551,11 +547,7 @@ void TerraBrushEditor::showBrushNumericSelector(Viewport *viewport, int minVale,
 
         _overlaySelector = selector;
 
-        Vector2 mousePosition = viewport->get_mouse_position();
-        if (viewport->get_parent() != nullptr) {
-            mousePosition = Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
-        }
-        _overlaySelector->set_position(mousePosition);
+        _overlaySelector->set_position(getToolSpawnPosition(viewport));
         _overlaySelector->set_meta(OverlayActionNameKey, actionName);
 
         _containerNode->add_child(_overlaySelector);
@@ -591,11 +583,7 @@ void TerraBrushEditor::showColorPickerSelector(Viewport *viewport) {
 
     _overlaySelector = panelContainer;
 
-    Vector2 mousePosition = viewport->get_mouse_position();
-    if (viewport->get_parent() != nullptr) {
-        mousePosition = Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
-    }
-    _overlaySelector->set_position(mousePosition);
+    _overlaySelector->set_position(getToolSpawnPosition(viewport));
 
     _containerNode->add_child(_overlaySelector);
 }
@@ -845,6 +833,22 @@ void TerraBrushEditor::setShiftPressed(bool pressed) {
     emit_signal("toolTypeSelected", toolType);
 }
 
+Vector2 TerraBrushEditor::getToolSpawnPosition(Viewport *viewport) const {
+    if (_toolsSpawnLocation == ToolsSpawnLocation::TOOLSSPAWNLOCATION_ATCURSOR) {
+        Vector2 mousePosition = viewport->get_mouse_position();
+        if (viewport->get_parent() != nullptr) {
+            return Object::cast_to<Control>(viewport->get_parent())->get_global_mouse_position();
+        }
+
+        return mousePosition;
+    } else if (_toolsSpawnLocation == ToolsSpawnLocation::TOOLSSPAWNLOCATION_SCREENCENTER) {
+        Vector2 viewportRectSize = viewport->get_visible_rect().get_size();
+        return Vector2(viewportRectSize.x / 2.0, viewportRectSize.y / 2.0);
+    }
+
+    return Vector2(0, 0);
+}
+
 void TerraBrushEditor::set_containerNode(Node *containerNode) {
     _containerNode = containerNode;
 }
@@ -952,6 +956,13 @@ float TerraBrushEditor::get_defaultBrushStrength() const {
 }
 void TerraBrushEditor::set_defaultBrushStrength(const float value) {
     _defaultBrushStrength = value;
+}
+
+ToolsSpawnLocation TerraBrushEditor::get_toolsSpawnLocation() const {
+    return _toolsSpawnLocation;
+}
+void TerraBrushEditor::set_toolsSpawnLocation(const ToolsSpawnLocation value) {
+    _toolsSpawnLocation = value;
 }
 
 int TerraBrushEditor::get_brushIndex() const {

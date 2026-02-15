@@ -50,3 +50,8 @@ public enum TerrainToolType {
     ColorAdd = 24,
     ColorRemove = 25,
 }
+
+public enum ToolsSpawnLocation {
+    AtCursor = 1,
+    ScreenCenter = 2
+}
