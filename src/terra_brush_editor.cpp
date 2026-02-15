@@ -62,6 +62,7 @@ void TerraBrushEditor::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onColorSelected", "value"), &TerraBrushEditor::onColorSelected);
     ClassDB::bind_method(D_METHOD("hideOverlaySelector"), &TerraBrushEditor::hideOverlaySelector);
 
+    ClassDB::bind_method(D_METHOD("set_undoRedo", "undoRedo"), &TerraBrushEditor::set_undoRedo);
     ClassDB::bind_method(D_METHOD("onUndoRedo"), &TerraBrushEditor::onUndoRedo);
 
     ClassDB::bind_method(D_METHOD("get_enabled"), &TerraBrushEditor::get_enabled);
@@ -145,6 +146,7 @@ void TerraBrushEditor::_bind_methods() {
 }
 
 TerraBrushEditor::TerraBrushEditor() {
+    _undoRedo = Ref<ToolUndoRedo>(memnew(ToolUndoRedo));
     _updateTime = 0;
     _autoAddZones = false;
     _preventInitialDo = false;
@@ -858,8 +860,12 @@ void TerraBrushEditor::set_terraBrushNode(const TerraBrush *terraBrushNode) {
     _terraBrushNode = const_cast<TerraBrush*>(terraBrushNode);
 }
 
-void TerraBrushEditor::set_undoRedo(EditorUndoRedoManager *undoRedo) {
-    _undoRedo = undoRedo;
+void TerraBrushEditor::set_editorUndoRedo(EditorUndoRedoManager *undoRedo) {
+    _undoRedo->set_editorUndoRedo(undoRedo);
+}
+
+void TerraBrushEditor::set_undoRedo(UndoRedo *undoRedo) {
+    _undoRedo->set_undoRedo(undoRedo);
 }
 
 bool TerraBrushEditor::get_enabled() const {
