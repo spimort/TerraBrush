@@ -139,4 +139,8 @@ public partial class TerraBrushEditor : Node {
     }
 
     public new string GetPath() => _godotHandle.AsGodotObject().Call("get_path").AsString();
+
+    public void SetUndoRedo(UndoRedo undoRedo) {
+        _godotHandle.AsGodotObject().Call("set_undoRedo", undoRedo);
+    }
 }

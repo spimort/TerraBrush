@@ -16,11 +16,11 @@ ToolBase::ToolBase() {
 
 ToolBase::~ToolBase() {}
 
-void ToolBase::init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones) {
+void ToolBase::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
     ERR_FAIL_COND_MSG(terraBrush == nullptr, "A terrabrush node must be provided");
 
     _terraBrush = terraBrush;
-    _undoRedoManager = undoRedoManager;
+    _undoRedo = undoRedo;
     _autoAddZones = autoAddZones;
 }
 
@@ -31,12 +31,12 @@ PixelLockedInfo ToolBase::isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zo
 }
 
 void ToolBase::addImagesToRedo() {
-    if (_undoRedoManager == nullptr) {
+    if (!_undoRedo->canUndoRedo()) {
         return;
     }
 
     for (Ref<Image> image : _modifiedUndoImages) {
-        _undoRedoManager->add_do_method(image.ptr(), "set_data", image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), image->get_data());
+        _undoRedo->add_do_method(image.ptr(), "set_data", image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), image->get_data());
     }
 }
 
@@ -49,14 +49,14 @@ int ToolBase::getResolution() const {
 }
 
 void ToolBase::addImageToUndo(Ref<Image> image) {
-    if (_undoRedoManager == nullptr) {
+    if (!_undoRedo->canUndoRedo()) {
         return;
     }
 
     if (_modifiedUndoImages.count(image) == 0) {
         _modifiedUndoImages.insert(image);
 
-        _undoRedoManager->add_undo_method(image.ptr(), "set_data", image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), image->get_data());
+        _undoRedo->add_undo_method(image.ptr(), "set_data", image->get_width(), image->get_height(), image->has_mipmaps(), image->get_format(), image->get_data());
     }
 }
 

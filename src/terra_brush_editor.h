@@ -8,10 +8,12 @@
 #include "editor_tools/tool_base.h"
 #include "misc/enums.h"
 #include "misc/utils.h"
+#include "misc/tool_undo_redo.h"
 
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
+#include <godot_cpp/classes/undo_redo.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
@@ -31,11 +33,11 @@ private:
 
     BrushDecal *_brushDecal = nullptr;
     ToolInfo *_toolInfo = nullptr;
-    EditorUndoRedoManager *_undoRedo = nullptr;
     Node *_viewportsContainer = nullptr;
     Array _viewports = Array();
     Control *_overlaySelector = nullptr;
 
+    Ref<ToolUndoRedo> _undoRedo = nullptr;
     Ref<ToolBase> _currentTool = nullptr;
     TerrainToolType _currentToolType = TerrainToolType::TERRAINTOOLTYPE_TERRAINADD;
     TerrainToolType _temporaryTool = TerrainToolType::TERRAINTOOLTYPE_NONE;
@@ -103,7 +105,8 @@ public:
     void _unhandled_input(const Ref<InputEvent> &event) override;
 
     void set_containerNode(Node *containerNode);
-    void set_undoRedo(EditorUndoRedoManager *undoRedo);
+    void set_editorUndoRedo(EditorUndoRedoManager *undoRedo);
+    void set_undoRedo(UndoRedo *undoRedo);
 
     bool get_enabled() const;
     void set_enabled(const bool value);

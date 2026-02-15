@@ -226,7 +226,7 @@ void TerraBrushPlugin::onEditTerrainNode(TerraBrush *terraBrush) {
     _currentTerraBrushNode = terraBrush;
     if (_terraBrushEditor != nullptr) {
         _terraBrushEditor->set_terraBrushNode(terraBrush);
-        _terraBrushEditor->set_undoRedo(get_undo_redo());
+        _terraBrushEditor->set_editorUndoRedo(get_undo_redo());
         _terraBrushEditor->set_enabled(true);
     }
 

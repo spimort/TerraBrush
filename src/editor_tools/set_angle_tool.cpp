@@ -20,8 +20,8 @@ SetAngleTool::SetAngleTool() {}
 
 SetAngleTool::~SetAngleTool() {}
 
-void SetAngleTool::init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones) {
-    ToolBase::init(terraBrush, undoRedoManager, autoAddZones);
+void SetAngleTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
+    ToolBase::init(terraBrush, undoRedo, autoAddZones);
 
     updateInitialPointMesh();
 }

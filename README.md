@@ -436,6 +436,26 @@ if collider != null:
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
 
+### TerraBrushEditor
+
+#### InGame UndoRedo
+
+In order to handle UndoRedo while using the `TerraBrushEditor` node, you'll need to create an instance of `UndoRedo` and give it to the editor node :
+
+```gdscript
+var undoRedo: UndoRedo
+
+func _ready() -> void:
+	undoRedo = UndoRedo.new()
+	$TerraBrushEditor.set_undoRedo(undoRedo)
+
+func _on_undo_button_pressed() -> void:
+	undoRedo.undo()
+
+func _on_redo_button_pressed() -> void:
+	undoRedo.redo()
+```
+
 ## Mac version
 
 > [!IMPORTANT]

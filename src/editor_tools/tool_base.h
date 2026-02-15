@@ -6,11 +6,11 @@
 #include "../editor_resources/zone_resource.h"
 #include "../terra_brush.h"
 #include "../misc/hash_utils.h"
+#include "../misc/tool_undo_redo.h"
 
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/input_event.hpp>
-#include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
 #include <map>
@@ -48,7 +48,7 @@ class ToolBase : public RefCounted {
     GDCLASS(ToolBase, RefCounted);
 
 private:
-    EditorUndoRedoManager *_undoRedoManager;
+    Ref<ToolUndoRedo> _undoRedo;
 
     LockedAxis _lockedAxis = LockedAxis::LOCKEDAXIS_NONE;
     Vector2 _lockedAxisValue = Vector2();
@@ -75,7 +75,7 @@ public:
     ToolBase();
     ~ToolBase();
 
-    virtual void init(TerraBrush *terraBrush, EditorUndoRedoManager *undoRedoManager, bool autoAddZones);
+    virtual void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones);
     virtual void beforeDeselect();
     virtual String getToolInfo(TerrainToolType toolType);
     virtual bool handleInput(TerrainToolType toolType, Ref<InputEvent> event);

@@ -52,6 +52,7 @@
 
 #include "misc/keybind_manager.h"
 #include "misc/dialog_utils.h"
+#include "misc/tool_undo_redo.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -129,6 +130,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_RUNTIME_CLASS(TerrainPositionTextureInformation);
 
         // Editor tools
+        GDREGISTER_INTERNAL_CLASS(ToolUndoRedo);
         GDREGISTER_INTERNAL_CLASS(ToolBase);
         GDREGISTER_INTERNAL_CLASS(SculptTool);
         GDREGISTER_INTERNAL_CLASS(SetHeightTool);
