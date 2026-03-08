@@ -443,6 +443,7 @@ noise.noise_type = FastNoiseLite.TYPE_PERLIN
 noise.frequency = 0.05
 noise.seed = randi()
 
+# 256 is the ZonesSize
 var image = Image.create(256, 256, false, Image.FORMAT_RGF)
 
 for x in range(image.get_width()):
