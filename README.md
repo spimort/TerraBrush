@@ -432,6 +432,34 @@ if collider != null:
     $TerraBrush.hideObject(0, objectId)
 ```
 
+#### Generate a heightmap with code
+
+You can easily create a heightmap with code with TerraBrush (even at runtime).
+You only have to generate an image that represent that heightmap (with FORMAT_RGF) and assign it to the zones of the terrain.
+
+```gdscript
+var noise = FastNoiseLite.new()
+noise.noise_type = FastNoiseLite.TYPE_PERLIN
+noise.frequency = 0.05
+noise.seed = randi()
+
+var image = Image.create(256, 256, false, Image.FORMAT_RGF)
+
+for x in range(image.get_width()):
+for y in range(image.get_height()):
+    var height_value = noise.get_noise_2d(x, y) * 10.0
+    # Multiply the height by 10.0
+    height_value *= 10.0
+    image.set_pixel(x, y, Color(height_value, 0.0, 0.0, 0.0))
+
+var terrainZones = ZonesResource.new()
+var zone = ZoneResource.new()
+zone.heightMapImage = image
+terrainZones.zones = [zone]
+%TerraBrush.terrainZones = terrainZones
+%TerraBrush.onUpdateTerrainSettings()
+```
+
 ### Navigation mesh
 
 In order to use a navigation mesh, make sure to set the **Parsed Geometry Type** to **Static Colliders** in your navigation mesh.
