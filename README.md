@@ -448,7 +448,7 @@ var image = Image.create(256, 256, false, Image.FORMAT_RGF)
 
 for x in range(image.get_width()):
 for y in range(image.get_height()):
-    var height_value = noise.get_noise_2d(x, y) * 10.0
+    var height_value = noise.get_noise_2d(x, y)
     # Multiply the height by 10.0
     height_value *= 10.0
     image.set_pixel(x, y, Color(height_value, 0.0, 0.0, 0.0))
