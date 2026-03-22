@@ -1,0 +1,3 @@
+# .clangd
+CompileFlags:
+  Remove: [-fno-gnu-unique]
