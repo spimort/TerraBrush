@@ -156,7 +156,23 @@ void Objects::calculateObjectPresenceForPixel(Node3D *parentNode, Ref<Image> hei
                 int randomItemIndex = Utils::getNextIntWithSeed((x * 1000) + y, 0, _definition->get_objectScenes().size() - 1);
                 resultPosition -= Vector3(_zonesSize / 2, -getObjectHeight(heightmapImage, waterImage, heightImagePosition.x, heightImagePosition.y), _zonesSize / 2);
 
-                Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360), 0) : Vector3(0, 0, 0);
+                float xRotation = 0;
+                float yRotation = 0;
+                float zRotation = 0;
+
+                if (_definition->get_randomXRotation()) {
+                    xRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
+                }
+
+                if (_definition->get_randomYRotation()) {
+                    yRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
+                }
+
+                if (_definition->get_randomZRotation()) {
+                    zRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
+                }            
+
+                Vector3 resultRotation = Vector3(xRotation, yRotation, zRotation);
                 float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
 
                 call_deferred("addObjectNode", parentNode, String(String::num_int64(x) + "_" + String::num_int64(y)), resultPosition, resultRotation, resultSizeFactor, randomItemIndex);
