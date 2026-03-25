@@ -1,7 +1,6 @@
 #include "objects_octree_multi_mesh.h"
 #include "../misc/zone_utils.h"
 #include "../misc/utils.h"
-#include "godot_cpp/variant/vector3.hpp"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -415,9 +414,9 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             Basis basis = Basis(Quaternion::from_euler(nodeInfo->get_meshRotation()));
             basis = basis.scaled(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
             lodMultiMeshNodesBuffer.append_array(Array::make(
-                basis.get_column(0).x, basis.get_column(0).y, basis.get_column(0).z, nodeInfo->get_position().x,
-                basis.get_column(1).x, basis.get_column(1).y, basis.get_column(1).z, nodeInfo->get_position().y,
-                basis.get_column(2).x, basis.get_column(2).y, basis.get_column(2).z, nodeInfo->get_position().z
+                basis.rows[0].x, basis.rows[0].y, basis.rows[0].z, nodeInfo->get_position().x,
+                basis.rows[1].x, basis.rows[1].y, basis.rows[1].z, nodeInfo->get_position().y,
+                basis.rows[2].x, basis.rows[2].y, basis.rows[2].z, nodeInfo->get_position().z
             ));
 
             if (lodDefinition->get_addCollision() && (_collisionShapes.has(nodeInfo->get_meshIndex()))) {
@@ -428,7 +427,8 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                 if (nodeInfo->get_collisionShape() == nullptr) {
                     CollisionShape3D *collisionShape = memnew(CollisionShape3D);
                     collisionShape->set_shape(shapeInfo[CollisionShapeInfoInfo_ShapeKey]);
-                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);
+                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);                 
+                    collisionShape->set_rotation(nodeInfo->get_meshRotation());
                     collisionShape->set_scale(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
                     nodeInfo->set_collisionShape(collisionShape);
                     collisionShape->set_meta("TerraBrush_OctreeNodeInfo_Id", nodeInfo->get_id());
@@ -547,13 +547,13 @@ void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> z
                 resultPosition -= Vector3(_zonesSize / 2, -getObjectHeight(heightmapImage, waterImage, heightImagePosition.x, heightImagePosition.y), _zonesSize / 2);
                 resultPosition += Vector3(zone->get_zonePosition().x * _zonesSize, 0, zone->get_zonePosition().y * _zonesSize);
 
-                Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360), 0) : Vector3(0, 0, 0);
-                float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
-
                 std::vector<Ref<RefCounted>> existingNodes = checkExistingNode ? _octree->getNearby(resultPosition, 0.1f) : std::vector<Ref<RefCounted>>();
                 if (add && existingNodes.size() == 0) {
                     int64_t nextId = _lastId;
                     _lastId++;
+    
+                    Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Math::deg_to_rad(Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360)), 0) : Vector3(0, 0, 0);
+                    float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
 
                     Ref<ObjectsOctreeNodeInfo> octreeNodeInfo = memnew(ObjectsOctreeNodeInfo);
                     octreeNodeInfo->set_id(nextId);
