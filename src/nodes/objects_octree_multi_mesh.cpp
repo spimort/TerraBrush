@@ -551,8 +551,24 @@ void ObjectsOctreeMultiMesh::calculateObjectPresenceForPixel(Ref<ZoneResource> z
                 if (add && existingNodes.size() == 0) {
                     int64_t nextId = _lastId;
                     _lastId++;
-    
-                    Vector3 resultRotation = _definition->get_randomYRotation() ? Vector3(0, Math::deg_to_rad(Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360)), 0) : Vector3(0, 0, 0);
+
+                    float xRotation = 0;
+                    float yRotation = 0;
+                    float zRotation = 0;
+
+                    if (_definition->get_randomXRotation()) {
+                        xRotation = Math::deg_to_rad(Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360));
+                    }
+
+                    if (_definition->get_randomYRotation()) {
+                        yRotation = Math::deg_to_rad(Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360));
+                    }
+
+                    if (_definition->get_randomZRotation()) {
+                        zRotation = Math::deg_to_rad(Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360));
+                    }            
+
+                    Vector3 resultRotation = Vector3(xRotation, yRotation, zRotation);
                     float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;
 
                     Ref<ObjectsOctreeNodeInfo> octreeNodeInfo = memnew(ObjectsOctreeNodeInfo);

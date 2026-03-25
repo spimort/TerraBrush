@@ -42,12 +42,30 @@ public partial class ObjectDefinitionResource : Resource {
         }
     }
 
+    public bool RandomXRotation {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_randomXRotation").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomXRotation", value);
+        }
+    }
+
     public bool RandomYRotation {
         get {
             return _godotHandle.AsGodotObject().Call("get_randomYRotation").AsBool();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_randomYRotation", value);
+        }
+    }
+      
+    public bool RandoZYRotation {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_randomZRotation").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_randomZRotation", value);
         }
     }
 

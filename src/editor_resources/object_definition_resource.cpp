@@ -19,9 +19,17 @@ void ObjectDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_noiseTexture", "value"), &ObjectDefinitionResource::set_noiseTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "noiseTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_noiseTexture", "get_noiseTexture");
 
+    ClassDB::bind_method(D_METHOD("get_randomXRotation"), &ObjectDefinitionResource::get_randomXRotation);
+    ClassDB::bind_method(D_METHOD("set_randomXRotation", "value"), &ObjectDefinitionResource::set_randomXRotation);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomXRotation"), "set_randomXRotation", "get_randomXRotation");
+
     ClassDB::bind_method(D_METHOD("get_randomYRotation"), &ObjectDefinitionResource::get_randomYRotation);
     ClassDB::bind_method(D_METHOD("set_randomYRotation", "value"), &ObjectDefinitionResource::set_randomYRotation);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomYRotation"), "set_randomYRotation", "get_randomYRotation");
+
+    ClassDB::bind_method(D_METHOD("get_randomZRotation"), &ObjectDefinitionResource::get_randomZRotation);
+    ClassDB::bind_method(D_METHOD("set_randomZRotation", "value"), &ObjectDefinitionResource::set_randomZRotation);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomZRotation"), "set_randomZRotation", "get_randomZRotation");
 
     ClassDB::bind_method(D_METHOD("get_randomSize"), &ObjectDefinitionResource::get_randomSize);
     ClassDB::bind_method(D_METHOD("set_randomSize", "value"), &ObjectDefinitionResource::set_randomSize);
@@ -70,7 +78,9 @@ ObjectDefinitionResource::ObjectDefinitionResource() {
     _updateDistanceThreshold = 1;
     _updateTimeFrequency = 0.1;
     _visualInstanceLayers = 1;
+    _randomXRotation = false;
     _randomYRotation = false;
+    _randomZRotation = false;    
     _noiseTexture = Ref<Texture2D>(nullptr);
     _objectScenes = TypedArray<Ref<PackedScene>>();
     _lodList = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
@@ -139,11 +149,25 @@ void ObjectDefinitionResource::set_noiseTexture(const Ref<Texture2D> &value) {
     _noiseTexture = value;
 }
 
+bool ObjectDefinitionResource::get_randomXRotation() const {
+        return _randomXRotation;
+}
+void ObjectDefinitionResource::set_randomXRotation(const bool value) {
+        _randomXRotation = value;
+}
+
 bool ObjectDefinitionResource::get_randomYRotation() const {
     return _randomYRotation;
 }
 void ObjectDefinitionResource::set_randomYRotation(const bool value) {
     _randomYRotation = value;
+}
+
+bool ObjectDefinitionResource::get_randomZRotation() const {
+        return _randomZRotation;
+}
+void ObjectDefinitionResource::set_randomZRotation(const bool value) {
+        _randomZRotation = value;
 }
 
 bool ObjectDefinitionResource::get_randomSize() const {
