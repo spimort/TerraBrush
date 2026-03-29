@@ -244,9 +244,9 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |ObjectResource[x].Definition.ObjectFrequency|This option overrides the **Default Object Frequency** property if a value higher than -1 is set. This option is to define how often the objects will be placed on the terrain. For example, a value of 10 will place an object every 10 meters. The default value is 10.|
 |ObjectResource[x].Definition.RandomRange|The range from which the random placement will be added from the original grid position.|
 |ObjectResource[x].Definition.NoiseTexture|This texture makes sure that the object placement is not too straight. If not specified, the default noise texture will be used.|
-|ObjectResource[x].Definition.RandomXRotation|This allows the objects to be rotated randomly on the X axis.|
-|ObjectResource[x].Definition.RandomYRotation|This allows the objects to be rotated randomly on the Y axis.|
-|ObjectResource[x].Definition.RandomZRotation|This allows the objects to be rotated randomly on the Z axis.|
+|ObjectResource[x].Definition.RandomRotation|This allows the objects to be rotated randomly.|
+|ObjectResource[x].Definition.RandomRotationMin|The minimum rotation value when the random rotation is enabled.|
+|ObjectResource[x].Definition.RandomRotationMax|The maximum rotation value when the random rotation is enabled.|
 |ObjectResource[x].Definition.RandomSize|This allows the objects to be sized randomly.|
 |ObjectResource[x].Definition.RandomSizeFactorMin|The minimum factor that will be multiplied with the scale of the object.|
 |ObjectResource[x].Definition.RandomSizeFactorMax|The maximum factor that will be multiplied with the scale of the object.|
