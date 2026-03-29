@@ -19,17 +19,17 @@ void ObjectDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_noiseTexture", "value"), &ObjectDefinitionResource::set_noiseTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "noiseTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_noiseTexture", "get_noiseTexture");
 
-    ClassDB::bind_method(D_METHOD("get_randomXRotation"), &ObjectDefinitionResource::get_randomXRotation);
-    ClassDB::bind_method(D_METHOD("set_randomXRotation", "value"), &ObjectDefinitionResource::set_randomXRotation);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomXRotation"), "set_randomXRotation", "get_randomXRotation");
+    ClassDB::bind_method(D_METHOD("get_randomRotation"), &ObjectDefinitionResource::get_randomRotation);
+    ClassDB::bind_method(D_METHOD("set_randomRotation", "value"), &ObjectDefinitionResource::set_randomRotation);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomRotation"), "set_randomRotation", "get_randomRotation");
 
-    ClassDB::bind_method(D_METHOD("get_randomYRotation"), &ObjectDefinitionResource::get_randomYRotation);
-    ClassDB::bind_method(D_METHOD("set_randomYRotation", "value"), &ObjectDefinitionResource::set_randomYRotation);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomYRotation"), "set_randomYRotation", "get_randomYRotation");
+    ClassDB::bind_method(D_METHOD("get_randomRotationMin"), &ObjectDefinitionResource::get_randomRotationMin);
+    ClassDB::bind_method(D_METHOD("set_randomRotationMin", "value"), &ObjectDefinitionResource::set_randomRotationMin);
+    ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "randomRotationMin"), "set_randomRotationMin", "get_randomRotationMin");
 
-    ClassDB::bind_method(D_METHOD("get_randomZRotation"), &ObjectDefinitionResource::get_randomZRotation);
-    ClassDB::bind_method(D_METHOD("set_randomZRotation", "value"), &ObjectDefinitionResource::set_randomZRotation);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "randomZRotation"), "set_randomZRotation", "get_randomZRotation");
+    ClassDB::bind_method(D_METHOD("get_randomRotationMax"), &ObjectDefinitionResource::get_randomRotationMax);
+    ClassDB::bind_method(D_METHOD("set_randomRotationMax", "value"), &ObjectDefinitionResource::set_randomRotationMax);
+    ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "randomRotationMax"), "set_randomRotationMax", "get_randomRotationMax");
 
     ClassDB::bind_method(D_METHOD("get_randomSize"), &ObjectDefinitionResource::get_randomSize);
     ClassDB::bind_method(D_METHOD("set_randomSize", "value"), &ObjectDefinitionResource::set_randomSize);
@@ -42,7 +42,7 @@ void ObjectDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_randomSizeFactorMax"), &ObjectDefinitionResource::get_randomSizeFactorMax);
     ClassDB::bind_method(D_METHOD("set_randomSizeFactorMax", "value"), &ObjectDefinitionResource::set_randomSizeFactorMax);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "randomSizeFactorMax"), "set_randomSizeFactorMax", "get_randomSizeFactorMax");
-
+   
     ClassDB::bind_method(D_METHOD("get_objectScenes"), &ObjectDefinitionResource::get_objectScenes);
     ClassDB::bind_method(D_METHOD("set_objectScenes", "value"), &ObjectDefinitionResource::set_objectScenes);
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "objectScenes", PROPERTY_HINT_TYPE_STRING, "24/17:PackedScene"), "set_objectScenes", "get_objectScenes");
@@ -77,10 +77,10 @@ ObjectDefinitionResource::ObjectDefinitionResource() {
     _randomSizeFactorMax = 1.2;
     _updateDistanceThreshold = 1;
     _updateTimeFrequency = 0.1;
-    _visualInstanceLayers = 1;
-    _randomXRotation = false;
-    _randomYRotation = false;
-    _randomZRotation = false;    
+    _visualInstanceLayers = 1;  
+    _randomRotation = false;
+    _randomRotationMin = Vector3(0, 0, 0); 
+    _randomRotationMax = Vector3(0, 360.0, 0);
     _noiseTexture = Ref<Texture2D>(nullptr);
     _objectScenes = TypedArray<Ref<PackedScene>>();
     _lodList = TypedArray<Ref<ObjectOctreeLODDefinitionResource>>();
@@ -113,11 +113,15 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
         } else if (PackedScenesProperties.has(property.name)) {
             property.usage = PROPERTY_USAGE_NO_EDITOR;
         }
-    }
+    } 
+
+    if (property.name == StringName("randomRotationMin") || property.name == StringName("randomRotationMax")) {
+        property.usage = (_randomRotation ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR);
+    } 
 
     if (property.name == StringName("randomSizeFactorMin") || property.name == StringName("randomSizeFactorMax")) {
         property.usage = (_randomSize ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR);
-    }
+    } 
 }
 
 ObjectStrategy ObjectDefinitionResource::get_strategy() const {
@@ -149,25 +153,26 @@ void ObjectDefinitionResource::set_noiseTexture(const Ref<Texture2D> &value) {
     _noiseTexture = value;
 }
 
-bool ObjectDefinitionResource::get_randomXRotation() const {
-        return _randomXRotation;
+bool ObjectDefinitionResource::get_randomRotation() const {
+    return _randomRotation;
 }
-void ObjectDefinitionResource::set_randomXRotation(const bool value) {
-        _randomXRotation = value;
-}
-
-bool ObjectDefinitionResource::get_randomYRotation() const {
-    return _randomYRotation;
-}
-void ObjectDefinitionResource::set_randomYRotation(const bool value) {
-    _randomYRotation = value;
+void ObjectDefinitionResource::set_randomRotation(const bool value) {
+    _randomRotation = value;
+    notify_property_list_changed();
 }
 
-bool ObjectDefinitionResource::get_randomZRotation() const {
-        return _randomZRotation;
+Vector3 ObjectDefinitionResource::get_randomRotationMin() const {
+    return _randomRotationMin;
 }
-void ObjectDefinitionResource::set_randomZRotation(const bool value) {
-        _randomZRotation = value;
+void ObjectDefinitionResource::set_randomRotationMin(const Vector3 value) {
+    _randomRotationMin = value;
+}
+
+Vector3 ObjectDefinitionResource::get_randomRotationMax() const {
+    return _randomRotationMax;
+}
+void ObjectDefinitionResource::set_randomRotationMax(const Vector3 value) {
+    _randomRotationMax = value;
 }
 
 bool ObjectDefinitionResource::get_randomSize() const {
