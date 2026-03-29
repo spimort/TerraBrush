@@ -162,10 +162,10 @@ void ObjectDefinitionResource::set_randomRotation(const bool value) {
 }
 
 Vector3 ObjectDefinitionResource::get_randomRotationMin() const {
-        return _randomRotationMin;
+    return _randomRotationMin;
 }
 void ObjectDefinitionResource::set_randomRotationMin(const Vector3 value) {
-        _randomRotationMin = value;
+    _randomRotationMin = value;
 }
 
 Vector3 ObjectDefinitionResource::get_randomRotationMax() const {
