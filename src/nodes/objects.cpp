@@ -160,17 +160,19 @@ void Objects::calculateObjectPresenceForPixel(Node3D *parentNode, Ref<Image> hei
                 float yRotation = 0;
                 float zRotation = 0;
 
-                if (_definition->get_randomXRotation()) {
-                    xRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
-                }
+                if (_definition->get_randomRotation()) {
+                    if (_definition->get_randomRotationMin().x != 0 || _definition->get_randomRotationMax().x != 0) {
+                        xRotation = Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomRotationMin().x, _definition->get_randomRotationMax().x);
+                    }
 
-                if (_definition->get_randomYRotation()) {
-                    yRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
-                }
+                    if (_definition->get_randomRotationMin().y != 0 || _definition->get_randomRotationMax().y != 0) {
+                        yRotation = Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomRotationMin().y, _definition->get_randomRotationMax().y);
+                    }
 
-                if (_definition->get_randomZRotation()) {
-                    zRotation = Utils::getNextFloatWithSeed((x * 1000) + y, 0, 360);
-                }            
+                    if (_definition->get_randomRotationMin().z != 0 || _definition->get_randomRotationMax().z != 0) {
+                        zRotation = Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomRotationMin().z, _definition->get_randomRotationMax().z);
+                    }
+                }
 
                 Vector3 resultRotation = Vector3(xRotation, yRotation, zRotation);
                 float resultSizeFactor = _definition->get_randomSize() ? Utils::getNextFloatWithSeed((x * 1000) + y, _definition->get_randomSizeFactorMin(), _definition->get_randomSizeFactorMax()) : 1.0f;

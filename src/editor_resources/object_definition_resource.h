@@ -19,9 +19,9 @@ private:
     int _objectFrequency = 0;
     float _randomRange = 0;
     Ref<Texture2D> _noiseTexture = nullptr;
-    bool _randomXRotation = false;
-    bool _randomYRotation = false;
-    bool _randomZRotation = false;
+    bool _randomRotation = false;
+    Vector3 _randomRotationMin = Vector3(0, 0, 0);
+    Vector3 _randomRotationMax = Vector3(0, 360.0, 0);
     bool _randomSize = false;
     float _randomSizeFactorMin = 0;
     float _randomSizeFactorMax = 0;
@@ -52,14 +52,14 @@ public:
     Ref<Texture2D> get_noiseTexture() const;
     void set_noiseTexture(const Ref<Texture2D> &value);
 
-    bool get_randomXRotation() const;
-    void set_randomXRotation(const bool value);
+    bool get_randomRotation() const;
+    void set_randomRotation(const bool value);
 
-    bool get_randomYRotation() const;
-    void set_randomYRotation(const bool value);
+    Vector3 get_randomRotationMin() const;
+    void set_randomRotationMin(const Vector3 value);
 
-    bool get_randomZRotation() const;
-    void set_randomZRotation(const bool value);
+    Vector3 get_randomRotationMax() const;
+    void set_randomRotationMax(const Vector3 value);
 
     bool get_randomSize() const;
     void set_randomSize(const bool value);

@@ -1,3 +1,8 @@
 # .clangd
 CompileFlags:
   Remove: [-fno-gnu-unique]
+  Add:
+    - -std=c++17
+    - -isystem/usr/include/c++/13
+    - -isystem/usr/include/x86_64-linux-gnu/c++/13
+  Compiler: /usr/bin/g++-13
