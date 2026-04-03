@@ -38,3 +38,6 @@ compile_commands.json
 # TerraBrush
 demo/addons/terrabrush/bin
 demo/bin
+
+# GDVM
+.gdvmrc
