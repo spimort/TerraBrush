@@ -406,9 +406,25 @@ void TerraBrushPlugin::exportTerrain() {
 void TerraBrushPlugin::onTerrainMenuItemPressed(const int id) {
     switch (id) {
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATETERRAIN:
-            _currentTerraBrushNode->onCreateTerrain();
-            removeDock();
-            addDock();
+            if (!_currentTerraBrushNode->get_terrainZones().is_null() && _currentTerraBrushNode->get_terrainZones()->get_zones().size() > 0) {
+                DialogUtils::showConfirmDialog(
+                    this,
+                    "Terrain already created",
+                    "The terrain is already created, do you want to recreate it?",
+                    ([&](bool value) {
+                        if (value) {
+                            _currentTerraBrushNode->onCreateTerrain();
+                            removeDock();
+                            addDock();
+                        }
+                    })
+                );
+            } else {
+                _currentTerraBrushNode->onCreateTerrain();
+                removeDock();
+                addDock();
+            }
+
             break;
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_REMOVETERRAIN:
             _currentTerraBrushNode->onRemoveTerrain();

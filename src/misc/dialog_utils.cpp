@@ -3,6 +3,7 @@
 #include "../editor_nodes/import_dialog.h"
 
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/confirmation_dialog.hpp>
 
 using namespace godot;
 
@@ -51,8 +52,25 @@ void DialogUtils::showNumericSelector(Node *sourceNode, std::function<void(float
     dialog->setValue(defaultValue);
 }
 
-void DialogUtils::showConfirmDialog(Node *sourceNode, String title, String content, std::function<void(bool)> onSelect) {
+void DialogUtils::showConfirmDialog(Node *sourceNode, String title, String content, std::function<void(bool)> onConfirm) {
+    ConfirmationDialog *dialog = memnew(ConfirmationDialog);
+    dialog->set_title(title);
+    dialog->set_text(content);
 
+    ConfirmationDialogEventsWrapper *eventsWrapper = memnew(ConfirmationDialogEventsWrapper);
+    eventsWrapper->init(
+        ([dialog, onConfirm](bool value) {
+            dialog->queue_free();
+            onConfirm(value);
+        })
+    );
+
+    dialog->connect("canceled", Callable(eventsWrapper, "onConfirm").bind(false));
+    dialog->connect("confirmed", Callable(eventsWrapper, "onConfirm").bind(true));
+
+    sourceNode->add_child(dialog);
+    dialog->add_child(eventsWrapper);
+    dialog->popup_centered();
 }
 
 void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBrush, std::function<void(ImporterSettings)> onAccept) {
@@ -63,6 +81,8 @@ void DialogUtils::showImportDialog(Node *sourceNode, TerraBrush *originalTerraBr
     sourceNode->get_tree()->get_root()->add_child(importDialog);
     importDialog->popup_centered();
 }
+
+// FileDialogEventsWrapper
 
 void FileDialogEventsWrapper::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onSelect", "value"), &FileDialogEventsWrapper::onSelect);
@@ -84,4 +104,22 @@ void FileDialogEventsWrapper::onSelect(String value) {
 
 void FileDialogEventsWrapper::onCancel() {
     _onCancel();
+}
+
+// ConfirmationDialogEventsWrapper
+
+void ConfirmationDialogEventsWrapper::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("onConfirm", "value"), &ConfirmationDialogEventsWrapper::onConfirm);
+}
+
+ConfirmationDialogEventsWrapper::ConfirmationDialogEventsWrapper() {}
+
+ConfirmationDialogEventsWrapper::~ConfirmationDialogEventsWrapper() {}
+
+void ConfirmationDialogEventsWrapper::init(std::function<void(bool)> onConfirmCallback) {
+    _onConfirm = onConfirmCallback;
+}
+
+void ConfirmationDialogEventsWrapper::onConfirm(bool value) {
+    _onConfirm(value);
 }

@@ -147,6 +147,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(ColorTool);
 
         GDREGISTER_INTERNAL_CLASS(FileDialogEventsWrapper);
+        GDREGISTER_INTERNAL_CLASS(ConfirmationDialogEventsWrapper);
         GDREGISTER_INTERNAL_CLASS(NumericSelectorDialog);
 
         // Public nodes
