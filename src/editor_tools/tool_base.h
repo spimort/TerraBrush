@@ -8,6 +8,7 @@
 #include "../misc/hash_utils.h"
 #include "../misc/tool_undo_redo.h"
 
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/input_event.hpp>
