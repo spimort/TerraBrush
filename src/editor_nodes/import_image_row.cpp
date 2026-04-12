@@ -14,6 +14,8 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/image_texture.hpp>
 
 using namespace godot;
 
@@ -123,9 +125,16 @@ void ImportImageRow::onGuiInput(const Ref<InputEvent> &event) {
                         _isSelectorOpen = false;
 
                         if (!file.is_empty()) {
-                            Ref<Texture2D> imageResource = ResourceLoader::get_singleton()->load(file);
-                            _textureButton->set_texture_normal(imageResource);
-                            _imageTexture = imageResource;
+                            if (ResourceLoader::get_singleton()->exists(file)) {
+                                Ref<Texture2D> imageResource = ResourceLoader::get_singleton()->load(file);
+                                _textureButton->set_texture_normal(imageResource);
+                                _imageTexture = imageResource;
+                            } else {
+                                Ref<Image> image = Image::load_from_file(file);
+                                Ref<ImageTexture> imageTexture = ImageTexture::create_from_image(image);
+                                _textureButton->set_texture_normal(imageTexture);
+                                _imageTexture = imageTexture;
+                            }
                         }
                     }),
                     EditorFileDialog::ACCESS_FILESYSTEM,
