@@ -15,6 +15,7 @@
 #include "point_octree_bounding_box.h"
 #include "point_octree_ray.h"
 
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 
 using namespace godot;

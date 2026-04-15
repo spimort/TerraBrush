@@ -3,6 +3,8 @@
 
 #include <godot_cpp/classes/ref.hpp>
 
+#include <functional>
+
 namespace std {
     template<typename T>
     struct hash<godot::Ref<T>> {

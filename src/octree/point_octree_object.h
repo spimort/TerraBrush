@@ -11,6 +11,7 @@
 #ifndef POINT_OCTREE_OBJECT_H
 #define POINT_OCTREE_OBJECT_H
 
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 
 using namespace godot;

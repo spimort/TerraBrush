@@ -32,7 +32,7 @@ jobs:
     steps:
       # Clone this repository
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -94,7 +94,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: terrabrush-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.target-type }}
           path: |
@@ -107,7 +107,7 @@ jobs:
     needs: build
     steps:
       - name: Merge binaries Artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: terrabrush-binaries
           pattern: terrabrush-*
@@ -120,12 +120,12 @@ jobs:
     needs: merge-builds
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: false
 
       - name: Download binaries artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: terrabrush-binaries
           path: demo/addons/terrabrush/bin/
@@ -146,7 +146,7 @@ jobs:
           mv demo/addons demo/addons-release/terrabrush
 
       - name: Upload addon folder
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: terrabrush-${{ steps.version.outputs.version }}
           path: demo/addons-release/

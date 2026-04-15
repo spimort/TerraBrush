@@ -3,6 +3,8 @@
 
 #include <godot_cpp/core/class_db.hpp>
 
+#include <vector>
+
 using namespace godot;
 
 void ExporterEngine::exportTerrain(TerraBrush *terrabrush, String dataPath) {
