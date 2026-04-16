@@ -215,8 +215,8 @@ public:
     Ref<ZoneResource> addNewZone(Vector2i zonePosition);
     StaticBody3D *getTerrainCollider() const;
     float getHeightAtPosition(float x, float z, bool useGlobalPosition) const;
-    Vector3 getHeightForMousePosition(Camera3D *camera) const;
-    Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const;
+    Vector3 getHeightForMousePosition(Camera3D *camera, bool allowNoZone = false) const;
+    Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition, bool allowNoZone = false) const;
     void hideObject(int objectLayerIndex, int64_t objectId) const;
     void showObject(int objectLayerIndex, int64_t objectId) const;
 };

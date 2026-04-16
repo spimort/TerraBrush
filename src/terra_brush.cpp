@@ -1203,14 +1203,16 @@ float TerraBrush::getHeightAtPosition(float x, float z, bool useGlobalPosition) 
     return Utils::InfinityValue;
 }
 
-Vector3 TerraBrush::getHeightForMousePosition(Camera3D *camera) const {
+Vector3 TerraBrush::getHeightForMousePosition(Camera3D *camera, bool allowNoZone) const {
     Vector2 screenPosition = camera->get_viewport()->get_mouse_position();
-    return getHeightForScreenPosition(camera, screenPosition);
+    return getHeightForScreenPosition(camera, screenPosition, allowNoZone);
 }
 
-Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const {
+Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition, bool allowNoZone) const {
     Vector3 from = camera->project_ray_origin(screenPosition);
     Vector3 direction = camera->project_ray_normal(screenPosition);
+
+    Vector3 noZonePosition = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 
     for (int i = 0; i < 20000; i++) {
         Vector3 position = from + (direction * i * 0.1f) - get_global_position();
@@ -1218,10 +1220,16 @@ Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenP
         float zoneHeight = getHeightAtPosition(position.x, position.z, false);
         if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y) {
             return Vector3(position.x, zoneHeight, position.z) + get_global_position();
+        } else if (allowNoZone && noZonePosition.x == Utils::InfinityValue && position.y <= get_global_position().y) {
+            noZonePosition = Vector3(position.x, position.y, position.z);
         }
     }
 
-    return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    if (allowNoZone) {
+        return noZonePosition;
+    } else {
+        return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    }
 }
 
 void TerraBrush::hideObject(int objectLayerIndex, int64_t objectId) const {
