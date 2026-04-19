@@ -188,6 +188,33 @@ public partial class TerraBrush : Node {
         }
     }
 
+    public bool SlopeTexturing {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_slopeTexturing").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_slopeTexturing", value);
+        }
+    }
+
+    public int SlopeTextureIndex {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_slopeTextureIndex").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_slopeTextureIndex", value);
+        }
+    }
+
+    public float SlopeTextureThreshold {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_slopeTextureThreshold").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_slopeTextureThreshold", value);
+        }
+    }
+
     public FoliageResource[] Foliages {
         get {
             return _godotHandle.AsGodotObject().Call("get_foliages").AsGodotArray<Variant>()?.Select(x => new FoliageResource(x)).ToArray();

@@ -4,11 +4,13 @@ render_mode cull_back,blend_mix,depth_draw_opaque,diffuse_burley,specular_schlic
 #include "res://addons/terrabrush/Resources/Shaders/heightmap_clipmap_shader_include.gdshaderinc"
 
 varying vec3 _worldVertex;
+varying vec3 _worldNormal;
 varying vec3 _triplanarPos;
 varying vec3 _triplanarPowerNormal;
 
 void vertex() {
 	_worldVertex = vec3(0);
+	_worldNormal = vec3(0);
 	_triplanarPos = vec3(0);
 	_triplanarPowerNormal = vec3(0);
 	calculateHeightmapVertex(
@@ -17,6 +19,7 @@ void vertex() {
 		VERTEX,
 		NORMAL,
 		_worldVertex,
+		_worldNormal,
 		_triplanarPos,
 		_triplanarPowerNormal
 	);
@@ -25,6 +28,7 @@ void vertex() {
 void fragment() {
 	calculateHeightmapFragment(
 		_worldVertex,
+		_worldNormal,
 		_triplanarPos,
 		_triplanarPowerNormal,
 		ALBEDO,

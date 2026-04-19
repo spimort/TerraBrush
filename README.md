@@ -60,6 +60,7 @@ It runs in the browser, hosted on itch.io :
 * **Paint color** - Add colors to your terrain
 * **Paint textures** - Add textures to your terrain with the painting tool
   - Normal map and roughness texture are supported
+  - Automatic slope based texturing
 * **Foliage** - Add foliage to your terrain (ex. Grass)
   - The foliage follows the main camera with a given maximum distance
 * **Packed scenes** - Scatter packed scenes to the terrain
@@ -210,6 +211,9 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Albedo Alpha Channel Usage|Allow the use of the alpha channel of the albedo texture for either roughness or height. The default value is none.|
 |Normal Alpha Channel Usage|Allow the use of the alpha channel of the normal texture for either roughness or height. The default value is none.|
 |Use Sharp Transitions|Use sharp transition between textures instead of blending them together. This will use the most dominant texture.|
+|Slope Texturing|Enable the slope based texturing.|
+|Slope Texture Index|The index of the texture that will be painted when slope is detected. The default value is 1, as the second texture.|
+|Slope Texture Threshold|The Threshold to check if the ground is considered a slope (the dot product of the normal >= Threshold). The default value is 0.2.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
