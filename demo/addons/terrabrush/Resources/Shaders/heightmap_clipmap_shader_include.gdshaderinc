@@ -29,6 +29,9 @@ uniform int[100] TexturesTriplanar;
 uniform float[100] TexturesMetallic;
 uniform float[100] TexturesSpecular;
 uniform bool UseSharpTransitions = false;
+uniform bool SlopeTexturing = false;
+uniform int SlopeTextureIndex = 1;
+uniform float SlopeTextureAngle = 0.2;
 uniform bool ApplyMetaInfoTextures = false;
 uniform sampler2DArray MetaInfoTextures: filter_nearest;
 uniform vec4[100] MetaInfoColors;
@@ -110,10 +113,11 @@ void calculateHeightmapVertex(
 	inout vec3 vertex,
 	inout vec3 normal,
 	inout vec3 worldVertex,
+	inout vec3 worldNormal,
 	inout vec3 triplanarPos,
-	inout vec3 triplanarPowerNormal
+	inout vec3 triplanarPowerNormal	
 ) {
-	calculateVertex(modelMatrix, color, vertex, worldVertex);
+	calculateVertex(modelMatrix, color, vertex, worldVertex);	
 
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
@@ -121,6 +125,8 @@ void calculateHeightmapVertex(
 	float hB = calculateVertexHeight(color, vertex, worldVertex, -off.zy);
 	float hF = calculateVertexHeight(color, vertex, worldVertex, off.zy);
 	normal = normalize(vec3(hL - hR, 2.0, hB - hF));
+	
+	worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);	
 
 	if (WaterFactor > 0.0) {
 		vec4 levelsMeta = color;
@@ -241,6 +247,7 @@ int findDominantTextureIndex(vec3 worldVertex) {
 
 void calculateHeightmapFragment(
 	vec3 worldVertex,
+	vec3 worldNormal,
 	vec3 triplanarPos,
 	vec3 triplanarPowerNormal,
 	inout vec3 albedo,
@@ -253,6 +260,12 @@ void calculateHeightmapFragment(
 
 	if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
+		if (SlopeTexturing && dominantTextureIndex == 0) {
+			float slope = 1.0 - dot(normalize(worldNormal), vec3(0.0, 1.0, 0.0));
+			if (slope >= SlopeTextureAngle) {
+				dominantTextureIndex = SlopeTextureIndex;
+			}
+		}
 
         int textureDetail = TexturesDetail[dominantTextureIndex];
         vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
@@ -302,7 +315,8 @@ void calculateHeightmapFragment(
         }
         float splatmapLayers = (textureZoneUV.z * ceil(float(NumberOfTextures) / 4.0));
 
-        for (int i = 0; i < NumberOfTextures; i++) {
+		float maxSlopeValue = 0.0;
+        for (int i = 0; i < NumberOfTextures; i++) {			
             int textureDetail = TexturesDetail[i];
             vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
             vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(i));
@@ -311,6 +325,24 @@ void calculateHeightmapFragment(
             vec4 currentSplatmap = texture(Splatmaps, splatmapUV);
             int currentChannel = i % 4;
             float channelValue = getChannelValue(currentChannel, currentSplatmap);
+			
+			if (SlopeTexturing) {
+				if (i == 0) {
+					maxSlopeValue = channelValue;
+				}
+				
+				float slope = 1.0 - dot(normalize(worldNormal), vec3(0.0, 1.0, 0.0));
+				if (slope >= SlopeTextureAngle) {
+					float smoothSlopeValue = min(maxSlopeValue, smoothstep(0.0, 0.1, slope - SlopeTextureAngle));
+					if (i == 0) {
+						channelValue -= smoothSlopeValue;
+					} else if (i == SlopeTextureIndex) {
+						channelValue += smoothSlopeValue;
+					}
+					
+					channelValue = clamp(channelValue, 0, 1);
+				}
+			}
 
             if (channelValue <= 0.0001) {
                 continue;

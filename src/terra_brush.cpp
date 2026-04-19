@@ -125,6 +125,18 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_useSharpTransitions", "value"), &TerraBrush::set_useSharpTransitions);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "useSharpTransitions"), "set_useSharpTransitions", "get_useSharpTransitions");
 
+    ClassDB::bind_method(D_METHOD("get_slopeTexturing"), &TerraBrush::get_slopeTexturing);
+    ClassDB::bind_method(D_METHOD("set_slopeTexturing", "value"), &TerraBrush::set_slopeTexturing);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "slopeTexturing"), "set_slopeTexturing", "get_slopeTexturing");
+
+    ClassDB::bind_method(D_METHOD("get_slopeTextureIndex"), &TerraBrush::get_slopeTextureIndex);
+    ClassDB::bind_method(D_METHOD("set_slopeTextureIndex", "value"), &TerraBrush::set_slopeTextureIndex);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "slopeTextureIndex"), "set_slopeTextureIndex", "get_slopeTextureIndex");
+
+    ClassDB::bind_method(D_METHOD("get_slopeTextureAngle"), &TerraBrush::get_slopeTextureAngle);
+    ClassDB::bind_method(D_METHOD("set_slopeTextureAngle", "value"), &TerraBrush::set_slopeTextureAngle);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "slopeTextureAngle", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_slopeTextureAngle", "get_slopeTextureAngle");
+
     ADD_GROUP("Foliages", "");
 
     ClassDB::bind_method(D_METHOD("get_foliages"), &TerraBrush::get_foliages);
@@ -212,6 +224,9 @@ TerraBrush::TerraBrush() {
     _albedoAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     _normalAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     _useSharpTransitions = false;
+    _slopeTexturing = false;
+    _slopeTextureIndex = 1;
+    _slopeTextureAngle = 0.2;
 
     // Foliages settings
     _foliages = TypedArray<Ref<FoliageResource>>();
@@ -237,6 +252,13 @@ TerraBrush::TerraBrush() {
 }
 
 TerraBrush::~TerraBrush() {}
+
+void TerraBrush::_validate_property(PropertyInfo &property) const {
+    TypedArray<String> slopeTexturingProperties = {"slopeTextureIndex", "slopeTextureAngle"};
+    if (slopeTexturingProperties.has(property.name)) {
+        property.usage = _slopeTexturing ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
+    }
+}
 
 void TerraBrush::_ready() {
     set_physics_interpolation_mode(PhysicsInterpolationMode::PHYSICS_INTERPOLATION_MODE_OFF);
@@ -461,6 +483,29 @@ void TerraBrush::set_useSharpTransitions(const bool value) {
     _useSharpTransitions = value;
 }
 
+bool TerraBrush::get_slopeTexturing() const {
+    return _slopeTexturing;
+}
+void TerraBrush::set_slopeTexturing(const bool value) {
+    _slopeTexturing = value;
+
+    notify_property_list_changed();
+}
+
+int TerraBrush::get_slopeTextureIndex() const {
+    return _slopeTextureIndex;
+}
+void TerraBrush::set_slopeTextureIndex(const int value) {
+    _slopeTextureIndex = value;
+}
+
+float TerraBrush::get_slopeTextureAngle() const {
+    return _slopeTextureAngle;
+}
+void TerraBrush::set_slopeTextureAngle(const float value) {
+    _slopeTextureAngle = value;
+}
+
 TypedArray<Ref<FoliageResource>> TerraBrush::get_foliages() const {
     return _foliages;
 }
@@ -572,6 +617,9 @@ void TerraBrush::loadTerrain() {
     _terrain->set_albedoAlphaChannelUsage(_albedoAlphaChannelUsage);
     _terrain->set_normalAlphaChannelUsage(_normalAlphaChannelUsage);
     _terrain->set_useSharpTransitions(_useSharpTransitions);
+    _terrain->set_slopeTexturing(_slopeTexturing);
+    _terrain->set_slopeTextureIndex(_slopeTextureIndex);
+    _terrain->set_slopeTextureAngle(_slopeTextureAngle);
     _terrain->set_waterFactor(_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor());
     _terrain->set_lodLevels(_lodLevels);
     _terrain->set_lodRowsPerLevel(_lodRowsPerLevel);
@@ -1003,7 +1051,21 @@ void TerraBrush::addInteractionPoint(float x, float y) {
     }
 }
 
+float TerraBrush::getSlopeAtPosition(float x, float y) {
+	float hL = getHeightAtPosition(x - 1.0, y, false);
+	float hR = getHeightAtPosition(x + 1.0, y, false);
+	float hB = getHeightAtPosition(x, y - 1.0, false);
+	float hF = getHeightAtPosition(x, y + 1.0, false);
+
+    Vector3 normal = Vector3(hL - hR, 2.0, hB - hF).normalized();
+
+    return 1.0 - normal.dot(Vector3(0.0, 1.0, 0.0));
+}
+
 Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, float y) {
+    float globalX = x;
+    float globalY = y;
+
     x += _zonesSize / 2;
     y += _zonesSize / 2;
 
@@ -1011,6 +1073,9 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
         x -= _lodInitialCellWidth / 2.0f;
         y -= _lodInitialCellWidth / 2.0f;
     }
+
+    x -= get_global_position().x;
+    y -= get_global_position().z;
 
     ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(x, y, _zonesSize, _resolution);
     Ref<ZoneResource> zone = _terrainZones->getZoneForZoneInfo(zoneInfo);
@@ -1042,6 +1107,13 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
         TypedArray<Ref<TerrainPositionTextureInformation>> textures = TypedArray<Ref<TerrainPositionTextureInformation>>();
         if (zone->get_splatmapsImage().size() > 0) {
             std::vector<Ref<TerrainPositionTextureInformation>> tempTextures = std::vector<Ref<TerrainPositionTextureInformation>>();
+
+            float slope = 0.0;
+            float maxSlopeValue = 0.0;
+            if (_slopeTexturing) {
+                slope = getSlopeAtPosition(globalX, globalY);
+            }
+
             for (int i = 0; i < _textureSets->get_textureSets().size(); i++) {
                 Ref<TextureSetResource> textureSet = _textureSets->get_textureSets()[i];
 
@@ -1053,7 +1125,29 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
                 Ref<TerrainPositionTextureInformation> textureInfo = memnew(TerrainPositionTextureInformation);
                 textureInfo->set_index(i);
                 textureInfo->set_name(textureSet->get_name());
-                textureInfo->set_factor(pixel[colorIndex]);
+
+                float textureFactor = pixel[colorIndex];
+
+				if (_slopeTexturing && slope >= _slopeTextureAngle) {
+                    if (i == 0) {
+                        maxSlopeValue = textureFactor;
+                    }
+
+                    if (_useSharpTransitions) {
+                        textureFactor = i == 0 ? 0.0 : i == _slopeTextureIndex ? maxSlopeValue : textureFactor;
+                    } else {
+                        float smoothSlopeValue = Math::min(maxSlopeValue, Math::smoothstep(0.0f, 0.1f, slope - _slopeTextureAngle));
+                        if (i == 0) {
+                            textureFactor -= smoothSlopeValue;
+                        } else if (i == _slopeTextureIndex) {
+                            textureFactor += smoothSlopeValue;
+                        }
+
+                        textureFactor = Math::clamp(textureFactor, 0.0f, 1.0f);
+                    }
+				}
+
+                textureInfo->set_factor(textureFactor);
 
                 tempTextures.push_back(textureInfo);
             }

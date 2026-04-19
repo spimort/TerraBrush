@@ -66,6 +66,9 @@ private:
     AlphaChannelUsage _albedoAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     AlphaChannelUsage _normalAlphaChannelUsage = AlphaChannelUsage::ALPHACHANNELUSAGE_NONE;
     bool _useSharpTransitions = false;
+    bool _slopeTexturing = false;
+    int _slopeTextureIndex = 1;
+    float _slopeTextureAngle = 0.2;
 
     // Foliage settings
     TypedArray<Ref<FoliageResource>> _foliages = TypedArray<Ref<FoliageResource>>();
@@ -94,9 +97,11 @@ private:
     void createSnow();
     void createMetaInfo();
     void initializeImagesForTerrain(Ref<ZoneResource> zone);
+    float getSlopeAtPosition(float x, float y);
 
 protected:
     static void _bind_methods();
+    void _validate_property(PropertyInfo &property) const;
 
 public:
     TerraBrush();
@@ -166,6 +171,15 @@ public:
 
     bool get_useSharpTransitions() const;
     void set_useSharpTransitions(const bool value);
+
+    bool get_slopeTexturing() const;
+    void set_slopeTexturing(const bool value);
+
+    int get_slopeTextureIndex() const;
+    void set_slopeTextureIndex(const int value);
+
+    float get_slopeTextureAngle() const;
+    void set_slopeTextureAngle(const float value);
 
     TypedArray<Ref<FoliageResource>> get_foliages() const;
     void set_foliages(const TypedArray<Ref<FoliageResource>> value);
