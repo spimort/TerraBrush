@@ -128,8 +128,8 @@ void Terrain::set_slopeTextureIndex(const int value) {
     _slopeTextureIndex = value;
 }
 
-void Terrain::set_slopeTextureAngle(const float value) {
-    _slopeTextureAngle = value;
+void Terrain::set_slopeTextureThreshold(const float value) {
+    _slopeTextureThreshold = value;
 }
 
 void Terrain::set_waterFactor(const float value) {
@@ -413,7 +413,7 @@ void Terrain::updateTextures() {
         _clipmap->get_shader()->set_shader_parameter(StringNames::UseSharpTransitions(), _useSharpTransitions);
         _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTexturing(), _slopeTexturing);
         _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTextureIndex(), _slopeTextureIndex);
-        _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTextureAngle(), _slopeTextureAngle);
+        _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTextureThreshold(), _slopeTextureThreshold);
 
         if (normalTextures.size() > 0) {
             Ref<Texture2DArray> normalArray = Utils::texturesToTextureArray(normalTextures);

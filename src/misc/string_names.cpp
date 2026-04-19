@@ -90,4 +90,4 @@ const StringName StringNames::TexturesSpecular() { return "TexturesSpecular"; }
 const StringName StringNames::TerrainCollisionUpdated() { return "TerrainCollisionUpdated"; }
 const StringName StringNames::SlopeTexturing() { return "SlopeTexturing"; }
 const StringName StringNames::SlopeTextureIndex() { return "SlopeTextureIndex"; }
-const StringName StringNames::SlopeTextureAngle() { return "SlopeTextureAngle"; }
+const StringName StringNames::SlopeTextureThreshold() { return "SlopeTextureThreshold"; }

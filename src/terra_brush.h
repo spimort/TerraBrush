@@ -68,7 +68,7 @@ private:
     bool _useSharpTransitions = false;
     bool _slopeTexturing = false;
     int _slopeTextureIndex = 1;
-    float _slopeTextureAngle = 0.2;
+    float _slopeTextureThreshold = 0.2;
 
     // Foliage settings
     TypedArray<Ref<FoliageResource>> _foliages = TypedArray<Ref<FoliageResource>>();
@@ -178,8 +178,8 @@ public:
     int get_slopeTextureIndex() const;
     void set_slopeTextureIndex(const int value);
 
-    float get_slopeTextureAngle() const;
-    void set_slopeTextureAngle(const float value);
+    float get_slopeTextureThreshold() const;
+    void set_slopeTextureThreshold(const float value);
 
     TypedArray<Ref<FoliageResource>> get_foliages() const;
     void set_foliages(const TypedArray<Ref<FoliageResource>> value);

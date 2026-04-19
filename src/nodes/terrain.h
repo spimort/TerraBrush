@@ -47,7 +47,7 @@ private:
     bool _useSharpTransitions = false;
     bool _slopeTexturing = false;
     int _slopeTextureIndex = 1;
-    float _slopeTextureAngle = 0.2;
+    float _slopeTextureThreshold = 0.2;
     float _waterFactor = 0;
     Ref<Texture2D> _defaultTexture = nullptr;
     int _visualInstanceLayers = 0;
@@ -99,7 +99,7 @@ public:
     void set_useSharpTransitions(const bool value);
     void set_slopeTexturing(const bool value);
     void set_slopeTextureIndex(const int value);
-    void set_slopeTextureAngle(const float value);
+    void set_slopeTextureThreshold(const float value);
     void set_waterFactor(const float value);
     void set_defaultTexture(const Ref<Texture2D> &value);
     void set_visualInstanceLayers(const int value);

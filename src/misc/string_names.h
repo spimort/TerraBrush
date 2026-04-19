@@ -95,6 +95,6 @@ class StringNames {
         const static StringName TerrainCollisionUpdated();
         const static StringName SlopeTexturing();
         const static StringName SlopeTextureIndex();
-        const static StringName SlopeTextureAngle();
+        const static StringName SlopeTextureThreshold();
 };
 #endif

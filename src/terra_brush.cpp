@@ -133,9 +133,9 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_slopeTextureIndex", "value"), &TerraBrush::set_slopeTextureIndex);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "slopeTextureIndex"), "set_slopeTextureIndex", "get_slopeTextureIndex");
 
-    ClassDB::bind_method(D_METHOD("get_slopeTextureAngle"), &TerraBrush::get_slopeTextureAngle);
-    ClassDB::bind_method(D_METHOD("set_slopeTextureAngle", "value"), &TerraBrush::set_slopeTextureAngle);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "slopeTextureAngle", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_slopeTextureAngle", "get_slopeTextureAngle");
+    ClassDB::bind_method(D_METHOD("get_slopeTextureThreshold"), &TerraBrush::get_slopeTextureThreshold);
+    ClassDB::bind_method(D_METHOD("set_slopeTextureThreshold", "value"), &TerraBrush::set_slopeTextureThreshold);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "slopeTextureThreshold", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_slopeTextureThreshold", "get_slopeTextureThreshold");
 
     ADD_GROUP("Foliages", "");
 
@@ -226,7 +226,7 @@ TerraBrush::TerraBrush() {
     _useSharpTransitions = false;
     _slopeTexturing = false;
     _slopeTextureIndex = 1;
-    _slopeTextureAngle = 0.2;
+    _slopeTextureThreshold = 0.2;
 
     // Foliages settings
     _foliages = TypedArray<Ref<FoliageResource>>();
@@ -254,7 +254,7 @@ TerraBrush::TerraBrush() {
 TerraBrush::~TerraBrush() {}
 
 void TerraBrush::_validate_property(PropertyInfo &property) const {
-    TypedArray<String> slopeTexturingProperties = {"slopeTextureIndex", "slopeTextureAngle"};
+    TypedArray<String> slopeTexturingProperties = {"slopeTextureIndex", "slopeTextureThreshold"};
     if (slopeTexturingProperties.has(property.name)) {
         property.usage = _slopeTexturing ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
     }
@@ -499,11 +499,11 @@ void TerraBrush::set_slopeTextureIndex(const int value) {
     _slopeTextureIndex = value;
 }
 
-float TerraBrush::get_slopeTextureAngle() const {
-    return _slopeTextureAngle;
+float TerraBrush::get_slopeTextureThreshold() const {
+    return _slopeTextureThreshold;
 }
-void TerraBrush::set_slopeTextureAngle(const float value) {
-    _slopeTextureAngle = value;
+void TerraBrush::set_slopeTextureThreshold(const float value) {
+    _slopeTextureThreshold = value;
 }
 
 TypedArray<Ref<FoliageResource>> TerraBrush::get_foliages() const {
@@ -619,7 +619,7 @@ void TerraBrush::loadTerrain() {
     _terrain->set_useSharpTransitions(_useSharpTransitions);
     _terrain->set_slopeTexturing(_slopeTexturing);
     _terrain->set_slopeTextureIndex(_slopeTextureIndex);
-    _terrain->set_slopeTextureAngle(_slopeTextureAngle);
+    _terrain->set_slopeTextureThreshold(_slopeTextureThreshold);
     _terrain->set_waterFactor(_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor());
     _terrain->set_lodLevels(_lodLevels);
     _terrain->set_lodRowsPerLevel(_lodRowsPerLevel);
@@ -1128,7 +1128,7 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
 
                 float textureFactor = pixel[colorIndex];
 
-				if (_slopeTexturing && slope >= _slopeTextureAngle) {
+				if (_slopeTexturing && slope >= _slopeTextureThreshold) {
                     if (i == 0) {
                         maxSlopeValue = textureFactor;
                     }
@@ -1136,7 +1136,7 @@ Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, floa
                     if (_useSharpTransitions) {
                         textureFactor = i == 0 ? 0.0 : i == _slopeTextureIndex ? maxSlopeValue : textureFactor;
                     } else {
-                        float smoothSlopeValue = Math::min(maxSlopeValue, Math::smoothstep(0.0f, 0.1f, slope - _slopeTextureAngle));
+                        float smoothSlopeValue = Math::min(maxSlopeValue, Math::smoothstep(0.0f, 0.1f, slope - _slopeTextureThreshold));
                         if (i == 0) {
                             textureFactor -= smoothSlopeValue;
                         } else if (i == _slopeTextureIndex) {
