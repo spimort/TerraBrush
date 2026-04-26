@@ -19,6 +19,7 @@ private:
     const int RectHeight = 4;
     const int RectRadius = 5;
     const int HandleHeight = 12;
+    const int ControlOffset = HandleHeight;
     const int LabelWidth = 50;
     const int LabelHeight = 14;
     const int LabelHorizontalOffset = LabelWidth / 2.0;

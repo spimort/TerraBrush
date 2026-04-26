@@ -68,7 +68,7 @@ void AngleRangeSelector::_gui_input(const Ref<InputEvent> &event) {
     Ref<InputEventMouseMotion> inputMouseMotion = Object::cast_to<InputEventMouseMotion>(*event);
     if (!inputMouseMotion.is_null()) {
         if (_grabbedHandle != AngleRangeHandle::None) {
-            float newValue = (inputMouseMotion->get_position().x / get_size().x) * get_max();
+            float newValue = ((inputMouseMotion->get_position().x - ControlOffset) / (get_size().x - (ControlOffset * 2.0))) * get_max();
             if (_grabbedHandle == AngleRangeHandle::Left) {
                 set_rangeValue(Vector2(newValue, _rangeValue.y));
             } else {
@@ -110,7 +110,7 @@ void AngleRangeSelector::draw() {
     Ref<StyleBoxFlat> backgroundStyleBox = memnew(StyleBoxFlat);
     backgroundStyleBox->set_bg_color(Color(backgroundColor));
     backgroundStyleBox->set_corner_radius_all(RectRadius);
-    draw_style_box(backgroundStyleBox, Rect2(Vector2(0, centerY - RectHeight / 2.0), Size2(size.x, RectHeight)));
+    draw_style_box(backgroundStyleBox, Rect2(Vector2(ControlOffset, centerY - RectHeight / 2.0), Size2(size.x - (ControlOffset * 2.0), RectHeight)));
 
     // Value bar
     Ref<StyleBoxFlat> valueStyleBox = memnew(StyleBoxFlat);
@@ -162,11 +162,11 @@ void AngleRangeSelector::setHoverHandle(AngleRangeSelector::AngleRangeHandle han
 }
 
 float AngleRangeSelector::getLowValuePosition() const {
-    return (_rangeValue.x / get_max()) * get_size().x;
+    return ((_rangeValue.x / get_max()) * (get_size().x - (ControlOffset * 2.0))) + ControlOffset;
 }
 
 float AngleRangeSelector::getHighValuePosition() const {
-    return (_rangeValue.y / get_max()) * get_size().x;
+    return ((_rangeValue.y / get_max()) * (get_size().x - (ControlOffset * 2.0))) + ControlOffset;
 }
 
 void AngleRangeSelector::updateLabels() {
