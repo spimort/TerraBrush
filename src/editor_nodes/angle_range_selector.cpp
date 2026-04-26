@@ -25,7 +25,7 @@ void AngleRangeSelector::_notification(const int what) {
 
 AngleRangeSelector::AngleRangeSelector() {
     set_max(90.0);
-    set_custom_minimum_size(Vector2(0, HandleHeight));
+    set_custom_minimum_size(Vector2(0, HandleHeight + (2 * LabelHeight)));
 }
 
 AngleRangeSelector::~AngleRangeSelector() {}
@@ -36,7 +36,8 @@ void AngleRangeSelector::_ready() {
 
     _lowValueLabel = memnew(Label);
     _lowValueLabel->set_custom_minimum_size(Vector2(LabelWidth, LabelHeight));
-    _lowValueLabel->set_position(Vector2(-LabelHorizontalOffset, center + HandleHeight));
+    _lowValueLabel->set_anchors_and_offsets_preset(Control::LayoutPreset::PRESET_CENTER);
+    _lowValueLabel->set_position(Vector2(-LabelHorizontalOffset, _lowValueLabel->get_position().y - LabelHeight));
     _lowValueLabel->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
     _lowValueLabel->set_vertical_alignment(VerticalAlignment::VERTICAL_ALIGNMENT_CENTER);
     _lowValueLabel->set("theme_override_font_sizes/font_size", 10);
@@ -44,7 +45,8 @@ void AngleRangeSelector::_ready() {
 
     _highValueLabel = memnew(Label);
     _highValueLabel->set_custom_minimum_size(Vector2(LabelWidth, LabelHeight));
-    _highValueLabel->set_position(Vector2(-LabelHorizontalOffset, center - HandleHeight));
+    _highValueLabel->set_anchors_and_offsets_preset(Control::LayoutPreset::PRESET_CENTER);
+    _highValueLabel->set_position(Vector2(-LabelHorizontalOffset, _highValueLabel->get_position().y + LabelHeight));
     _highValueLabel->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_CENTER);
     _highValueLabel->set_vertical_alignment(VerticalAlignment::VERTICAL_ALIGNMENT_CENTER);
     _highValueLabel->set("theme_override_font_sizes/font_size", 10);
@@ -104,7 +106,7 @@ void AngleRangeSelector::draw() {
 
     // Background bar
     Color backgroundColor = Color(iconsColor);
-    backgroundColor.a = 0.5;
+    backgroundColor.a = 0.25;
     Ref<StyleBoxFlat> backgroundStyleBox = memnew(StyleBoxFlat);
     backgroundStyleBox->set_bg_color(Color(backgroundColor));
     backgroundStyleBox->set_corner_radius_all(RectRadius);
@@ -122,7 +124,7 @@ void AngleRangeSelector::draw() {
     float handleSize = HandleHeight / 2.0;
     Color handleColor = Color::named("WHITE");
     Color handleOutlineColor = Color(handleColor);
-    handleOutlineColor.a = 0.5;
+    handleOutlineColor.a = 0.25;
     draw_circle(Vector2(lowValuePosition, centerY), handleSize / 2.0, handleColor);
     draw_circle(Vector2(lowValuePosition, centerY), handleSize, currentHandle == AngleRangeHandle::Left ? handleColor : handleOutlineColor, false, handleSize / 4.0);
     draw_circle(Vector2(highValuePosition, centerY), handleSize / 2.0, handleColor);

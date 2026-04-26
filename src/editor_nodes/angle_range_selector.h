@@ -16,9 +16,9 @@ private:
         Right = 3
     };
 
-    const int RectHeight = 8;
+    const int RectHeight = 4;
     const int RectRadius = 5;
-    const int HandleHeight = 16;
+    const int HandleHeight = 12;
     const int LabelWidth = 50;
     const int LabelHeight = 14;
     const int LabelHorizontalOffset = LabelWidth / 2.0;
