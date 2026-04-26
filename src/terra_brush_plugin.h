@@ -49,6 +49,7 @@ private:
     void onDockBrushSelected(const int index);
     void onDockBrushSizeChanged(const int value);
     void onDockBrushStrengthChanged(const float value);
+    void onDockSlopeValueChanged(const Vector2 value);
     void onDockTextureSelected(const int index);
     void onDockFoliageSelected(const int index);
     void onDockObjectSelected(const int index);
@@ -59,6 +60,7 @@ private:
     void onTerraBrushEditorBrushSelected(const int index);
     void onTerraBrushEditorBrushSizeChanged(const int value);
     void onTerraBrushEditorBrushStrengthChanged(const float value);
+    void onTerraBrushEditorSlopeValueChanged(const Vector2 value);
     void onTerraBrushEditorTextureSelected(const int index);
     void onTerraBrushEditorFoliageSelected(const int index);
     void onTerraBrushEditorObjectSelected(const int index);

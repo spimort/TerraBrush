@@ -20,7 +20,7 @@ public:
     FoliageTool();
     ~FoliageTool();
 
-    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) override;
+    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) override;
 
     void updateSelectedFoliageIndex(int value);
 };

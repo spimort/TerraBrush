@@ -5,6 +5,7 @@
 #include "../terra_brush.h"
 #include "../misc/custom_content_loader.h"
 #include "../misc/enums.h"
+#include "../misc/utils.h"
 
 #include <godot_cpp/classes/margin_container.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
@@ -22,6 +23,7 @@ using namespace godot;
 void TerrainControlDock::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onBrushSizeValueChange", "value"), &TerrainControlDock::onBrushSizeValueChange);
     ClassDB::bind_method(D_METHOD("onBrushStrengthValueChange", "value"), &TerrainControlDock::onBrushStrengthValueChange);
+    ClassDB::bind_method(D_METHOD("onSlopeAngleValueChange", "value"), &TerrainControlDock::onSlopeAngleValueChange);
     ClassDB::bind_method(D_METHOD("onSelectedBrushIndexChange", "index"), &TerrainControlDock::onSelectedBrushIndexChange);
     ClassDB::bind_method(D_METHOD("onSelectedToolTypeChange", "toolType"), &TerrainControlDock::onSelectedToolTypeChange);
     ClassDB::bind_method(D_METHOD("onSelectedTextureIndexChange", "index"), &TerrainControlDock::onSelectedTextureIndexChange);
@@ -34,6 +36,7 @@ void TerrainControlDock::_bind_methods() {
     ADD_SIGNAL(MethodInfo("brushSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("brushSizeChanged", PropertyInfo(Variant::INT, "value")));
     ADD_SIGNAL(MethodInfo("brushStrengthChanged", PropertyInfo(Variant::FLOAT, "value")));
+    ADD_SIGNAL(MethodInfo("slopeValueChanged", PropertyInfo(Variant::VECTOR2, "value")));
     ADD_SIGNAL(MethodInfo("textureSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("foliageSelected", PropertyInfo(Variant::INT, "index")));
     ADD_SIGNAL(MethodInfo("objectSelected", PropertyInfo(Variant::INT, "index")));
@@ -67,6 +70,7 @@ void TerrainControlDock::_ready() {
 
     _brushSizeSlider->connect("value_changed", Callable(this, "onBrushSizeValueChange"));
     _brushStrengthSlider->connect("value_changed", Callable(this, "onBrushStrengthValueChange"));
+    _slopeValueAngleRangeSelector->connect("rangeValueChanged", Callable(this, "onSlopeAngleValueChange"));
     _colorPickerButton->connect("color_changed", Callable(this, "onSelectedColorChange"));
 }
 
@@ -177,6 +181,12 @@ void TerrainControlDock::onBrushStrengthValueChange(const float value) {
     emit_signal("brushStrengthChanged", value);
 }
 
+void TerrainControlDock::onSlopeAngleValueChange(const Vector2 value) {
+    Vector2 slopeValue = Vector2(Utils::degreeAngleToSlopeFactor(value.x), Utils::degreeAngleToSlopeFactor(value.y));
+    setSlopeValue(slopeValue);
+    emit_signal("slopeValueChanged", slopeValue);
+}
+
 void TerrainControlDock::onSelectedBrushIndexChange(const int index) {
     setSelectedBrushIndex(index);
     emit_signal("brushSelected", index);
@@ -212,12 +222,17 @@ void TerrainControlDock::onSelectedColorChange(const Color value) {
     emit_signal("colorSelected", value);
 }
 
-void TerrainControlDock::setBrushSize(int value) {
+void TerrainControlDock::setBrushSize(const int value) {
     _brushSizeSlider->set_value(value);
 }
 
-void TerrainControlDock::setBrushStrength(float value) {
+void TerrainControlDock::setBrushStrength(const float value) {
     _brushStrengthSlider->set_value(value);
+}
+
+void TerrainControlDock::setSlopeValue(const Vector2 value) {
+    Vector2 angleValue = Vector2(Utils::slopeFactorToDegreeAngle(value.x), Utils::slopeFactorToDegreeAngle(value.y));
+    _slopeValueAngleRangeSelector->set_rangeValue(angleValue);
 }
 
 void TerrainControlDock::setSelectedBrushIndex(const int index) {
@@ -482,6 +497,17 @@ void TerrainControlDock::buildLayout() {
                                     _brushStrengthSlider->set_value(0.01);
                                     _brushStrengthSlider->set_step(0.01);
                                     toolsBrushStrengthVBoxContainer->add_child(_brushStrengthSlider);
+                                }
+
+                                VBoxContainer *slopeValueVBoxContainer = memnew(VBoxContainer);
+                                toolsVBoxContainer->add_child(slopeValueVBoxContainer);
+                                { // VBoxContainer
+                                    Label *label = memnew(Label);
+                                    label->set_text("Slope angle limit");
+                                    slopeValueVBoxContainer->add_child(label);
+
+                                    _slopeValueAngleRangeSelector = memnew(AngleRangeSelector);
+                                    slopeValueVBoxContainer->add_child(_slopeValueAngleRangeSelector);
                                 }
 
                                 VBoxContainer *colorVBoxContainer = memnew(VBoxContainer);

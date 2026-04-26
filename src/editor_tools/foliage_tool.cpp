@@ -12,12 +12,12 @@ Ref<Image> FoliageTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_foliagesImage()[_selectedFoliageIndex];
 }
 
-void FoliageTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void FoliageTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     if (_selectedFoliageIndex < 0) {
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         Color newColor = toolType == TerrainToolType::TERRAINTOOLTYPE_FOLIAGEADD ? Color(1, 0, 0, 1) : Color(0, 0, 0, 0);
 

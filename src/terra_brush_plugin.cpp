@@ -61,6 +61,7 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onDockBrushSelected", "index"), &TerraBrushPlugin::onDockBrushSelected);
     ClassDB::bind_method(D_METHOD("onDockBrushSizeChanged", "value"), &TerraBrushPlugin::onDockBrushSizeChanged);
     ClassDB::bind_method(D_METHOD("onDockBrushStrengthChanged", "value"), &TerraBrushPlugin::onDockBrushStrengthChanged);
+    ClassDB::bind_method(D_METHOD("onDockSlopeValueChanged", "value"), &TerraBrushPlugin::onDockSlopeValueChanged);
     ClassDB::bind_method(D_METHOD("onDockTextureSelected", "index"), &TerraBrushPlugin::onDockTextureSelected);
     ClassDB::bind_method(D_METHOD("onDockFoliageSelected", "index"), &TerraBrushPlugin::onDockFoliageSelected);
     ClassDB::bind_method(D_METHOD("onDockObjectSelected", "index"), &TerraBrushPlugin::onDockObjectSelected);
@@ -71,6 +72,7 @@ void TerraBrushPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorBrushSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorBrushSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorBrushSizeChanged", "value"), &TerraBrushPlugin::onTerraBrushEditorBrushSizeChanged);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorBrushStrengthChanged", "value"), &TerraBrushPlugin::onTerraBrushEditorBrushStrengthChanged);
+    ClassDB::bind_method(D_METHOD("onTerraBrushEditorSlopeValueChanged", "value"), &TerraBrushPlugin::onTerraBrushEditorSlopeValueChanged);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorTextureSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorTextureSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorFoliageSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorFoliageSelected);
     ClassDB::bind_method(D_METHOD("onTerraBrushEditorObjectSelected", "index"), &TerraBrushPlugin::onTerraBrushEditorObjectSelected);
@@ -245,6 +247,7 @@ void TerraBrushPlugin::addDock() {
     _terrainControlDock->connect("brushSelected", Callable(this, "onDockBrushSelected"));
     _terrainControlDock->connect("brushSizeChanged", Callable(this, "onDockBrushSizeChanged"));
     _terrainControlDock->connect("brushStrengthChanged", Callable(this, "onDockBrushStrengthChanged"));
+    _terrainControlDock->connect("slopeValueChanged", Callable(this, "onDockSlopeValueChanged"));
     _terrainControlDock->connect("textureSelected", Callable(this, "onDockTextureSelected"));
     _terrainControlDock->connect("foliageSelected", Callable(this, "onDockFoliageSelected"));
     _terrainControlDock->connect("objectSelected", Callable(this, "onDockObjectSelected"));
@@ -253,6 +256,7 @@ void TerraBrushPlugin::addDock() {
 
     _terrainControlDock->setBrushSize(_terraBrushEditor->get_brushSize());
     _terrainControlDock->setBrushStrength(_terraBrushEditor->get_brushStrength());
+    _terrainControlDock->setSlopeValue(_terraBrushEditor->get_slopeValue());
     _terrainControlDock->setSelectedBrushIndex(_terraBrushEditor->get_brushIndex());
     _terrainControlDock->selectToolType(_terraBrushEditor->get_selectedToolType());
     _terrainControlDock->setSelectedTextureIndex(_terraBrushEditor->get_selectedTextureIndex());
@@ -325,6 +329,10 @@ void TerraBrushPlugin::onDockBrushStrengthChanged(const float value) {
     _terraBrushEditor->set_brushStrength(value);
 }
 
+void TerraBrushPlugin::onDockSlopeValueChanged(const Vector2 value) {
+    _terraBrushEditor->set_slopeValue(value);
+}
+
 void TerraBrushPlugin::onDockTextureSelected(const int index) {
     _terraBrushEditor->set_selectedTextureIndex(index);
 }
@@ -359,6 +367,10 @@ void TerraBrushPlugin::onTerraBrushEditorBrushSizeChanged(const int value) {
 
 void TerraBrushPlugin::onTerraBrushEditorBrushStrengthChanged(const float value) {
     _terrainControlDock->setBrushStrength(value);
+}
+
+void TerraBrushPlugin::onTerraBrushEditorSlopeValueChanged(const Vector2 value) {
+    _terrainControlDock->setSlopeValue(value);
 }
 
 void TerraBrushPlugin::onTerraBrushEditorTextureSelected(const int index) {

@@ -27,7 +27,7 @@ void ObjectTool::endPaint() {
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
-void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     if (_selectedObjectIndex < 0) {
         return;
     }
@@ -43,7 +43,7 @@ void ObjectTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
 
     ObjectsBase *objectsNode = Object::cast_to<ObjectsBase>(_terraBrush->get_objectsContainer()->get_node_or_null(String::num_int64(_selectedObjectIndex)));
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Ref<Image> heightmapImage = imageZoneInfo.zone->get_heightMapImage();
         Ref<Image> waterImage = nullptr;
         if (!_terraBrush->get_waterDefinition().is_null()) {

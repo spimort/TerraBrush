@@ -4,6 +4,7 @@
 #include "terra_brush_editor.h"
 #include "terra_brush_plugin.h"
 
+#include "editor_nodes/angle_range_selector.h"
 #include "editor_nodes/brush_decal.h"
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/custom_content_pie_menu.h"
@@ -87,6 +88,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
 
         // Internal nodes
+        GDREGISTER_INTERNAL_CLASS(AngleRangeSelector);
         GDREGISTER_INTERNAL_CLASS(BrushDecal);
         GDREGISTER_INTERNAL_CLASS(BrushNumericSelector);
         GDREGISTER_INTERNAL_CLASS(Clipmap);

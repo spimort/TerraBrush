@@ -16,13 +16,13 @@ Ref<Image> WaterFlowTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_waterImage();
 };
 
-void WaterFlowTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void WaterFlowTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     // If the water definition is null, or it's texture we exit here
     if (_terraBrush->get_waterDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_waterImage().is_null()) {
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         if (currentPixel.r > 0.0) {

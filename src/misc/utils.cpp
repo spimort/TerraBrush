@@ -184,3 +184,11 @@ Ref<Image> Utils::getBrushImageForIndex(const int targetIndex) {
 
     return nullptr;
 }
+
+float Utils::degreeAngleToSlopeFactor(const float value) {
+    return 1.0 - Math::cos(Math::deg_to_rad(value));
+}
+
+float Utils::slopeFactorToDegreeAngle(const float value) {
+    return Math::rad_to_deg(Math::acos(1.0 - value));
+}

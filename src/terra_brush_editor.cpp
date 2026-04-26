@@ -200,7 +200,7 @@ void TerraBrushEditor::_physics_process(double delta) {
         Vector3 meshToImagePosition = _mouseHitPosition + Vector3(zoneSize / 2, 0, zoneSize / 2);
         Vector2 imagePosition = Vector2(meshToImagePosition.x, meshToImagePosition.z);
 
-        _currentTool->paint(get_selectedToolType(), _brushImage, _brushSize, _brushStrength, imagePosition);
+        _currentTool->paint(get_selectedToolType(), _brushImage, _brushSize, _brushStrength, _slopeValue, imagePosition);
 
         _updateTime = UpdateDelay;
     }
@@ -994,6 +994,13 @@ float TerraBrushEditor::get_brushStrength() const {
 }
 void TerraBrushEditor::set_brushStrength(const float value) {
     _brushStrength = value;
+}
+
+Vector2 TerraBrushEditor::get_slopeValue() const {
+    return _slopeValue;
+}
+void TerraBrushEditor::set_slopeValue(const Vector2 value) {
+    _slopeValue = value;
 }
 
 TerrainToolType TerraBrushEditor::get_selectedToolType() const {

@@ -3,12 +3,14 @@
 
 #include "../terra_brush.h"
 #include "../misc/enums.h"
+#include "angle_range_selector.h"
 
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/flow_container.hpp>
 #include <godot_cpp/classes/slider.hpp>
 #include <godot_cpp/classes/color_picker_button.hpp>
 #include <godot_cpp/classes/editor_resource_preview.hpp>
+#include <godot_cpp/classes/input_event.hpp>
 
 using namespace godot;
 
@@ -32,6 +34,7 @@ private:
     FlowContainer *_metaInfoLayersContainer = nullptr;
     Slider *_brushSizeSlider = nullptr;
     Slider *_brushStrengthSlider = nullptr;
+    AngleRangeSelector *_slopeValueAngleRangeSelector = nullptr;
     ColorPickerButton *_colorPickerButton = nullptr;
 
     TerraBrush *_terraBrush = nullptr;
@@ -46,6 +49,7 @@ private:
     void initializeMetaInfoLayers();
     void onBrushSizeValueChange(const float value);
     void onBrushStrengthValueChange(const float value);
+    void onSlopeAngleValueChange(const Vector2 value);
     void onSelectedBrushIndexChange(const int index);
     void onSelectedToolTypeChange(const TerrainToolType toolType);
     void onSelectedTextureIndexChange(const int index);
@@ -73,8 +77,9 @@ public:
     void set_terraBrush(TerraBrush *value);
     void set_editorResourcePreview(EditorResourcePreview *value);
 
-    void setBrushSize(int value);
-    void setBrushStrength(float value);
+    void setBrushSize(const int value);
+    void setBrushStrength(const float value);
+    void setSlopeValue(const Vector2 value);
     void setSelectedBrushIndex(const int index);
     void selectToolType(const TerrainToolType toolType);
     void setSelectedTextureIndex(const int index);

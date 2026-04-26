@@ -34,13 +34,13 @@ Ref<Image> WaterTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_waterImage();
 }
 
-void WaterTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void WaterTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     // If the water definition is null, or it's texture we exit here
     if (_terraBrush->get_waterDefinition().is_null() || _terraBrush->get_terrainZones()->get_zones().size() == 0 || Ref<ZoneResource>(_terraBrush->get_terrainZones()->get_zones()[0])->get_waterImage().is_null()) {
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         Color newColor = toolType == TerrainToolType::TERRAINTOOLTYPE_WATERADD ? Color(1, currentPixel.g, currentPixel.b, 1) : Color(0, 0.5f, 0.5f, 1);

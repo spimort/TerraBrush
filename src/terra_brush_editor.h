@@ -45,6 +45,7 @@ private:
     Ref<Image> _originalBrushImage = nullptr;
     int _brushSize = 0;
     float _brushStrength = 0;
+    Vector2 _slopeValue = Vector2(0, 1);
     int _brushIndex = 0;
     int _textureIndex = 0;
     int _foliageIndex = 0;
@@ -142,6 +143,9 @@ public:
 
     float get_brushStrength() const;
     void set_brushStrength(const float value);
+
+    Vector2 get_slopeValue() const;
+    void set_slopeValue(const Vector2 value);
 
     TerrainToolType get_selectedToolType() const;
     void set_selectedToolType(const TerrainToolType value);

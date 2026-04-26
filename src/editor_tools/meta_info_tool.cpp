@@ -12,12 +12,12 @@ Ref<Image> MetaInfoTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_metaInfoImage();
 }
 
-void MetaInfoTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void MetaInfoTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     if (_selectedMetaInfoIndex < 0) {
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         if (pixelBrushStrength > 0.0) {
             int layerValue = toolType == TerrainToolType::TERRAINTOOLTYPE_METAINFOADD ? _selectedMetaInfoIndex : -1;
 
