@@ -1218,7 +1218,7 @@ Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenP
         Vector3 position = from + (direction * i * 0.1f) - get_global_position();
 
         float zoneHeight = getHeightAtPosition(position.x, position.z, false);
-        if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y) {
+        if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y && zoneHeight <= position.y + 1.0) {
             return Vector3(position.x, zoneHeight, position.z) + get_global_position();
         } else if (allowNoZone && noZonePosition.x == Utils::InfinityValue && position.y <= get_global_position().y) {
             noZonePosition = Vector3(position.x, position.y, position.z);
