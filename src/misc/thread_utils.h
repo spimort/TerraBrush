@@ -1,6 +1,8 @@
 #ifndef THREAD_UTILS_H
 #define THREAD_UTILS_H
 
+#include <memory>
+
 struct CancellationToken {
     std::shared_ptr<bool> isCancellationRequested = std::make_shared<bool>(false);
 };
