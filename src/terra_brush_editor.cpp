@@ -390,7 +390,7 @@ Vector3 TerraBrushEditor::getRayCastWithTerrain(Camera3D *camera) {
         return Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
     }
 
-    return _terraBrushNode->getHeightForMousePosition(camera);
+    return _terraBrushNode->getHeightForMousePosition(camera, _autoAddZones);
 }
 
 StringName TerraBrushEditor::hideOverlaySelector() {

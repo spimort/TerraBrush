@@ -231,8 +231,8 @@ public:
     float getHeightForZoneInfo(ZoneInfo &zoneInfo, bool useGlobalPosition) const;
     Vector3 getNormalForHeights(float hL, float hR, float hB, float hF) const;
     float getSlopeAtPosition(float x, float y) const;
-    Vector3 getHeightForMousePosition(Camera3D *camera) const;
-    Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition) const;
+    Vector3 getHeightForMousePosition(Camera3D *camera, bool allowNoZone = false) const;
+    Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition, bool allowNoZone = false) const;
     void hideObject(int objectLayerIndex, int64_t objectId) const;
     void showObject(int objectLayerIndex, int64_t objectId) const;
 };

@@ -353,7 +353,7 @@ Ref<ObjectOctreeLODDefinitionResource> ObjectsOctreeMultiMesh::getLODDefinitionF
 }
 
 void ObjectsOctreeMultiMesh::updateMeshesAsync() {
-    CancellationToken cancellationToken = _cancellationTokenSource.token;
+    CancellationToken &cancellationToken = _cancellationTokenSource.token;
 
     if (cancellationToken.isCancellationRequested) return;
 
@@ -427,7 +427,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                 if (nodeInfo->get_collisionShape() == nullptr) {
                     CollisionShape3D *collisionShape = memnew(CollisionShape3D);
                     collisionShape->set_shape(shapeInfo[CollisionShapeInfoInfo_ShapeKey]);
-                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);                 
+                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);
                     collisionShape->set_rotation(nodeInfo->get_meshRotation());
                     collisionShape->set_scale(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
                     nodeInfo->set_collisionShape(collisionShape);
