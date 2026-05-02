@@ -241,7 +241,7 @@ void Terrain::updateCollisionShape() {
 }
 
 void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, Dictionary> zonesData) {
-    CancellationToken token = _collisionCancellationSource.token;
+    CancellationToken &token = _collisionCancellationSource.token;
 
     for (int i = 0; i < _terrainZones->get_zones().size(); i++) {
         if (token.isCancellationRequested) {
@@ -250,6 +250,11 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
 
         Ref<ZoneResource> zone = _terrainZones->get_zones()[i];
         Dictionary collisionData = zonesData[zone];
+
+        Ref<HeightMapShape3D> heightMapShape3D = collisionData[CollisionDataShapeKey];
+        if (heightMapShape3D.is_null()) {
+            return;
+        }
 
         Ref<ZoneResource> leftNeighbourZone = getZoneForPosition(zone->get_zonePosition().x - 1, zone->get_zonePosition().y);
         Ref<ZoneResource> topNeighbourZone = getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y - 1);
@@ -325,7 +330,6 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
             return;
         }
 
-        Ref<HeightMapShape3D> heightMapShape3D = collisionData[CollisionDataShapeKey];
         call_deferred("assignCollisionData", heightMapShape3D, terrainData);
     }
 }

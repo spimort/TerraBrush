@@ -67,7 +67,7 @@ void Objects::updateObjects() {
 }
 
 void Objects::updateObjectsAsync() {
-    CancellationToken cancellationToken = _objectsCreationCancellationTokenSource.token;
+    CancellationToken &cancellationToken = _objectsCreationCancellationTokenSource.token;
 
     if (cancellationToken.isCancellationRequested) {
         return;
