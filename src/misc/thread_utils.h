@@ -2,7 +2,7 @@
 #define THREAD_UTILS_H
 
 struct CancellationToken {
-    bool isCancellationRequested = false;
+    std::shared_ptr<bool> isCancellationRequested = std::make_shared<bool>(false);
 };
 
 struct CancellationSource {
@@ -16,7 +16,7 @@ struct CancellationSource {
     }
 
     void cancel() {
-        token.isCancellationRequested = true;
+        *token.isCancellationRequested = true;
     }
 };
 #endif
