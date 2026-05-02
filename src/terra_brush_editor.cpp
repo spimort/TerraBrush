@@ -907,18 +907,26 @@ void TerraBrushEditor::set_enabled(const bool value) {
 
         if (!_terraBrushNode->get_textureSets().is_null() && _terraBrushNode->get_textureSets()->get_textureSets().size() > 0 && _textureIndex < 0) {
             _textureIndex = 0;
+        } else if (_textureIndex >= 0 && (_terraBrushNode->get_textureSets().is_null() || _terraBrushNode->get_textureSets()->get_textureSets().size() == 0)) {
+            _textureIndex = -1;
         }
 
         if (_terraBrushNode->get_foliages().size() > 0 && _foliageIndex < 0) {
             _foliageIndex = 0;
+        } else if (_foliageIndex >= 0 && _terraBrushNode->get_foliages().size() == 0) {
+            _foliageIndex = -1;
         }
 
         if (_terraBrushNode->get_objects().size() > 0 && _objectIndex < 0) {
             _objectIndex = 0;
+        } else if (_objectIndex >= 0 && _terraBrushNode->get_objects().size() == 0) {
+            _objectIndex = -1;
         }
 
         if (_terraBrushNode->get_metaInfoLayers().size() > 0 && _metaInfoLayerIndex < 0) {
             _metaInfoLayerIndex = 0;
+        } else if (_metaInfoLayerIndex >= 0 && _terraBrushNode->get_metaInfoLayers().size() == 0) {
+            _metaInfoLayerIndex = -1;
         }
     }
 }
