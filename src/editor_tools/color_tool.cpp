@@ -17,8 +17,8 @@ Ref<Image> ColorTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_colorImage();
 }
 
-void ColorTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+void ColorTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         if (pixelBrushStrength > 0.0) {
             Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
             Color newColor = toolType == TerrainToolType::TERRAINTOOLTYPE_COLORADD ? _selectedColor : Color(0, 0, 0, 0);

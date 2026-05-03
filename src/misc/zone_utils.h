@@ -33,5 +33,6 @@ class ZoneUtils {
         static ZoneInfo getPixelToZoneInfo(float x, float y, int zonesSize, int resolution);
         static ZoneInfo getZoneInfoFromZoneOffset(ZoneInfo &startingZone, Vector2i offset, int zonesSize, int resolution);
         static int getImageSizeForResolution(int zoneSize, float resolution);
+        static Vector2 getImagePositionToGlobalPosition(Vector3 terrainGlobalPosition, int zoneSize, Vector2i imagePosition);
 };
 #endif

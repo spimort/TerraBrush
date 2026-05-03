@@ -39,7 +39,7 @@ public:
 
     void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) override;
 
-    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) override;
+    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) override;
 
     float getSetAngleValue();
     Vector3 getSetAngleInitialPoint();

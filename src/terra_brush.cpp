@@ -1051,17 +1051,6 @@ void TerraBrush::addInteractionPoint(float x, float y) {
     }
 }
 
-float TerraBrush::getSlopeAtPosition(float x, float y) {
-	float hL = getHeightAtPosition(x - 1.0, y, false);
-	float hR = getHeightAtPosition(x + 1.0, y, false);
-	float hB = getHeightAtPosition(x, y - 1.0, false);
-	float hF = getHeightAtPosition(x, y + 1.0, false);
-
-    Vector3 normal = Vector3(hL - hR, 2.0, hB - hF).normalized();
-
-    return 1.0 - normal.dot(Vector3(0.0, 1.0, 0.0));
-}
-
 Ref<TerrainPositionInformation> TerraBrush::getPositionInformation(float x, float y) {
     float globalX = x;
     float globalY = y;
@@ -1283,9 +1272,18 @@ float TerraBrush::getHeightAtPosition(float x, float z, bool useGlobalPosition) 
     }
 
     ZoneInfo zoneInfo = ZoneUtils::getPixelToZoneInfo(x + (zoneSize / 2), z + (zoneSize / 2), zoneSize, resolution);
+    return getHeightForZoneInfo(zoneInfo, useGlobalPosition);
+}
+
+float TerraBrush::getHeightForZoneInfo(ZoneInfo &zoneInfo, bool useGlobalPosition) const {
     Ref<ZoneResource> zone;
     if (!get_terrainZones().is_null()) {
         zone = get_terrainZones()->getZoneForZoneInfo(zoneInfo);
+    }
+
+    Vector3 globalPosition = Vector3(0, 0, 0);
+    if (useGlobalPosition) {
+        globalPosition = get_global_position();
     }
 
     if (!zone.is_null() && !zone->get_heightMapImage().is_null()) {
@@ -1295,6 +1293,21 @@ float TerraBrush::getHeightAtPosition(float x, float z, bool useGlobalPosition) 
     }
 
     return Utils::InfinityValue;
+}
+
+Vector3 TerraBrush::getNormalForHeights(float hL, float hR, float hB, float hF) const {
+    return Vector3(hL - hR, 2.0, hB - hF).normalized();
+}
+
+float TerraBrush::getSlopeAtPosition(float x, float y) const {
+	float hL = getHeightAtPosition(x - 1.0, y, false);
+	float hR = getHeightAtPosition(x + 1.0, y, false);
+	float hB = getHeightAtPosition(x, y - 1.0, false);
+	float hF = getHeightAtPosition(x, y + 1.0, false);
+
+    Vector3 normal = getNormalForHeights(hL, hR, hB, hF);
+
+    return 1.0 - normal.dot(Vector3(0.0, 1.0, 0.0));
 }
 
 Vector3 TerraBrush::getHeightForMousePosition(Camera3D *camera, bool allowNoZone) const {

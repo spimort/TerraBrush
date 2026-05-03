@@ -79,6 +79,7 @@ It runs in the browser, hosted on itch.io :
 * **Hole** - Paint hole. Useful to create cave or juste to make a terrain that is not square.
 * **Multiple brushes**
   - Custom brushes are also available
+* **Slope painting limit** - Limit the painting with slope angles for ALL the tools
 * **Pie menu**
 * **Shortcuts**
   - The plugin has been made so it's really easy to use. A lot of shortcuts are available.

@@ -16,7 +16,7 @@ void TextureTool::endPaint() {
     ToolBase::endPaint();
 }
 
-void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     if (_selectedTextureIndex < 0) {
         return;
     }
@@ -27,7 +27,7 @@ void TextureTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int bru
 
     Color transparentColor = Color(1, 1, 1, 0); // Transparent color
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         for (int i = 0; i < numberOfSplatmaps; i++) {
             Color splatmapColor = transparentColor;
 

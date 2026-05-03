@@ -68,7 +68,7 @@ Ref<Image> ToolBase::getToolCurrentImage(Ref<ZoneResource> zone) {
     return nullptr;
 }
 
-void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone) {
+void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 slopeValue, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone) {
     if (_lockedAxis != LockedAxis::LOCKEDAXIS_NONE) {
         if (_lockedAxisValue == Vector2(0, 0)) {
             _lockedAxisValue = Vector2(imagePosition.x, imagePosition.y);
@@ -86,6 +86,7 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
     ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
     std::unordered_set<uint64_t> pointsCache = std::unordered_set<uint64_t>();
+    std::unordered_map<uint64_t, float> slopesCache = std::unordered_map<uint64_t, float>();
     for (int x = 0; x < brushSize; x++) {
         for (int y = 0; y < brushSize; y++) {
             int offsetX = x;
@@ -97,20 +98,39 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 i
             ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY, ignoreLockedZone);
 
             if (!imageZoneInfo.zone.is_null()) {
-                int zoneKey = imageZoneInfo.zoneInfo.zoneKey;
-                Vector2i zoneImagePosition = imageZoneInfo.zoneInfo.imagePosition;
                 // Create a cache key with the zone and the position
-                uint64_t zonePositionKey = (static_cast<uint64_t>(zoneKey) << 32) | (static_cast<uint64_t>(zoneImagePosition.x) << 16) | static_cast<uint64_t>(zoneImagePosition.y);
+                uint64_t zonePositionKey = getZonePositionKeyForZoneInfo(imageZoneInfo.zoneInfo);
 
                 if (_terraBrush->get_resolution() == 1 || !getApplyResolution() || pointsCache.count(zonePositionKey) == 0) {
                     if (_terraBrush->get_resolution() != 1) {
                         pointsCache.insert(zonePositionKey);
                     }
 
-                    Color brushPixelValue = brushImage->get_pixel(x, y);
-                    float brushPixelStrength = brushPixelValue.a * (1.0f - imageZoneInfo.lockedStrength);
+                    bool skipPixel = false;
+                    if (slopeValue.x != 0.0 || slopeValue.y != 1.0) {
+                        float slope = 0.0;
+                        if (slopesCache.count(zonePositionKey) == 0) {
+                            ZoneInfo hLZone = getImageZoneInfoForPosition(startingZoneInfo, offsetX - 1.0, offsetY, ignoreLockedZone).zoneInfo;
+                            ZoneInfo hRZone = getImageZoneInfoForPosition(startingZoneInfo, offsetX + 1.0, offsetY, ignoreLockedZone).zoneInfo;
+                            ZoneInfo hBZone = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY - 1.0, ignoreLockedZone).zoneInfo;
+                            ZoneInfo hFZone = getImageZoneInfoForPosition(startingZoneInfo, offsetX, offsetY + 1.0, ignoreLockedZone).zoneInfo;
 
-                    onBrushPixel(imageZoneInfo, brushPixelStrength);
+                            slope = getSlopeForZoneInfo(hLZone, hRZone, hBZone, hFZone);
+
+                            slopesCache[zonePositionKey] = slope;
+                        } else {
+                            slope = slopesCache[zonePositionKey];
+                        }
+
+                        skipPixel = slope < slopeValue.x || slope > slopeValue.y;
+                    }
+
+                    if (!skipPixel) {
+                        Color brushPixelValue = brushImage->get_pixel(x, y);
+                        float brushPixelStrength = brushPixelValue.a * (1.0f - imageZoneInfo.lockedStrength);
+
+                        onBrushPixel(imageZoneInfo, brushPixelStrength);
+                    }
                 }
             }
         }
@@ -216,9 +236,10 @@ bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
 void ToolBase::beginPaint() {
     _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
     _modifiedUndoImages = std::unordered_set<Ref<Image>>();
+    _heightsCache = std::unordered_map<uint64_t, float>();
 }
 
-void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     // Nothing to do in the base class
 }
 
@@ -229,8 +250,41 @@ void ToolBase::endPaint() {
     _modifiedUndoImages.clear();
 
     _lockedAxisValue = Vector2();
+
+    _heightsCache.clear();
 }
 
 void ToolBase::set_autoAddZones(bool value) {
     _autoAddZones = value;
+}
+
+uint64_t ToolBase::getZonePositionKeyForZoneInfo(ZoneInfo &zoneInfo) const {
+    int zoneKey = zoneInfo.zoneKey;
+    uint64_t zonePositionKey = (static_cast<uint64_t>(zoneKey) << 32) | (static_cast<uint64_t>(zoneInfo.imagePosition.x) << 16) | static_cast<uint64_t>(zoneInfo.imagePosition.y);
+
+    return zonePositionKey;
+}
+
+float ToolBase::getHeightForZoneInfo(ZoneInfo &zoneInfo) {
+    uint64_t zonePositionKey = getZonePositionKeyForZoneInfo(zoneInfo);
+
+    if (_heightsCache.count(zonePositionKey) == 0) {
+        float height = _terraBrush->getHeightForZoneInfo(zoneInfo, false);
+        _heightsCache[zonePositionKey] = height;
+
+        return height;
+    } else {
+        return _heightsCache[zonePositionKey];
+    }
+}
+
+float ToolBase::getSlopeForZoneInfo(ZoneInfo &hLZone, ZoneInfo &hRZone, ZoneInfo &hBZone, ZoneInfo &hFZone) {
+	float hL = getHeightForZoneInfo(hLZone);
+	float hR = getHeightForZoneInfo(hRZone);
+	float hB = getHeightForZoneInfo(hBZone);
+	float hF = getHeightForZoneInfo(hFZone);
+
+    Vector3 normal = _terraBrush->getNormalForHeights(hL, hR, hB, hF);
+
+    return 1.0 - normal.dot(Vector3(0.0, 1.0, 0.0));
 }

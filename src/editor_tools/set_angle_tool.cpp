@@ -107,7 +107,7 @@ void SetAngleTool::beforeDeselect() {
     clearInitialPointMesh();
 }
 
-void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
         ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
         ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0);
@@ -125,7 +125,7 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
         return;
     }
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Vector2i absolutePosition = (imageZoneInfo.zoneInfo.imagePosition * _terraBrush->get_resolution()) + (imageZoneInfo.zoneInfo.zonePosition * (_terraBrush->get_zonesSize() - 1));
         float distanceToStartingPoint = Vector2(_setAngleInitialPoint.x, _setAngleInitialPoint.z).distance_to(absolutePosition);
         float angleHeight = (float) (distanceToStartingPoint * Math::tan(Math::deg_to_rad(_setAngleValue))) + _setAngleInitialPoint.y;

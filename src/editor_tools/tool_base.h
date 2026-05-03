@@ -54,12 +54,16 @@ private:
     LockedAxis _lockedAxis = LockedAxis::LOCKEDAXIS_NONE;
     Vector2 _lockedAxisValue = Vector2();
     std::unordered_map<int, Ref<ZoneResource>> _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
+    std::unordered_map<uint64_t, float> _heightsCache = std::unordered_map<uint64_t, float>();
     std::unordered_set<Ref<Image>> _modifiedUndoImages = std::unordered_set<Ref<Image>>();
     bool _autoAddZones = false;
 
     PixelLockedInfo isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zoneInfo);
     void addImagesToRedo();
     int getResolution() const;
+    uint64_t getZonePositionKeyForZoneInfo(ZoneInfo &zoneInfo) const;
+    float getHeightForZoneInfo(ZoneInfo &zoneInfo);
+    float getSlopeForZoneInfo(ZoneInfo &hLZone, ZoneInfo &hRZone, ZoneInfo &hBZone, ZoneInfo &hFZone);
 
 protected:
     TerraBrush *_terraBrush = nullptr;
@@ -68,7 +72,7 @@ protected:
 
     virtual bool getApplyResolution() const;
     virtual Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone);
-    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone = false);
+    void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 slopeValue, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone = false);
     void addImageToUndo(Ref<Image> image);
     ImageZoneInfo getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
 
@@ -81,7 +85,7 @@ public:
     virtual String getToolInfo(TerrainToolType toolType);
     virtual bool handleInput(TerrainToolType toolType, Ref<InputEvent> event);
     virtual void beginPaint();
-    virtual void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
+    virtual void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);
     virtual void endPaint();
 
     void set_autoAddZones(bool value);

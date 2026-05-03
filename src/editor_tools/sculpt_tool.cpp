@@ -40,27 +40,27 @@ Ref<Image> SculptTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_heightMapImage();
 }
 
-void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    ToolBase::paint(toolType, brushImage, brushSize, brushStrength, imagePosition);
+void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    ToolBase::paint(toolType, brushImage, brushSize, brushStrength, slopeValue, imagePosition);
 
     switch (toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINSMOOTH:
-            smooth(brushImage, brushSize, brushStrength, imagePosition);
+            smooth(brushImage, brushSize, brushStrength, slopeValue, imagePosition);
             break;
         case TerrainToolType::TERRAINTOOLTYPE_TERRAINFLATTEN:
-            flatten(brushImage, brushSize, brushStrength, imagePosition);
+            flatten(brushImage, brushSize, brushStrength, slopeValue, imagePosition);
             break;
         default:
-            sculpt(toolType, brushImage, brushSize, brushStrength, imagePosition);
-            smooth(brushImage, brushSize, 1.0, imagePosition);
+            sculpt(toolType, brushImage, brushSize, brushStrength, slopeValue, imagePosition);
+            smooth(brushImage, brushSize, 1.0, slopeValue, imagePosition);
             break;
     }
 
     _terraBrush->get_terrainZones()->updateHeightmaps();
 }
 
-void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         float newValue = pixelBrushStrength * brushStrength * _sculptingMultiplier;
 
@@ -76,11 +76,11 @@ void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int bru
     }));
 }
 
-void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
+void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
     Color smoothValue = Color(1, 1, 1, 0); // Transparent color
     int numberOfSamples = 0;
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
         smoothValue += currentPixel;
@@ -89,7 +89,7 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
 
     smoothValue = smoothValue / numberOfSamples;
 
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
         Color newValue = Color(
             Math::lerp(currentPixel.r, smoothValue.r, pixelBrushStrength * brushStrength),
@@ -103,8 +103,8 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
     }));
 }
 
-void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) {
-    forEachBrushPixel(brushImage, brushSize, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
+void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         std::vector<float> directions = std::vector<float>();
 
         ImageZoneInfo neighbourImageZoneInfo = getImageZoneInfoForPosition(imageZoneInfo.zoneInfo, -1, 0, true);

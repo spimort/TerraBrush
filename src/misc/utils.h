@@ -21,5 +21,7 @@ class Utils {
         static Color getPixelLinear(Ref<Image> image, float x, float y);
         static float roundToDecimalPlace(float value, int decimalPlace);
         static Ref<Image> getBrushImageForIndex(const int targetIndex);
+        static float degreeAngleToSlopeFactor(const float value);
+        static float slopeFactorToDegreeAngle(const float value);
 };
 #endif

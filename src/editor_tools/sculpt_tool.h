@@ -14,9 +14,9 @@ private:
     int _sculptingMultiplier = 1;
     std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 
-    void sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
-    void flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
-    void smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition);
+    void sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);
+    void flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);
+    void smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);
 
 protected:
     static void _bind_methods();
@@ -30,6 +30,6 @@ public:
     SculptTool();
     ~SculptTool();
 
-    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 imagePosition) override;
+    void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) override;
 };
 #endif
