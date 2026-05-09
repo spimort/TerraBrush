@@ -18,7 +18,7 @@ class Objects : public ObjectsBase {
 
 private:
     Ref<Image> _noiseImageCache = nullptr;
-    CancellationSource _objectsCreationCancellationTokenSource = CancellationSource();
+    Ref<CancellationSource> _objectsCreationCancellationTokenSource = nullptr;
     Ref<Thread> _objectsThread = nullptr;
 
     void updateObjects();

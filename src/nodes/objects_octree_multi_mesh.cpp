@@ -25,7 +25,9 @@ void ObjectsOctreeMultiMesh::_notification(int what) {
     switch (what) {
         case NOTIFICATION_EXIT_TREE: {
             if (_objectsThread.is_valid()) {
-                _cancellationTokenSource.cancel();
+                if (_cancellationTokenSource.is_valid()) {
+                    _cancellationTokenSource->cancel();
+                }
                 _objectsThread->wait_to_finish();
             }
 
@@ -329,11 +331,13 @@ bool ObjectsOctreeMultiMesh::sortLODs(const Ref<ObjectOctreeLODDefinitionResourc
 void ObjectsOctreeMultiMesh::updateMeshes() {
     if (_loadInThread) {
         if (_objectsThread.is_valid()) {
-            _cancellationTokenSource.cancel();
+            if (_cancellationTokenSource.is_valid()) {
+                _cancellationTokenSource->cancel();
+            }
             _objectsThread->wait_to_finish();
         }
 
-        _cancellationTokenSource = CancellationSource();
+        _cancellationTokenSource = memnew(CancellationSource);
 
         _objectsThread.instantiate();
         _objectsThread->start(Callable(this, "updateMeshesAsync"));
@@ -353,9 +357,12 @@ Ref<ObjectOctreeLODDefinitionResource> ObjectsOctreeMultiMesh::getLODDefinitionF
 }
 
 void ObjectsOctreeMultiMesh::updateMeshesAsync() {
-    CancellationToken &cancellationToken = _cancellationTokenSource.token;
+    Ref<CancellationToken> cancellationToken = nullptr;
+    if (!_cancellationTokenSource.is_null()) {
+        cancellationToken = _cancellationTokenSource->getToken();;
+    }
 
-    if (cancellationToken.isCancellationRequested) return;
+    if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
 
     if (_sortedLODDefinitions.size() == 0 || _multiMeshIntances.size() == 0) {
         return;
@@ -376,12 +383,12 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
     std::vector<Ref<RefCounted>> nodes = _octree->getNearby(_lastUpdatedPosition, _maxDistance);
     std::vector<Ref<ObjectsOctreeNodeInfo>> toRemoveNodes = std::vector<Ref<ObjectsOctreeNodeInfo>>();
     for (Ref<ObjectsOctreeNodeInfo> nodeInfo : nodes) {
-        if (cancellationToken.isCancellationRequested) return;
+        if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
 
         float nodeDistance = nodeInfo->get_position().distance_to(_lastUpdatedPosition);
         Ref<ObjectOctreeLODDefinitionResource> lodDefinition = getLODDefinitionForDistance(nodeDistance);
         if (!lodDefinition.is_null()) {
-            if (cancellationToken.isCancellationRequested) return;
+            if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
             int lodDefinitionIndex = _sortedLODDefinitions.find(lodDefinition);
 
             if (nodeInfo->get_hidden()) {
@@ -420,7 +427,7 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             ));
 
             if (lodDefinition->get_addCollision() && (_collisionShapes.has(nodeInfo->get_meshIndex()))) {
-                if (cancellationToken.isCancellationRequested) return;
+                if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
 
                 Dictionary shapeInfo = _collisionShapes[nodeInfo->get_meshIndex()];
 
@@ -446,10 +453,10 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
 
     TypedArray<Ref<ObjectsOctreeNodeInfo>> actualNodesToRemove = TypedArray<Ref<ObjectsOctreeNodeInfo>>();
     for (Ref<ObjectsOctreeNodeInfo> actualNode : _actualNodesWithCollision) {
-        if (cancellationToken.isCancellationRequested) return;
+        if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
 
         if (std::find(nodes.begin(), nodes.end(), actualNode) == nodes.end() || std::find(toRemoveNodes.begin(), toRemoveNodes.end(), actualNode) != toRemoveNodes.end()) {
-            if (cancellationToken.isCancellationRequested) return;
+            if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) return;
 
             actualNode->get_collisionShape()->call_deferred("queue_free");
             actualNode->set_collisionShape(nullptr);
