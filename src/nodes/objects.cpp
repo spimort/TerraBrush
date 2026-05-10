@@ -19,7 +19,9 @@ void Objects::_notification(int what) {
     switch (what) {
         case NOTIFICATION_EXIT_TREE: {
             if (_objectsThread.is_valid()) {
-                _objectsCreationCancellationTokenSource.cancel();
+                if (_objectsCreationCancellationTokenSource.is_valid()) {
+                    _objectsCreationCancellationTokenSource->cancel();
+                }
                 _objectsThread->wait_to_finish();
             }
 
@@ -52,11 +54,13 @@ void Objects::updateObjects() {
 
     if (_loadInThread) {
         if (_objectsThread.is_valid()) {
-            _objectsCreationCancellationTokenSource.cancel();
+            if (_objectsCreationCancellationTokenSource.is_valid()) {
+                _objectsCreationCancellationTokenSource->cancel();
+            }
             _objectsThread->wait_to_finish();
         }
 
-        _objectsCreationCancellationTokenSource = CancellationSource();
+        _objectsCreationCancellationTokenSource = memnew(CancellationSource);
 
         _objectsThread.instantiate();
         _objectsThread->start(Callable(this, "updateObjectsAsync"));
@@ -67,14 +71,17 @@ void Objects::updateObjects() {
 }
 
 void Objects::updateObjectsAsync() {
-    CancellationToken &cancellationToken = _objectsCreationCancellationTokenSource.token;
+    Ref<CancellationToken> cancellationToken = nullptr;
+    if (!_objectsCreationCancellationTokenSource.is_null()) {
+        cancellationToken = _objectsCreationCancellationTokenSource->getToken();
+    }
 
-    if (cancellationToken.isCancellationRequested) {
+    if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) {
         return;
     }
 
     for (int zoneIndex = 0; zoneIndex < _terrainZones->get_zones().size(); zoneIndex++) {
-        if (cancellationToken.isCancellationRequested) {
+        if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) {
             return;
         }
 
@@ -87,7 +94,7 @@ void Objects::updateObjectsAsync() {
             waterImage = zone->get_waterImage();
         }
 
-        if (cancellationToken.isCancellationRequested) {
+        if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) {
             return;
         }
 
@@ -100,12 +107,12 @@ void Objects::updateObjectsAsync() {
         Ref<Image> objectsImage = zone->get_objectsImage()[_objectsIndex];
 
         for (int x = 0; x < objectsImage->get_width(); x++) {
-            if (cancellationToken.isCancellationRequested) {
+            if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) {
                 return;
             }
 
             for (int y = 0; y < objectsImage->get_height(); y++) {
-                if (cancellationToken.isCancellationRequested) {
+                if (!cancellationToken.is_null() && cancellationToken->isCancellationRequested()) {
                     return;
                 }
 

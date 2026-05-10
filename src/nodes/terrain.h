@@ -62,7 +62,7 @@ private:
     TypedArray<Ref<MetaInfoLayerResource>> _metaInfoLayers = TypedArray<Ref<MetaInfoLayerResource>>();
 
     Ref<Thread> _collisionThread = nullptr;
-    CancellationSource _collisionCancellationSource = CancellationSource();
+    Ref<CancellationSource> _collisionCancellationSource = nullptr;
 
     void terrainTextureUpdated();
     void terrainSplatmapsUpdated();

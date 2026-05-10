@@ -54,6 +54,7 @@
 #include "misc/keybind_manager.h"
 #include "misc/dialog_utils.h"
 #include "misc/tool_undo_redo.h"
+#include "misc/thread_utils.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -86,6 +87,8 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(PointOctreeObject);
         GDREGISTER_INTERNAL_CLASS(PointOctreeRay);
         GDREGISTER_INTERNAL_CLASS(ObjectsOctreeNodeInfo);
+        GDREGISTER_INTERNAL_CLASS(CancellationSource);
+        GDREGISTER_INTERNAL_CLASS(CancellationToken);
 
         // Internal nodes
         GDREGISTER_INTERNAL_CLASS(AngleRangeSelector);

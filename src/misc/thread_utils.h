@@ -1,24 +1,41 @@
 #ifndef THREAD_UTILS_H
 #define THREAD_UTILS_H
 
-#include <memory>
+#include <godot_cpp/classes/ref.hpp>
 
-struct CancellationToken {
-    std::shared_ptr<bool> isCancellationRequested = std::make_shared<bool>(false);
+using namespace godot;
+
+class CancellationToken : public RefCounted {
+    GDCLASS(CancellationToken, RefCounted);
+
+private:
+    bool _isCancellationRequested = false;
+
+protected:
+    static void _bind_methods();
+
+public:
+    CancellationToken();
+    ~CancellationToken();
+
+    bool isCancellationRequested() const;
+    void requestCancel();
 };
 
-struct CancellationSource {
-    CancellationToken token = CancellationToken();
+class CancellationSource : public RefCounted {
+    GDCLASS(CancellationSource, RefCounted);
 
-    CancellationSource() {
-        token = CancellationToken();
-    }
-    CancellationSource(CancellationToken &p_token) {
-        token = p_token;
-    }
+private:
+    Ref<CancellationToken> _token = nullptr;
 
-    void cancel() {
-        *token.isCancellationRequested = true;
-    }
+protected:
+    static void _bind_methods();
+
+public:
+    CancellationSource();
+    ~CancellationSource();
+
+    void cancel();
+    Ref<CancellationToken> getToken() const;
 };
 #endif

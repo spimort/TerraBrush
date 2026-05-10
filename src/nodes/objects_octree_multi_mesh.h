@@ -106,7 +106,7 @@ private:
     TypedDictionary<int, Dictionary> _collisionShapes = TypedDictionary<int, Dictionary>(); // Sadly, we gotta use generic Dictonary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, CollisionShapeInfoInfo> _collisionShapes;
     TypedDictionary<int, Array> _multiMeshIntances = TypedDictionary<int, Array>(); // Sadly, we gotta use generic Array/Dictionary here because the way Variant/Godot works. The origianl definition was : private Dictionary<int, MultiMeshInstanceInfo[]> _multiMeshIntances;
     std::unordered_set<Ref<ObjectsOctreeNodeInfo>> _actualNodesWithCollision = std::unordered_set<Ref<ObjectsOctreeNodeInfo>>();
-    CancellationSource _cancellationTokenSource = CancellationSource();
+    Ref<CancellationSource> _cancellationTokenSource = nullptr;
     Ref<Thread> _objectsThread = nullptr;
     bool _initialized = false;
     int64_t _lastId = 0;
