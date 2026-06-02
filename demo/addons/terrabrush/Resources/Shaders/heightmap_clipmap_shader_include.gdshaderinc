@@ -6,18 +6,18 @@ uniform sampler2DArray LockTextures : hint_default_black;
 uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
-uniform sampler2DArray TexturesNearest : source_color, filter_nearest_mipmap;
+// REMOVED duplicate (WebGL2 sampler unit collision fix - issue #304): uniform sampler2DArray Textures : source_color, filter_nearest_mipmap;
 uniform sampler2DArray Splatmaps : repeat_disable;
 uniform int[100] TexturesDetail;
 uniform int NumberOfTextures;
 uniform sampler2DArray Normals : filter_linear_mipmap;
-uniform sampler2DArray NormalsNearest : filter_nearest_mipmap;
+// REMOVED duplicate (WebGL2 sampler unit collision fix - issue #304): uniform sampler2DArray Normals : filter_nearest_mipmap;
 uniform bool HasNormalTextures;
 uniform sampler2DArray RoughnessTextures : filter_linear_mipmap;
-uniform sampler2DArray RoughnessTexturesNearest : filter_nearest_mipmap;
+// REMOVED duplicate (WebGL2 sampler unit collision fix - issue #304): uniform sampler2DArray RoughnessTextures : filter_nearest_mipmap;
 uniform bool HasRoughnessTextures;
 uniform sampler2DArray HeightTextures : filter_linear_mipmap;
-uniform sampler2DArray HeightTexturesNearest : filter_nearest_mipmap;
+// REMOVED duplicate (WebGL2 sampler unit collision fix - issue #304): uniform sampler2DArray HeightTextures : filter_nearest_mipmap;
 uniform bool HasHeightTextures;
 uniform bool UseAntitile = true;
 uniform float BlendFactor;
@@ -225,10 +225,10 @@ int findDominantTextureIndex(vec3 worldVertex) {
             vec4 heightSample = vec4(0.0);
             if (HasHeightTextures) {
                 heightSample = getVec4Texture(textureUV, vec3(0.0), vec3(0.0),
-                                        HeightTextures, HeightTexturesNearest, false);
+                                        HeightTextures, HeightTextures, false);
             } else {
                 vec4 albedoSample = getVec4Texture(textureUV, vec3(0.0), vec3(0.0),
-                                          Textures, TexturesNearest, false);
+                                          Textures, Textures, false);
                 heightSample.r = albedoSample.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT);
             }
 
@@ -272,13 +272,13 @@ void calculateHeightmapFragment(
         vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(dominantTextureIndex));
 
         vec4 dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal,
-                                           Textures, TexturesNearest, false);
+                                           Textures, Textures, false);
 
         albedo = dominantTexture.rgb;
 
         if (HasRoughnessTextures) {
             vec4 roughnessTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal,
-                                              RoughnessTextures, RoughnessTexturesNearest, false);
+                                              RoughnessTextures, RoughnessTextures, false);
             roughness = roughnessTexture.r;
         } else if (AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS) {
             roughness = dominantTexture.a;
@@ -288,7 +288,7 @@ void calculateHeightmapFragment(
 
         if (HasNormalTextures) {
             vec4 normalTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal,
-                                           Normals, NormalsNearest, true);
+                                           Normals, Normals, true);
             normalMap = normalTexture.rgb;
 
             if (NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS &&
@@ -355,19 +355,19 @@ void calculateHeightmapFragment(
 			float currentMetallic = 0.0;
 			float currentSpecular = 0.0;
 
-            currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+            currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, Textures, false);
             currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
             currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
             if (HasNormalTextures) {
-                currentNormal = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Normals, NormalsNearest, true);
+                currentNormal = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Normals, Normals, true);
                 currentRoughness = max(currentRoughness, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_ROUGHNESS && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS)));
                 currentHeight = max(currentHeight, vec4(currentNormal.a * float(AlbedoAlphaChannelUsage != ALPHA_CHANNEL_USAGE_HEIGHT && NormalAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT)));
             }
             if (HasRoughnessTextures) {
-                currentRoughness = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, RoughnessTextures, RoughnessTexturesNearest, false);
+                currentRoughness = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, RoughnessTextures, RoughnessTextures, false);
             }
             if (HasHeightTextures) {
-                currentHeight = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, HeightTextures, HeightTexturesNearest, false);
+                currentHeight = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, HeightTextures, HeightTextures, false);
             }
 
 			currentMetallic = TexturesMetallic[i];
