@@ -16,7 +16,7 @@ class Utils {
         static int getNextIntWithSeed(int seed, int minValue, int maxValue);
         static String pathCombineForwardSlash(String directory, String path);
         static Ref<Texture2DArray> texturesToTextureArray(TypedArray<Ref<Texture2D>> textures);
-        static Ref<ShaderMaterial> createCustomShaderCopy(Ref<ShaderMaterial> customShader);
+        static Ref<ShaderMaterial> createCustomShaderCopy(Ref<ShaderMaterial> customShader, const TypedArray<StringName> transparentSampler2DArrayParams = TypedArray<StringName>());
         static bool isPowerOfTwo(int x);
         static Color getPixelLinear(Ref<Image> image, float x, float y);
         static float roundToDecimalPlace(float value, int decimalPlace);

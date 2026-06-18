@@ -152,7 +152,7 @@ void Snow::updateSnow() {
         shaderMaterial->set_shader(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/Shaders/snow_clipmap_shader.gdshader"));
         _clipmap->set_shader(shaderMaterial);
     } else {
-        _clipmap->set_shader(Utils::createCustomShaderCopy(_snowDefinition->get_customShader()));
+        _clipmap->set_shader(Utils::createCustomShaderCopy(_snowDefinition->get_customShader(), TypedArray<StringName>::make(StringNames::SnowTextures())));
     }
 
     _clipmap->createMesh();
