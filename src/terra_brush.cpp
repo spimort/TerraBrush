@@ -1320,16 +1320,21 @@ Vector3 TerraBrush::getHeightForScreenPosition(Camera3D *camera, Vector2 screenP
     Vector3 direction = camera->project_ray_normal(screenPosition);
 
     Vector3 noZonePosition = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    Vector3 previousPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    float previousHeight = Utils::InfinityValue;
 
     for (int i = 0; i < 20000; i++) {
         Vector3 position = from + (direction * i * 0.1f) - get_global_position();
 
         float zoneHeight = getHeightAtPosition(position.x, position.z, false);
-        if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y && zoneHeight <= position.y + 1.0) {
+        if (zoneHeight != Utils::InfinityValue && zoneHeight >= position.y && (!allowNoZone || (zoneHeight <= position.y + 1.0 || (previousHeight != Utils::InfinityValue && previousHeight < previousPoint.y)))) {
             return Vector3(position.x, zoneHeight, position.z) + get_global_position();
         } else if (allowNoZone && noZonePosition.x == Utils::InfinityValue && position.y <= get_global_position().y) {
             noZonePosition = Vector3(position.x, position.y, position.z);
         }
+
+        previousPoint = position;
+        previousHeight = zoneHeight;
     }
 
     if (allowNoZone) {
