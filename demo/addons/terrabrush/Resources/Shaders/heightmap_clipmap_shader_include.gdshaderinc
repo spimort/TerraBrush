@@ -2,7 +2,9 @@
 
 uniform bool ApplyLockTextures = false;
 uniform sampler2DArray ColorTextures: hint_default_transparent, repeat_disable;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2DArray LockTextures : hint_default_black;
+#endif
 uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
@@ -33,8 +35,10 @@ uniform bool SlopeTexturing = false;
 uniform int SlopeTextureIndex = 1;
 uniform float SlopeTextureThreshold = 0.2;
 uniform bool ApplyMetaInfoTextures = false;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2DArray MetaInfoTextures: filter_nearest;
 uniform vec4[100] MetaInfoColors;
+#endif
 
 const int ALPHA_CHANNEL_USAGE_NONE = 0;
 const int ALPHA_CHANNEL_USAGE_ROUGHNESS = 1;
@@ -416,6 +420,7 @@ void calculateHeightmapFragment(
 	vec4 color = texture(ColorTextures, zoneUV);
 	albedo = mix(albedo, color.rgb, color.a);
 
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
     if (ApplyLockTextures) {
         vec4 lockTexture = texture(LockTextures, zoneUV);
         float lockValue = (1.0 - lockTexture.r);
@@ -428,6 +433,7 @@ void calculateHeightmapFragment(
 			albedo *= MetaInfoColors[int(metaInfoTexture.r)].rgb;
 		}
     }
+#endif
 
     if (zoneUV.z < 0.0) {
         discard;
