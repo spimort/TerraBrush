@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/placeholder_texture2d_array.hpp>
 
 using namespace godot;
 
@@ -99,13 +100,25 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
     return textureArray;
 }
 
-Ref<ShaderMaterial> Utils::createCustomShaderCopy(Ref<ShaderMaterial> customShader) {
+Ref<ShaderMaterial> Utils::createCustomShaderCopy(Ref<ShaderMaterial> customShader, const TypedArray<StringName> transparentSampler2DArrayParams) {
     Ref<ShaderMaterial> newShader = memnew(ShaderMaterial);
     newShader->set_shader(customShader->get_shader());
 
     for (Dictionary uniform : customShader->get_shader()->get_shader_uniform_list()) {
         String uniformName = uniform["name"];
         newShader->set_shader_parameter((StringName)uniformName, customShader->get_shader_parameter((StringName)uniformName));
+    }
+
+    // TODO : Remove that when Godot issue is fixed : https://github.com/godotengine/godot/issues/120417
+    // There is an issue with the Shaders in Godot, when having both sampler2DArray and hint_default_transparent (does not seem to happen with default black)
+    // Godot produces that error : Uniforms were never supplied for set (3) at the time of drawing, which are required by the pipeline.
+    if (transparentSampler2DArrayParams.size() > 0) {
+        Ref<PlaceholderTexture2DArray> placeHolderTexture = memnew(PlaceholderTexture2DArray);
+        for (StringName transparentSampler2DArrayParam : transparentSampler2DArrayParams) {
+            // We need to set it to both shader so godot does not complain about the existing shader
+            customShader->set_shader_parameter(transparentSampler2DArrayParam, placeHolderTexture);
+            newShader->set_shader_parameter(transparentSampler2DArrayParam, placeHolderTexture);
+        }
     }
 
     return newShader;

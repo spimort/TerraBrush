@@ -510,7 +510,7 @@ void Terrain::buildTerrain() {
 
         _clipmap->set_shader(shaderMaterial);
     } else {
-        _clipmap->set_shader(Utils::createCustomShaderCopy(_customShader));
+        _clipmap->set_shader(Utils::createCustomShaderCopy(_customShader, TypedArray<StringName>::make(StringNames::ColorTextures(), StringNames::WaterTextures())));
     }
 
     _clipmap->get_clipmapMesh()->set_layer_mask(_visualInstanceLayers);

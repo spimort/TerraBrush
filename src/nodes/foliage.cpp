@@ -51,7 +51,7 @@ void Foliage::_ready() {
             shaderMaterial = Ref<ShaderMaterial>(memnew(ShaderMaterial));
             shaderMaterial->set_shader(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Resources/Shaders/foliage_multimesh_shader.gdshader"));
         } else {
-            shaderMaterial = Utils::createCustomShaderCopy(_definition->get_customShader());
+            shaderMaterial = Utils::createCustomShaderCopy(_definition->get_customShader(), TypedArray<StringName>::make(StringNames::ColorTextures(), StringNames::WaterTextures()));
         }
 
         _multiMeshInstance3D->set_material_override(shaderMaterial);

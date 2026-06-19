@@ -216,7 +216,7 @@ void Water::updateWater() {
         shaderMaterial->set_render_priority(-1);
         _clipmap->set_shader(shaderMaterial);
     } else {
-        Ref<ShaderMaterial> shaderMaterial = Utils::createCustomShaderCopy(_customShader);
+        Ref<ShaderMaterial> shaderMaterial = Utils::createCustomShaderCopy(_customShader, TypedArray<StringName>::make(StringNames::WaterTextures()));
         shaderMaterial->set_render_priority(-1);
         _clipmap->set_shader(shaderMaterial);
     }
