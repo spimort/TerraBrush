@@ -88,7 +88,7 @@ It runs in the browser, hosted on itch.io :
     - B - Show the PieMenu for the current brush
     - N - Show the options for the current tool (ex. While painting the textures, the PieMenu will show textures)
     - G - Show a quick select for the brush size
-    - H - Show a quick select for the brush strength
+    - J - Show a quick select for the brush strength
     - K - Toggle "Auto add zones"
     - X - Lock on X axis
     - Z - Lock on Z axis

@@ -53,7 +53,7 @@ KeybindManager::KeybindManager() {
     _brushSizeKey->set_physical_keycode(Key::KEY_G);
 
     _brushStrengthKey = Ref<InputEventKey>(memnew(InputEventKey));
-    _brushStrengthKey->set_physical_keycode(Key::KEY_H);
+    _brushStrengthKey->set_physical_keycode(Key::KEY_J);
 
     _escapeKey = Ref<InputEventKey>(memnew(InputEventKey));
     _escapeKey->set_physical_keycode(Key::KEY_ESCAPE);
