@@ -53,7 +53,6 @@ private:
 
     LockedAxis _lockedAxis = LockedAxis::LOCKEDAXIS_NONE;
     Vector2 _lockedAxisValue = Vector2();
-    std::unordered_map<int, Ref<ZoneResource>> _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
     std::unordered_map<uint64_t, float> _heightsCache = std::unordered_map<uint64_t, float>();
     std::unordered_set<Ref<Image>> _modifiedUndoImages = std::unordered_set<Ref<Image>>();
     bool _autoAddZones = false;
