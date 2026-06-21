@@ -11,6 +11,7 @@
 #include <godot_cpp/templates/hash_set.hpp>
 
 #include <unordered_set>
+#include <map>
 
 using namespace godot;
 
@@ -32,8 +33,10 @@ private:
     Ref<ImageTexture> _zonesMap = nullptr;
 
     TypedArray<Ref<ZoneResource>> _zones = TypedArray<Ref<ZoneResource>>();
+    std::unordered_map<int, Ref<ZoneResource>> _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
 
     void saveImageResource(Ref<Image> image);
+    void updateZonesPositionCache();
 
 protected:
     static void _bind_methods();
@@ -74,6 +77,6 @@ public:
     void updateZonesMap();
     void addDirtyImage(Ref<Image> imageTexture);
     void updateImageImages(int zoneSize);
-    Ref<ZoneResource> getZoneForZoneInfo(ZoneInfo zoneInfo);
+    Ref<ZoneResource> getZoneForZoneInfo(const ZoneInfo &zoneInfo);
 };
 #endif

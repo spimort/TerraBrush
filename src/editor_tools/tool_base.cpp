@@ -139,25 +139,13 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 s
 
 ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {
     ZoneInfo zoneInfo = ZoneUtils::getZoneInfoFromZoneOffset(startingZoneInfo, Vector2i(offsetX, offsetY), _terraBrush->get_zonesSize(), getResolution());
-    Ref<ZoneResource> zone = nullptr;
-    if (_zonesPositionCache.count(zoneInfo.zoneKey) > 0) {
-        zone = _zonesPositionCache[zoneInfo.zoneKey];
-    }
-
-    if (zone.is_null()) {
-        zone = _terraBrush->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
-
-        if (!zone.is_null()) {
-            _zonesPositionCache[zoneInfo.zoneKey] = zone;
-        }
-    }
+    Ref<ZoneResource> zone = _terraBrush->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
 
     if (zone.is_null() && _autoAddZones) {
         zone = _terraBrush->addNewZone(zoneInfo.zonePosition);
 
         if (!zone.is_null()) {
             _terraBrush->get_terrain()->addZoneCollision(zone);
-            _zonesPositionCache[zoneInfo.zoneKey] = zone;
         }
     }
 
@@ -234,7 +222,6 @@ bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
 }
 
 void ToolBase::beginPaint() {
-    _zonesPositionCache = std::unordered_map<int, Ref<ZoneResource>>();
     _modifiedUndoImages = std::unordered_set<Ref<Image>>();
     _heightsCache = std::unordered_map<uint64_t, float>();
 }
@@ -244,8 +231,6 @@ void ToolBase::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushS
 }
 
 void ToolBase::endPaint() {
-    _zonesPositionCache.clear();
-
     addImagesToRedo();
     _modifiedUndoImages.clear();
 

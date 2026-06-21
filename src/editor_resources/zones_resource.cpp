@@ -70,6 +70,7 @@ TypedArray<Ref<ZoneResource>> ZonesResource::get_zones() const {
 }
 void ZonesResource::set_zones(const TypedArray<Ref<ZoneResource>> value) {
     _zones = value;
+    updateZonesPositionCache();
 }
 
 void ZonesResource::updateLockTexture(int zoneSize) {
@@ -242,6 +243,17 @@ void ZonesResource::saveImageResource(Ref<Image> image) {
     }
 }
 
+void ZonesResource::updateZonesPositionCache() {
+    _zonesPositionCache.clear();
+
+    for (Ref<ZoneResource> zone : _zones) {
+        if (!zone.is_null()) {
+            int zoneKey = (zone->get_zonePosition().x << 8) + zone->get_zonePosition().y;
+            _zonesPositionCache[zoneKey] = zone;
+        }
+    }
+}
+
 void ZonesResource::updateZonesMap() {
     TypedArray<Vector2> zonePositions = TypedArray<Vector2>();
     int maxX = 0;
@@ -283,20 +295,10 @@ void ZonesResource::updateImageImages(int zoneSize) {
     updateZonesMap();
 }
 
-Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(ZoneInfo zoneInfo) {
-    if (_zones.size() == 0) {
-        return nullptr;
+Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(const ZoneInfo &zoneInfo) {
+    auto iter = _zonesPositionCache.find(zoneInfo.zoneKey);
+    if (iter != _zonesPositionCache.end()) {
+        return iter->second;
     }
-
-    for (Ref<ZoneResource> zone : _zones) {
-        if (zone.is_null()) {
-            return nullptr;
-        }
-
-        if (zone->get_zonePosition().x == zoneInfo.zonePosition.x && zone->get_zonePosition().y == zoneInfo.zonePosition.y) {
-            return zone;
-        }
-    }
-
     return nullptr;
 }
