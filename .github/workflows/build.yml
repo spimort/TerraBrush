@@ -144,6 +144,7 @@ jobs:
           mkdir demo/addons-release
           mkdir demo/addons-release/terrabrush
           mv demo/addons demo/addons-release/terrabrush
+          cp LICENSE demo/addons-release/terrabrush/addons/terrabrush/
 
       - name: Upload addon folder
         uses: actions/upload-artifact@v7
