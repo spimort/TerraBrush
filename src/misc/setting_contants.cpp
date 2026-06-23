@@ -6,6 +6,7 @@ const StringName SettingContants::ShowDecalBubble() { return "terraBrush/brushes
 const StringName SettingContants::DecalColor() { return "terraBrush/brushes/decal_color"; }
 const StringName SettingContants::CustomBrushesFolder() { return "terraBrush/brushes/custom_brushes_folder"; }
 const StringName SettingContants::SculptingMultiplier() { return "terraBrush/brushes/sculpting_multiplier"; }
+const StringName SettingContants::SmoothingMultiplier() { return "terraBrush/brushes/smoothing_multiplier"; }
 const StringName SettingContants::IconsColor() { return "terraBrush/interface/icons_color"; }
 const StringName SettingContants::AutoDetectTextures() { return "terraBrush/interface/auto_detect_textures"; }
 
@@ -13,5 +14,6 @@ const bool SettingContants::ShowDecalBubbleDefaultValue() { return true; }
 const Color SettingContants::DecalColorDefaultValue() { return Color::html("#244ab580"); }
 const StringName SettingContants::CustomBrushesFolderDefaultValue() { return "res://TerraBrush_CustomBrushes"; }
 const int SettingContants::SculptingMultiplierDefaultValue() { return 10; }
+const int SettingContants::SmoothingMultiplierDefaultValue() { return 2; }
 const Color SettingContants::IconsColorDefaultValue() { return Color::html("#00151F"); }
 const bool SettingContants::AutoDetectTexturesDefaultValue() { return true; }

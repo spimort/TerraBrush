@@ -95,6 +95,7 @@ void TerraBrushPlugin::_enter_tree() {
     createCustomSetting(SettingContants::DecalColor(), SettingContants::DecalColorDefaultValue(), Variant::Type::COLOR);
     createCustomSetting(SettingContants::CustomBrushesFolder(), SettingContants::CustomBrushesFolderDefaultValue(), Variant::Type::STRING);
     createCustomSetting(SettingContants::SculptingMultiplier(), SettingContants::SculptingMultiplierDefaultValue(), Variant::Type::INT);
+    createCustomSetting(SettingContants::SmoothingMultiplier(), SettingContants::SmoothingMultiplierDefaultValue(), Variant::Type::INT);
     createCustomSetting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue(), Variant::Type::COLOR);
     createCustomSetting(SettingContants::AutoDetectTextures(), SettingContants::AutoDetectTexturesDefaultValue(), Variant::Type::BOOL);
 

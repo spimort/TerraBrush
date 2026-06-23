@@ -11,6 +11,7 @@ class SettingContants {
         const static StringName DecalColor();
         const static StringName CustomBrushesFolder();
         const static StringName SculptingMultiplier();
+        const static StringName SmoothingMultiplier();
         const static StringName IconsColor();
         const static StringName AutoDetectTextures();
 
@@ -18,6 +19,7 @@ class SettingContants {
         const static Color DecalColorDefaultValue();
         const static StringName CustomBrushesFolderDefaultValue();
         const static int SculptingMultiplierDefaultValue();
+        const static int SmoothingMultiplierDefaultValue();
         const static Color IconsColorDefaultValue();
         const static bool AutoDetectTexturesDefaultValue();
 };

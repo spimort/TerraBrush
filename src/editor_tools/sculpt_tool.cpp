@@ -20,6 +20,7 @@ void SculptTool::beginPaint() {
     ToolBase::beginPaint();
 
     _sculptingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SculptingMultiplier(), SettingContants::SculptingMultiplierDefaultValue());
+    _smoothingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SmoothingMultiplier(), SettingContants::SmoothingMultiplierDefaultValue());
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
@@ -52,7 +53,7 @@ void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
             break;
         default:
             sculpt(toolType, brushImage, brushSize, brushStrength, slopeValue, imagePosition);
-            smooth(brushImage, brushSize, 1.0, slopeValue, imagePosition);
+            smooth(brushImage, brushSize, 1.0, slopeValue, imagePosition, false);
             break;
     }
 
@@ -103,7 +104,7 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
     }));
 }
 
-void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition, bool applyMultiplier) {
     forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         std::vector<float> directions = std::vector<float>();
 
@@ -136,7 +137,12 @@ void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrengt
         }
         average /= directions.size();
 
-        float resultValue = Math::lerp(currentPixel.r, average, pixelBrushStrength * brushStrength);
+        float multiplier = 1.0;
+        if (applyMultiplier) {
+            multiplier = _smoothingMultiplier;
+        }
+
+        float resultValue = Math::lerp(currentPixel.r, average, pixelBrushStrength * brushStrength * multiplier);
 
         Color newPixel = Color(resultValue, currentPixel.g, currentPixel.b, currentPixel.a);
         imageZoneInfo.image->set_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y, newPixel);
