@@ -317,6 +317,10 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
             return true;
         }
 
+        if (_terraBrushNode->get_terrainZones().is_null()) {
+            return false;
+        }
+
         if (inputButton->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT) {
             if (inputButton->is_pressed()) {
                 if (_mouseHitPosition != Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
