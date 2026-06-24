@@ -145,7 +145,7 @@ void CustomContentLoader::addObjectsPreviewToParent(TerraBrush *terraBrush, Node
                 break;
             }
 
-            if (objectItem->get_definition()->get_objectScenes().size() > 0 || objectItem->get_definition()->get_lodMeshes().size() > 0) {
+            if (objectItem->get_definition()->get_objectScenes().size() > 0 || (objectItem->get_definition()->get_lodMeshes().size() > 0 && (Ref<ObjectOctreeLODMeshesDefinitionResource>(objectItem->get_definition()->get_lodMeshes()[0]))->get_meshes().size() > 0)) {
                 DockPreviewButton *dockPreviewButton = memnew(DockPreviewButton);
 
                 dockPreviewButton->set_iconType(useCircleIcon ? DockPreviewButton::IconType::Circle : DockPreviewButton::IconType::Square);
