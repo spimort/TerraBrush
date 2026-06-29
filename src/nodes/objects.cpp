@@ -1,6 +1,7 @@
 #include "objects.h"
 #include "../misc/zone_utils.h"
 #include "../misc/utils.h"
+#include "../misc/string_names.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -128,6 +129,8 @@ void Objects::updateObjectsAsync() {
             }
         }
     }
+
+    call_deferred("emit_signal", StringNames::ObjectUpdated(), _objectsIndex);
 }
 
 void Objects::addObjectNode(const Node3D *parentNode, const String nodeName, const Vector3 nodePosition, const Vector3 nodeRotation, const float nodeSizeFactor, const int packedSceneIndex) {

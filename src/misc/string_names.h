@@ -96,5 +96,6 @@ class StringNames {
         const static StringName SlopeTexturing();
         const static StringName SlopeTextureIndex();
         const static StringName SlopeTextureThreshold();
+        const static StringName ObjectUpdated();
 };
 #endif

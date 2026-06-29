@@ -1,8 +1,11 @@
 #include "objects_base.h"
+#include "../misc/string_names.h"
 
 using namespace godot;
 
-void ObjectsBase::_bind_methods() {}
+void ObjectsBase::_bind_methods() {
+    ADD_SIGNAL(MethodInfo(StringNames::ObjectUpdated(), PropertyInfo(Variant::INT, "index")));
+}
 
 ObjectsBase::ObjectsBase() {}
 

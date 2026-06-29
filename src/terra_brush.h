@@ -17,6 +17,8 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
 
+#include <map>
+
 using namespace godot;
 
 class TerraBrush : public Node3D {
@@ -28,6 +30,7 @@ private:
     String _version = "0.14.8-alpha";
 
     bool _initialized = false;
+    std::unordered_map<int, bool> _objectsInitialized = std::unordered_map<int, bool>();
 
     Terrain *_terrain = nullptr;
     Node3D *_foliagesNode = nullptr;
@@ -97,6 +100,7 @@ private:
     void createSnow();
     void createMetaInfo();
     void initializeImagesForTerrain(Ref<ZoneResource> zone);
+    void raiseInitializedEvent();
 
 protected:
     static void _bind_methods();
@@ -235,5 +239,6 @@ public:
     Vector3 getHeightForScreenPosition(Camera3D *camera, Vector2 screenPosition, bool allowNoZone = false) const;
     void hideObject(int objectLayerIndex, int64_t objectId) const;
     void showObject(int objectLayerIndex, int64_t objectId) const;
+    void onObjectUpdated(const int objectIndex);
 };
 #endif

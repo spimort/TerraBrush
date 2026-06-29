@@ -32,6 +32,7 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("getHeightForScreenPosition", "camera", "screenPosition"), &TerraBrush::getHeightForScreenPosition);
     ClassDB::bind_method(D_METHOD("hideObject", "objectLayerIndex", "objectId"), &TerraBrush::hideObject);
     ClassDB::bind_method(D_METHOD("showObject", "objectLayerIndex", "objectId"), &TerraBrush::showObject);
+    ClassDB::bind_method(D_METHOD("onObjectUpdated", "objectIndex"), &TerraBrush::onObjectUpdated);
 
     ADD_SIGNAL(MethodInfo(StringNames::TerrainLoaded()));
 
@@ -823,7 +824,7 @@ Ref<Texture2D> TerraBrush::get_defaultNoise() {
 void TerraBrush::onTerrainCollisionUpdated() {
     if (!_initialized) {
         _initialized = true;
-        emit_signal(StringNames::TerrainLoaded());
+        raiseInitializedEvent();
     }
 }
 
@@ -965,6 +966,7 @@ void TerraBrush::createObjects() {
     }
 
     bool loadInThread = _objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADED || (_objectLoadingStrategy == ObjectLoadingStrategy::OBJECTLOADINGSTRATEGY_THREADEDINEDITORONLY && Engine::get_singleton()->is_editor_hint());
+    _objectsInitialized = std::unordered_map<int, bool>();
     for (int objectIndex = 0; objectIndex < _objects.size(); objectIndex++) {
         Ref<ObjectResource> objectItem = _objects[objectIndex];
         if (objectItem.is_null() || objectItem->get_definition().is_null()) {
@@ -992,7 +994,9 @@ void TerraBrush::createObjects() {
         objectNode->set_waterFactor(_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor());
         objectNode->set_loadInThread(loadInThread);
         objectNode->set_defaultObjectFrequency(_defaultObjectFrequency);
+        objectNode->connect(StringNames::ObjectUpdated(), Callable(this, "onObjectUpdated"));
 
+        _objectsInitialized[objectIndex] = false;
         _objectsContainerNode->add_child(objectNode);
     }
 
@@ -1256,6 +1260,25 @@ void TerraBrush::initializeImagesForTerrain(Ref<ZoneResource> zone) {
     }
 }
 
+void TerraBrush::raiseInitializedEvent() {
+    bool allObjectsInitialized = true;
+    if (_objects.size() != 0) {
+        for (int i = 0; i < _objects.size(); i++) {
+            if (!allObjectsInitialized) {
+                continue;
+            }
+
+            if (!_objectsInitialized[i]) {
+                allObjectsInitialized = false;
+            }
+        }
+    }
+
+    if (_initialized && allObjectsInitialized) {
+        emit_signal(StringNames::TerrainLoaded());
+    }
+}
+
 StaticBody3D *TerraBrush::getTerrainCollider() const {
     return _terrain->get_terrainCollider();
 }
@@ -1365,5 +1388,12 @@ void TerraBrush::showObject(int objectLayerIndex, int64_t objectId) const {
         } else {
             ERR_FAIL_MSG("Only the octree objects can use the removeObject function. For the PackedScene objects, you can add them using add_child()");
         }
+    }
+}
+
+void TerraBrush::onObjectUpdated(const int objectIndex) {
+    if (!_objectsInitialized[objectIndex]) {
+        _objectsInitialized[objectIndex] = true;
+        raiseInitializedEvent();
     }
 }
