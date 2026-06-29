@@ -1,6 +1,7 @@
 #include "objects_octree_multi_mesh.h"
 #include "../misc/zone_utils.h"
 #include "../misc/utils.h"
+#include "../misc/string_names.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -487,6 +488,8 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
             }
         }
     }
+
+    call_deferred("emit_signal", StringNames::ObjectUpdated(), _objectsIndex);
 }
 
 void ObjectsOctreeMultiMesh::assignMultiMesheInstances(const Ref<MultiMesh> &multiMesh, const PackedFloat32Array instances) {
