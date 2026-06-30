@@ -31,6 +31,8 @@ private:
     float _updateDistanceThreshold = 0;
     float _updateTimeFrequency = 0;
     int _visualInstanceLayers = 0;
+    int _collisionLayers = 1;
+    int _collisionMask = 1;
 
 protected:
     static void _bind_methods();
@@ -87,5 +89,11 @@ public:
 
     int get_visualInstanceLayers() const;
     void set_visualInstanceLayers(const int value);
+
+    int get_collisionLayers() const;
+    void set_collisionLayers(const int value);
+
+    int get_collisionMask() const;
+    void set_collisionMask(const int value);
 };
 #endif

@@ -66,6 +66,14 @@ void ObjectDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_visualInstanceLayers"), &ObjectDefinitionResource::get_visualInstanceLayers);
     ClassDB::bind_method(D_METHOD("set_visualInstanceLayers", "value"), &ObjectDefinitionResource::set_visualInstanceLayers);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "visualInstanceLayers", PROPERTY_HINT_LAYERS_3D_RENDER), "set_visualInstanceLayers", "get_visualInstanceLayers");
+
+    ClassDB::bind_method(D_METHOD("get_collisionLayers"), &ObjectDefinitionResource::get_collisionLayers);
+    ClassDB::bind_method(D_METHOD("set_collisionLayers", "value"), &ObjectDefinitionResource::set_collisionLayers);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "collisionLayers", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collisionLayers", "get_collisionLayers");
+
+    ClassDB::bind_method(D_METHOD("get_collisionMask"), &ObjectDefinitionResource::get_collisionMask);
+    ClassDB::bind_method(D_METHOD("set_collisionMask", "value"), &ObjectDefinitionResource::set_collisionMask);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "collisionMask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collisionMask", "get_collisionMask");
 }
 
 ObjectDefinitionResource::ObjectDefinitionResource() {
@@ -99,6 +107,8 @@ void ObjectDefinitionResource::_validate_property(PropertyInfo &property) const 
         "updateDistanceThreshold",
         "updateTimeFrequency",
         "visualInstanceLayers",
+        "collisionLayers",
+        "collisionMask"
     };
 
     if (_strategy == ObjectStrategy::OBJECTSTRATEGY_PACKEDSCENES) {
@@ -237,4 +247,18 @@ int ObjectDefinitionResource::get_visualInstanceLayers() const {
 }
 void ObjectDefinitionResource::set_visualInstanceLayers(const int value) {
     _visualInstanceLayers = value;
+}
+
+int ObjectDefinitionResource::get_collisionLayers() const {
+    return _collisionLayers;
+}
+void ObjectDefinitionResource::set_collisionLayers(const int value) {
+    _collisionLayers = value;
+}
+
+int ObjectDefinitionResource::get_collisionMask() const {
+    return _collisionMask;
+}
+void ObjectDefinitionResource::set_collisionMask(const int value) {
+    _collisionMask = value;
 }

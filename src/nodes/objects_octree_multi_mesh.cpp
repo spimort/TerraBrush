@@ -123,6 +123,8 @@ void ObjectsOctreeMultiMesh::initialize() {
 
     _staticBodyContainer = memnew(StaticBody3D);
     _staticBodyContainer->set_name("StaticBody");
+    _staticBodyContainer->set_collision_layer(_definition->get_collisionLayers());
+    _staticBodyContainer->set_collision_mask(_definition->get_collisionMask());
     add_child(_staticBodyContainer);
 
     updateMeshes();

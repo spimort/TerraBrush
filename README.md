@@ -261,6 +261,8 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |ObjectResource[x].Definition.UpdateDistanceThreshold|**(MultiMeshes only)** This sets the movement threshold before we need to check if the objects are changing LOD.|
 |ObjectResource[x].Definition.UpdateTimeFrequency|**(MultiMeshes only)** This sets how often we check if the movement threshold has been reached.|
 |ObjectResource[x].Definition.VisualInstanceLayers|**(MultiMeshes only)** The visual layers used with the MultiMeshes.|
+|ObjectResource[x].Definition.CollisionLayers|**(MultiMeshes only)** The collision layer used for the static body of the collisions.|
+|ObjectResource[x].Definition.CollisionMask|**(MultiMeshes only)** The collision mask used for the static body of the collisions.|
 |ObjectResource[x].Hide|Hide the whole layer of objects. This is useful when you want to see something on the terrain and the objects block the view.|
 |**Water**||
 |Water Definition|The definition of water. Create a **WaterResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
