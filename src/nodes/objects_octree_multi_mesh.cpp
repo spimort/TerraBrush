@@ -76,9 +76,9 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
 
         Vector3 currentPosition = to_local(camera->get_global_position());
         if (currentPosition.distance_to(_lastUpdatedPosition) > _definition->get_updateDistanceThreshold()) {
-            updateMeshes();
-
             _lastUpdatedPosition = currentPosition;
+
+            updateMeshes();
         }
 
         _updateTime = 0;

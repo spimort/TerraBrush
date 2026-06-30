@@ -27,7 +27,7 @@ class ObjectsOctreeNodeInfo : public RefCounted {
     GDCLASS(ObjectsOctreeNodeInfo, RefCounted);
 
 private:
-    int64_t _id;
+    int64_t _id = 0;
     Vector2i _imagePosition = Vector2i();
     Vector3 _position = Vector3();
     int _meshIndex = 0;
