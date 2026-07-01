@@ -150,6 +150,24 @@ public partial class ObjectDefinitionResource : Resource {
         }
     }
 
+    public int CollisionLayers {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_collisionLayers").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_collisionLayers", value);
+        }
+    }
+
+    public int CollisionMask {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_collisionMask").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_collisionMask", value);
+        }
+    }
+
     public static implicit operator ObjectDefinitionResource(Variant handle) => new(handle);
 
     public ObjectDefinitionResource(Variant handle) {

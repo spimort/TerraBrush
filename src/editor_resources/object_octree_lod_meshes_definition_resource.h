@@ -5,6 +5,7 @@
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/shape3d.hpp>
+#include <godot_cpp/variant/typed_dictionary.hpp>
 
 using namespace godot;
 
@@ -15,6 +16,7 @@ private:
     TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>> _meshes = TypedArray<Ref<ObjectOctreeLODMeshDefinitionResource>>();
     Ref<Shape3D> _collisionShape = nullptr;
     Vector3 _collisionOffset = Vector3(0, 0, 0);
+    TypedDictionary<String, Variant> _collisionTags = TypedDictionary<String, Variant>();
 
 protected:
     static void _bind_methods();
@@ -30,6 +32,9 @@ public:
     void set_collisionShape(const Ref<Shape3D> &value);
 
     Vector3 get_collisionOffset() const;
-    void set_collisionOffset(const Vector3 &value);
+    void set_collisionOffset(const Vector3 value);
+
+    TypedDictionary<String, Variant> get_collisionTags() const;
+    void set_collisionTags(const TypedDictionary<String, Variant> value);
 };
 #endif

@@ -181,8 +181,9 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
                 }
 
                 Dictionary collisionShapeInfoInfo = Dictionary();
-                collisionShapeInfoInfo[CollisionShapeInfoInfo_ShapeKey] = lodMeshDefinition->get_collisionShape();
-                collisionShapeInfoInfo[CollisionShapeInfoInfo_OffsetKey] = lodMeshDefinition->get_collisionOffset();
+                collisionShapeInfoInfo[CollisionShapeInfo_ShapeKey] = lodMeshDefinition->get_collisionShape();
+                collisionShapeInfoInfo[CollisionShapeInfo_OffsetKey] = lodMeshDefinition->get_collisionOffset();
+                collisionShapeInfoInfo[CollisionShapeInfo_TagsKey] = lodMeshDefinition->get_collisionTags();
 
                 _collisionShapes[i] = collisionShapeInfoInfo;
             }
@@ -199,8 +200,8 @@ void ObjectsOctreeMultiMesh::initializeMeshesAndCollision() {
                 }
 
                 Dictionary collisionShapeInfoInfo = Dictionary();
-                collisionShapeInfoInfo[CollisionShapeInfoInfo_ShapeKey] = collisionShape->get_shape();
-                collisionShapeInfoInfo[CollisionShapeInfoInfo_OffsetKey] = collisionShape->get_position();
+                collisionShapeInfoInfo[CollisionShapeInfo_ShapeKey] = collisionShape->get_shape();
+                collisionShapeInfoInfo[CollisionShapeInfo_OffsetKey] = collisionShape->get_position();
 
                 _collisionShapes[i] = collisionShapeInfoInfo;
             }
@@ -436,12 +437,20 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
 
                 if (nodeInfo->get_collisionShape() == nullptr) {
                     CollisionShape3D *collisionShape = memnew(CollisionShape3D);
-                    collisionShape->set_shape(shapeInfo[CollisionShapeInfoInfo_ShapeKey]);
-                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfoInfo_OffsetKey]);
+                    collisionShape->set_shape(shapeInfo[CollisionShapeInfo_ShapeKey]);
+                    collisionShape->set_position(nodeInfo->get_position() + shapeInfo[CollisionShapeInfo_OffsetKey]);
                     collisionShape->set_rotation(nodeInfo->get_meshRotation());
                     collisionShape->set_scale(lodMeshDefinition->get_scale() * nodeInfo->get_meshSizeFactor());
                     nodeInfo->set_collisionShape(collisionShape);
                     collisionShape->set_meta("TerraBrush_OctreeNodeInfo_Id", nodeInfo->get_id());
+
+                    if (shapeInfo.has(CollisionShapeInfo_TagsKey)) {
+                        TypedDictionary<String, Variant> tags = shapeInfo[CollisionShapeInfo_TagsKey];
+                        for (String key : tags.keys()) {
+                            collisionShape->set_meta(key, tags[key]);
+                        }
+                    }
+
                     _staticBodyContainer->call_deferred("add_child", collisionShape);
                 }
 

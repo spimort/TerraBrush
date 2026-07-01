@@ -103,7 +103,7 @@ public:
     void set_randomPlacementRange(const float value);
 
     TypedArray<int> get_applyOnTextureIndexes() const;
-    void set_applyOnTextureIndexes(const TypedArray<int>);
+    void set_applyOnTextureIndexes(const TypedArray<int> value);
 
     Ref<ShaderMaterial> get_customShader() const;
     void set_customShader(const Ref<ShaderMaterial> &value);

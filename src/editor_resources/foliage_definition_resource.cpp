@@ -76,7 +76,7 @@ void FoliageDefinitionResource::_bind_methods() {
 
     ClassDB::bind_method(D_METHOD("get_applyOnTextureIndexes"), &FoliageDefinitionResource::get_applyOnTextureIndexes);
     ClassDB::bind_method(D_METHOD("set_applyOnTextureIndexes", "value"), &FoliageDefinitionResource::set_applyOnTextureIndexes);
-    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "applyOnTextureIndexes", PROPERTY_HINT_TYPE_STRING, "2/0:"), "set_applyOnTextureIndexes", "get_applyOnTextureIndexes");
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "applyOnTextureIndexes", PROPERTY_HINT_TYPE_STRING, String::num_int64(GDEXTENSION_VARIANT_TYPE_INT) + "/0:"), "set_applyOnTextureIndexes", "get_applyOnTextureIndexes");
 
     ClassDB::bind_method(D_METHOD("get_customShader"), &FoliageDefinitionResource::get_customShader);
     ClassDB::bind_method(D_METHOD("set_customShader", "value"), &FoliageDefinitionResource::set_customShader);

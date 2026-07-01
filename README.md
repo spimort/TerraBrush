@@ -441,6 +441,24 @@ if collider != null:
     $TerraBrush.hideObject(0, objectId)
 ```
 
+
+#### Custom tags on octree collisions
+
+When using collision shape with Octree objects, you can populate the dictionary called `CollisonTags`.
+This will populate the meta on the collision shape itself (similar to `TerraBrush_OctreeNodeInfo_Id`).
+You will then be able to query that information (ex. to know what kind of tree you are cutting) from the collsion shape :
+
+```gdscript
+var collider: StaticBody3D = $RayCast3D.get_collider()
+if collider != null:
+  var colliderShapeId: int = $RayCast3D.get_collider_shape()
+  var colliderShapeOwner = collider.shape_find_owner(colliderShapeId)
+  var shape = collider.shape_owner_get_owner(colliderShapeOwner)
+  if shape != null && shape.has_meta("MyCustomTag"):
+    var tag = shape.get_meta("MyCustomTag")
+    print("Custom tag : ", tag)
+```
+
 #### Generate a heightmap with code
 
 You can easily create a heightmap with code with TerraBrush (even at runtime).

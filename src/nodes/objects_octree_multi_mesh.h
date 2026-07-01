@@ -93,8 +93,9 @@ private:
     //     public Vector3 Offset { get;set; } = Vector3.Zero;
     //     public Shape3D Shape { get;set; }
     // }
-    static constexpr const char* CollisionShapeInfoInfo_OffsetKey = "Offset";
-    static constexpr const char* CollisionShapeInfoInfo_ShapeKey = "Shape";
+    static constexpr const char* CollisionShapeInfo_OffsetKey = "Offset";
+    static constexpr const char* CollisionShapeInfo_ShapeKey = "Shape";
+    static constexpr const char* CollisionShapeInfo_TagsKey = "Tags";
 
     StaticBody3D *_staticBodyContainer = nullptr;
     Ref<Image> _noiseImageCache = nullptr;

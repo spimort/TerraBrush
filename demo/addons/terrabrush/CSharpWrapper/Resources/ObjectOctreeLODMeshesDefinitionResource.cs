@@ -33,6 +33,15 @@ public partial class ObjectOctreeLODMeshesDefinitionResource : Resource {
         }
     }
 
+    public Godot.Collections.Dictionary<string, Variant> CollisionTags {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_collisionTags").AsGodotDictionary<string, Variant>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_collisionTags", value);
+        }
+    }
+
     public static implicit operator ObjectOctreeLODMeshesDefinitionResource(Variant handle) => new(handle);
 
     public ObjectOctreeLODMeshesDefinitionResource(Variant handle) {
