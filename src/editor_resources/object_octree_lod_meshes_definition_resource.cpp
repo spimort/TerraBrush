@@ -14,6 +14,10 @@ void ObjectOctreeLODMeshesDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_collisionOffset"), &ObjectOctreeLODMeshesDefinitionResource::get_collisionOffset);
     ClassDB::bind_method(D_METHOD("set_collisionOffset", "value"), &ObjectOctreeLODMeshesDefinitionResource::set_collisionOffset);
     ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "collisionOffset"), "set_collisionOffset", "get_collisionOffset");
+
+    ClassDB::bind_method(D_METHOD("get_collisionTags"), &ObjectOctreeLODMeshesDefinitionResource::get_collisionTags);
+    ClassDB::bind_method(D_METHOD("set_collisionTags", "value"), &ObjectOctreeLODMeshesDefinitionResource::set_collisionTags);
+    ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "collisionTags", PROPERTY_HINT_TYPE_STRING, String::num_int64(GDEXTENSION_VARIANT_TYPE_STRING) + "/0:"), "set_collisionTags", "get_collisionTags");
 }
 
 ObjectOctreeLODMeshesDefinitionResource::ObjectOctreeLODMeshesDefinitionResource() {
@@ -40,6 +44,13 @@ void ObjectOctreeLODMeshesDefinitionResource::set_collisionShape(const Ref<Shape
 Vector3 ObjectOctreeLODMeshesDefinitionResource::get_collisionOffset() const {
     return _collisionOffset;
 }
-void ObjectOctreeLODMeshesDefinitionResource::set_collisionOffset(const Vector3 &value) {
+void ObjectOctreeLODMeshesDefinitionResource::set_collisionOffset(const Vector3 value) {
     _collisionOffset = value;
+}
+
+TypedArray<String> ObjectOctreeLODMeshesDefinitionResource::get_collisionTags() const {
+    return _collisionTags;
+}
+void ObjectOctreeLODMeshesDefinitionResource::set_collisionTags(const TypedArray<String> value) {
+    _collisionTags = value;
 }
