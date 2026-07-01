@@ -41,4 +41,4 @@ demo/bin
 
 # Kate
 
-.kate-swp
+*.kate-swp
