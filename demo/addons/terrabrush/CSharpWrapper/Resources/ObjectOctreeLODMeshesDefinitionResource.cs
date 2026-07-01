@@ -33,9 +33,9 @@ public partial class ObjectOctreeLODMeshesDefinitionResource : Resource {
         }
     }
 
-    public string[] CollisionTags {
+    public Godot.Collections.Dictionary<string, Variant> CollisionTags {
         get {
-            return _godotHandle.AsGodotObject().Call("get_collisionTags").AsStringArray();
+            return _godotHandle.AsGodotObject().Call("get_collisionTags").AsGodotDictionary<string, Variant>();
         }
         set {
             _godotHandle.AsGodotObject().Call("set_collisionTags", value);

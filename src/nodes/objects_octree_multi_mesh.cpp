@@ -445,9 +445,9 @@ void ObjectsOctreeMultiMesh::updateMeshesAsync() {
                     collisionShape->set_meta("TerraBrush_OctreeNodeInfo_Id", nodeInfo->get_id());
 
                     if (shapeInfo.has(CollisionShapeInfo_TagsKey)) {
-                        TypedArray<String> tags = shapeInfo[CollisionShapeInfo_TagsKey];
-                        for (String tag : tags) {
-                            collisionShape->set_meta(tag, tag);
+                        TypedDictionary<String, Variant> tags = shapeInfo[CollisionShapeInfo_TagsKey];
+                        for (String key : tags.keys()) {
+                            collisionShape->set_meta(key, tags[key]);
                         }
                     }
 
