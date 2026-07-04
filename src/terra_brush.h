@@ -17,8 +17,6 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
 
-#include <map>
-
 using namespace godot;
 
 class TerraBrush : public Node3D {
@@ -51,6 +49,7 @@ private:
     Ref<ShaderMaterial> _customShader = nullptr;
 
     // LOD Settings
+    bool _chunkMesh = false;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;
@@ -132,6 +131,9 @@ public:
 
     Ref<ShaderMaterial> get_customShader() const;
     void set_customShader(const Ref<ShaderMaterial> &value);
+
+    bool get_chunkMesh() const;
+    void set_chunkMesh(const bool value);
 
     int get_lodLevels() const;
     void set_lodLevels(const int value);

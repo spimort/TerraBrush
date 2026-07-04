@@ -173,6 +173,10 @@ void Water::set_visualInstanceLayers(const int value) {
     _visualInstanceLayers = value;
 }
 
+void Water::set_chunkMesh(const bool value) {
+    _chunkMesh = value;
+}
+
 void Water::set_lodLevels(const int value) {
     _lodLevels = value;
 }
@@ -202,10 +206,11 @@ void Water::updateWater() {
         return;
     }
 
-    _clipmap->get_clipmapMesh()->set_layer_mask(_visualInstanceLayers);
+    _clipmap->set_visualInstanceLayers(_visualInstanceLayers);
     _clipmap->set_zonesSize(_zonesSize);
     _clipmap->set_resolution(_resolution);
     _clipmap->set_terrainZones(_terrainZones);
+    _clipmap->set_chunkMesh(_chunkMesh);
     _clipmap->set_levels(_lodLevels);
     _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
     _clipmap->set_initialCellWidth(_lodInitialCellWidth);
