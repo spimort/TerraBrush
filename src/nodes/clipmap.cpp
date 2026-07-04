@@ -229,6 +229,10 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     chunkMesh->set_material_override(_clipmapShader);
     chunkMesh->set_position(Vector3(resultPosition.x, 0, resultPosition.y));
     _meshesContainer->add_child(chunkMesh);
+
+    AABB customAABB = chunkMesh->get_aabb();
+    customAABB.set_size(Vector3(customAABB.get_size().x, _zonesSize, customAABB.get_size().z));
+    chunkMesh->set_custom_aabb(customAABB);
 }
 
 Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition) {
