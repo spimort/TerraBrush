@@ -207,21 +207,7 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     Vector2 numberOfCellsAndWidth = generateChunkedLevel(vertices, uvs, colors, level, rowsPerLevel, _initialCellWidth, position);
     Vector2 resultPosition = position * Vector2(numberOfCellsAndWidth.x * numberOfCellsAndWidth.y, numberOfCellsAndWidth.x * numberOfCellsAndWidth.y);
 
-    Array arrays = Array();
-    arrays.resize(Mesh::ARRAY_MAX);
-    arrays[Mesh::ARRAY_VERTEX] = PackedVector3Array(vertices);
-    arrays[Mesh::ARRAY_TEX_UV] = PackedVector2Array(uvs);
-    arrays[Mesh::ARRAY_COLOR] = PackedColorArray(colors);
-
-    TypedArray<Vector3> normals = TypedArray<Vector3>();
-    normals.resize(vertices.size());
-    normals.fill(Vector3(0, 1, 0));
-    arrays[Mesh::ARRAY_NORMAL] = PackedVector3Array(normals);
-
-    arrays[Mesh::ARRAY_TANGENT] = PackedFloat32Array(calculateTangents(vertices, uvs));
-
-    Ref<ArrayMesh> arrayMesh = memnew(ArrayMesh);
-    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays, Array());
+    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors);
 
     MeshInstance3D *chunkMesh = memnew(MeshInstance3D);
     chunkMesh->set_mesh(arrayMesh);
@@ -275,21 +261,7 @@ void Clipmap::generateFullMesh() {
         generateLevel(vertices, uvs, colors, i + 1, rowsPerLevel, _initialCellWidth);
     }
 
-    Array arrays = Array();
-    arrays.resize(Mesh::ARRAY_MAX);
-    arrays[Mesh::ARRAY_VERTEX] = PackedVector3Array(vertices);
-    arrays[Mesh::ARRAY_TEX_UV] = PackedVector2Array(uvs);
-    arrays[Mesh::ARRAY_COLOR] = PackedColorArray(colors);
-
-    TypedArray<Vector3> normals = TypedArray<Vector3>();
-    normals.resize(vertices.size());
-    normals.fill(Vector3(0, 1, 0));
-    arrays[Mesh::ARRAY_NORMAL] = PackedVector3Array(normals);
-
-    arrays[Mesh::ARRAY_TANGENT] = PackedFloat32Array(calculateTangents(vertices, uvs));
-
-    Ref<ArrayMesh> arrayMesh = memnew(ArrayMesh);
-    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays, Array());
+    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors);
 
     clipmapMesh->set_mesh(arrayMesh);
     updateAABB();
@@ -318,6 +290,26 @@ void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &
             }
         }
     }
+}
+
+Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors) {
+    Array arrays = Array();
+    arrays.resize(Mesh::ARRAY_MAX);
+    arrays[Mesh::ARRAY_VERTEX] = PackedVector3Array(vertices);
+    arrays[Mesh::ARRAY_TEX_UV] = PackedVector2Array(uvs);
+    arrays[Mesh::ARRAY_COLOR] = PackedColorArray(colors);
+
+    TypedArray<Vector3> normals = TypedArray<Vector3>();
+    normals.resize(vertices.size());
+    normals.fill(Vector3(0, 1, 0));
+    arrays[Mesh::ARRAY_NORMAL] = PackedVector3Array(normals);
+
+    arrays[Mesh::ARRAY_TANGENT] = PackedFloat32Array(calculateTangents(vertices, uvs));
+
+    Ref<ArrayMesh> arrayMesh = memnew(ArrayMesh);
+    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays, Array());
+
+    return arrayMesh;
 }
 
 void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, int startIndex, int toIndex, int x, int z) {

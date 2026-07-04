@@ -42,6 +42,7 @@ private:
     void createMeshChunks();
     void createMeshChunk(int level, Vector2 position);
     void generateFullMesh();
+    Ref<ArrayMesh> generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors);
 
 protected:
     static void _bind_methods();
