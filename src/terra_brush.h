@@ -49,7 +49,7 @@ private:
     Ref<ShaderMaterial> _customShader = nullptr;
 
     // LOD Settings
-    bool _chunkMesh = false;
+    bool _chunkMesh = true;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;

@@ -53,7 +53,7 @@ private:
     int _visualInstanceLayers = 0;
     int _collisionLayers = 0;
     int _collisionMask = 0;
-    bool _chunkMesh = false;
+    bool _chunkMesh = true;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;

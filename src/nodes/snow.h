@@ -23,7 +23,7 @@ private:
     int _resolution = 0;
     Ref<ZonesResource> _terrainZones = nullptr;
     Ref<SnowResource> _snowDefinition = nullptr;
-    bool _chunkMesh = false;
+    bool _chunkMesh = true;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;

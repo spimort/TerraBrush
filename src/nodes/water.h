@@ -45,7 +45,7 @@ private:
     float _far = 0;
     Color _edgeColor = Color();
     int _visualInstanceLayers = 0;
-    bool _chunkMesh = false;
+    bool _chunkMesh = true;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth;

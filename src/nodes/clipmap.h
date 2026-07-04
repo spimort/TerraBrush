@@ -23,7 +23,7 @@ private:
     int _zonesSize = 0;
     int _resolution = 0;
     Ref<ZonesResource> _terrainZones = nullptr;
-    bool _chunkMesh = false;
+    bool _chunkMesh = true;
     int _levels = 0;
     int _rowsPerLevel = 0;
     float _initialCellWidth = 0;
