@@ -50,6 +50,7 @@ private:
 
     // LOD Settings
     bool _chunkMesh = true;
+    int _chunkAABBHeight = -1;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;
@@ -134,6 +135,9 @@ public:
 
     bool get_chunkMesh() const;
     void set_chunkMesh(const bool value);
+
+    int get_chunkAABBHeight() const;
+    void set_chunkAABBHeight(const int value);
 
     int get_lodLevels() const;
     void set_lodLevels(const int value);

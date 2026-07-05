@@ -54,6 +54,7 @@ private:
     int _collisionLayers = 0;
     int _collisionMask = 0;
     bool _chunkMesh = true;
+    int _chunkAABBHeight = -1;
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;
@@ -107,6 +108,7 @@ public:
     void set_collisionLayers(const int value);
     void set_collisionMask(const int value);
     void set_chunkMesh(const bool value);
+    void set_chunkAABBHeight(const int value);
     void set_lodLevels(const int value);
     void set_lodRowsPerLevel(const int value);
     void set_lodInitialCellWidth(const float value);

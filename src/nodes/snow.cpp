@@ -116,6 +116,13 @@ void Snow::set_chunkMesh(const bool value) {
     _chunkMesh = value;
 }
 
+int Snow::get_chunkAABBHeight() const {
+    return _chunkAABBHeight;
+}
+void Snow::set_chunkAABBHeight(const int value) {
+    _chunkAABBHeight = value;
+}
+
 int Snow::get_lodLevels() const {
     return _lodLevels;
 }
@@ -151,6 +158,7 @@ void Snow::updateSnow() {
     _clipmap->set_resolution(_resolution);
     _clipmap->set_terrainZones(_terrainZones);
     _clipmap->set_chunkMesh(_chunkMesh);
+    _clipmap->set_chunkAABBHeight(_chunkAABBHeight);
     _clipmap->set_levels(_lodLevels);
     _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
     _clipmap->set_initialCellWidth(_lodInitialCellWidth);

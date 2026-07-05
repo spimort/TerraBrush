@@ -68,6 +68,13 @@ void Clipmap::set_chunkMesh(const bool value) {
     _chunkMesh = value;
 }
 
+int Clipmap::get_chunkAABBHeight() const {
+    return _chunkAABBHeight;
+}
+void Clipmap::set_chunkAABBHeight(const int value) {
+    _chunkAABBHeight = value;
+}
+
 int Clipmap::get_levels() const {
     return _levels;
 }
@@ -217,7 +224,7 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     _meshesContainer->add_child(chunkMesh);
 
     AABB customAABB = chunkMesh->get_aabb();
-    customAABB.set_size(Vector3(customAABB.get_size().x, _zonesSize, customAABB.get_size().z));
+    customAABB.set_size(Vector3(customAABB.get_size().x, _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z));
     chunkMesh->set_custom_aabb(customAABB);
 }
 

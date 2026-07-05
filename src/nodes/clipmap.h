@@ -24,6 +24,7 @@ private:
     int _resolution = 0;
     Ref<ZonesResource> _terrainZones = nullptr;
     bool _chunkMesh = true;
+    int _chunkAABBHeight = -1;
     int _levels = 0;
     int _rowsPerLevel = 0;
     float _initialCellWidth = 0;
@@ -66,6 +67,9 @@ public:
 
     bool get_chunkMesh() const;
     void set_chunkMesh(const bool value);
+
+    int get_chunkAABBHeight() const;
+    void set_chunkAABBHeight(const int value);
 
     int get_levels() const;
     void set_levels(const int value);
