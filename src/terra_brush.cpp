@@ -66,6 +66,10 @@ void TerraBrush::_bind_methods() {
 
     ADD_GROUP("LOD", "");
 
+    ClassDB::bind_method(D_METHOD("get_chunkMesh"), &TerraBrush::get_chunkMesh);
+    ClassDB::bind_method(D_METHOD("set_chunkMesh", "value"), &TerraBrush::set_chunkMesh);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "chunkMesh"), "set_chunkMesh", "get_chunkMesh");
+
     ClassDB::bind_method(D_METHOD("get_lodLevels"), &TerraBrush::get_lodLevels);
     ClassDB::bind_method(D_METHOD("set_lodLevels", "value"), &TerraBrush::set_lodLevels);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "lodLevels"), "set_lodLevels", "get_lodLevels");
@@ -386,6 +390,13 @@ void TerraBrush::set_customShader(const Ref<ShaderMaterial> &value) {
     }
 }
 
+bool TerraBrush::get_chunkMesh() const {
+    return _chunkMesh;
+}
+void TerraBrush::set_chunkMesh(const bool value) {
+    _chunkMesh = value;
+}
+
 int TerraBrush::get_lodLevels() const {
     return _lodLevels;
 }
@@ -622,6 +633,7 @@ void TerraBrush::loadTerrain() {
     _terrain->set_slopeTextureIndex(_slopeTextureIndex);
     _terrain->set_slopeTextureThreshold(_slopeTextureThreshold);
     _terrain->set_waterFactor(_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor());
+    _terrain->set_chunkMesh(_chunkMesh);
     _terrain->set_lodLevels(_lodLevels);
     _terrain->set_lodRowsPerLevel(_lodRowsPerLevel);
     _terrain->set_lodInitialCellWidth(_lodInitialCellWidth);
@@ -745,6 +757,7 @@ void TerraBrush::createWater() {
         _waterNode->set_far(_waterDefinition->get_waterFar());
         _waterNode->set_edgeColor(_waterDefinition->get_waterEdgeColor());
         _waterNode->set_visualInstanceLayers(_waterDefinition->get_visualInstanceLayers());
+        _waterNode->set_chunkMesh(_chunkMesh);
         _waterNode->set_lodLevels(_lodLevels);
         _waterNode->set_lodRowsPerLevel(_lodRowsPerLevel);
         _waterNode->set_lodInitialCellWidth(_lodInitialCellWidth);
@@ -786,6 +799,7 @@ void TerraBrush::createSnow() {
     _snowNode->set_zonesSize(_zonesSize);
     _snowNode->set_resolution(_resolution);
     _snowNode->set_snowDefinition(_snowDefinition);
+    _snowNode->set_chunkMesh(_chunkMesh);
     _snowNode->set_lodLevels(_lodLevels);
     _snowNode->set_lodRowsPerLevel(_lodRowsPerLevel);
     _snowNode->set_lodInitialCellWidth(_lodInitialCellWidth);

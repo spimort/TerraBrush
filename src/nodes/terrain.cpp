@@ -154,6 +154,10 @@ void Terrain::set_collisionMask(const int value) {
     _collisionMask = value;
 }
 
+void Terrain::set_chunkMesh(const bool value) {
+    _chunkMesh = value;
+}
+
 void Terrain::set_lodLevels(const int value) {
     _lodLevels = value;
 }
@@ -513,18 +517,19 @@ void Terrain::buildTerrain() {
         _clipmap->set_shader(Utils::createCustomShaderCopy(_customShader, TypedArray<StringName>::make(StringNames::ColorTextures(), StringNames::WaterTextures())));
     }
 
-    _clipmap->get_clipmapMesh()->set_layer_mask(_visualInstanceLayers);
+    _clipmap->set_visualInstanceLayers(_visualInstanceLayers);
 
     _terrainCollider->set_collision_layer(_collisionLayers);
     _terrainCollider->set_collision_mask(_collisionMask);
 
     if (!Engine::get_singleton()->is_editor_hint() && (_collisionOnly || !DisplayServer::get_singleton()->window_can_draw())) {
         updateCollisionShape();
-        _clipmap->get_clipmapMesh()->set_visible(false);
+        _clipmap->set_visible(false);
     } else {
         _clipmap->set_zonesSize(_zonesSize);
         _clipmap->set_resolution(_resolution);
         _clipmap->set_terrainZones(_terrainZones);
+        _clipmap->set_chunkMesh(_chunkMesh);
         _clipmap->set_levels(_lodLevels);
         _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
         _clipmap->set_initialCellWidth(_lodInitialCellWidth);

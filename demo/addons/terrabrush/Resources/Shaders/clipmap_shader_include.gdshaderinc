@@ -13,12 +13,16 @@ float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3
 		vec3 previousZoneUV = calculateZoneUV(worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
 		vec3 nextZoneUV = calculateZoneUV(worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y));
 
-		if (previousZoneUV.z >= 0.0 && nextZoneUV.z >= 0.0) {
-			float previousHeight = texture(textures, previousZoneUV).r;
-			float nextHeight = texture(textures, nextZoneUV).r;
-
-			return (previousHeight + nextHeight) / 2.0;
+		float previousHeight = 0.0; 
+		float nextHeight = 0.0; 
+		if (previousZoneUV.z >= 0.0) {
+			previousHeight = texture(textures, previousZoneUV).r;
+		} 
+		if (nextZoneUV.z >= 0.0) {
+			nextHeight = texture(textures, nextZoneUV).r;
 		}
+		
+		return (previousHeight + nextHeight) / 2.0;
 	}
 
 	return 0.0;

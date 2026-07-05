@@ -62,6 +62,15 @@ public partial class TerraBrush : Node {
         }
     }
 
+    public bool ChunkMesh {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_chunkMesh").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_chunkMesh", value);
+        }
+    }
+
     public int LODLevels {
         get {
             return _godotHandle.AsGodotObject().Call("get_lodLevels").AsInt32();

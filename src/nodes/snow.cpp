@@ -109,6 +109,13 @@ void Snow::set_snowDefinition(const Ref<SnowResource> &value) {
     _snowDefinition = value;
 }
 
+bool Snow::get_chunkMesh() const {
+    return _chunkMesh;
+}
+void Snow::set_chunkMesh(const bool value) {
+    _chunkMesh = value;
+}
+
 int Snow::get_lodLevels() const {
     return _lodLevels;
 }
@@ -139,10 +146,11 @@ void Snow::updateSnow() {
         return;
     }
 
-    _clipmap->get_clipmapMesh()->set_layer_mask(_snowDefinition->get_visualInstanceLayers());
+    _clipmap->set_visualInstanceLayers(_snowDefinition->get_visualInstanceLayers());
     _clipmap->set_zonesSize(_zonesSize);
     _clipmap->set_resolution(_resolution);
     _clipmap->set_terrainZones(_terrainZones);
+    _clipmap->set_chunkMesh(_chunkMesh);
     _clipmap->set_levels(_lodLevels);
     _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
     _clipmap->set_initialCellWidth(_lodInitialCellWidth);
