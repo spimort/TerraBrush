@@ -177,6 +177,10 @@ void Water::set_chunkMesh(const bool value) {
     _chunkMesh = value;
 }
 
+void Water::set_chunkAABBHeight(const int value) {
+    _chunkAABBHeight = value;
+}
+
 void Water::set_lodLevels(const int value) {
     _lodLevels = value;
 }
@@ -211,6 +215,7 @@ void Water::updateWater() {
     _clipmap->set_resolution(_resolution);
     _clipmap->set_terrainZones(_terrainZones);
     _clipmap->set_chunkMesh(_chunkMesh);
+    _clipmap->set_chunkAABBHeight(_chunkAABBHeight);
     _clipmap->set_levels(_lodLevels);
     _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
     _clipmap->set_initialCellWidth(_lodInitialCellWidth);

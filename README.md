@@ -189,6 +189,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Export Terrain|Export all components of the terrain to images.|
 |**LOD**||
 |Chunk Mesh|Whether or not the clipmap is chunked (chunked means more draw calls but better frustum culling so might get you better perfs).|
+|Chunk AABB Height|Control the AABB height of each chunk. If left to -1 (default value), the zone size will be used as the height (ex. 256).|
 |LOD Levels|The number of levels the clipmap will be made of. The default value is 5.|
 |LOD Rows Per Level|The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 101.|
 |LOD Initial Cell Width|The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|

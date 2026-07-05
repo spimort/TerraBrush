@@ -158,6 +158,10 @@ void Terrain::set_chunkMesh(const bool value) {
     _chunkMesh = value;
 }
 
+void Terrain::set_chunkAABBHeight(const int value) {
+    _chunkAABBHeight = value;
+}
+
 void Terrain::set_lodLevels(const int value) {
     _lodLevels = value;
 }
@@ -530,6 +534,7 @@ void Terrain::buildTerrain() {
         _clipmap->set_resolution(_resolution);
         _clipmap->set_terrainZones(_terrainZones);
         _clipmap->set_chunkMesh(_chunkMesh);
+        _clipmap->set_chunkAABBHeight(_chunkAABBHeight);
         _clipmap->set_levels(_lodLevels);
         _clipmap->set_rowsPerLevel(_lodRowsPerLevel);
         _clipmap->set_initialCellWidth(_lodInitialCellWidth);
