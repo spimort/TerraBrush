@@ -71,7 +71,7 @@ public partial class TerraBrush : Node {
         }
     }
 
-    public int ChunkMesh {
+    public int ChunkAABBHeight {
         get {
             return _godotHandle.AsGodotObject().Call("get_chunkAABBHeight").AsInt32();
         }
