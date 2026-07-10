@@ -3,17 +3,30 @@
 
 #include "tool_base.h"
 #include "../editor_resources/zone_resource.h"
-#include "../misc/hash_utils.h"
+
+#include <godot_cpp/classes/rendering_device.hpp>
 
 using namespace godot;
 
-class SculptTool : public ToolBase{
+struct alignas(16) SculptSettings {
+    float brushStrength;
+    bool add;
+};
+
+class SculptTool : public ToolBase {
     GDCLASS(SculptTool, ToolBase);
 
 private:
     int _sculptingMultiplier = 1;
     int _smoothingMultiplier = 1;
     std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
+    RenderingDevice *_renderingDevice = nullptr;
+    RID _computeShader = RID();
+    RID _uniformSet = RID();
+    RID _pipeline = RID();
+    RID _heightmapTextureParam = RID();
+    RID _brushTextureParam = RID();
+    RID _sculptSettingsBufferParam = RID();
 
     void sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);
     void flatten(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition);

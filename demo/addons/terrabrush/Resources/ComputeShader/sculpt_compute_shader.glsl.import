@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ccoua7mhhrrgm"
+path="res://.godot/imported/sculpt_compute_shader.glsl-e42e787c8335c4fcdbc735c18a53d998.res"
+
+[deps]
+
+source_file="res://addons/terrabrush/Resources/ComputeShader/sculpt_compute_shader.glsl"
+dest_files=["res://.godot/imported/sculpt_compute_shader.glsl-e42e787c8335c4fcdbc735c18a53d998.res"]
+
+[params]
+
