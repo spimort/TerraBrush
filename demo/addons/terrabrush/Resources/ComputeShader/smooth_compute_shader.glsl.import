@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bqa42pek1la5"
+path="res://.godot/imported/smooth_compute_shader.glsl-5dee658f431b225ad97556eb54f9de3f.res"
+
+[deps]
+
+source_file="res://addons/terrabrush/Resources/ComputeShader/smooth_compute_shader.glsl"
+dest_files=["res://.godot/imported/smooth_compute_shader.glsl-5dee658f431b225ad97556eb54f9de3f.res"]
+
+[params]
+

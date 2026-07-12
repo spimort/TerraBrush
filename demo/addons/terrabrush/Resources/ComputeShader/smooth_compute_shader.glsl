@@ -8,7 +8,6 @@ layout(rgba8, binding = 1) restrict readonly uniform image2D brushTexture; ;
 layout(set = 0, binding = 2) uniform Params {
     int numberOfHeightmaps;
     float brushStrength;
-    int add;
 } params;
 
 void main() {
@@ -17,14 +16,17 @@ void main() {
 
     for (int i = 0; i < params.numberOfHeightmaps; i++) {
         ivec3 heightmapCoords = ivec3(coords, i);
+
+        vec4 leftHeightmapPixel = imageLoad(heightmapTextures, heightmapCoords - ivec3(1, 0, i));
+        vec4 topHeightmapPixel = imageLoad(heightmapTextures, heightmapCoords - ivec3(0, 1, i));
+        vec4 rightHeightmapPixel = imageLoad(heightmapTextures, heightmapCoords + ivec3(1, 0, i));
+        vec4 bottomHeightmapPixel = imageLoad(heightmapTextures, heightmapCoords + ivec3(0, 1, i));
+
         vec4 heightmapPixel = imageLoad(heightmapTextures, heightmapCoords);
 
-        float sculptValue = brushPixel.a * params.brushStrength;
-        if (params.add != 1) {
-            sculptValue *= -1.0;
-        }
+        float average = (leftHeightmapPixel.r + topHeightmapPixel.r + rightHeightmapPixel.r + bottomHeightmapPixel.r + heightmapPixel.r) / 5.0;
 
-        heightmapPixel.r += sculptValue;
+        heightmapPixel.r = mix(heightmapPixel.r, average, brushPixel.a * params.brushStrength);
 
         imageStore(heightmapTextures, heightmapCoords, heightmapPixel);
     }

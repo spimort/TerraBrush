@@ -55,6 +55,7 @@
 #include "misc/dialog_utils.h"
 #include "misc/tool_undo_redo.h"
 #include "misc/thread_utils.h"
+#include "misc/compute_shader_executer.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -150,6 +151,8 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(LockTool);
         GDREGISTER_INTERNAL_CLASS(MetaInfoTool);
         GDREGISTER_INTERNAL_CLASS(ColorTool);
+        GDREGISTER_INTERNAL_CLASS(ComputeShaderExecuter);
+        GDREGISTER_INTERNAL_CLASS(ComputeShaderInstance);
 
         GDREGISTER_INTERNAL_CLASS(FileDialogEventsWrapper);
         GDREGISTER_INTERNAL_CLASS(ConfirmationDialogEventsWrapper);

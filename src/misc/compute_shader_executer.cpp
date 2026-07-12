@@ -85,12 +85,17 @@ void ComputeShaderInstance::freeShaderObjects() {
     _computeShader = RID();
 }
 
-void ComputeShaderInstance::addImageUniform(int binding, int width, int height, Image::Format format, BitField<RenderingDevice::TextureUsageBits> usage) {
+void ComputeShaderInstance::addImageUniform(int binding, int width, int height, Image::Format format, BitField<RenderingDevice::TextureUsageBits> usage, RenderingDevice::TextureType textureType) {
     Ref<RDTextureFormat> textureFormat = memnew(RDTextureFormat);
     textureFormat->set_format(getDataFormatForImageFormat(format));
     textureFormat->set_width(width);
     textureFormat->set_height(height);
     textureFormat->set_usage_bits(usage);
+    textureFormat->set_texture_type(textureType);
+
+    if (textureType == RenderingDevice::TextureType::TEXTURE_TYPE_2D_ARRAY) {
+        textureFormat->set_array_layers(RenderingDevice::LIMIT_MAX_TEXTURE_ARRAY_LAYERS);
+    }
 
     RID uniformID = _renderingDevice->texture_create(textureFormat, memnew(RDTextureView));
     _uniformIDs.set(binding, uniformID);
@@ -106,24 +111,19 @@ void ComputeShaderInstance::addImageUniform(int binding, int width, int height, 
 }
 
 void ComputeShaderInstance::addReadWriteImageUniform(int binding, int width, int height, Image::Format format) {
-    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_COPY_FROM_BIT);
+    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_COPY_FROM_BIT, RenderingDevice::TextureType::TEXTURE_TYPE_2D);
+}
+
+void ComputeShaderInstance::addReadWriteImagesUniform(int binding, int width, int height, Image::Format format) {
+    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_COPY_FROM_BIT, RenderingDevice::TextureType::TEXTURE_TYPE_2D_ARRAY);
 }
 
 void ComputeShaderInstance::addReadOnlyImageUniform(int binding, int width, int height, Image::Format format) {
-    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT);
+    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT, RenderingDevice::TextureType::TEXTURE_TYPE_2D);
 }
 
-template<typename T>
-void ComputeShaderInstance::addStructUniform(int binding) {
-    int size = (int) Math::ceil(sizeof(T) / 16.0) * 16;
-
-    RID uniformID  = _renderingDevice->uniform_buffer_create(size);
-    _uniformIDs.set(binding, uniformID);
-
-    Ref<RDUniform> paintSettingsUniform = memnew(RDUniform);
-    paintSettingsUniform->set_uniform_type(RenderingDevice::UNIFORM_TYPE_UNIFORM_BUFFER);
-    paintSettingsUniform->set_binding(binding);
-    paintSettingsUniform->add_id(uniformID);
+void ComputeShaderInstance::addReadOnlyImagesArrayUniform(int binding, int width, int height, Image::Format format) {
+    addImageUniform(binding, width, height, format, RenderingDevice::TEXTURE_USAGE_STORAGE_BIT + RenderingDevice::TEXTURE_USAGE_CAN_UPDATE_BIT, RenderingDevice::TextureType::TEXTURE_TYPE_2D_ARRAY);
 }
 
 void ComputeShaderInstance::createUniformSet() {
@@ -151,19 +151,14 @@ void ComputeShaderInstance::updateImageUniform(int binding, Ref<Image> image) {
     _renderingDevice->texture_update(uniformID, 0, image->get_data());
 }
 
-template<typename T>
-void ComputeShaderInstance::updateStructUniform(int binding, T structInstance) {
+void ComputeShaderInstance::updateImagesUniform(int binding, TypedArray<Ref<Image>> images) {
     ERR_FAIL_COND_MSG(!_uniformIDs.has(binding), "Could not find uniform with binding " + String::num_int64(binding));
 
     RID uniformID = _uniformIDs[binding];
-
-    int size = (int) Math::ceil(sizeof(T) / 16.0) * 16;
-
-    PackedByteArray bytes;
-    bytes.resize(size);
-    memcpy(bytes.ptrw(), &structInstance, size);
-
-    _renderingDevice->buffer_update(uniformID, 0, size, bytes);
+    for (int i = 0; i < images.size(); i++) {
+        Ref<Image> image = images[i];
+        _renderingDevice->texture_update(uniformID, i, image->get_data());
+    }
 }
 
 PackedByteArray ComputeShaderInstance::getImageResult(int binding) {
@@ -182,4 +177,28 @@ PackedByteArray ComputeShaderInstance::getImageResult(int binding) {
 
     PackedByteArray result = _renderingDevice->texture_get_data(uniformID, 0);
     return result;
+}
+
+TypedArray<PackedByteArray> ComputeShaderInstance::getImagesResult(int binding, int numberOfImages) {
+    ERR_FAIL_COND_V_MSG(!_uniformIDs.has(binding), TypedArray<PackedByteArray>(), "Could not find uniform with binding " + String::num_int64(binding));
+
+    RID uniformID = _uniformIDs[binding];
+
+    int64_t computeList = _renderingDevice->compute_list_begin();
+    _renderingDevice->compute_list_bind_compute_pipeline(computeList, _pipeline);
+    _renderingDevice->compute_list_bind_uniform_set(computeList, _uniformSet, 0);
+    _renderingDevice->compute_list_dispatch(computeList, _xDispatchGroup, _yDispatchGroup, 1);
+    _renderingDevice->compute_list_end();
+
+    _renderingDevice->submit();
+    _renderingDevice->sync();
+
+    TypedArray<PackedByteArray> results = TypedArray<PackedByteArray>();
+    for (int i = 0; i < numberOfImages; i++) {
+        PackedByteArray data = _renderingDevice->texture_get_data(uniformID, i);
+        if (data.size() > 0) {
+            results.append(data);
+        }
+    }
+    return results;
 }
