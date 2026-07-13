@@ -194,7 +194,7 @@ String ToolBase::getToolInfo(TerrainToolType toolType) {
 }
 
 bool ToolBase::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
-    if (!Input::get_singleton()->is_key_pressed(Key::KEY_CTRL) && Object::cast_to<InputEventKey>(event.ptr()) != nullptr) {
+    if (!Input::get_singleton()->is_key_pressed(Key::KEY_CTRL) && !Input::get_singleton()->is_key_pressed(Key::KEY_META) && Object::cast_to<InputEventKey>(event.ptr()) != nullptr) {
         Ref<InputEvent> inputEvent = Object::cast_to<InputEventKey>(event.ptr());
 
         if (inputEvent->is_action(KeybindManager::StringNames::LockXAxis())) {
