@@ -125,11 +125,15 @@ ZoneInfo ZoneUtils::getZoneInfoFromZoneOffset(ZoneInfo &startingZone, Vector2i o
 
     // This is just a unique key that combines the x and y, perfect to keep the zone info in cache.
     Vector2i absoluteZonePosition = Vector2i(startingZone.zonePosition.x + zoneXPosition, startingZone.zonePosition.y + zoneYPosition);
-    int zoneKey = (absoluteZonePosition.x << 8) + absoluteZonePosition.y;
+    int zoneKey = getZoneKey(absoluteZonePosition);
 
     return ZoneInfo(zoneKey, absoluteZonePosition, Vector2i(resolutionZoneBrushXPosition, resolutionZoneBrushYPosition));
 }
 
 int ZoneUtils::getImageSizeForResolution(int zoneSize, float resolution) {
     return (int) Math::ceil(zoneSize / resolution);
+}
+
+int ZoneUtils::getZoneKey(Vector2i zonePosition) {
+    return (zonePosition.x << 8) + zonePosition.y;
 }

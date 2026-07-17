@@ -10,13 +10,11 @@
 using namespace godot;
 
 struct SculptShaderSettings {
-    int numberOfHeightmaps;
     float brushStrength;
     int add;
 };
 
 struct SmoothShaderSettings {
-    int numberOfHeightmaps;
     float brushStrength;
 };
 
@@ -48,7 +46,7 @@ public:
     SculptTool();
     ~SculptTool();
 
-    void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) override;
+    void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones, int maxBrushSize) override;
     void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) override;
 };
 #endif

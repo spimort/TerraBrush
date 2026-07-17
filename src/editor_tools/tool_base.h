@@ -5,8 +5,8 @@
 #include "../misc/zone_info.h"
 #include "../editor_resources/zone_resource.h"
 #include "../terra_brush.h"
-#include "../misc/hash_utils.h"
 #include "../misc/tool_undo_redo.h"
+#include "../misc/compute_shader_executer.h"
 
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -14,7 +14,6 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
-#include <map>
 #include <functional>
 
 using namespace godot;
@@ -45,6 +44,11 @@ struct ImageZoneInfo {
     }
 };
 
+struct BrushToImageRegion {
+    Vector2i imagePosition;
+    Rect2i brushRegion;
+};
+
 class ToolBase : public RefCounted {
     GDCLASS(ToolBase, RefCounted);
 
@@ -66,12 +70,14 @@ private:
 
 protected:
     TerraBrush *_terraBrush = nullptr;
+    int _maxBrushSize = 0;
 
     static void _bind_methods();
 
     virtual bool getApplyResolution() const;
     virtual Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone);
     void forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 slopeValue, Vector2 imagePosition, std::function<void(ImageZoneInfo&, float)> onBrushPixel, bool ignoreLockedZone = false);
+    TypedArray<Ref<ZoneResource>> paintComputeShaderWithBrush(Ref<ComputeShaderInstance> compuateShaderInstance, int imageBinding, Image::Format imageFormat, int brushBinding, Ref<Image> brushImage, int brushSize, Vector2 slopeValue, Vector2 imagePosition);
     void addImageToUndo(Ref<Image> image);
     ImageZoneInfo getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone = false);
 
@@ -79,7 +85,7 @@ public:
     ToolBase();
     ~ToolBase();
 
-    virtual void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones);
+    virtual void init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones, int maxBrushSize);
     virtual void beforeDeselect();
     virtual String getToolInfo(TerrainToolType toolType);
     virtual bool handleInput(TerrainToolType toolType, Ref<InputEvent> event);

@@ -16,12 +16,13 @@ ToolBase::ToolBase() {
 
 ToolBase::~ToolBase() {}
 
-void ToolBase::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
+void ToolBase::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones, int maxBrushSize) {
     ERR_FAIL_COND_MSG(terraBrush == nullptr, "A terrabrush node must be provided");
 
     _terraBrush = terraBrush;
     _undoRedo = undoRedo;
     _autoAddZones = autoAddZones;
+    _maxBrushSize = maxBrushSize;
 }
 
 PixelLockedInfo ToolBase::isZonePixelLocked(Ref<ZoneResource> zone, ZoneInfo &zoneInfo) {
@@ -81,8 +82,8 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 s
         }
     }
 
-    float startingX = imagePosition.x - (brushSize / 2);
-    float startingY = imagePosition.y - (brushSize / 2);
+    float startingX = imagePosition.x - (brushSize / 2.0);
+    float startingY = imagePosition.y - (brushSize / 2.0);
     ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
 
     std::unordered_set<uint64_t> pointsCache = std::unordered_set<uint64_t>();
@@ -135,6 +136,97 @@ void ToolBase::forEachBrushPixel(Ref<Image> brushImage, int brushSize, Vector2 s
             }
         }
     }
+}
+
+TypedArray<Ref<ZoneResource>> ToolBase::paintComputeShaderWithBrush(Ref<ComputeShaderInstance> compuateShaderInstance, int imageBinding, Image::Format imageFormat, int brushBinding, Ref<Image> brushImage, int brushSize, Vector2 slopeValue, Vector2 imagePosition) {
+    Ref<Image> toolBrushImages = Image::create_empty(_maxBrushSize, _maxBrushSize, false, imageFormat);
+    int startingX = imagePosition.x - (brushSize / 2.0);
+    int startingY = imagePosition.y - (brushSize / 2.0);
+
+    int endingX = imagePosition.x + (brushSize / 2.0);
+    int endingY = imagePosition.y + (brushSize / 2.0);
+
+    ZoneInfo startingZoneInfo = ZoneUtils::getPixelToZoneInfo(startingX, startingY, _terraBrush->get_zonesSize(), getResolution());
+    ZoneInfo endingZoneInfo = ZoneUtils::getPixelToZoneInfo(endingX, endingY, _terraBrush->get_zonesSize(), getResolution());
+
+    std::unordered_map<Ref<Image>, BrushToImageRegion> brushToImageRegions = std::unordered_map<Ref<Image>, BrushToImageRegion>();
+
+    TypedArray<Ref<ZoneResource>> paintedZones = TypedArray<Ref<ZoneResource>>();
+
+    int currentLeft = 0;
+    for (int xZone = startingZoneInfo.zonePosition.x; xZone <= endingZoneInfo.zonePosition.x; xZone++) {
+        int currentTop = 0;
+
+        int xStartPosition = 0;
+        int xEndPosition = _terraBrush->get_zonesSize();
+
+        // If we are on the first or last row, the y is the begenning or the ending of the zone
+        if (xZone == startingZoneInfo.zonePosition.x) {
+            xStartPosition = startingZoneInfo.imagePosition.x;
+        } else if (xZone == endingZoneInfo.zonePosition.x) {
+            xEndPosition = endingZoneInfo.imagePosition.x;
+        }
+        int width = xEndPosition - xStartPosition;
+
+        for (int yZone = startingZoneInfo.zonePosition.y; yZone <= endingZoneInfo.zonePosition.y; yZone++) {
+            Vector2i zonePosition = Vector2i(xZone, yZone);
+            int zoneKey = ZoneUtils::getZoneKey(zonePosition);
+
+            ZoneInfo zoneInfo = ZoneInfo(zoneKey, zonePosition, Vector2());
+            Ref<ZoneResource> zone = _terraBrush->get_terrainZones()->getZoneForZoneInfo(zoneInfo);
+
+            int yStartPosition = 0;
+            int yEndPosition = _terraBrush->get_zonesSize();
+
+            // Same thing, but for the column
+            if (yZone == startingZoneInfo.zonePosition.y) {
+                yStartPosition = startingZoneInfo.imagePosition.y;
+            } else if (yZone == endingZoneInfo.zonePosition.y) {
+                yEndPosition = endingZoneInfo.imagePosition.y;
+            }
+
+            int height = yEndPosition - yStartPosition;
+            if (zone.is_null()) {
+                // Auto add zone thing
+            } else {
+                Ref<Image> toolImage = getToolCurrentImage(zone);
+                if (!toolImage.is_null()) {
+                    if (!toolImage.is_null()) {
+                        _terraBrush->get_terrainZones()->addDirtyImage(toolImage);
+                        addImageToUndo(toolImage);
+                    }
+
+                    toolBrushImages->blend_rect(toolImage, Rect2(xStartPosition, yStartPosition, width, height), Vector2i(currentLeft, currentTop));
+
+                    BrushToImageRegion region;
+                    region.imagePosition = Vector2i(xStartPosition, yStartPosition);
+                    region.brushRegion = Rect2(currentLeft, currentTop, width, height);
+                    brushToImageRegions[toolImage] = region;
+
+                    paintedZones.append(zone);
+                }
+            }
+
+            currentTop += height;
+        }
+
+        currentLeft += width;
+    }
+
+    compuateShaderInstance->updateImageUniform(imageBinding, toolBrushImages);
+
+    Ref<Image> resizedBrushImage = Image::create_empty(_maxBrushSize, _maxBrushSize, brushImage->has_mipmaps(), brushImage->get_format());
+    resizedBrushImage->blend_rect(brushImage, Rect2i(0, 0, brushSize, brushSize), Vector2i(0, 0));
+    compuateShaderInstance->updateImageUniform(brushBinding, resizedBrushImage);
+
+    PackedByteArray result = compuateShaderInstance->getImageResult(imageBinding);
+    toolBrushImages->set_data(toolBrushImages->get_width(), toolBrushImages->get_height(), toolBrushImages->has_mipmaps(), toolBrushImages->get_format(), result);
+
+    for (const auto &zoneRegionPair : brushToImageRegions) {
+        zoneRegionPair.first->blend_rect(toolBrushImages, zoneRegionPair.second.brushRegion, zoneRegionPair.second.imagePosition);
+    }
+
+    return paintedZones;
 }
 
 ImageZoneInfo ToolBase::getImageZoneInfoForPosition(ZoneInfo &startingZoneInfo, int offsetX, int offsetY, bool ignoreLockedZone) {

@@ -1,6 +1,8 @@
 #include "sculpt_tool.h"
 #include "../misc/setting_contants.h"
 #include "editor_resources/zone_resource.h"
+#include "editor_tools/tool_base.h"
+#include "misc/zone_info.h"
 
 #include <godot_cpp/classes/project_settings.hpp>
 
@@ -16,8 +18,8 @@ bool SculptTool::getApplyResolution() const {
     return true;
 }
 
-void SculptTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
-    ToolBase::init(terraBrush, undoRedo, autoAddZones);
+void SculptTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones, int maxBrushSize) {
+    ToolBase::init(terraBrush, undoRedo, autoAddZones, maxBrushSize);
 
     print_line("init compute shader");
 
@@ -26,14 +28,14 @@ void SculptTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool a
         _computeShaderExecuter->init();
 
         _sculptShaderInstance = _computeShaderExecuter->addInstance("res://addons/terrabrush/Resources/ComputeShader/sculpt_compute_shader.glsl");
-        _sculptShaderInstance->addReadWriteImagesUniform(0, terraBrush->get_zonesSize(), terraBrush->get_zonesSize(), Image::Format::FORMAT_RGF);
-        _sculptShaderInstance->addReadWriteImageUniform(1, terraBrush->get_zonesSize(), terraBrush->get_zonesSize(), Image::Format::FORMAT_RGBA8);
+        _sculptShaderInstance->addReadWriteImageUniform(0, _maxBrushSize, _maxBrushSize, Image::Format::FORMAT_RGF);
+        _sculptShaderInstance->addReadOnlyImageUniform(1, _maxBrushSize, _maxBrushSize, Image::Format::FORMAT_RGBA8);
         _sculptShaderInstance->addStructUniform<SculptShaderSettings>(2);
         _sculptShaderInstance->createUniformSet();
 
         _smoothShaderInstance = _computeShaderExecuter->addInstance("res://addons/terrabrush/Resources/ComputeShader/smooth_compute_shader.glsl");
-        _smoothShaderInstance->addReadWriteImagesUniform(0, terraBrush->get_zonesSize(), terraBrush->get_zonesSize(), Image::Format::FORMAT_RGF);
-        _smoothShaderInstance->addReadWriteImageUniform(1, terraBrush->get_zonesSize(), terraBrush->get_zonesSize(), Image::Format::FORMAT_RGBA8);
+        _smoothShaderInstance->addReadWriteImageUniform(0, _maxBrushSize, _maxBrushSize, Image::Format::FORMAT_RGF);
+        _smoothShaderInstance->addReadOnlyImageUniform(1, _maxBrushSize, _maxBrushSize, Image::Format::FORMAT_RGBA8);
         _smoothShaderInstance->addStructUniform<SmoothShaderSettings>(2);
         _smoothShaderInstance->createUniformSet();
     }
@@ -93,32 +95,15 @@ void SculptTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brus
 }
 
 void SculptTool::sculpt(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
-    TypedArray<Ref<ZoneResource>> zones = _terraBrush->get_terrainZones()->get_zones();
-
-    TypedArray<Ref<Image>> heightmaps = TypedArray<Ref<Image>>();
-    for (Ref<ZoneResource> zone : zones) {
-        heightmaps.append(zone->get_heightMapImage());
-    }
-
-    _sculptShaderInstance->updateImagesUniform(0, heightmaps);
-
-    int startingX = imagePosition.x - (brushSize / 2.0);
-    int startingY = imagePosition.y - (brushSize / 2.0);
-    Ref<Image> fullBrushImage = Image::create_empty(_terraBrush->get_zonesSize(), _terraBrush->get_zonesSize(), false, Image::FORMAT_RGBA8);
-    fullBrushImage->fill(Color(0, 0, 0, 0));
-    fullBrushImage->blend_rect(brushImage, Rect2(0, 0, brushSize, brushSize), Vector2i(startingX, startingY));
-    _sculptShaderInstance->updateImageUniform(1, fullBrushImage);
-
     SculptShaderSettings sculptParams;
-    sculptParams.numberOfHeightmaps = heightmaps.size();
     sculptParams.brushStrength = brushStrength * _sculptingMultiplier;
     sculptParams.add = toolType == TerrainToolType::TERRAINTOOLTYPE_TERRAINADD ? 1 : 0;
     _sculptShaderInstance->updateStructUniform(2, sculptParams);
 
-    TypedArray<PackedByteArray> results = _sculptShaderInstance->getImagesResult(0, heightmaps.size());
-    for (int i = 0; i < results.size(); i++) {
-        Ref<Image> heightmapImage = ((Ref<ZoneResource>)zones[i])->get_heightMapImage();
-        heightmapImage->set_data(heightmapImage->get_width(), heightmapImage->get_height(), heightmapImage->has_mipmaps(), heightmapImage->get_format(), results[i]);
+    TypedArray<Ref<ZoneResource>> paintedZones = paintComputeShaderWithBrush(_sculptShaderInstance, 0, Image::Format::FORMAT_RGF, 1, brushImage, brushSize, slopeValue, imagePosition);
+
+    for (Ref<ZoneResource> zone : paintedZones) {
+        _sculptedZones.insert(zone);
     }
 
     // forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
@@ -165,31 +150,19 @@ void SculptTool::flatten(Ref<Image> brushImage, int brushSize, float brushStreng
 }
 
 void SculptTool::smooth(Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition, bool applyMultiplier) {
-    TypedArray<Ref<ZoneResource>> zones = _terraBrush->get_terrainZones()->get_zones();
-
-    TypedArray<Ref<Image>> heightmaps = TypedArray<Ref<Image>>();
-    for (Ref<ZoneResource> zone : zones) {
-        heightmaps.append(zone->get_heightMapImage());
-    }
-    _smoothShaderInstance->updateImagesUniform(0, heightmaps);
-
-    int startingX = imagePosition.x - (brushSize / 2.0);
-    int startingY = imagePosition.y - (brushSize / 2.0);
-    Ref<Image> fullBrushImage = Image::create_empty(_terraBrush->get_zonesSize(), _terraBrush->get_zonesSize(), false, Image::FORMAT_RGBA8);
-    fullBrushImage->fill(Color(0, 0, 0, 0));
-    fullBrushImage->blend_rect(brushImage, Rect2(0, 0, brushSize, brushSize), Vector2i(startingX, startingY));
-    _smoothShaderInstance->updateImageUniform(1, fullBrushImage);
-
     SmoothShaderSettings smoothParams;
-    smoothParams.numberOfHeightmaps = heightmaps.size();
     smoothParams.brushStrength = brushStrength;
+    if (applyMultiplier) {
+        smoothParams.brushStrength *= _smoothingMultiplier;
+    }
     _smoothShaderInstance->updateStructUniform(2, smoothParams);
 
-    TypedArray<PackedByteArray> results = _sculptShaderInstance->getImagesResult(0, heightmaps.size());
-    for (int i = 0; i < results.size(); i++) {
-        Ref<Image> heightmapImage = ((Ref<ZoneResource>)zones[i])->get_heightMapImage();
-        heightmapImage->set_data(heightmapImage->get_width(), heightmapImage->get_height(), heightmapImage->has_mipmaps(), heightmapImage->get_format(), results[i]);
+    TypedArray<Ref<ZoneResource>> paintedZones = paintComputeShaderWithBrush(_smoothShaderInstance, 0, Image::Format::FORMAT_RGF, 1, brushImage, brushSize, slopeValue, imagePosition);
+
+    for (Ref<ZoneResource> zone : paintedZones) {
+        _sculptedZones.insert(zone);
     }
+
     // forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
     //     std::vector<float> directions = std::vector<float>();
 

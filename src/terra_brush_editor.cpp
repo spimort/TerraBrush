@@ -678,7 +678,7 @@ void TerraBrushEditor::updateCurrentTool() {
         }
         _currentTool = newTool;
 
-        _currentTool->init(_terraBrushNode, _undoRedo, _autoAddZones);
+        _currentTool->init(_terraBrushNode, _undoRedo, _autoAddZones, _maxBrushSize);
     }
 }
 

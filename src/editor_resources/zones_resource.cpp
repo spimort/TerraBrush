@@ -1,5 +1,6 @@
 #include "zones_resource.h"
 #include "../misc/zone_info.h"
+#include "../misc/zone_utils.h"
 
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/file_access.hpp>
@@ -248,7 +249,7 @@ void ZonesResource::updateZonesPositionCache() {
 
     for (Ref<ZoneResource> zone : _zones) {
         if (!zone.is_null()) {
-            int zoneKey = (zone->get_zonePosition().x << 8) + zone->get_zonePosition().y;
+            int zoneKey = ZoneUtils::getZoneKey(zone->get_zonePosition());
             _zonesPositionCache[zoneKey] = zone;
         }
     }
