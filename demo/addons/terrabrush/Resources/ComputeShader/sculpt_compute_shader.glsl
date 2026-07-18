@@ -3,10 +3,9 @@
 
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
-layout(r8, binding = 0) restrict uniform image2DArray heightmapTextures;
+layout(r8, binding = 0) restrict uniform image2D heightmapTexture;
 layout(rgba8, binding = 1) restrict readonly uniform image2D brushTexture; ;
 layout(set = 0, binding = 2) uniform Params {
-    int numberOfHeightmaps;
     float brushStrength;
     int add;
 } params;
@@ -14,18 +13,14 @@ layout(set = 0, binding = 2) uniform Params {
 void main() {
     ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
     vec4 brushPixel = imageLoad(brushTexture, coords);
+    vec4 heightmapPixel = imageLoad(heightmapTexture, coords);
 
-    for (int i = 0; i < params.numberOfHeightmaps; i++) {
-        ivec3 heightmapCoords = ivec3(coords, i);
-        vec4 heightmapPixel = imageLoad(heightmapTextures, heightmapCoords);
-
-        float sculptValue = brushPixel.a * params.brushStrength;
-        if (params.add != 1) {
-            sculptValue *= -1.0;
-        }
-
-        heightmapPixel.r += sculptValue;
-
-        imageStore(heightmapTextures, heightmapCoords, heightmapPixel);
+    float sculptValue = brushPixel.a * params.brushStrength;
+    if (params.add != 1) {
+        sculptValue *= -1.0;
     }
+
+    heightmapPixel.r += sculptValue;
+
+    imageStore(heightmapTexture, coords, heightmapPixel);
 }
