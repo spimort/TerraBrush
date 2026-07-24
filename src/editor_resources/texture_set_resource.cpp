@@ -18,6 +18,10 @@ void TextureSetResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_albedoTexture", "value"), &TextureSetResource::set_albedoTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_albedoTexture", "get_albedoTexture");
 
+    ClassDB::bind_method(D_METHOD("get_albedoMaskTexture"), &TextureSetResource::get_albedoMaskTexture);
+    ClassDB::bind_method(D_METHOD("set_albedoMaskTexture", "value"), &TextureSetResource::set_albedoMaskTexture);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoMaskTexture", PROPERTY_HINT_RESOURCE_TYPE, "GradientTexture1D"), "set_albedoMaskTexture", "get_albedoMaskTexture");
+
     ClassDB::bind_method(D_METHOD("get_normalTexture"), &TextureSetResource::get_normalTexture);
     ClassDB::bind_method(D_METHOD("set_normalTexture", "value"), &TextureSetResource::set_normalTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "normalTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_normalTexture", "get_normalTexture");
@@ -107,6 +111,13 @@ void TextureSetResource::set_albedoTexture(const Ref<Texture2D> &value) {
     }
 
     _albedoTexture = value;
+}
+
+Ref<GradientTexture1D> TextureSetResource::get_albedoMaskTexture() const {
+    return _albedoMaskTexture;
+}
+void TextureSetResource::set_albedoMaskTexture(const Ref<GradientTexture1D> &value) {
+    _albedoMaskTexture = value;
 }
 
 Ref<Texture2D> TextureSetResource::get_normalTexture() const {

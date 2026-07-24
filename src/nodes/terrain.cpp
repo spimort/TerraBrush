@@ -14,6 +14,8 @@
 #include <godot_cpp/classes/height_map_shape3d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/display_server.hpp>
+#include <godot_cpp/classes/gradient_texture1_d.hpp>
+#include <godot_cpp/classes/gradient.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
 using namespace godot;
@@ -375,7 +377,26 @@ void Terrain::updateTextures() {
     }
 
     if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
+        bool hasAlbedoMask = false;
+        for (Ref<TextureSetResource> textureSet : _textureSets->get_textureSets()) {
+            if (!textureSet->get_albedoMaskTexture().is_null()) {
+                hasAlbedoMask = true;
+                break;
+            }
+        }
+
+        Ref<GradientTexture1D> defaultAlbedoMaskTexture = nullptr;
+        if (hasAlbedoMask) {
+            defaultAlbedoMaskTexture = memnew(GradientTexture1D);
+
+            Ref<Gradient> defaultAlbedoMaskGradient = memnew(Gradient);
+            defaultAlbedoMaskGradient->add_point(0, Color(1, 1, 1, 1));
+            defaultAlbedoMaskTexture->set_gradient(defaultAlbedoMaskGradient);
+        }
+
         TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();
+        TypedArray<Ref<Texture2D>> albedoMaskTextures = TypedArray<Ref<Texture2D>>();
+        TypedArray<int> textureAlbedoHasMasks = TypedArray<int>();
         TypedArray<int> textureDetails = TypedArray<int>();
         TypedArray<int> texturesTriplanar = TypedArray<int>();
         TypedArray<float> texturesMetallic = TypedArray<float>();
@@ -392,6 +413,17 @@ void Terrain::updateTextures() {
             if (!textureSet->get_albedoTexture().is_null()) {
                 albedoTextures.append(textureSet->get_albedoTexture());
             }
+
+            if (hasAlbedoMask) {
+                if (textureSet->get_albedoMaskTexture().is_null()) {
+                    albedoMaskTextures.append(defaultAlbedoMaskTexture);
+                    textureAlbedoHasMasks.append(0);
+                } else {
+                    albedoMaskTextures.append(textureSet->get_albedoMaskTexture());
+                    textureAlbedoHasMasks.append(1);
+                }
+            }
+
             textureDetails.append(textureSet->get_textureDetail()  <= 0 ? _textureDetail : textureSet->get_textureDetail());
             if (textureSet->get_triplanar()) {
                 triplanar = true;
@@ -419,6 +451,12 @@ void Terrain::updateTextures() {
         if (albedoTextures.size() > 0) {
             textureArray = Utils::texturesToTextureArray(albedoTextures);
             _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
+        }
+
+        if (albedoMaskTextures.size() > 0) {
+            textureArray = Utils::texturesToTextureArray(albedoMaskTextures);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureMasks(), textureArray);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureAlbedoHasMasks(), textureAlbedoHasMasks);
         }
 
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), textureDetails);

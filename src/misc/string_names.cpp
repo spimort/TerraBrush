@@ -92,3 +92,5 @@ const StringName StringNames::SlopeTexturing() { return "SlopeTexturing"; }
 const StringName StringNames::SlopeTextureIndex() { return "SlopeTextureIndex"; }
 const StringName StringNames::SlopeTextureThreshold() { return "SlopeTextureThreshold"; }
 const StringName StringNames::ObjectUpdated() { return "ObjectUpdated"; }
+const StringName StringNames::TextureMasks() { return "TextureMasks"; }
+const StringName StringNames::TextureAlbedoHasMasks() { return "TextureAlbedoHasMasks"; }
