@@ -24,6 +24,15 @@ public partial class TextureSetResource : Resource {
         }
     }
 
+    public GradientTexture1D AlbedoMaskTexture {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_albedoMaskTexture").As<GradientTexture1D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_albedoMaskTexture", value);
+        }
+    }
+
     public Texture2D NormalTexture {
         get {
             return _godotHandle.AsGodotObject().Call("get_normalTexture").As<Texture2D>();
