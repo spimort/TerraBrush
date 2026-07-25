@@ -1,0 +1,10 @@
+// raddbg 0.9.27 project file
+
+target:
+{
+  executable: "" // Godot executable path (.exe)
+  working_directory: "../TerraBrush"
+  enabled: 1
+  arguments: "-e --path \"demo\""
+  debug_subprocesses: 1
+}
