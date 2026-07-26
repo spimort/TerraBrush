@@ -27,3 +27,6 @@ android.debug.arm64 = "res://addons/terrabrush/bin/libterrabrush.android.debug.a
 android.release.arm64 = "res://addons/terrabrush/bin/libterrabrush.android.release.arm64.so"
 android.debug.x86_64 = "res://addons/terrabrush/bin/libterrabrush.android.debug.arm64.so"
 android.release.x86_64 = "res://addons/terrabrush/bin/libterrabrush.android.release.arm64.so"
+
+ios.debug = "res://addons/terrabrush/bin/libterrabrush.ios.debug.a"
+ios.release = "res://addons/terrabrush/bin/libterrabrush.ios.release.a"
