@@ -9,11 +9,12 @@ void vertex() {
 	_instancePosition = vec3(0);
 	calculateFoliageVertex(
 		INSTANCE_ID,
+		INSTANCE_CUSTOM,
 		VERTEX,
 		NORMAL,
-		COLOR,
+		COLOR,		
 		_instancePosition
-	);
+	);	
 }
 
 void fragment() {

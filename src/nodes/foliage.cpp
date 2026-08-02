@@ -4,6 +4,7 @@
 #include "../editor_resources/zone_resource.h"
 #include "../editor_resources/zones_resource.h"
 #include "../misc/enums.h"
+#include "../nodes/clipmap.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
@@ -17,6 +18,10 @@
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/texture2d_array.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/sub_viewport.hpp>
+#include <godot_cpp/classes/multi_mesh_instance3d.hpp>
+#include <godot_cpp/variant/transform3d.hpp>
 
 void Foliage::_bind_methods() {
 
@@ -25,6 +30,7 @@ void Foliage::_bind_methods() {
 void Foliage::_notification(const int what) {
     if (what == NOTIFICATION_TRANSFORM_CHANGED) {
         updateShaderOffsetPosition();
+        updateEditorCameraPosition(nullptr, true);
     }
 }
 
@@ -43,8 +49,8 @@ void Foliage::_ready() {
     }
 
     if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH)  {
-        _multiMeshInstance3D = memnew(MultiMeshInstance3D);
-        add_child(_multiMeshInstance3D);
+        _multiMeshInstancesContainer = memnew(Node3D);
+        add_child(_multiMeshInstancesContainer);
 
         Ref<ShaderMaterial> shaderMaterial;
         if (_definition->get_customShader().is_null()) {
@@ -54,7 +60,6 @@ void Foliage::_ready() {
             shaderMaterial = Utils::createCustomShaderCopy(_definition->get_customShader(), TypedArray<StringName>::make(StringNames::ColorTextures(), StringNames::WaterTextures()));
         }
 
-        _multiMeshInstance3D->set_material_override(shaderMaterial);
         _foliageShader = shaderMaterial;
     } else {
         _particles = memnew(GPUParticles3D);
@@ -83,14 +88,9 @@ void Foliage::_ready() {
     set_notify_transform(true);
 }
 
-void Foliage::_process(double delta) {
+void Foliage::_physics_process(double delta) {
     if (!Engine::get_singleton()->is_editor_hint()) {
-        Vector3 position = Vector3(0, 0, 0);
-        if (get_viewport() != nullptr && get_viewport()->get_camera_3d() != nullptr) {
-            position = get_viewport()->get_camera_3d()->get_global_position();
-        }
-
-        updateFoliagePosition(position);
+        updateEditorCameraPosition();
     }
 }
 
@@ -127,7 +127,7 @@ void Foliage::set_definition(const Ref<FoliageDefinitionResource> &value) {
 }
 
 void Foliage::updateFoliage() {
-    if ((_particles == nullptr && _multiMeshInstance3D == nullptr) || _terrainZones.is_null()) {
+    if ((_particles == nullptr && _multiMeshInstancesContainer == nullptr) || _terrainZones.is_null()) {
         return;
     }
 
@@ -151,30 +151,10 @@ void Foliage::updateFoliage() {
     int numberOfPoints = center + topBottom + sides;
 
     if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH) {
-        _multiMeshInstance3D->set_layer_mask(_definition->get_visualInstanceLayers());
-
-        Ref<godot::MultiMesh> multiMesh = memnew(godot::MultiMesh);
-        _multiMeshInstance3D->set_multimesh(multiMesh);
-
-        multiMesh->set_transform_format(godot::MultiMesh::TransformFormat::TRANSFORM_3D);
-        multiMesh->set_mesh(_definition->get_mesh());
-        multiMesh->set_instance_count(numberOfPoints);
-
-        PackedFloat32Array buffer = PackedFloat32Array();
-        for (int i = 0; i < numberOfPoints; i++) {
-            buffer.append_array({
-                1.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0
-            });
-        }
-
-        multiMesh->set_buffer(buffer);
-
-        if (_definition->get_castShadow()) {
-            _multiMeshInstance3D->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_ON);
+        if (_definition->get_chunkFoliage()) {
+            createMultiMeshChunks();
         } else {
-            _multiMeshInstance3D->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_OFF);
+            generateFullMultiMeshes();
         }
 
         _foliageShader->set_shader_parameter(StringNames::InitialCellWidth(), _definition->get_lodInitialCellWidth());
@@ -253,11 +233,28 @@ void Foliage::updateFoliage() {
     }
 }
 
-void Foliage::updateEditorCameraPosition(Camera3D *viewportCamera) {
-    updateFoliagePosition(viewportCamera->get_global_position());
+void Foliage::updateEditorCameraPosition(Camera3D *viewportCamera, bool forceUpdate) {
+    Camera3D *camera = nullptr;
+    if (viewportCamera == nullptr) {
+        if (Engine::get_singleton()->is_editor_hint()) {
+            camera = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
+        }
+
+        if (camera == nullptr && get_viewport() != nullptr) {
+            camera = get_viewport()->get_camera_3d();
+        }
+    } else {
+        camera = viewportCamera;
+    }
+
+    if (camera == nullptr) {
+        return;
+    }
+
+    updateFoliagePosition(camera->get_global_position(), forceUpdate);
 }
 
-void Foliage::updateFoliagePosition(Vector3 position) {
+void Foliage::updateFoliagePosition(Vector3 position, bool forceUpdate) {
     float offset = 0.0f;
     bool isEven = _zonesSize % 2 == 0;
     if (isEven) {
@@ -278,14 +275,15 @@ void Foliage::updateFoliagePosition(Vector3 position) {
     }
 
     Vector3 newPosition = Vector3(xPosition, 0, zPosition);
-    if (newPosition.distance_to(_lastUpdatedPosition) > maxCellWidth) {
+    if (forceUpdate || newPosition.distance_to(_lastUpdatedPosition) > maxCellWidth) {
         _foliageShader->set_shader_parameter(StringNames::GlobalPosition(), newPosition);
+        _multiMeshInstancesContainer->set_global_position(newPosition);
         _lastUpdatedPosition = newPosition;
     }
 }
 
 void Foliage::updateAABB() {
-    if ((_particles == nullptr && _multiMeshInstance3D == nullptr) || _terrainZones.is_null()) {
+    if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH ||  _particles == nullptr || _terrainZones.is_null()) {
         return;
     }
 
@@ -308,15 +306,149 @@ void Foliage::updateAABB() {
     int aabbYPoint = -(aabbYSize / 2);
 
     AABB aabb = AABB(Vector3(aabbXPoint, Math::max(aabbXPoint, aabbYPoint), aabbYPoint), Vector3(aabbXSize, Math::max(aabbXSize, aabbYSize), aabbYSize));
-    if (_definition->get_strategy() == FoliageStrategy::FOLIAGESTRATEGY_MULTIMESH) {
-        _multiMeshInstance3D->set_custom_aabb(aabb);
-    } else {
-        _particles->set_custom_aabb(aabb);
-    }
+    _particles->set_custom_aabb(aabb);
 }
 
 void Foliage::updateShaderOffsetPosition() {
     if (!_foliageShader.is_null()) {
         _foliageShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
     }
+}
+
+void Foliage::createMultiMeshChunks() {
+    for (int i = 0; i < _definition->get_lodLevels(); i++) {
+        for (int x = Clipmap::MinChunkPosition; x <= Clipmap::MaxChunkPosition; x++) {
+            for (int z = Clipmap::MinChunkPosition; z <= Clipmap::MaxChunkPosition; z++) {
+                // For the first level, we create the center of the mesh as well, while being chunked
+                if (
+                    i == 0 || (
+                        x == Clipmap::MinChunkPosition ||
+                        z == Clipmap::MinChunkPosition ||
+                        x == Clipmap::MaxChunkPosition ||
+                        z == Clipmap::MaxChunkPosition
+                    )
+                ) {
+                    createMultiMeshChunk(i + 1, Vector2(x, z));
+                }
+            }
+        }
+    }
+}
+
+void Foliage::createMultiMeshChunk(int level, Vector2 position) {
+    PackedFloat32Array buffer = PackedFloat32Array();
+
+    auto rowsPerLevel = _definition->get_lodRowsPerLevel();
+    if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
+        rowsPerLevel += 1;
+    }
+
+    Vector2 numberOfCellsAndWidth = generateChunkedLevel(buffer, level, rowsPerLevel, _definition->get_lodInitialCellWidth(), position);
+    Vector2 resultPosition = position * Vector2(numberOfCellsAndWidth.x * numberOfCellsAndWidth.y, numberOfCellsAndWidth.x * numberOfCellsAndWidth.y);
+
+    MultiMeshInstance3D *chunkMultiMeshInstance = memnew(MultiMeshInstance3D);
+    chunkMultiMeshInstance->set_material_override(_foliageShader);
+    chunkMultiMeshInstance->set_position(Vector3(resultPosition.x, 0, resultPosition.y));
+    chunkMultiMeshInstance->set_layer_mask(_definition->get_visualInstanceLayers());
+
+    Ref<godot::MultiMesh> multiMesh = memnew(godot::MultiMesh);
+    chunkMultiMeshInstance->set_multimesh(multiMesh);
+
+    multiMesh->set_transform_format(godot::MultiMesh::TransformFormat::TRANSFORM_3D);
+    multiMesh->set_mesh(_definition->get_mesh());
+    multiMesh->set_use_custom_data(true);
+    multiMesh->set_instance_count(numberOfCellsAndWidth.x * numberOfCellsAndWidth.x);
+    multiMesh->set_buffer(buffer);
+
+    if (_definition->get_castShadow()) {
+        chunkMultiMeshInstance->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_ON);
+    } else {
+        chunkMultiMeshInstance->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_OFF);
+    }
+
+    _multiMeshInstancesContainer->add_child(chunkMultiMeshInstance);
+
+    AABB customAABB = chunkMultiMeshInstance->get_aabb();
+    customAABB.set_size(Vector3(customAABB.get_size().x, _definition->get_chunkAABBHeight() == -1 ? _zonesSize : _definition->get_chunkAABBHeight(), customAABB.get_size().z));
+    chunkMultiMeshInstance->set_custom_aabb(customAABB);
+}
+
+Vector2 Foliage::generateChunkedLevel(PackedFloat32Array &buffer, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition, bool useGlobalPosition) {
+    auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
+
+    int numberOfCells = Math::floor(rowsPerLevel / 2.0) + 1;
+    int minCellValue = Clipmap::MinChunkPosition * numberOfCells;
+    int maxCellValue = ((Clipmap::MaxChunkPosition + 1) * numberOfCells) - 1;
+
+    for (int x = 0; x < numberOfCells; x++) {
+        for (int z = 0; z < numberOfCells; z++) {
+            float globalXCellPosition = (chunkPosition.x * numberOfCells + x) * width;
+            float globalZCellPosition = (chunkPosition.y * numberOfCells + z) * width;
+
+            float xPosition = useGlobalPosition ? globalXCellPosition : x * width;
+            float zPosition = useGlobalPosition ? globalZCellPosition : z * width;
+
+            buffer.append_array({
+                1.0, 0.0, 0.0, xPosition,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, zPosition,
+                // 0.0, 0.0, 0.0, 0.0, Color values, we don't use it right now, we use custom data values instead
+               globalXCellPosition, 0.0, globalZCellPosition, 0.0 // Custom data values
+            });
+        }
+    }
+
+    return Vector2(numberOfCells, width);
+}
+
+void Foliage::generateFullMultiMeshes() {
+    MultiMeshInstance3D *multiMeshInstance = memnew(MultiMeshInstance3D);
+    multiMeshInstance->set_material_override(_foliageShader);
+    multiMeshInstance->set_layer_mask(_definition->get_visualInstanceLayers());
+
+    Ref<godot::MultiMesh> multiMesh = memnew(godot::MultiMesh);
+    multiMeshInstance->set_multimesh(multiMesh);
+
+    multiMesh->set_transform_format(godot::MultiMesh::TransformFormat::TRANSFORM_3D);
+    multiMesh->set_mesh(_definition->get_mesh());
+    multiMesh->set_use_custom_data(true);
+
+    auto rowsPerLevel = _definition->get_lodRowsPerLevel();
+    if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
+        rowsPerLevel += 1;
+    }
+
+    PackedFloat32Array buffer = PackedFloat32Array();
+    int totalNumberOfInstance = 0;
+    for (int i = 0; i < _definition->get_lodLevels(); i++) {
+        int level = i + 1;
+
+        for (int x = Clipmap::MinChunkPosition; x <= Clipmap::MaxChunkPosition; x++) {
+            for (int z = Clipmap::MinChunkPosition; z <= Clipmap::MaxChunkPosition; z++) {
+                // For the first level, we create the center of the mesh as well, while being chunked
+                if (
+                    i == 0 || (
+                        x == Clipmap::MinChunkPosition ||
+                        z == Clipmap::MinChunkPosition ||
+                        x == Clipmap::MaxChunkPosition ||
+                        z == Clipmap::MaxChunkPosition
+                    )
+                ) {
+                    Vector2 numberOfCellsAndWidth = generateChunkedLevel(buffer, level, rowsPerLevel, _definition->get_lodInitialCellWidth(), Vector2(x, z), true);
+                    totalNumberOfInstance += numberOfCellsAndWidth.x * numberOfCellsAndWidth.x;
+                }
+            }
+        }
+    }
+
+    multiMesh->set_instance_count(totalNumberOfInstance);
+    multiMesh->set_buffer(buffer);
+
+    if (_definition->get_castShadow()) {
+        multiMeshInstance->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_ON);
+    } else {
+        multiMeshInstance->set_cast_shadows_setting(GeometryInstance3D::ShadowCastingSetting::SHADOW_CASTING_SETTING_OFF);
+    }
+
+    _multiMeshInstancesContainer->add_child(multiMeshInstance);
 }

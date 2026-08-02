@@ -130,94 +130,14 @@ vec4 calculateGroundColor(vec3 zoneUV) {
 	return resultTexture;
 }
 
-void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal, inout vec4 color, out vec3 instancePosition) {
-	// Compute the clipmap INDEX position
-	int currentIndex = instanceID;
-
-	int lodRowsPerLevel = LODRowsPerLevel;
-	if (lodRowsPerLevel % 2 == 0) {
-		// The number of rows per level cannot be even
-		lodRowsPerLevel += 1;
-	}
-
-	int lodLevelNumberOfPoints = (lodRowsPerLevel - (-1 - lodRowsPerLevel)) + 2;
-
-	float clipMapXPosition = 0.0f;
-	float clipMapYPosition = 0.0f;
-
-	float cellWidth = InitialCellWidth;
-	int currentLODLevel = 0;
-
-	if (currentIndex < (lodLevelNumberOfPoints * lodLevelNumberOfPoints)) {
-		currentLODLevel = 1;
-
-		clipMapXPosition = roundEven(float(currentIndex % lodLevelNumberOfPoints) - (float(lodLevelNumberOfPoints / 2)));
-		clipMapYPosition = roundEven(floor(float(currentIndex / lodLevelNumberOfPoints)) - (float(lodLevelNumberOfPoints / 2)));
-	} else {
-		int remainingLODLevels = LODLevels - 1;
-
-		int topLines = (lodRowsPerLevel + 1) / 2;
-		int numberOfPointsTopLines = lodLevelNumberOfPoints * topLines * remainingLODLevels;
-
-		int numberOfPointsPerSide = lodLevelNumberOfPoints - (topLines * 2);
-		int numberOfSides = topLines;
-		int numberOfPointsLeftSide = numberOfSides * numberOfPointsPerSide * remainingLODLevels;
-
-		currentIndex -= (lodLevelNumberOfPoints * lodLevelNumberOfPoints);
-
-		if (currentIndex < numberOfPointsTopLines * 2) { // We are on the top lines
-			bool isBottomLines = currentIndex >= numberOfPointsTopLines;
-			if (isBottomLines) {
-				currentIndex -= numberOfPointsTopLines; // We remove the top lines index so we restart at 0 for the bottom
-			}
-
-			currentLODLevel = LODLevels - int(floor(float(currentIndex / (lodLevelNumberOfPoints * topLines))));
-			currentIndex -= (LODLevels - currentLODLevel) * (lodLevelNumberOfPoints * topLines); // We reset the index on each LODLevel
-
-			clipMapXPosition = roundEven(float(currentIndex % lodLevelNumberOfPoints) - (float(lodLevelNumberOfPoints / 2)));
-			clipMapYPosition = roundEven(floor(float(currentIndex / lodLevelNumberOfPoints)) - (float(lodLevelNumberOfPoints / 2)));
-
-			if (isBottomLines) {
-				clipMapYPosition *= -1.0; // We flip the points to be at the bottom
-			}
-		} else if (currentIndex < (numberOfPointsTopLines * 2) + (numberOfPointsLeftSide * 2)) { // We are at the left side
-			bool isRightSide = currentIndex >= (numberOfPointsTopLines * 2) + numberOfPointsLeftSide;
-			if (isRightSide) {
-				currentIndex -= (numberOfPointsTopLines * 2) + numberOfPointsLeftSide;
-			} else {
-				currentIndex -= numberOfPointsTopLines * 2;
-			}
-
-			currentLODLevel = LODLevels - int(floor(float(currentIndex / (numberOfPointsPerSide * numberOfSides))));
-			currentIndex -= (LODLevels - currentLODLevel) * (numberOfPointsPerSide * numberOfSides);// We reset the index on each LODLevel
-
-			clipMapXPosition = roundEven(float(currentIndex % numberOfSides) - (float(lodLevelNumberOfPoints / 2)));
-			clipMapYPosition = roundEven(floor(float(currentIndex / numberOfSides)) - (float(lodLevelNumberOfPoints / 2)));
-
-			clipMapYPosition += float(topLines) ;
-
-			if (isRightSide) {
-				clipMapXPosition *= -1.0;
-			}
-		} else {
-			// Disable instance
-			vertex = vec3(0.0); // Scale down the mesh so it "vanish"
-		}
-
-		cellWidth = pow(float(2), float(currentLODLevel - 1)) * InitialCellWidth;
-	}
-
-	vec3 particlePosition = vec3(clipMapXPosition * cellWidth, 0, clipMapYPosition * cellWidth);
-	particlePosition -= OffsetPosition;
-
-	// Apply the global position on top of the clipmap
-	particlePosition.x += roundEven(GlobalPosition.x);
-	particlePosition.z += roundEven(GlobalPosition.z);
-
-	instancePosition = particlePosition;
-
+void calculateFoliageVertex(int instanceID, vec4 instanceCustom, inout vec3 vertex, inout vec3 normal, inout vec4 color, out vec3 instancePosition) {
 	// Fetch the zoneUV with the "Grid" position of the foliage.
-	vec3 worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
+	vec3 worldVertex = (vec3(instanceCustom.r - (InitialCellWidth / 2.0), 0, instanceCustom.b - (InitialCellWidth / 2.0)) - OffsetPosition);	
+	worldVertex.x += roundEven(GlobalPosition.x);
+	worldVertex.z += roundEven(GlobalPosition.z);
+	
+	instancePosition = worldVertex;
+	
 	vec3 foliageZoneUV = calculateZoneUVResolution(worldVertex, false);
 
 	// Calculate the noise/random value with the zoneUV;
@@ -226,11 +146,10 @@ void calculateFoliageVertex(int instanceID, inout vec3 vertex, inout vec3 normal
 	float noiseRandomXValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.x);
 	float noiseRandomZValue = mix(-RandomPlacementRange, RandomPlacementRange, noiseRandom.z);
 
-	particlePosition.x += noiseRandomXValue;
-	particlePosition.z += noiseRandomZValue;
+	vec3 particlePosition = vec3(noiseRandomXValue, 0, noiseRandomZValue);
 
 	// Update the zoneUV so it fits the new position of the foliage, with the random value
-	worldVertex = vec3(particlePosition.x, 0, particlePosition.z);
+	worldVertex += vec3(particlePosition.x, 0, particlePosition.z);
 	foliageZoneUV = calculateZoneUVResolution(worldVertex, false);
 
 	if (foliageZoneUV.z < 0.0) {

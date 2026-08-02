@@ -14,9 +14,6 @@ class Clipmap : public Node3D {
     GDCLASS(Clipmap, Node3D);
 
 private:
-    const int MinChunkPosition = -2;
-    const int MaxChunkPosition = 1;
-
     Ref<ShaderMaterial> _clipmapShader = nullptr;
     Node3D *_meshesContainer = nullptr;
 
@@ -50,6 +47,9 @@ protected:
     void _notification(const int what);
 
 public:
+    static const int MinChunkPosition = -2;
+    static const int MaxChunkPosition = 1;
+
     Clipmap();
     ~Clipmap();
 
