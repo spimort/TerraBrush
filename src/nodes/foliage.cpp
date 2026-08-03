@@ -372,34 +372,6 @@ void Foliage::createMultiMeshChunk(int level, Vector2 position) {
     chunkMultiMeshInstance->set_custom_aabb(customAABB);
 }
 
-Vector2 Foliage::generateChunkedLevel(PackedFloat32Array &buffer, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition, bool useGlobalPosition) {
-    auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
-
-    int numberOfCells = Math::floor(rowsPerLevel / 2.0) + 1;
-    int minCellValue = Clipmap::MinChunkPosition * numberOfCells;
-    int maxCellValue = ((Clipmap::MaxChunkPosition + 1) * numberOfCells) - 1;
-
-    for (int x = 0; x < numberOfCells; x++) {
-        for (int z = 0; z < numberOfCells; z++) {
-            float globalXCellPosition = (chunkPosition.x * numberOfCells + x) * width;
-            float globalZCellPosition = (chunkPosition.y * numberOfCells + z) * width;
-
-            float xPosition = useGlobalPosition ? globalXCellPosition : x * width;
-            float zPosition = useGlobalPosition ? globalZCellPosition : z * width;
-
-            buffer.append_array({
-                1.0, 0.0, 0.0, xPosition,
-                0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, zPosition,
-                // 0.0, 0.0, 0.0, 0.0, Color values, we don't use it right now, we use custom data values instead
-               globalXCellPosition, 0.0, globalZCellPosition, 0.0 // Custom data values
-            });
-        }
-    }
-
-    return Vector2(numberOfCells, width);
-}
-
 void Foliage::generateFullMultiMeshes() {
     MultiMeshInstance3D *multiMeshInstance = memnew(MultiMeshInstance3D);
     multiMeshInstance->set_material_override(_foliageShader);
@@ -450,4 +422,36 @@ void Foliage::generateFullMultiMeshes() {
     }
 
     _multiMeshInstancesContainer->add_child(multiMeshInstance);
+
+    AABB customAABB = multiMeshInstance->get_aabb();
+    customAABB.set_size(Vector3(customAABB.get_size().x, _definition->get_chunkAABBHeight() == -1 ? _zonesSize : _definition->get_chunkAABBHeight(), customAABB.get_size().z));
+    multiMeshInstance->set_custom_aabb(customAABB);
+}
+
+Vector2 Foliage::generateChunkedLevel(PackedFloat32Array &buffer, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition, bool useGlobalPosition) {
+    auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
+
+    int numberOfCells = Math::floor(rowsPerLevel / 2.0) + 1;
+    int minCellValue = Clipmap::MinChunkPosition * numberOfCells;
+    int maxCellValue = ((Clipmap::MaxChunkPosition + 1) * numberOfCells) - 1;
+
+    for (int x = 0; x < numberOfCells; x++) {
+        for (int z = 0; z < numberOfCells; z++) {
+            float globalXCellPosition = (chunkPosition.x * numberOfCells + x) * width;
+            float globalZCellPosition = (chunkPosition.y * numberOfCells + z) * width;
+
+            float xPosition = useGlobalPosition ? globalXCellPosition : x * width;
+            float zPosition = useGlobalPosition ? globalZCellPosition : z * width;
+
+            buffer.append_array({
+                1.0, 0.0, 0.0, xPosition,
+                0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, zPosition,
+                // 0.0, 0.0, 0.0, 0.0, Color values, we don't use it right now, we use custom data values instead
+               globalXCellPosition, 0.0, globalZCellPosition, 0.0 // Custom data values
+            });
+        }
+    }
+
+    return Vector2(numberOfCells, width);
 }
