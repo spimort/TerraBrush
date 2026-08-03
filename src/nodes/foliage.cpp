@@ -21,7 +21,6 @@
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/sub_viewport.hpp>
 #include <godot_cpp/classes/multi_mesh_instance3d.hpp>
-#include <godot_cpp/variant/transform3d.hpp>
 
 void Foliage::_bind_methods() {
 
