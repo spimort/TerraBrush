@@ -65,8 +65,7 @@ void Objects::updateObjects() {
 
         _objectsThread.instantiate();
         _objectsThread->start(Callable(this, "updateObjectsAsync"));
-    }
-    else {
+    } else {
         updateObjectsAsync();
     }
 }

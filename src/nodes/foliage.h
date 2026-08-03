@@ -22,7 +22,7 @@ private:
     Vector3 _lastUpdatedPosition = Vector3();
     Ref<Texture2D> _defaultNoise = nullptr;
 
-    MultiMeshInstance3D *_multiMeshInstance3D = nullptr;
+    Node3D *_multiMeshInstancesContainer = nullptr;
     GPUParticles3D *_particles = nullptr;
 
     int _foliageIndex = 0;
@@ -35,8 +35,12 @@ private:
     Ref<FoliageDefinitionResource> _definition = nullptr;
 
     void updateFoliage();
-    void updateFoliagePosition(Vector3 position);
+    void updateFoliagePosition(Vector3 position, bool forceUpdate = false);
     void updateShaderOffsetPosition();
+    void createMultiMeshChunks();
+    void createMultiMeshChunk(int level, Vector2 position);
+    Vector2 generateChunkedLevel(PackedFloat32Array &buffer, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition, bool useGlobalPosition = false);
+    void generateFullMultiMeshes();
 
 protected:
     static void _bind_methods();
@@ -47,7 +51,7 @@ public:
     ~Foliage();
 
     void _ready() override;
-    void _process(double delta) override;
+    void _physics_process(double delta) override;
 
     void set_foliageIndex(const int value);
     void set_zonesSize(const int value);
@@ -59,6 +63,6 @@ public:
     void set_definition(const Ref<FoliageDefinitionResource> &value);
 
     void updateAABB();
-    void updateEditorCameraPosition(Camera3D *viewportCamera);
+    void updateEditorCameraPosition(Camera3D *viewportCamera = nullptr, bool forceUpdate = false);
 };
 #endif

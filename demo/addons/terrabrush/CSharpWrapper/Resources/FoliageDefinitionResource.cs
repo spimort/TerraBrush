@@ -59,6 +59,24 @@ public partial class FoliageDefinitionResource : Resource {
         }
     }
 
+    public bool ChunkFoliage {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_chunkFoliage").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_chunkFoliage", value);
+        }
+    }
+
+    public int ChunkAABBHeight {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_chunkAABBHeight").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_chunkAABBHeight", value);
+        }
+    }
+
     public int LODLevels {
         get {
             return _godotHandle.AsGodotObject().Call("get_lodLevels").AsInt32();

@@ -1055,7 +1055,7 @@ void TerraBrush::updateCameraPosition(Camera3D *viewportCamera) {
     if (_foliagesNode != nullptr) {
         for (int i = 0; i < _foliagesNode->get_child_count(); i++) {
             Foliage *foliageNode = Object::cast_to<Foliage>(_foliagesNode->get_child(i));
-            foliageNode->updateEditorCameraPosition(viewportCamera);
+            foliageNode->updateEditorCameraPosition();
         }
     }
 }

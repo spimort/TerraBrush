@@ -30,6 +30,14 @@ void FoliageDefinitionResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_visualInstanceLayers", "value"), &FoliageDefinitionResource::set_visualInstanceLayers);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "visualInstanceLayers", PROPERTY_HINT_LAYERS_3D_RENDER), "set_visualInstanceLayers", "get_visualInstanceLayers");
 
+    ClassDB::bind_method(D_METHOD("get_chunkFoliage"), &FoliageDefinitionResource::get_chunkFoliage);
+    ClassDB::bind_method(D_METHOD("set_chunkFoliage", "value"), &FoliageDefinitionResource::set_chunkFoliage);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "chunkFoliage"), "set_chunkFoliage", "get_chunkFoliage");
+
+    ClassDB::bind_method(D_METHOD("get_chunkAABBHeight"), &FoliageDefinitionResource::get_chunkAABBHeight);
+    ClassDB::bind_method(D_METHOD("set_chunkAABBHeight", "value"), &FoliageDefinitionResource::set_chunkAABBHeight);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "chunkAABBHeight"), "set_chunkAABBHeight", "get_chunkAABBHeight");
+
     ClassDB::bind_method(D_METHOD("get_lodLevels"), &FoliageDefinitionResource::get_lodLevels);
     ClassDB::bind_method(D_METHOD("set_lodLevels", "value"), &FoliageDefinitionResource::set_lodLevels);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "lodLevels"), "set_lodLevels", "get_lodLevels");
@@ -102,6 +110,8 @@ FoliageDefinitionResource::FoliageDefinitionResource() {
     _windStrength = 0.1;
     _noiseTexture = Ref<Texture2D>(nullptr);
     _visualInstanceLayers = 1;
+    _chunkFoliage = true;
+    _chunkAABBHeight = -1;
     _lodLevels = 3;
     _lodRowsPerLevel = 50;
     _lodInitialCellWidth = 1;
@@ -124,6 +134,8 @@ FoliageDefinitionResource::~FoliageDefinitionResource() {}
 
 void FoliageDefinitionResource::_validate_property(PropertyInfo &property) const {
     static const TypedArray<StringName> MultimeshProperties = {
+        "chunkFoliage",
+        "chunkAABBHeight",
         "lodLevels",
         "lodRowsPerLevel",
         "lodInitialCellWidth",
@@ -206,6 +218,20 @@ void FoliageDefinitionResource::set_visualInstanceLayers(const int value) {
 }
 
 // _multimesh settings
+bool FoliageDefinitionResource::get_chunkFoliage() const {
+    return _chunkFoliage;
+}
+void FoliageDefinitionResource::set_chunkFoliage(const bool value) {
+    _chunkFoliage = value;
+}
+
+int FoliageDefinitionResource::get_chunkAABBHeight() const {
+    return _chunkAABBHeight;
+}
+void FoliageDefinitionResource::set_chunkAABBHeight(const int value) {
+    _chunkAABBHeight = value;
+}
+
 int FoliageDefinitionResource::get_lodLevels() const {
     return _lodLevels;
 }
