@@ -226,8 +226,8 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |FoliageResource[x].Definition.WindStrength|Creates some movement for the mesh. The default value is 0.1.|
 |FoliageResource[x].Definition.NoiseTexture|This texture makes sure that the foliage placement is not too straight. If not specified, the default noise texture will be used.|
 |FoliageResource[x].Definition.VisualInstanceLayers|The godot layer on which the foliage will be displayed.|
-|FoliageResource[x].Definition.ChunkFoliage|Whether or not the foliage is chunked (chunked means more draw calls but better frustum culling so might get you better perfs).|
-|FoliageResource[x].Definition.ChunkAABBHeight|Control the AABB height of each chunk. If left to -1 (default value), the zone size will be used as the height (ex. 256).|
+|FoliageResource[x].Definition.ChunkFoliage|**(MultiMesh only)** Whether or not the foliage is chunked (chunked means more draw calls but better frustum culling so might get you better perfs).|
+|FoliageResource[x].Definition.ChunkAABBHeight|**(MultiMesh only)** Control the AABB height of each chunk. If left to -1 (default value), the zone size will be used as the height (ex. 256).|
 |FoliageResource[x].Definition.LODLevels|**(MultiMesh only)** The number of levels the clipmap will be made of. The default value is 3.|
 |FoliageResource[x].Definition.LODRowsPerLevel|**(MultiMesh only)** The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 50.|
 |FoliageResource[x].Definition.LODInitialCellWidth|**(MultiMesh only)** The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|
