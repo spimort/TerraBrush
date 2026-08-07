@@ -9,8 +9,10 @@ uniform sampler2DArray WaterTextures: hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures: source_color, filter_linear_mipmap;
 uniform sampler2DArray TexturesNearest: source_color, filter_nearest_mipmap;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2DArray TextureAlbedoColorMaps: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
 uniform sampler2DArray TextureAlbedoCurves: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
+#endif
 uniform sampler2DArray Splatmaps: repeat_disable;
 uniform int[100] TextureAlbedoHasColorMaps;
 uniform int[100] TextureAlbedoHasCurves;
@@ -280,6 +282,7 @@ void calculateHeightmapFragment(
         vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(dominantTextureIndex));
 
         vec4 dominantTexture = vec4(0);
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY		
 		if (TextureAlbedoHasColorMaps[dominantTextureIndex] == 1) {
 			vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
 			float textureAlbedoSample = textureAlbedo.r;
@@ -292,6 +295,9 @@ void calculateHeightmapFragment(
 		} else {
 			dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
 		}
+#else
+		dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);					
+#endif		
 
         albedo = dominantTexture.rgb;
 
@@ -374,6 +380,7 @@ void calculateHeightmapFragment(
 			float currentMetallic = 0.0;
 			float currentSpecular = 0.0;
 
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 			if (TextureAlbedoHasColorMaps[i] == 1) {
 				vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
 				float textureAlbedoSample = textureAlbedo.r;
@@ -386,6 +393,9 @@ void calculateHeightmapFragment(
 			} else {
 				currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
 			}
+#else
+			currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
+#endif			
 			
             currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
             currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
