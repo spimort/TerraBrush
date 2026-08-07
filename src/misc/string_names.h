@@ -97,7 +97,9 @@ class StringNames {
         const static StringName SlopeTextureIndex();
         const static StringName SlopeTextureThreshold();
         const static StringName ObjectUpdated();
-        const static StringName TextureMasks();
-        const static StringName TextureAlbedoHasMasks();
+        const static StringName TextureAlbedoColorMaps();
+        const static StringName TextureAlbedoHasColorMaps();
+        const static StringName TextureAlbedoCurves();
+        const static StringName TextureAlbedoHasCurves();
 };
 #endif

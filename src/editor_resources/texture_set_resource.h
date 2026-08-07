@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/gradient_texture1_d.hpp>
+#include <godot_cpp/classes/curve_texture.hpp>
 
 using namespace godot;
 
@@ -13,7 +14,8 @@ class TextureSetResource : public Resource {
 private:
     String _name = "";
     Ref<Texture2D> _albedoTexture = nullptr;
-    Ref<GradientTexture1D> _albedoMaskTexture = nullptr;
+    Ref<GradientTexture1D> _albedoColorMapTexture = nullptr;
+    Ref<CurveTexture> _albedoCurveTexture = nullptr;
     Ref<Texture2D> _normalTexture = nullptr;
     Ref<Texture2D> _roughnessTexture = nullptr;
     Ref<Texture2D> _heightTexture = nullptr;
@@ -35,8 +37,11 @@ public:
     Ref<Texture2D> get_albedoTexture() const;
     void set_albedoTexture(const Ref<Texture2D> &value);
 
-    Ref<GradientTexture1D> get_albedoMaskTexture() const;
-    void set_albedoMaskTexture(const Ref<GradientTexture1D> &value);
+    Ref<GradientTexture1D> get_albedoColorMapTexture() const;
+    void set_albedoColorMapTexture(const Ref<GradientTexture1D> &value);
+
+    Ref<CurveTexture> get_albedoCurveTexture() const;
+    void set_albedoCurveTexture(const Ref<CurveTexture> &value);
 
     Ref<Texture2D> get_normalTexture() const;
     void set_normalTexture(const Ref<Texture2D> &value);

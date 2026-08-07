@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/curve.hpp>
 
 using namespace godot;
 
@@ -18,9 +19,13 @@ void TextureSetResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_albedoTexture", "value"), &TextureSetResource::set_albedoTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_albedoTexture", "get_albedoTexture");
 
-    ClassDB::bind_method(D_METHOD("get_albedoMaskTexture"), &TextureSetResource::get_albedoMaskTexture);
-    ClassDB::bind_method(D_METHOD("set_albedoMaskTexture", "value"), &TextureSetResource::set_albedoMaskTexture);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoMaskTexture", PROPERTY_HINT_RESOURCE_TYPE, "GradientTexture1D"), "set_albedoMaskTexture", "get_albedoMaskTexture");
+    ClassDB::bind_method(D_METHOD("get_albedoColorMapTexture"), &TextureSetResource::get_albedoColorMapTexture);
+    ClassDB::bind_method(D_METHOD("set_albedoColorMapTexture", "value"), &TextureSetResource::set_albedoColorMapTexture);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoColorMapTexture", PROPERTY_HINT_RESOURCE_TYPE, "GradientTexture1D"), "set_albedoColorMapTexture", "get_albedoColorMapTexture");
+
+    ClassDB::bind_method(D_METHOD("get_albedoCurveTexture"), &TextureSetResource::get_albedoCurveTexture);
+    ClassDB::bind_method(D_METHOD("set_albedoCurveTexture", "value"), &TextureSetResource::set_albedoCurveTexture);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "albedoCurveTexture", PROPERTY_HINT_RESOURCE_TYPE, "CurveTexture"), "set_albedoCurveTexture", "get_albedoCurveTexture");
 
     ClassDB::bind_method(D_METHOD("get_normalTexture"), &TextureSetResource::get_normalTexture);
     ClassDB::bind_method(D_METHOD("set_normalTexture", "value"), &TextureSetResource::set_normalTexture);
@@ -113,11 +118,25 @@ void TextureSetResource::set_albedoTexture(const Ref<Texture2D> &value) {
     _albedoTexture = value;
 }
 
-Ref<GradientTexture1D> TextureSetResource::get_albedoMaskTexture() const {
-    return _albedoMaskTexture;
+Ref<GradientTexture1D> TextureSetResource::get_albedoColorMapTexture() const {
+    return _albedoColorMapTexture;
 }
-void TextureSetResource::set_albedoMaskTexture(const Ref<GradientTexture1D> &value) {
-    _albedoMaskTexture = value;
+void TextureSetResource::set_albedoColorMapTexture(const Ref<GradientTexture1D> &value) {
+    _albedoColorMapTexture = value;
+}
+
+Ref<CurveTexture> TextureSetResource::get_albedoCurveTexture() const {
+    return _albedoCurveTexture;
+}
+void TextureSetResource::set_albedoCurveTexture(const Ref<CurveTexture> &value) {
+    _albedoCurveTexture = value;
+
+    if (!value.is_null() && value->get_curve().is_null()) {
+        Ref<Curve> defaultCurve = memnew(Curve);
+        defaultCurve->add_point(Vector2(0, 0), 0.0, 1.0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
+        defaultCurve->add_point(Vector2(1, 1), 1.0, 0.0, Curve::TangentMode::TANGENT_LINEAR, Curve::TangentMode::TANGENT_LINEAR);
+        value->set_curve(defaultCurve);
+    }
 }
 
 Ref<Texture2D> TextureSetResource::get_normalTexture() const {

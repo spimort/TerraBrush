@@ -9,9 +9,11 @@ uniform sampler2DArray WaterTextures: hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
 uniform sampler2DArray Textures: source_color, filter_linear_mipmap;
 uniform sampler2DArray TexturesNearest: source_color, filter_nearest_mipmap;
-uniform sampler2DArray TextureMasks: hint_default_white, source_color, filter_linear_mipmap;
+uniform sampler2DArray TextureAlbedoColorMaps: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
+uniform sampler2DArray TextureAlbedoCurves: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
 uniform sampler2DArray Splatmaps: repeat_disable;
-uniform int[100] TextureAlbedoHasMasks;
+uniform int[100] TextureAlbedoHasColorMaps;
+uniform int[100] TextureAlbedoHasCurves;
 uniform int[100] TexturesDetail;
 uniform int NumberOfTextures;
 uniform sampler2DArray Normals: filter_linear_mipmap;
@@ -278,9 +280,15 @@ void calculateHeightmapFragment(
         vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(dominantTextureIndex));
 
         vec4 dominantTexture = vec4(0);
-		if (TextureAlbedoHasMasks[dominantTextureIndex] == 1) {
-			vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
-			dominantTexture = texture(TextureMasks, vec3(vec2(textureAlbedo.r), textureUV.z));						
+		if (TextureAlbedoHasColorMaps[dominantTextureIndex] == 1) {
+			vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+			float textureAlbedoSample = textureAlbedo.r;
+			
+			if (TextureAlbedoHasCurves[dominantTextureIndex] == 1) {
+				textureAlbedoSample = texture(TextureAlbedoCurves, vec3(vec2(textureAlbedoSample), textureUV.z)).r;
+			}			
+			
+			dominantTexture = texture(TextureAlbedoColorMaps, vec3(vec2(textureAlbedoSample), textureUV.z));						
 		} else {
 			dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
 		}
@@ -366,9 +374,15 @@ void calculateHeightmapFragment(
 			float currentMetallic = 0.0;
 			float currentSpecular = 0.0;
 
-			if (TextureAlbedoHasMasks[i] == 1) {
+			if (TextureAlbedoHasColorMaps[i] == 1) {
 				vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
-				currentTexture = texture(TextureMasks, vec3(vec2(textureAlbedo.r), textureUV.z));			
+				float textureAlbedoSample = textureAlbedo.r;
+				
+				if (TextureAlbedoHasCurves[i] == 1) {
+					textureAlbedoSample = texture(TextureAlbedoCurves, vec3(vec2(textureAlbedoSample), textureUV.z)).r;
+				}
+				
+				currentTexture = texture(TextureAlbedoColorMaps, vec3(vec2(textureAlbedoSample), textureUV.z));			
 			} else {
 				currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
 			}
