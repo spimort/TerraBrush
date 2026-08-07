@@ -201,7 +201,8 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Texture Sets|Let you define the textures of the terrain. **Be aware, that all the textures must be in the same format (ex. Mipmaps, compression mode, etc.)**. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**. You should create a **TextureSetsResource** which holds several **TextureSetResource**. A set will accept an Albedo, Normal and Roughness texture. You can create a resource file with the TextureSetsResource so you can reuse your textures with other terrain.|
 |TextureSetResource[x].Name|The name of the texture. This information is useful when you want to query the terrain to know the texture at a specific position.|
 |TextureSetResource[x].AlbedoTexture|The albedo texure of the set.|
-|TextureSetResource[x].AlbedoMaskTexture|Apply a gradient mask to the albedo texture (Gray scaled albedo texture works best).|
+|TextureSetResource[x].AlbedoColorMapTexture|Apply a gradient color map to the albedo texture (Gray scaled albedo texture works best).|
+|TextureSetResource[x].AlbedoCurveTexture|**Only available when using the `AlbedoColorMapTexture`**, allow you to modify the albedo sample to use with the color map using a `Curve`. For example, you could increase the black value with the curve.|
 |TextureSetResource[x].NormalTexture|The normal map texture of the set.|
 |TextureSetResource[x].RoughnessTexture|The roughness texture of the set.|
 |TextureSetResource[x].TextureDetail|This will determine how often your texture will be repeated on the terrain. A higher value means more repetitions. The default value is -1 to take the global TextureDetail of the terrain.|
