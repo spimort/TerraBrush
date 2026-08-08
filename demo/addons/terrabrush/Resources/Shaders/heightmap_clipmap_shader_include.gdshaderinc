@@ -3,23 +3,29 @@
 uniform bool ApplyLockTextures = false;
 uniform sampler2DArray ColorTextures: hint_default_transparent, repeat_disable;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
-uniform sampler2DArray LockTextures : hint_default_black;
+uniform sampler2DArray LockTextures: hint_default_black;
 #endif
-uniform sampler2DArray WaterTextures : hint_default_transparent, repeat_disable;
+uniform sampler2DArray WaterTextures: hint_default_transparent, repeat_disable;
 uniform float WaterFactor = 1;
-uniform sampler2DArray Textures : source_color, filter_linear_mipmap;
-uniform sampler2DArray TexturesNearest : source_color, filter_nearest_mipmap;
-uniform sampler2DArray Splatmaps : repeat_disable;
+uniform sampler2DArray Textures: source_color, filter_linear_mipmap;
+uniform sampler2DArray TexturesNearest: source_color, filter_nearest_mipmap;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+uniform sampler2DArray TextureAlbedoColorMaps: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
+uniform sampler2DArray TextureAlbedoCurves: hint_default_white, source_color, filter_linear_mipmap, repeat_disable;
+#endif
+uniform sampler2DArray Splatmaps: repeat_disable;
+uniform int[100] TextureAlbedoHasColorMaps;
+uniform int[100] TextureAlbedoHasCurves;
 uniform int[100] TexturesDetail;
 uniform int NumberOfTextures;
-uniform sampler2DArray Normals : filter_linear_mipmap;
-uniform sampler2DArray NormalsNearest : filter_nearest_mipmap;
+uniform sampler2DArray Normals: filter_linear_mipmap;
+uniform sampler2DArray NormalsNearest: filter_nearest_mipmap;
 uniform bool HasNormalTextures;
-uniform sampler2DArray RoughnessTextures : filter_linear_mipmap;
-uniform sampler2DArray RoughnessTexturesNearest : filter_nearest_mipmap;
+uniform sampler2DArray RoughnessTextures: filter_linear_mipmap;
+uniform sampler2DArray RoughnessTexturesNearest: filter_nearest_mipmap;
 uniform bool HasRoughnessTextures;
-uniform sampler2DArray HeightTextures : filter_linear_mipmap;
-uniform sampler2DArray HeightTexturesNearest : filter_nearest_mipmap;
+uniform sampler2DArray HeightTextures: filter_linear_mipmap;
+uniform sampler2DArray HeightTexturesNearest: filter_nearest_mipmap;
 uniform bool HasHeightTextures;
 uniform bool UseAntitile = true;
 uniform float BlendFactor;
@@ -275,8 +281,23 @@ void calculateHeightmapFragment(
         vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
         vec3 textureUV = vec3(worldVertexUV.x, worldVertexUV.y, float(dominantTextureIndex));
 
-        vec4 dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal,
-                                           Textures, TexturesNearest, false);
+        vec4 dominantTexture = vec4(0);
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY		
+		if (TextureAlbedoHasColorMaps[dominantTextureIndex] == 1) {
+			vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+			float textureAlbedoSample = textureAlbedo.r;
+			
+			if (TextureAlbedoHasCurves[dominantTextureIndex] == 1) {
+				textureAlbedoSample = texture(TextureAlbedoCurves, vec3(vec2(textureAlbedoSample), textureUV.z)).r;
+			}			
+			
+			dominantTexture = texture(TextureAlbedoColorMaps, vec3(vec2(textureAlbedoSample), textureUV.z));						
+		} else {
+			dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
+		}
+#else
+		dominantTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);					
+#endif		
 
         albedo = dominantTexture.rgb;
 
@@ -359,7 +380,23 @@ void calculateHeightmapFragment(
 			float currentMetallic = 0.0;
 			float currentSpecular = 0.0;
 
-            currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+			if (TextureAlbedoHasColorMaps[i] == 1) {
+				vec4 textureAlbedo = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+				float textureAlbedoSample = textureAlbedo.r;
+				
+				if (TextureAlbedoHasCurves[i] == 1) {
+					textureAlbedoSample = texture(TextureAlbedoCurves, vec3(vec2(textureAlbedoSample), textureUV.z)).r;
+				}
+				
+				currentTexture = texture(TextureAlbedoColorMaps, vec3(vec2(textureAlbedoSample), textureUV.z));			
+			} else {
+				currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);
+			}
+#else
+			currentTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal, Textures, TexturesNearest, false);			
+#endif			
+			
             currentRoughness = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_ROUGHNESS));
             currentHeight = vec4(currentTexture.a * float(AlbedoAlphaChannelUsage == ALPHA_CHANNEL_USAGE_HEIGHT));
             if (HasNormalTextures) {

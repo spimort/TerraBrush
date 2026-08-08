@@ -92,3 +92,7 @@ const StringName StringNames::SlopeTexturing() { return "SlopeTexturing"; }
 const StringName StringNames::SlopeTextureIndex() { return "SlopeTextureIndex"; }
 const StringName StringNames::SlopeTextureThreshold() { return "SlopeTextureThreshold"; }
 const StringName StringNames::ObjectUpdated() { return "ObjectUpdated"; }
+const StringName StringNames::TextureAlbedoColorMaps() { return "TextureAlbedoColorMaps"; }
+const StringName StringNames::TextureAlbedoHasColorMaps() { return "TextureAlbedoHasColorMaps"; }
+const StringName StringNames::TextureAlbedoCurves() { return "TextureAlbedoCurves"; }
+const StringName StringNames::TextureAlbedoHasCurves() { return "TextureAlbedoHasCurves"; }

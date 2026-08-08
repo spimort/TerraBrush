@@ -14,6 +14,7 @@
 #include <godot_cpp/classes/height_map_shape3d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/display_server.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/variant/typed_dictionary.hpp>
 
 using namespace godot;
@@ -375,7 +376,32 @@ void Terrain::updateTextures() {
     }
 
     if (!_textureSets.is_null() && _textureSets->get_textureSets().size() > 0) {
+        bool hasAlbedoColorMap = false;
+        bool hasAlbedoCurve = false;
+        for (Ref<TextureSetResource> textureSet : _textureSets->get_textureSets()) {
+            if (!textureSet->get_albedoColorMapTexture().is_null()) {
+                hasAlbedoColorMap = true;
+            }
+            if (!textureSet->get_albedoCurveTexture().is_null()) {
+                hasAlbedoCurve = true;
+            }
+        }
+
+        Ref<Texture2D> defaultAlbedoColorMapTexture = nullptr;
+        if (hasAlbedoColorMap) {
+            defaultAlbedoColorMapTexture = ImageTexture::create_from_image(Image::create_empty(256, 1, false, Image::Format::FORMAT_RGBA8));
+        }
+
+        Ref<Texture2D> defaultAlbedoCurveTexture = nullptr;
+        if (hasAlbedoCurve) {
+            defaultAlbedoCurveTexture = ImageTexture::create_from_image(Image::create_empty(256, 1, false, Image::Format::FORMAT_RGBF));
+        }
+
         TypedArray<Ref<Texture2D>> albedoTextures = TypedArray<Ref<Texture2D>>();
+        TypedArray<Ref<Texture2D>> albedoColorMapTextures = TypedArray<Ref<Texture2D>>();
+        TypedArray<int> textureAlbedoHasColorMaps = TypedArray<int>();
+        TypedArray<Ref<Texture2D>> albedoCurveTextures = TypedArray<Ref<Texture2D>>();
+        TypedArray<int> textureAlbedoHasCurves = TypedArray<int>();
         TypedArray<int> textureDetails = TypedArray<int>();
         TypedArray<int> texturesTriplanar = TypedArray<int>();
         TypedArray<float> texturesMetallic = TypedArray<float>();
@@ -392,6 +418,30 @@ void Terrain::updateTextures() {
             if (!textureSet->get_albedoTexture().is_null()) {
                 albedoTextures.append(textureSet->get_albedoTexture());
             }
+
+            if (hasAlbedoColorMap) {
+                if (textureSet->get_albedoColorMapTexture().is_null()) {
+                    albedoColorMapTextures.append(defaultAlbedoColorMapTexture);
+                    textureAlbedoHasColorMaps.append(0);
+                } else {
+                    albedoColorMapTextures.append(textureSet->get_albedoColorMapTexture());
+                    textureAlbedoHasColorMaps.append(1);
+                }
+            }
+
+            if (hasAlbedoCurve) {
+                if (textureSet->get_albedoCurveTexture().is_null()) {
+                    albedoCurveTextures.append(defaultAlbedoCurveTexture);
+                    textureAlbedoHasCurves.append(0);
+                } else {
+                    // The "get_image" function is not implemented on the Curved Texture, so we need to use the rendering server to get the image from the curve
+                    Ref<Texture2D> curveTexture = ImageTexture::create_from_image(RenderingServer::get_singleton()->texture_2d_get(textureSet->get_albedoCurveTexture()->get_rid()));
+
+                    albedoCurveTextures.append(curveTexture);
+                    textureAlbedoHasCurves.append(1);
+                }
+            }
+
             textureDetails.append(textureSet->get_textureDetail()  <= 0 ? _textureDetail : textureSet->get_textureDetail());
             if (textureSet->get_triplanar()) {
                 triplanar = true;
@@ -419,6 +469,18 @@ void Terrain::updateTextures() {
         if (albedoTextures.size() > 0) {
             textureArray = Utils::texturesToTextureArray(albedoTextures);
             _clipmap->get_shader()->set_shader_parameter("Textures" + filterParamName, textureArray);
+        }
+
+        if (albedoColorMapTextures.size() > 0) {
+            textureArray = Utils::texturesToTextureArray(albedoColorMapTextures);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureAlbedoColorMaps(), textureArray);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureAlbedoHasColorMaps(), textureAlbedoHasColorMaps);
+        }
+
+        if (albedoCurveTextures.size() > 0) {
+            textureArray = Utils::texturesToTextureArray(albedoCurveTextures);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureAlbedoCurves(), textureArray);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::TextureAlbedoHasCurves(), textureAlbedoHasCurves);
         }
 
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), textureDetails);

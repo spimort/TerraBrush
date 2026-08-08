@@ -42,3 +42,6 @@ demo/bin
 # Kate
 
 *.kate-swp
+
+# RadDBG
+terrabrush.raddbg
