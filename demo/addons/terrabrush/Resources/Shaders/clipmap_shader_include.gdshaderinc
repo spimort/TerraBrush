@@ -96,79 +96,40 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
 	worldVertex = vertex + modelMatrix[3].xyz - OffsetPosition;
 	
+	// We get the level here to get the cell size we are at right now
+	// The level is computed from the Color channel in the vertice, fromt he alpha channel	
 	int level = int(levelsMeta.a * 100.0);
-	float levelMultiplicator = exp2(float(level)) * InitialCellWidth;	
-	float nextLevelMultiplicator = exp2(float(level + 1)) * InitialCellWidth;	
+	float levelCellWidth = exp2(float(level)) * InitialCellWidth;	
 	
-	float xOffset = levelMultiplicator - mod(worldVertex.x, levelMultiplicator);
-	float zOffset = levelMultiplicator - mod(worldVertex.z, levelMultiplicator);
+	// We also grab the next level cell width to check if we overlap that level, to add some rows/columns
+	float nextLevelCellWidth = exp2(float(level + 1)) * InitialCellWidth;	
 		
+	// We snap the vertices to the cell width (at this point the vertices does not need to be anchored)
+	float xOffset = levelCellWidth - mod(worldVertex.x, levelCellWidth);
+	float zOffset = levelCellWidth - mod(worldVertex.z, levelCellWidth);
+	
 	vertex.x += xOffset;
 	vertex.z += zOffset;
 	
+	// We also move the worldVertex to make sure the calculateVertexHeight gets the height of the new position
 	worldVertex.x += xOffset;
 	worldVertex.z += zOffset;
 	
 	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));
 	
+	// Here is the part where we check if we need to hide the extra rows/columns
+	// If the horizontal or the vertical flag (1.0) is on, then we are on a edge
 	if (custom0.r > 0.0 || custom0.g > 0.0) {
 		// Anchor the world vertex to the corners, so we can check if the whole cell need to vanish
-		vec2 worldVertexAnchorPosition = vec2(worldVertex.x + (custom0.b * levelMultiplicator), worldVertex.z + (custom0.a * levelMultiplicator));
-		if (custom0.r > 0.0 && mod(worldVertexAnchorPosition.y, nextLevelMultiplicator) != 0.0) {
+		vec2 worldVertexAnchorPosition = vec2(worldVertex.x + (custom0.b * levelCellWidth), worldVertex.z + (custom0.a * levelCellWidth));
+		
+		// Check against the next levelCellWidth to check if we need to hide something, according to the anchor of the cell
+		if (custom0.r > 0.0 && mod(worldVertexAnchorPosition.y, nextLevelCellWidth) != 0.0) {
 			levelsMeta.r = -1.0;
 		}
 		
-		if (custom0.g > 0.0 && mod(worldVertexAnchorPosition.x, nextLevelMultiplicator) != 0.0) {
+		if (custom0.g > 0.0 && mod(worldVertexAnchorPosition.x, nextLevelCellWidth) != 0.0) {
 			levelsMeta.r = -1.0;
 		}		
 	}	
-	
-	if (mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
-		//xOffset *= -1.0;
-		//vertex.y += 1.0;
-	}
-	
-
- 	//if (levelsMeta.r > 0.25 && levelsMeta.r <= 0.5 && mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
-		//vertex.y += 1.0;
-		////levelsMeta.r = -1.0;
-	//}
-	//
- 	//if (levelsMeta.r > 0.5 && mod(worldVertex.z, nextLevelMultiplicator) != 0.0) {
-		//vertex.y += 1.0;
-		////levelsMeta.r = -1.0;
-	//}	
-	//
- 	//if (levelsMeta.r > 0.0 && levelsMeta.r <= 0.25 && (mod(worldVertex.x, nextLevelMultiplicator) != 0.0 || mod(worldVertex.z, nextLevelMultiplicator) != 0.0)) {
-		//vertex.y += 1.0;
-		////levelsMeta.r = -1.0;
-	//}	
-	
-	//if (custom0.r > 0.0 && mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
-		//vertex.y += 1.0;
-	//}
-	
-	
-	
-	//if (custom0.r > 0.0) {
-		//float checkHideEdgeVertexPosition = worldVertex.x;
-		//if (custom0.r > 1.0) {
-			//checkHideEdgeVertexPosition += levelMultiplicator;
-		//}
-		//if (mod(checkHideEdgeVertexPosition, nextLevelMultiplicator) != 0.0) {
-			//vertex.y += 1.0;			
-		//}
-	//}	
-	//
-	//if (custom0.g > 0.0) {
-		//float checkHideEdgeVertexPosition = worldVertex.z;
-		//if (custom0.g > 1.0) {
-			//checkHideEdgeVertexPosition += levelMultiplicator;
-		//}
-		//if (mod(checkHideEdgeVertexPosition, nextLevelMultiplicator) != 0.0) {
-			//vertex.y += 1.0;			
-		//}
-	//}		
-	
-
 }
