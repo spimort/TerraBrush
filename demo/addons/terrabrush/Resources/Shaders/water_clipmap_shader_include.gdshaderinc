@@ -41,11 +41,12 @@ float edge(float depth) {
 
 void calculateWaterVertex(
 	mat4 modelMatrix,
+	vec4 custom0,
 	inout vec4 color,
 	inout vec3 vertex,
 	inout vec3 worldVertex
 ) {
-	calculateVertex(modelMatrix, color, vertex, worldVertex);
+	calculateVertex(modelMatrix, custom0, color, vertex, worldVertex);
 
 	vec3 zoneUV = calculateZoneUV(worldVertex);
 	vec4 currentWaterColor = texture(WaterTextures, zoneUV);

@@ -93,8 +93,82 @@ float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2
 	return height;
 }
 
-void calculateVertex(mat4 modelMatrix, vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
+void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inout vec3 vertex, out vec3 worldVertex) {
 	worldVertex = vertex + modelMatrix[3].xyz - OffsetPosition;
-
+	
+	int level = int(levelsMeta.a * 100.0);
+	float levelMultiplicator = exp2(float(level)) * InitialCellWidth;	
+	float nextLevelMultiplicator = exp2(float(level + 1)) * InitialCellWidth;	
+	
+	float xOffset = levelMultiplicator - mod(worldVertex.x, levelMultiplicator);
+	float zOffset = levelMultiplicator - mod(worldVertex.z, levelMultiplicator);
+		
+	vertex.x += xOffset;
+	vertex.z += zOffset;
+	
+	worldVertex.x += xOffset;
+	worldVertex.z += zOffset;
+	
 	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));
+	
+	if (custom0.r > 0.0 || custom0.g > 0.0) {
+		// Anchor the world vertex to the corners, so we can check if the whole cell need to vanish
+		vec2 worldVertexAnchorPosition = vec2(worldVertex.x + (custom0.b * levelMultiplicator), worldVertex.z + (custom0.a * levelMultiplicator));
+		if (custom0.r > 0.0 && mod(worldVertexAnchorPosition.y, nextLevelMultiplicator) != 0.0) {
+			levelsMeta.r = -1.0;
+		}
+		
+		if (custom0.g > 0.0 && mod(worldVertexAnchorPosition.x, nextLevelMultiplicator) != 0.0) {
+			levelsMeta.r = -1.0;
+		}		
+	}	
+	
+	if (mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
+		//xOffset *= -1.0;
+		//vertex.y += 1.0;
+	}
+	
+
+ 	//if (levelsMeta.r > 0.25 && levelsMeta.r <= 0.5 && mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
+		//vertex.y += 1.0;
+		////levelsMeta.r = -1.0;
+	//}
+	//
+ 	//if (levelsMeta.r > 0.5 && mod(worldVertex.z, nextLevelMultiplicator) != 0.0) {
+		//vertex.y += 1.0;
+		////levelsMeta.r = -1.0;
+	//}	
+	//
+ 	//if (levelsMeta.r > 0.0 && levelsMeta.r <= 0.25 && (mod(worldVertex.x, nextLevelMultiplicator) != 0.0 || mod(worldVertex.z, nextLevelMultiplicator) != 0.0)) {
+		//vertex.y += 1.0;
+		////levelsMeta.r = -1.0;
+	//}	
+	
+	//if (custom0.r > 0.0 && mod(worldVertex.x, nextLevelMultiplicator) != 0.0) {
+		//vertex.y += 1.0;
+	//}
+	
+	
+	
+	//if (custom0.r > 0.0) {
+		//float checkHideEdgeVertexPosition = worldVertex.x;
+		//if (custom0.r > 1.0) {
+			//checkHideEdgeVertexPosition += levelMultiplicator;
+		//}
+		//if (mod(checkHideEdgeVertexPosition, nextLevelMultiplicator) != 0.0) {
+			//vertex.y += 1.0;			
+		//}
+	//}	
+	//
+	//if (custom0.g > 0.0) {
+		//float checkHideEdgeVertexPosition = worldVertex.z;
+		//if (custom0.g > 1.0) {
+			//checkHideEdgeVertexPosition += levelMultiplicator;
+		//}
+		//if (mod(checkHideEdgeVertexPosition, nextLevelMultiplicator) != 0.0) {
+			//vertex.y += 1.0;			
+		//}
+	//}		
+	
+
 }

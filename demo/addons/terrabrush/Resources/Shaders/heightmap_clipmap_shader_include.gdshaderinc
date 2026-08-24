@@ -119,6 +119,7 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 
 void calculateHeightmapVertex(
 	mat4 modelMatrix,
+	vec4 custom0,
 	inout vec4 color,
 	inout vec3 vertex,
 	inout vec3 normal,
@@ -127,7 +128,7 @@ void calculateHeightmapVertex(
 	inout vec3 triplanarPos,
 	inout vec3 triplanarPowerNormal
 ) {
-	calculateVertex(modelMatrix, color, vertex, worldVertex);
+	calculateVertex(modelMatrix, custom0, color, vertex, worldVertex);
 
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);

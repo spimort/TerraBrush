@@ -15,14 +15,15 @@ void vertex() {
 	_triplanarPowerNormal = vec3(0);
 	calculateHeightmapVertex(
 		MODEL_MATRIX,
+		CUSTOM0,
 		COLOR,
 		VERTEX,
-		NORMAL,
+		NORMAL,		
 		_worldVertex,
 		_worldNormal,
 		_triplanarPos,
 		_triplanarPowerNormal
-	);
+	);	
 }
 
 void fragment() {
@@ -37,4 +38,20 @@ void fragment() {
 		SPECULAR,
 		ROUGHNESS
 	);
+	
+ 	if (COLOR.r > 0.0 && COLOR.r < 0.5) {
+		ALBEDO = vec3(1, 0, 1);
+ 	} else if (COLOR.r > 0.0 && COLOR.r <= 0.5) {
+		ALBEDO = vec3(0, 1, 0);
+	} else 	if (COLOR.r > 0.5) {
+		ALBEDO = vec3(0, 0, 1);
+	}	
+	
+	if (COLOR.g > 0.0 || COLOR.b > 0.0) {
+		ALBEDO = vec3(1, 0, 0);
+	}	
+	
+	if (COLOR.r < 0.0) {
+		discard;
+	}
 }
