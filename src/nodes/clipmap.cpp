@@ -244,10 +244,14 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
         for (int z = 0; z < numberOfCells; z++) {
             addSquareVertices(vertices, uvs, x * width, z * width, width);
 
-            int globalXCellPosition = chunkPosition.x * (numberOfCells + x);
-            int globalZCellPosition = chunkPosition.y * (numberOfCells + z);
+            int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
+            int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
 
-            generateLevelEdges(colors, level, minCellValue, maxCellValue, globalXCellPosition, globalZCellPosition);
+            if (globalXCellPosition > minCellValue && globalZCellPosition > minCellValue) {
+                generateLevelEdges(colors, level, minCellValue + 1, maxCellValue, globalXCellPosition, globalZCellPosition);
+            } else {
+                generateLevelEdges(colors, level, minCellValue, maxCellValue, globalXCellPosition, globalZCellPosition);
+            }
 
             bool isEdge = false;
             if (chunkPosition.x == MinChunkPosition && x == 0 || chunkPosition.y == MinChunkPosition && z == 0) {
@@ -259,22 +263,14 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
         }
     }
 
-    float colorLevel = level / 100.0f;
-
     // Add an extra row/column to smooth the terrain transition
     if (chunkPosition.x == MaxChunkPosition) {
         for (int z = 0; z < numberOfCells; z++) {
+            int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
+
             addSquareVertices(vertices, uvs, numberOfCells * width, z * width, width);
-
-            int globalZCellPosition = chunkPosition.y * (numberOfCells + z);
-
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
+            // The -10000 here is only so we font find a corresponding edge here with the minimum value (we are already on the maximum row/column, so no need to compute the minimumValue)
+            generateLevelEdges(colors, level, -10000, maxCellValue, maxCellValue, globalZCellPosition);
 
             // Add the extra column (vertical), and the first is also considered as horizontal
             addCustom0CellData(custom0, true, chunkPosition.y == MinChunkPosition && z == 0, true, Vector2i(1, -1));
@@ -284,17 +280,11 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
     if (chunkPosition.y == MaxChunkPosition) {
         // Add one more to fill the join between the X and Z axis
         for (int x = 0; x < numberOfCells + 1; x++) {
+            int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
+
             addSquareVertices(vertices, uvs, x * width, numberOfCells * width, width);
-
-            int globalXCellPosition = chunkPosition.y * (numberOfCells + x);
-
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
-            colors.append(Color(0, 0, 0, colorLevel));
+            // The -10000 here is only so we font find a corresponding edge here with the minimum value (we are already on the maximum row/column, so no need to compute the minimumValue)
+            generateLevelEdges(colors, level, -10000, maxCellValue + 1, globalXCellPosition, maxCellValue + 1);
 
             // Last cell should be aligned with bottom right corner
             Vector2i edgeDirection = Vector2i(-1, 1);
@@ -385,13 +375,13 @@ Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedAr
 void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, int startIndex, int toIndex, int x, int z) {
     float colorLevel = level / 100.0f;
 
-    auto vertex0MidZone = (x == startIndex && z % 2 != 0) || (z == startIndex && x % 2 != 0);
-    auto vertex1MidZone = (x == toIndex && z % 2 != 0) || (z == startIndex && x % 2 == 0);
-    auto vertex2MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
+    auto vertex0MidZone = (x == startIndex) || (z == startIndex);
+    auto vertex1MidZone = (x == toIndex) || (z == startIndex);
+    auto vertex2MidZone = (x == startIndex) || (z == toIndex);
 
-    auto vertex3MidZone = (x == toIndex && z % 2 != 0) || (z == startIndex && x % 2 == 0);
-    auto vertex4MidZone = (x == toIndex && z % 2 == 0) || (z == toIndex && x % 2 == 0);
-    auto vertex5MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
+    auto vertex3MidZone = (x == toIndex) || (z == startIndex);
+    auto vertex4MidZone = (x == toIndex) || (z == toIndex);
+    auto vertex5MidZone = (x == startIndex) || (z == toIndex);
 
     colors.append(Color(0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, colorLevel));
     colors.append(Color(0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, colorLevel));

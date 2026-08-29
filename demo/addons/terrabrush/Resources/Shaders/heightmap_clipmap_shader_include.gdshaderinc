@@ -141,10 +141,11 @@ void calculateHeightmapVertex(
 
 	if (WaterFactor > 0.0) {
 		vec4 levelsMeta = color;
+		vec3 zoneUV = calculateZoneUV(worldVertex);
+		
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
-			vertex.y -= calculateMidZoneHeightValue(WaterTextures, levelsMeta, worldVertex) * WaterFactor;
-		} else {
-			vec3 zoneUV = calculateZoneUV(worldVertex);
+			vertex.y -= calculateMidZoneHeightValue(WaterTextures, levelsMeta, worldVertex, zoneUV) * WaterFactor;
+		} else {			
 			vec4 waterTexture = texture(WaterTextures, zoneUV);
 			vertex.y -= waterTexture.r * WaterFactor;
 		}
