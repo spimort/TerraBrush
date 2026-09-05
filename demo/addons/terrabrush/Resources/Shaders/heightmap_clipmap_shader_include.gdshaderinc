@@ -262,6 +262,7 @@ void calculateHeightmapFragment(
 	vec3 worldNormal,
 	vec3 triplanarPos,
 	vec3 triplanarPowerNormal,
+	vec4 levelsMeta,
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float metallic,
@@ -269,6 +270,20 @@ void calculateHeightmapFragment(
 	inout float roughness
 ) {
 	vec3 zoneUV = calculateZoneUV(worldVertex);
+		
+	if (levelsMeta.r < 0.0) {
+		discard;
+		return;
+	} else if (zoneUV.z < 0.0) {
+        discard;
+		return;
+    } else {
+        float hole = texture(HeightmapTextures, zoneUV).g;
+        if (hole > 0.0) {
+            discard;
+			return;
+        }
+    }	
 
 	if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
@@ -473,13 +488,4 @@ void calculateHeightmapFragment(
 		}
     }
 #endif
-
-    if (zoneUV.z < 0.0) {
-        discard;
-    } else {
-        float hole = texture(HeightmapTextures, zoneUV).g;
-        if (hole > 0.0) {
-            discard;
-        }
-    }
 }

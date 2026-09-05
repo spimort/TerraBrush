@@ -247,11 +247,14 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
             int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
             int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
 
-            if (globalXCellPosition > minCellValue && globalZCellPosition > minCellValue) {
-                generateLevelEdges(colors, level, minCellValue + 1, maxCellValue, globalXCellPosition, globalZCellPosition);
-            } else {
-                generateLevelEdges(colors, level, minCellValue, maxCellValue, globalXCellPosition, globalZCellPosition);
-            }
+            generateLevelEdges(
+                colors,
+                level,
+                globalXCellPosition == minCellValue || globalXCellPosition == minCellValue + 1,
+                globalZCellPosition == minCellValue || globalZCellPosition == minCellValue + 1,
+                globalXCellPosition == maxCellValue,
+                globalZCellPosition == maxCellValue
+            );
 
             bool isEdge = false;
             if (chunkPosition.x == MinChunkPosition && x == 0 || chunkPosition.y == MinChunkPosition && z == 0) {
@@ -269,8 +272,14 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
             int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
 
             addSquareVertices(vertices, uvs, numberOfCells * width, z * width, width);
-            // The -10000 here is only so we font find a corresponding edge here with the minimum value (we are already on the maximum row/column, so no need to compute the minimumValue)
-            generateLevelEdges(colors, level, -10000, maxCellValue, maxCellValue, globalZCellPosition);
+            generateLevelEdges(
+                colors,
+                level,
+                false,
+                (z == 0 || z == 1) && chunkPosition.y == MinChunkPosition,
+                true,
+                z == numberOfCells && chunkPosition.y == MaxChunkPosition
+            );
 
             // Add the extra column (vertical), and the first is also considered as horizontal
             addCustom0CellData(custom0, true, chunkPosition.y == MinChunkPosition && z == 0, true, Vector2i(1, -1));
@@ -283,8 +292,14 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
             int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
 
             addSquareVertices(vertices, uvs, x * width, numberOfCells * width, width);
-            // The -10000 here is only so we font find a corresponding edge here with the minimum value (we are already on the maximum row/column, so no need to compute the minimumValue)
-            generateLevelEdges(colors, level, -10000, maxCellValue + 1, globalXCellPosition, maxCellValue + 1);
+            generateLevelEdges(
+                colors,
+                level,
+                (x == 0 || x == 1) && chunkPosition.x == MinChunkPosition,
+                false,
+                (x == numberOfCells || x == numberOfCells - 1) && chunkPosition.x == MaxChunkPosition,
+                true
+            );
 
             // Last cell should be aligned with bottom right corner
             Vector2i edgeDirection = Vector2i(-1, 1);
@@ -372,24 +387,37 @@ Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedAr
     return arrayMesh;
 }
 
-void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, int startIndex, int toIndex, int x, int z) {
+void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, bool left, bool top, bool right, bool bottom) {
     float colorLevel = level / 100.0f;
 
-    auto vertex0MidZone = (x == startIndex) || (z == startIndex);
-    auto vertex1MidZone = (x == toIndex) || (z == startIndex);
-    auto vertex2MidZone = (x == startIndex) || (z == toIndex);
+    // Just a reminder here to make it easier to investigate
+    /* Square made of 2 triangles
+        0  -  -  1
+        |     /  |
+        |  /     |
+        2  -  -  -
 
-    auto vertex3MidZone = (x == toIndex) || (z == startIndex);
-    auto vertex4MidZone = (x == toIndex) || (z == toIndex);
-    auto vertex5MidZone = (x == startIndex) || (z == toIndex);
+        -  -  -  3
+        |     /  |
+        |  /     |
+        5  -  -  4
+    */
 
-    colors.append(Color(0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, colorLevel));
-    colors.append(Color(0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, colorLevel));
-    colors.append(Color(0, vertex2MidZone && z == toIndex ? 1 : 0, vertex2MidZone && x == startIndex ? 1 : 0, colorLevel));
+    auto vertex0MidZone = left || top;
+    auto vertex1MidZone = top || right;
+    auto vertex2MidZone = left || bottom;
 
-    colors.append(Color(0, vertex3MidZone && z == startIndex ? 1 : 0, vertex3MidZone && x == toIndex ? 1 : 0, colorLevel));
-    colors.append(Color(0, vertex4MidZone && z == toIndex ? 1 : 0, vertex4MidZone && x == toIndex ? 1 : 0, colorLevel));
-    colors.append(Color(0, vertex5MidZone && z == toIndex ? 1 : 0, vertex5MidZone && x == startIndex ? 1 : 0, colorLevel));
+    auto vertex3MidZone = top || right;
+    auto vertex4MidZone = right || bottom;
+    auto vertex5MidZone = left || bottom;
+
+    colors.append(Color(0, vertex0MidZone && top ? 1.0 : 0.0, vertex0MidZone && left ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex1MidZone && top ? 1.0 : 0.0, vertex1MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex2MidZone && bottom ? 1.0 : 0.0, vertex2MidZone && left ? 1.0 : 0.0, colorLevel));
+
+    colors.append(Color(0, vertex3MidZone && top ? 1.0 : 0.0, vertex3MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex4MidZone && bottom ? 1.0 : 0.0, vertex4MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex5MidZone && bottom ? 1.0 : 0.0, vertex5MidZone && left ? 1.0 : 0.0, colorLevel));
 }
 
 void Clipmap::addSquareVertices(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, float xPosition, float zPosition, float width) {
