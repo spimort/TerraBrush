@@ -120,7 +120,7 @@ void calculateWaterFragment(
 	inout float metallic,
 	inout float roughness
 ) {
-	if (color.r >= 0.0f) {
+	if (color.r > 0.0f) {
 		vec3 zoneUV = calculateZoneUV(worldVertex);		
 		
 		if (zoneUV.z < 0.0) {
