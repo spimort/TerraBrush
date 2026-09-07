@@ -136,22 +136,6 @@ void Clipmap::updateClipmapMeshPosition(Vector3 position) {
 
     Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
     _meshesContainer->set_global_position(newPosition);
-
-
-    // float maxCellWidth = _initialCellWidth * Math::pow(2.0, _levels - 1);
-
-    // xPosition -= Math::fmod(xPosition, maxCellWidth);
-    // zPosition -= Math::fmod(zPosition, maxCellWidth);
-
-    // if (isEven) {
-    //     xPosition -= _initialCellWidth / 2.0f;
-    //     zPosition -= _initialCellWidth / 2.0f;
-    // }
-
-    // Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
-    // if (newPosition.distance_to(_meshesContainer->get_global_position()) > maxCellWidth) {
-    //     _meshesContainer->set_global_position(newPosition);
-    // }
 }
 
 void Clipmap::clearMesh() {
@@ -332,7 +316,7 @@ void Clipmap::generateFullMesh() {
     }
 
     for (auto i = 0; i < _levels; i++) {
-        generateLevel(vertices, uvs, colors, i + 1, rowsPerLevel, _initialCellWidth);
+        generateLevel(vertices, uvs, colors, custom0, i + 1, rowsPerLevel, _initialCellWidth);
     }
 
     Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors, custom0);
@@ -341,7 +325,7 @@ void Clipmap::generateFullMesh() {
     updateAABB();
 }
 
-void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth) {
+void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth) {
     auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
 
     auto startIndex = -1 - rowsPerLevel;
@@ -360,9 +344,62 @@ void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &
                 (z > ((rowsPerLevel - upperOffsetIndex) / 2) && z <= toIndex)
             ) {
                 addSquareVertices(vertices, uvs, x * width, z * width, width);
-                generateLevelEdges(colors, level, startIndex, toIndex, x, z);
+                generateLevelEdges(
+                    colors,
+                    level,
+                    x == startIndex || x == startIndex + 1,
+                    z == startIndex || z == startIndex + 1,
+                    x == toIndex,
+                    z == toIndex
+                );
+
+                bool isEdge = false;
+                if (x == startIndex || z == startIndex) {
+                    isEdge = true;
+                }
+
+                // Add the extra row/column info (these are not actual extra row/column but they are in the edges so they will be hidden in some situations), the first cell is considered both horizontal and vertical
+                addCustom0CellData(custom0, isEdge, z == startIndex, x == startIndex, Vector2i(-1, -1));
             }
         }
+    }
+
+    // Add an extra row/column to smooth the terrain transition
+    for (int z = startIndex; z <= toIndex; z++) {
+        addSquareVertices(vertices, uvs, (toIndex + 1) * width, z * width, width);
+        generateLevelEdges(
+            colors,
+            level,
+            false,
+            z == startIndex || z == startIndex + 1,
+            true,
+            z == toIndex
+        );
+
+        // Add the extra column (vertical), and the first is also considered as horizontal
+        addCustom0CellData(custom0, true, z == startIndex, true, Vector2i(1, -1));
+    }
+
+    // Add one more to fill the join between the X and Z axis
+    for (int x = startIndex; x <= toIndex + 1; x++) {
+        addSquareVertices(vertices, uvs, x * width, (toIndex + 1) * width, width);
+        generateLevelEdges(
+            colors,
+            level,
+            x == startIndex || x == startIndex + 1,
+            false,
+            x == toIndex || x == toIndex + 1,
+            true
+        );
+
+        // Last cell should be aligned with bottom right corner
+        Vector2i edgeDirection = Vector2i(-1, 1);
+        if (x == toIndex + 1) {
+            edgeDirection.x = 1;
+        }
+
+        // Add the extra row (horizontal), and the first and the last cell are also considered as vertical
+        addCustom0CellData(custom0, true, true, x == startIndex || x == toIndex + 1, edgeDirection);
     }
 }
 

@@ -30,7 +30,7 @@ private:
 
     Vector3 getCameraPosition();
     void updateClipmapMeshPosition(Vector3 position);
-    void generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth);
+    void generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth);
     Vector2 generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition);
     void generateLevelEdges(TypedArray<Color> &colors, int level, bool left, bool top, bool right, bool bottom);
     void addSquareVertices(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, float xPosition, float zPosition, float width);

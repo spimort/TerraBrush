@@ -39,24 +39,4 @@ void fragment() {
 		SPECULAR,
 		ROUGHNESS
 	);
-	
- 	//if (COLOR.r > 0.0 && COLOR.r < 0.5) {
-		//ALBEDO = vec3(1, 0, 1);
- 	//} else if (COLOR.r > 0.0 && COLOR.r <= 0.5) {
-		//ALBEDO = vec3(0, 1, 0);
-	//} else 	if (COLOR.r > 0.5) {
-		//ALBEDO = vec3(0, 0, 1);
-	//}	
-	//
-	//if (COLOR.g > 0.0 || COLOR.b > 0.0) {
-		//ALBEDO = vec3(1, 0, 0);
-	//}	
-	
-	//if (COLOR.g > 0.0) {
-		//ALBEDO = vec3(1, 0, 0);
-	//}
-	//
-	//if (COLOR.b > 0.0) {
-		//ALBEDO = vec3(0, 1, 0);
-	//}	
 }

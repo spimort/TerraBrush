@@ -40,7 +40,7 @@ float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3
 		}
 	}
 
-	return texture(HeightmapTextures, zoneUV).r;
+	return texture(textures, zoneUV).r;
 }
 
 float calculateVertexHeight(vec4 levelsMeta, vec3 vertex, vec3 worldVertex, vec2 offset) {
