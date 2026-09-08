@@ -37,7 +37,7 @@ void calculateSnowVertex(
 			
 			if (currentSnowColor.a < 1.0) {
 				vertex.x += currentSnowColor.g;
-				vertex.z += currentSnowColor.b;		
+				vertex.z += currentSnowColor.b;
 			}
 
 			color = vec4(currentSnowColor.r, currentSnowColor.g, currentSnowColor.b, 1.0);

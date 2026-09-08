@@ -125,16 +125,7 @@ void Clipmap::updateEditorCameraPosition(Camera3D *viewportCamera) {
 }
 
 void Clipmap::updateClipmapMeshPosition(Vector3 position) {
-    float offset = 0.0f;
-    bool isEven = _zonesSize % 2 == 0;
-    if (isEven) {
-        offset = _initialCellWidth / 2.0f;
-    }
-
-    float xPosition = ((int) Math::floor(position.x)) + offset;
-    float zPosition = ((int) Math::floor(position.z)) + offset;
-
-    Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
+    Vector3 newPosition = Vector3(position.x, get_global_position().y, position.z);
     _meshesContainer->set_global_position(newPosition);
 }
 
@@ -213,7 +204,7 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     _meshesContainer->add_child(chunkMesh);
 
     AABB customAABB = chunkMesh->get_aabb();
-    customAABB.set_size(Vector3(customAABB.get_size().x, _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z));
+    customAABB.set_size(Vector3(customAABB.get_size().x + (level * _initialCellWidth), _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z + (level * _initialCellWidth)));
     chunkMesh->set_custom_aabb(customAABB);
 }
 

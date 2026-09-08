@@ -121,7 +121,7 @@ void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inou
 		
 	// We snap the vertices to the cell width (at this point the vertices does not need to be anchored)
 	float xOffset = levelCellWidth - mod(worldVertex.x, levelCellWidth);
-	float zOffset = levelCellWidth - mod(worldVertex.z, levelCellWidth);
+	float zOffset = levelCellWidth - mod(worldVertex.z, levelCellWidth);	
 	
 	vertex.x += xOffset;
 	vertex.z += zOffset;
@@ -145,6 +145,16 @@ void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inou
 			levelsMeta.r = -1.0;
 		}
 	}
+	
+	// If we are on an even zoneSize, we need to offset each cells
+	if (mod(ZonesSize, 2.0) == 0.0) {
+		float evenOffset = InitialCellWidth / 2.0;
+		vertex.x += evenOffset; 
+		vertex.z += evenOffset;
+		
+		worldVertex.x += evenOffset;
+		worldVertex.z += evenOffset;		
+	}	
 	
 	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));	
 }
