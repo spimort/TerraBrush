@@ -56,7 +56,14 @@ void calculateWaterVertex(
 			vertex.y -= WaterInnerOffset;
 
 			vec4 levelsMeta = color;
+			bool hasAverageHeight = false;
 			if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+				// Since we offset when we are on even zone size, we need to "deoffset" it to calculate the midzone
+				float evenOffset = 0.0;
+				if (mod(ZonesSize, 2.0) == 0.0) {
+					evenOffset = InitialCellWidth / 2.0;
+				}				
+					
 				// Calculate mid zones water height
 				int level = int(levelsMeta.a * 100.0);
 				float levelMultiplicator = exp2(float(level));
@@ -68,11 +75,11 @@ void calculateWaterVertex(
 				// Check if we are between two of the next level vertices, so we can make the average of both (-1, 1) vertices
 				// Also check that on the other axis, we are on the row/column that is visible
 				// Same thing for the other axis
-				if (levelsMeta.g > 0.0 && mod(worldVertex.x, nextLevelCellWidth) != 0.0 && mod(worldVertex.z, nextLevelCellWidth) == 0.0) {
+				if (levelsMeta.g > 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) == 0.0) {
 					neighbourMeta.x = 1.0;
 				}
 				
-				if (levelsMeta.b > 0.0 && mod(worldVertex.z, nextLevelCellWidth) != 0.0 && mod(worldVertex.x, nextLevelCellWidth) == 0.0) {
+				if (levelsMeta.b > 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) == 0.0) {
 					neighbourMeta.y = 1.0;
 				}
 					
@@ -87,8 +94,12 @@ void calculateWaterVertex(
 					float nextHeight = texture(Wave, (nextWorldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
 
 					vertex.y += ((previousHeight + nextHeight) / 2.0) * HeightScale;
+					
+					hasAverageHeight = true;
 				}
-			} else {
+			}
+			
+			if (!hasAverageHeight) {
 				float height = texture(Wave, (worldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
 				vertex.y += height * HeightScale;
 			}

@@ -7,6 +7,12 @@ uniform vec3 OffsetPosition;
 float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3 worldVertex, vec3 zoneUV) {
 	// Calculate the average height for mid zone vertices
 	if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+		// Since we offset when we are on even zone size, we need to "deoffset" it to calculate the midzone
+		float evenOffset = 0.0;
+		if (mod(ZonesSize, 2.0) == 0.0) {
+			evenOffset = InitialCellWidth / 2.0;
+		}			
+		
 		int level = int(levelsMeta.a * 100.0);
 		float levelMultiplicator = exp2(float(level));
 
@@ -17,11 +23,11 @@ float calculateMidZoneHeightValue(sampler2DArray textures, vec4 levelsMeta, vec3
 		// Check if we are between two of the next level vertices, so we can make the average of both (-1, 1) vertices
 		// Also check that on the other axis, we are on the row/column that is visible
 		// Same thing for the other axis
-		if (levelsMeta.g > 0.0 && mod(worldVertex.x, nextLevelCellWidth) != 0.0 && mod(worldVertex.z, nextLevelCellWidth) == 0.0) {
+		if (levelsMeta.g > 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) == 0.0) {
 			neighbourMeta.x = 1.0;
 		}
 		
-		if (levelsMeta.b > 0.0 && mod(worldVertex.z, nextLevelCellWidth) != 0.0 && mod(worldVertex.x, nextLevelCellWidth) == 0.0) {
+		if (levelsMeta.b > 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) == 0.0) {
 			neighbourMeta.y = 1.0;
 		}		
 		
@@ -145,7 +151,7 @@ void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inou
 			levelsMeta.r = -1.0;
 		}
 	}
-	
+
 	// If we are on an even zoneSize, we need to offset each cells
 	if (mod(ZonesSize, 2.0) == 0.0) {
 		float evenOffset = InitialCellWidth / 2.0;
@@ -154,7 +160,7 @@ void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inou
 		
 		worldVertex.x += evenOffset;
 		worldVertex.z += evenOffset;		
-	}	
-	
-	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));	
+	}
+
+	vertex.y = calculateVertexHeight(levelsMeta, vertex, worldVertex, vec2(0.0));			
 }
