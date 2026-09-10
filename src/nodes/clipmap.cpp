@@ -573,7 +573,7 @@ void Clipmap::updateShaderOffsetPosition() {
 // - G : Are we in a vertical extra row/column situation, if so, 1
 // - B : The direction we need to move the vertice in the X axis to reach the target corner (in the shader, this is multiplied by the cell size)
 // - A : The direction we need to move the vertice in the Z axis to reach the target corner (in the shader, this is multiplied by the cell size)
-// G and R can be both 1 at the some time if we are in a situation where we are in a corner cell and the cell if both at the same time
+// G and R can be both 1 at the same time if we are in a situation where we are in a corner cell and the cell if both at the same time
 void Clipmap::addCustom0CellData(TypedArray<float> &custom0, bool isEdge, bool isHorizontal, bool isVertical, Vector2i edgeCellDirection) {
     if (isEdge) {
         // Edge is based on the 2 triangles that we make in the addSquareVertices function :
