@@ -118,7 +118,7 @@ void calculateVertex(mat4 modelMatrix, vec4 custom0, inout vec4 levelsMeta, inou
 	worldVertex = vertex + modelMatrix[3].xyz - OffsetPosition;
 	
 	// We get the level here to get the cell size we are at right now
-	// The level is computed from the Color channel in the vertice, fromt he alpha channel	
+	// The level is computed from the Color channel in the vertice, from he alpha channel	
 	int level = int(levelsMeta.a * 100.0);
 	float levelCellWidth = exp2(float(level)) * InitialCellWidth;	
 	
