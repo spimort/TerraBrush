@@ -21,6 +21,7 @@ private:
     Ref<ShaderMaterial> _foliageShader = nullptr;
     Vector3 _lastUpdatedPosition = Vector3();
     Ref<Texture2D> _defaultNoise = nullptr;
+    Node3D *_lodCustomTarget = nullptr;
 
     Node3D *_multiMeshInstancesContainer = nullptr;
     GPUParticles3D *_particles = nullptr;
@@ -61,6 +62,7 @@ public:
 	void set_textureDetail(const int value);
     void set_waterFactor(const float value);
     void set_definition(const Ref<FoliageDefinitionResource> &value);
+    void set_lodCustomTarget(const Node3D *value);
 
     void updateAABB();
     void updateEditorCameraPosition(Camera3D *viewportCamera = nullptr, bool forceUpdate = false);

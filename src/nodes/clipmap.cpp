@@ -33,8 +33,8 @@ void Clipmap::_ready() {
     set_notify_transform(true);
 }
 
-void Clipmap::_process(double delta) {
-    if (!Engine::get_singleton()->is_editor_hint()) {
+void Clipmap::_physics_process(double delta) {
+    if (!Engine::get_singleton()->is_editor_hint() || _lodCustomTarget != nullptr) {
         Vector3 cameraPosition = getCameraPosition();
         updateClipmapMeshPosition(cameraPosition);
     }
@@ -96,6 +96,10 @@ void Clipmap::set_initialCellWidth(const float value) {
     _initialCellWidth = value;
 }
 
+void Clipmap::set_lodCustomTarget(const Node3D *value) {
+    _lodCustomTarget = const_cast<Node3D*>(value);
+}
+
 int Clipmap::get_visualInstanceLayers() const {
     return _visualInstanceLayers;
 }
@@ -111,6 +115,10 @@ void Clipmap::set_shader(const Ref<ShaderMaterial> &value) {
 }
 
 Vector3 Clipmap::getCameraPosition() {
+    if (_lodCustomTarget != nullptr) {
+        return _lodCustomTarget->get_global_position();
+    }
+
     Viewport *viewport = get_viewport();
     if (viewport == nullptr) return Vector3(0.0, 0.0, 0.0);
 

@@ -54,6 +54,7 @@ private:
     int _lodLevels = 0;
     int _lodRowsPerLevel = 0;
     float _lodInitialCellWidth = 0;
+    Node3D *_lodCustomTarget = nullptr;
 
     // Collision settings
     bool _createCollisionInThread = false;
@@ -101,6 +102,7 @@ private:
     void createMetaInfo();
     void initializeImagesForTerrain(Ref<ZoneResource> zone);
     void raiseInitializedEvent();
+    void updateLODCustomTarget();
 
 protected:
     static void _bind_methods();
@@ -147,6 +149,9 @@ public:
 
     float get_lodInitialCellWidth() const;
     void set_lodInitialCellWidth(const float value);
+
+    Node3D *get_lodCustomTarget() const;
+    void set_lodCustomTarget(const Node3D *value);
 
     bool get_createCollisionInThread() const;
     void set_createCollisionInThread(const bool value);

@@ -16,6 +16,7 @@ class Clipmap : public Node3D {
 private:
     Ref<ShaderMaterial> _clipmapShader = nullptr;
     Node3D *_meshesContainer = nullptr;
+    Node3D *_lodCustomTarget = nullptr;
 
     int _zonesSize = 0;
     int _resolution = 0;
@@ -55,7 +56,7 @@ public:
     ~Clipmap();
 
     void _ready() override;
-    void _process(double delta) override;
+    void _physics_process(double delta) override;
 
     int get_zonesSize() const;
     void set_zonesSize(const int value);
@@ -80,6 +81,8 @@ public:
 
     float get_initialCellWidth() const;
     void set_initialCellWidth(const float value);
+
+    void set_lodCustomTarget(const Node3D *value);
 
     int get_visualInstanceLayers() const;
     void set_visualInstanceLayers(const int value);
