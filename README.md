@@ -193,6 +193,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |LOD Levels|The number of levels the clipmap will be made of. The default value is 5.|
 |LOD Rows Per Level|The number of rows per level. This is a base number, depending on the level, there might be more rows (ex. the first level is a little bit different so it has more cells). The default value is 101.|
 |LOD Initial Cell Width|The initial size of the cell. Each level will double the size of the previous level cell' size. the default value is 1.0 (1 meter)|
+|LOD Custom Target|Set a custom target node for the LOD to center on, instead of the camera. It will apply to the terrain, the water, the snow, the foliages and the octree objects.|
 |**Collisions**||
 |Create Collision In Thread|Create the collision shape in a thread. This helps a lot when editing the terrain. This also means that the collision could appear late compared to the terrain. The default value is true.|
 |Collision Layers|The terrain collision layers|
