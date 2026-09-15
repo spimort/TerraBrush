@@ -107,6 +107,15 @@ public partial class TerraBrush : Node {
         }
     }
 
+    public Node3D LODCustomTarget {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_lodCustomTarget").As<Node3D>();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_lodCustomTarget", value);
+        }
+    }
+
     public bool CreateCollisionInThread {
         get {
             return _godotHandle.AsGodotObject().Call("get_createCollisionInThread").AsBool();

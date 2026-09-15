@@ -88,7 +88,7 @@ void Foliage::_ready() {
 }
 
 void Foliage::_physics_process(double delta) {
-    if (!Engine::get_singleton()->is_editor_hint()) {
+    if (!Engine::get_singleton()->is_editor_hint() || _lodCustomTarget != nullptr) {
         updateEditorCameraPosition();
     }
 }
@@ -233,6 +233,11 @@ void Foliage::updateFoliage() {
 }
 
 void Foliage::updateEditorCameraPosition(Camera3D *viewportCamera, bool forceUpdate) {
+    if (_lodCustomTarget != nullptr) {
+        updateFoliagePosition(_lodCustomTarget->get_global_position(), forceUpdate);
+        return;
+    }
+
     Camera3D *camera = nullptr;
     if (viewportCamera == nullptr) {
         if (Engine::get_singleton()->is_editor_hint()) {
@@ -454,4 +459,8 @@ Vector2 Foliage::generateChunkedLevel(PackedFloat32Array &buffer, int level, int
     }
 
     return Vector2(numberOfCells, width);
+}
+
+void Foliage::set_lodCustomTarget(const Node3D *value) {
+    _lodCustomTarget = const_cast<Node3D*>(value);
 }

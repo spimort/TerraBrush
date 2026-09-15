@@ -86,6 +86,10 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_lodInitialCellWidth", "value"), &TerraBrush::set_lodInitialCellWidth);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "lodInitialCellWidth"), "set_lodInitialCellWidth", "get_lodInitialCellWidth");
 
+    ClassDB::bind_method(D_METHOD("get_lodCustomTarget"), &TerraBrush::get_lodCustomTarget);
+    ClassDB::bind_method(D_METHOD("set_lodCustomTarget", "value"), &TerraBrush::set_lodCustomTarget);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "lodCustomTarget", PROPERTY_HINT_NODE_TYPE, "Node3D"), "set_lodCustomTarget", "get_lodCustomTarget");
+
     ADD_GROUP("Collisions", "");
 
     ClassDB::bind_method(D_METHOD("get_createCollisionInThread"), &TerraBrush::get_createCollisionInThread);
@@ -429,6 +433,15 @@ void TerraBrush::set_lodInitialCellWidth(const float value) {
     _lodInitialCellWidth = value;
 }
 
+Node3D *TerraBrush::get_lodCustomTarget() const {
+    return _lodCustomTarget;
+}
+void TerraBrush::set_lodCustomTarget(const Node3D *value) {
+    _lodCustomTarget =  const_cast<Node3D*>(value);
+
+    updateLODCustomTarget();
+}
+
 bool TerraBrush::get_createCollisionInThread() const {
     return _createCollisionInThread;
 }
@@ -667,6 +680,8 @@ void TerraBrush::loadTerrain() {
     }
 
     createMetaInfo();
+
+    updateLODCustomTarget();
 }
 
 void TerraBrush::createFoliages() {
@@ -1042,6 +1057,10 @@ void TerraBrush::updateObjectsHeight(TypedArray<Ref<ZoneResource>> zones) {
 }
 
 void TerraBrush::updateCameraPosition(Camera3D *viewportCamera) {
+    if (_lodCustomTarget != nullptr) {
+        return;
+    }
+
     if (_terrain != nullptr) {
         _terrain->get_clipmap()->updateEditorCameraPosition(viewportCamera);
     }
@@ -1055,7 +1074,7 @@ void TerraBrush::updateCameraPosition(Camera3D *viewportCamera) {
     if (_foliagesNode != nullptr) {
         for (int i = 0; i < _foliagesNode->get_child_count(); i++) {
             Foliage *foliageNode = Object::cast_to<Foliage>(_foliagesNode->get_child(i));
-            foliageNode->updateEditorCameraPosition();
+            foliageNode->updateEditorCameraPosition(viewportCamera);
         }
     }
 }
@@ -1423,5 +1442,35 @@ void TerraBrush::onObjectUpdated(const int objectIndex) {
     if (!_objectsInitialized[objectIndex]) {
         _objectsInitialized[objectIndex] = true;
         raiseInitializedEvent();
+    }
+}
+
+void TerraBrush::updateLODCustomTarget() {
+    if (_terrain != nullptr) {
+        _terrain->get_clipmap()->set_lodCustomTarget(_lodCustomTarget);
+    }
+
+    if (_waterNode != nullptr) {
+        _waterNode->get_clipmap()->set_lodCustomTarget(_lodCustomTarget);
+    }
+
+    if (_snowNode != nullptr) {
+        _snowNode->get_clipmap()->set_lodCustomTarget(_lodCustomTarget);
+    }
+
+    if (_foliagesNode != nullptr && _foliagesNode->get_child_count() > 0) {
+        for (int i = 0; i < _foliagesNode->get_child_count(); i++) {
+            Foliage *foliageNode = Object::cast_to<Foliage>(_foliagesNode->get_child(i));
+            foliageNode->set_lodCustomTarget(_lodCustomTarget);
+        }
+    }
+
+    if (_objectsContainerNode != nullptr && _objectsContainerNode->get_child_count() > 0) {
+        for (int i = 0; i < _objectsContainerNode->get_child_count(); i++) {
+            ObjectsOctreeMultiMesh *octreeObjects = Object::cast_to<ObjectsOctreeMultiMesh>(_objectsContainerNode->get_child(i));
+            if (octreeObjects != nullptr) {
+                octreeObjects->set_lodCustomTarget(_lodCustomTarget);
+            }
+        }
     }
 }

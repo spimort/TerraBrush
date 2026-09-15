@@ -16,6 +16,7 @@ class Clipmap : public Node3D {
 private:
     Ref<ShaderMaterial> _clipmapShader = nullptr;
     Node3D *_meshesContainer = nullptr;
+    Node3D *_lodCustomTarget = nullptr;
 
     int _zonesSize = 0;
     int _resolution = 0;
@@ -30,9 +31,9 @@ private:
 
     Vector3 getCameraPosition();
     void updateClipmapMeshPosition(Vector3 position);
-    void generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth);
-    Vector2 generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition);
-    void generateLevelEdges(TypedArray<Color> &colors, int level, int startIndex, int toIndex, int x, int z);
+    void generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth);
+    Vector2 generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition);
+    void generateLevelEdges(TypedArray<Color> &colors, int level, bool left, bool top, bool right, bool bottom);
     void addSquareVertices(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, float xPosition, float zPosition, float width);
     TypedArray<float> calculateTangents(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs);
     TypedArray<Vector2i> getZonePositions();
@@ -40,7 +41,8 @@ private:
     void createMeshChunks();
     void createMeshChunk(int level, Vector2 position);
     void generateFullMesh();
-    Ref<ArrayMesh> generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors);
+    Ref<ArrayMesh> generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0);
+    void addCustom0CellData(TypedArray<float> &custom0, bool isEdge, bool isHorizontal, bool isVertical, Vector2i edgeCellDirection);
 
 protected:
     static void _bind_methods();
@@ -54,7 +56,7 @@ public:
     ~Clipmap();
 
     void _ready() override;
-    void _process(double delta) override;
+    void _physics_process(double delta) override;
 
     int get_zonesSize() const;
     void set_zonesSize(const int value);
@@ -79,6 +81,8 @@ public:
 
     float get_initialCellWidth() const;
     void set_initialCellWidth(const float value);
+
+    void set_lodCustomTarget(const Node3D *value);
 
     int get_visualInstanceLayers() const;
     void set_visualInstanceLayers(const int value);

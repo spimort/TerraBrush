@@ -10,7 +10,13 @@ varying vec3 _worldVertex;
 
 void vertex() {
 	_worldVertex = vec3(0);
-	calculateWaterVertex(MODEL_MATRIX, COLOR, VERTEX, _worldVertex);
+	calculateWaterVertex(
+		MODEL_MATRIX, 
+		CUSTOM0,
+		COLOR, 
+		VERTEX, 
+		_worldVertex
+	);
 }
 
 void fragment() {
