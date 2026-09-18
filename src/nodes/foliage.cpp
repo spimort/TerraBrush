@@ -278,7 +278,7 @@ void Foliage::updateFoliagePosition(Vector3 position, bool forceUpdate) {
         zPosition -= _definition->get_lodInitialCellWidth() / 2.0f;
     }
 
-    Vector3 newPosition = Vector3(xPosition, 0, zPosition);
+    Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
     if (forceUpdate || newPosition.distance_to(_lastUpdatedPosition) > maxCellWidth) {
         _foliageShader->set_shader_parameter(StringNames::GlobalPosition(), newPosition);
         _multiMeshInstancesContainer->set_global_position(newPosition);
