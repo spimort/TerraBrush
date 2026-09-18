@@ -41,43 +41,77 @@ float edge(float depth) {
 
 void calculateWaterVertex(
 	mat4 modelMatrix,
+	vec4 custom0,
 	inout vec4 color,
 	inout vec3 vertex,
 	inout vec3 worldVertex
 ) {
-	calculateVertex(modelMatrix, color, vertex, worldVertex);
+	calculateVertex(modelMatrix, custom0, color, vertex, worldVertex);
 
-	vec3 zoneUV = calculateZoneUV(worldVertex);
-	vec4 currentWaterColor = texture(WaterTextures, zoneUV);
+	if (color.r >= 0.0) {
+		vec3 zoneUV = calculateZoneUV(worldVertex);
+		vec4 currentWaterColor = texture(WaterTextures, zoneUV);
 
-	if (currentWaterColor.r > 0.0f) {
-		vertex.y -= WaterInnerOffset;
+		if (currentWaterColor.r > 0.0f) {
+			vertex.y -= WaterInnerOffset;
 
-		vec4 levelsMeta = color;
-		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
-			// Calculate mid zones water height
-			int level = int(levelsMeta.a * 100.0);
-			float levelMultiplicator = exp2(float(level));
-			vec2 neighbourWorldVertex = (vec2(levelsMeta.g, levelsMeta.b) * levelMultiplicator) * InitialCellWidth;
-			vec3 previousWorldVertex = worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y);
-			vec3 nextWorldVertex = worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y);
+			vec4 levelsMeta = color;
+			bool hasAverageHeight = false;
+			if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
+				// Since we offset when we are on even zone size, we need to "deoffset" it to calculate the midzone
+				float evenOffset = 0.0;
+				if (mod(ZonesSize, 2.0) == 0.0) {
+					evenOffset = InitialCellWidth / 2.0;
+				}				
+					
+				// Calculate mid zones water height
+				int level = int(levelsMeta.a * 100.0);
+				float levelMultiplicator = exp2(float(level));
+				
+				// We also grab the next level cell width to check if we overlap that level, to add some rows/columns
+				vec2 neighbourMeta = vec2(0, 0);
+				float nextLevelCellWidth = exp2(float(level + 1)) * InitialCellWidth;	
+				
+				// Check if we are between two of the next level vertices, so we can make the average of both (-1, 1) vertices
+				// Also check that on the other axis, we are on the row/column that is visible
+				// Same thing for the other axis
+				if (levelsMeta.g > 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) == 0.0) {
+					neighbourMeta.x = 1.0;
+				}
+				
+				if (levelsMeta.b > 0.0 && mod(worldVertex.z - evenOffset, nextLevelCellWidth) != 0.0 && mod(worldVertex.x - evenOffset, nextLevelCellWidth) == 0.0) {
+					neighbourMeta.y = 1.0;
+				}
+					
+				// If wee need to calculate next level average zone height (-1, 1), then we calcaulate it
+				if (neighbourMeta.x > 0.0 || neighbourMeta.y > 0.0) {
+					vec2 neighbourWorldVertex = (neighbourMeta * levelMultiplicator) * InitialCellWidth;
+				
+					vec3 previousWorldVertex = worldVertex - vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y);
+					vec3 nextWorldVertex = worldVertex + vec3(neighbourWorldVertex.x, 0.0, neighbourWorldVertex.y);
 
-			float previousHeight = texture(Wave, (previousWorldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
-			float nextHeight = texture(Wave, (nextWorldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
+					float previousHeight = texture(Wave, (previousWorldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
+					float nextHeight = texture(Wave, (nextWorldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
 
-			vertex.y += ((previousHeight + nextHeight) / 2.0) * HeightScale;
+					vertex.y += ((previousHeight + nextHeight) / 2.0) * HeightScale;
+					
+					hasAverageHeight = true;
+				}
+			}
+			
+			if (!hasAverageHeight) {
+				float height = texture(Wave, (worldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
+				vertex.y += height * HeightScale;
+			}
+
+			float rippleValue = currentWaterColor.a;
+			vertex.y += rippleValue * 0.1;
+
+			color = vec4(currentWaterColor.r, currentWaterColor.g, currentWaterColor.b, 1.0);
 		} else {
-			float height = texture(Wave, (worldVertex.xz / NoiseScale) + (TIME * TimeScale)).r;
-			vertex.y += height * HeightScale;
-		}
-
-		float rippleValue = currentWaterColor.a;
-		vertex.y += rippleValue * 0.1;
-
-		color = vec4(currentWaterColor.r, currentWaterColor.g, currentWaterColor.b, 1.0);
-	} else {
-		vertex.y -= 1.0;
-		color = vec4(0.0f, 0.0f, 0.0f, 0.0);
+			vertex.y -= 1.0;
+			color = vec4(0.0f, 0.0f, 0.0f, 0.0);
+		}		
 	}
 }
 
@@ -97,7 +131,20 @@ void calculateWaterFragment(
 	inout float metallic,
 	inout float roughness
 ) {
-	if (color[0] > 0.0f) {
+	if (color.r > 0.0f) {
+		vec3 zoneUV = calculateZoneUV(worldVertex);		
+		
+		if (zoneUV.z < 0.0) {
+			discard;
+			return;
+		} else {
+			float hole = texture(HeightmapTextures, zoneUV).g;
+			if (hole > 0.0f) {
+				discard;
+				return;
+			}
+		}		
+		
 		float depthTextureValue = texture(depthTexture, screenUV).r * 2.0 - 1.0;
 		float depth = projectionMatrix[3][2] / (depthTextureValue + projectionMatrix[2][2]);
 		float depthBlend = exp((depth + vertex.z + DepthOffset) * -BeersLaw);
@@ -116,8 +163,7 @@ void calculateWaterFragment(
 		float timer = fract(time);
 		float timer2 = fract(time + 0.5);
 		float mixTimer = min(fract(time), 1.0 - fract(time)) * 2.0;
-
-		vec3 zoneUV = calculateZoneUV(worldVertex);
+		
 		vec4 waterTexture = texture(WaterTextures, zoneUV);
 		vec2 flows = waterTexture.gb * 2.0 - 1.0;
 
@@ -137,15 +183,6 @@ void calculateWaterFragment(
 
 		if (waterTexture.a < 0.5) {
 			normal = normal + (waterTexture.a * 10.0);
-		}
-
-		if (zoneUV.z < 0.0) {
-			discard;
-		} else {
-			float hole = texture(HeightmapTextures, zoneUV).g;
-			if (hole > 0.0f) {
-				discard;
-			}
 		}
 	} else {
 		discard;

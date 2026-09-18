@@ -119,6 +119,7 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 
 void calculateHeightmapVertex(
 	mat4 modelMatrix,
+	vec4 custom0,
 	inout vec4 color,
 	inout vec3 vertex,
 	inout vec3 normal,
@@ -127,7 +128,7 @@ void calculateHeightmapVertex(
 	inout vec3 triplanarPos,
 	inout vec3 triplanarPowerNormal
 ) {
-	calculateVertex(modelMatrix, color, vertex, worldVertex);
+	calculateVertex(modelMatrix, custom0, color, vertex, worldVertex);
 
 	const vec3 off = vec3(1.0, 1.0, 0.0);
 	float hL = calculateVertexHeight(color, vertex, worldVertex, -off.xz);
@@ -140,10 +141,11 @@ void calculateHeightmapVertex(
 
 	if (WaterFactor > 0.0) {
 		vec4 levelsMeta = color;
+		vec3 zoneUV = calculateZoneUV(worldVertex);
+		
 		if (levelsMeta.g > 0.0 || levelsMeta.b > 0.0) {
-			vertex.y -= calculateMidZoneHeightValue(WaterTextures, levelsMeta, worldVertex) * WaterFactor;
-		} else {
-			vec3 zoneUV = calculateZoneUV(worldVertex);
+			vertex.y -= calculateMidZoneHeightValue(WaterTextures, levelsMeta, worldVertex, zoneUV) * WaterFactor;
+		} else {			
 			vec4 waterTexture = texture(WaterTextures, zoneUV);
 			vertex.y -= waterTexture.r * WaterFactor;
 		}
@@ -260,6 +262,7 @@ void calculateHeightmapFragment(
 	vec3 worldNormal,
 	vec3 triplanarPos,
 	vec3 triplanarPowerNormal,
+	vec4 levelsMeta,
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float metallic,
@@ -267,6 +270,20 @@ void calculateHeightmapFragment(
 	inout float roughness
 ) {
 	vec3 zoneUV = calculateZoneUV(worldVertex);
+		
+	if (levelsMeta.r < 0.0) {
+		discard;
+		return;
+	} else if (zoneUV.z < 0.0) {
+        discard;
+		return;
+    } else {
+        float hole = texture(HeightmapTextures, zoneUV).g;
+        if (hole > 0.0) {
+            discard;
+			return;
+        }
+    }	
 
 	if (UseSharpTransitions) {
         int dominantTextureIndex = findDominantTextureIndex(worldVertex);
@@ -471,13 +488,4 @@ void calculateHeightmapFragment(
 		}
     }
 #endif
-
-    if (zoneUV.z < 0.0) {
-        discard;
-    } else {
-        float hole = texture(HeightmapTextures, zoneUV).g;
-        if (hole > 0.0) {
-            discard;
-        }
-    }
 }

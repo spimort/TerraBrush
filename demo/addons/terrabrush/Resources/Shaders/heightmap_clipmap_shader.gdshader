@@ -15,14 +15,15 @@ void vertex() {
 	_triplanarPowerNormal = vec3(0);
 	calculateHeightmapVertex(
 		MODEL_MATRIX,
+		CUSTOM0,
 		COLOR,
 		VERTEX,
-		NORMAL,
+		NORMAL,		
 		_worldVertex,
 		_worldNormal,
 		_triplanarPos,
 		_triplanarPowerNormal
-	);
+	);	
 }
 
 void fragment() {
@@ -31,6 +32,7 @@ void fragment() {
 		_worldNormal,
 		_triplanarPos,
 		_triplanarPowerNormal,
+		COLOR,
 		ALBEDO,
 		NORMAL_MAP,
 		METALLIC,

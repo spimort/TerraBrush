@@ -125,29 +125,8 @@ void Clipmap::updateEditorCameraPosition(Camera3D *viewportCamera) {
 }
 
 void Clipmap::updateClipmapMeshPosition(Vector3 position) {
-    float offset = 0.0f;
-    bool isEven = _zonesSize % 2 == 0;
-    if (isEven) {
-        offset = _initialCellWidth / 2.0f;
-    }
-
-    float xPosition = ((int) Math::floor(position.x)) + offset;
-    float zPosition = ((int) Math::floor(position.z)) + offset;
-
-    float maxCellWidth = _initialCellWidth * Math::pow(2.0, _levels - 1);
-
-    xPosition -= Math::fmod(xPosition, maxCellWidth);
-    zPosition -= Math::fmod(zPosition, maxCellWidth);
-
-    if (isEven) {
-        xPosition -= _initialCellWidth / 2.0f;
-        zPosition -= _initialCellWidth / 2.0f;
-    }
-
-    Vector3 newPosition = Vector3(xPosition, get_global_position().y, zPosition);
-    if (newPosition.distance_to(_meshesContainer->get_global_position()) > maxCellWidth) {
-        _meshesContainer->set_global_position(newPosition);
-    }
+    Vector3 newPosition = Vector3(position.x, get_global_position().y, position.z);
+    _meshesContainer->set_global_position(newPosition);
 }
 
 void Clipmap::clearMesh() {
@@ -205,16 +184,17 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     TypedArray<Vector3> vertices = TypedArray<Vector3>();
     TypedArray<Vector2> uvs = TypedArray<Vector2>();
     TypedArray<Color> colors = TypedArray<Color>(); // To store information about the zones
+    TypedArray<float> custom0 = TypedArray<float>();
 
     auto rowsPerLevel = _rowsPerLevel;
     if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
         rowsPerLevel += 1;
     }
 
-    Vector2 numberOfCellsAndWidth = generateChunkedLevel(vertices, uvs, colors, level, rowsPerLevel, _initialCellWidth, position);
+    Vector2 numberOfCellsAndWidth = generateChunkedLevel(vertices, uvs, colors, custom0, level, rowsPerLevel, _initialCellWidth, position);
     Vector2 resultPosition = position * Vector2(numberOfCellsAndWidth.x * numberOfCellsAndWidth.y, numberOfCellsAndWidth.x * numberOfCellsAndWidth.y);
 
-    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors);
+    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors, custom0);
 
     MeshInstance3D *chunkMesh = memnew(MeshInstance3D);
     chunkMesh->set_mesh(arrayMesh);
@@ -224,11 +204,11 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
     _meshesContainer->add_child(chunkMesh);
 
     AABB customAABB = chunkMesh->get_aabb();
-    customAABB.set_size(Vector3(customAABB.get_size().x, _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z));
+    customAABB.set_size(Vector3(customAABB.get_size().x + (level * _initialCellWidth), _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z + (level * _initialCellWidth)));
     chunkMesh->set_custom_aabb(customAABB);
 }
 
-Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition) {
+Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth, Vector2 chunkPosition) {
     auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
 
     int numberOfCells = Math::floor(rowsPerLevel / 2.0) + 1;
@@ -239,10 +219,71 @@ Vector2 Clipmap::generateChunkedLevel(TypedArray<Vector3> &vertices, TypedArray<
         for (int z = 0; z < numberOfCells; z++) {
             addSquareVertices(vertices, uvs, x * width, z * width, width);
 
-            int globalXCellPosition = chunkPosition.x * numberOfCells + x;
-            int globalZCellPosition = chunkPosition.y * numberOfCells + z;
+            int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
+            int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
 
-            generateLevelEdges(colors, level, minCellValue, maxCellValue, globalXCellPosition, globalZCellPosition);
+            generateLevelEdges(
+                colors,
+                level,
+                globalXCellPosition == minCellValue || globalXCellPosition == minCellValue + 1,
+                globalZCellPosition == minCellValue || globalZCellPosition == minCellValue + 1,
+                globalXCellPosition == maxCellValue,
+                globalZCellPosition == maxCellValue
+            );
+
+            bool isEdge = false;
+            if (chunkPosition.x == MinChunkPosition && x == 0 || chunkPosition.y == MinChunkPosition && z == 0) {
+                isEdge = true;
+            }
+
+            // Add the extra row/column info (these are not actual extra row/column but they are in the edges so they will be hidden in some situations), the first cell is considered both horizontal and vertical
+            addCustom0CellData(custom0, isEdge, chunkPosition.y == MinChunkPosition && z == 0, chunkPosition.x == MinChunkPosition && x == 0, Vector2i(-1, -1));
+        }
+    }
+
+    // Add an extra row/column to smooth the terrain transition
+    if (chunkPosition.x == MaxChunkPosition) {
+        for (int z = 0; z < numberOfCells; z++) {
+            int globalZCellPosition = (chunkPosition.y * numberOfCells) + z;
+
+            addSquareVertices(vertices, uvs, numberOfCells * width, z * width, width);
+            generateLevelEdges(
+                colors,
+                level,
+                false,
+                (z == 0 || z == 1) && chunkPosition.y == MinChunkPosition,
+                true,
+                z == numberOfCells && chunkPosition.y == MaxChunkPosition
+            );
+
+            // Add the extra column (vertical), and the first is also considered as horizontal
+            addCustom0CellData(custom0, true, chunkPosition.y == MinChunkPosition && z == 0, true, Vector2i(1, -1));
+        }
+    }
+
+    if (chunkPosition.y == MaxChunkPosition) {
+        // Add one more to fill the join between the X and Z axis
+        for (int x = 0; x < numberOfCells + 1; x++) {
+            int globalXCellPosition = (chunkPosition.x * numberOfCells) + x;
+
+            addSquareVertices(vertices, uvs, x * width, numberOfCells * width, width);
+            generateLevelEdges(
+                colors,
+                level,
+                (x == 0 || x == 1) && chunkPosition.x == MinChunkPosition,
+                false,
+                (x == numberOfCells || x == numberOfCells - 1) && chunkPosition.x == MaxChunkPosition,
+                true
+            );
+
+            // Last cell should be aligned with bottom right corner
+            Vector2i edgeDirection = Vector2i(-1, 1);
+            if (chunkPosition.x == MaxChunkPosition && x == numberOfCells) {
+                edgeDirection.x = 1;
+            }
+
+            // Add the extra row (horizontal), and the first and the last cell are also considered as vertical
+            addCustom0CellData(custom0, true, true, (chunkPosition.x == MinChunkPosition && x == 0) || (chunkPosition.x == MaxChunkPosition && x == numberOfCells), edgeDirection);
         }
     }
 
@@ -258,6 +299,7 @@ void Clipmap::generateFullMesh() {
     TypedArray<Vector3> vertices = TypedArray<Vector3>();
     TypedArray<Vector2> uvs = TypedArray<Vector2>();
     TypedArray<Color> colors = TypedArray<Color>(); // To store information about the zones
+    TypedArray<float> custom0 = TypedArray<float>();
 
     auto rowsPerLevel = _rowsPerLevel;
     if (rowsPerLevel % 2 == 0) { // The number of rows per level cannot be even
@@ -265,16 +307,16 @@ void Clipmap::generateFullMesh() {
     }
 
     for (auto i = 0; i < _levels; i++) {
-        generateLevel(vertices, uvs, colors, i + 1, rowsPerLevel, _initialCellWidth);
+        generateLevel(vertices, uvs, colors, custom0, i + 1, rowsPerLevel, _initialCellWidth);
     }
 
-    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors);
+    Ref<ArrayMesh> arrayMesh = generateArrayMesh(vertices, uvs, colors, custom0);
 
     clipmapMesh->set_mesh(arrayMesh);
     updateAABB();
 }
 
-void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, int level, int rowsPerLevel, float initialCellWidth) {
+void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0, int level, int rowsPerLevel, float initialCellWidth) {
     auto width = initialCellWidth * ((float) Math::pow(2.0, level - 1));
 
     auto startIndex = -1 - rowsPerLevel;
@@ -293,18 +335,72 @@ void Clipmap::generateLevel(TypedArray<Vector3> &vertices, TypedArray<Vector2> &
                 (z > ((rowsPerLevel - upperOffsetIndex) / 2) && z <= toIndex)
             ) {
                 addSquareVertices(vertices, uvs, x * width, z * width, width);
-                generateLevelEdges(colors, level, startIndex, toIndex, x, z);
+                generateLevelEdges(
+                    colors,
+                    level,
+                    x == startIndex || x == startIndex + 1,
+                    z == startIndex || z == startIndex + 1,
+                    x == toIndex,
+                    z == toIndex
+                );
+
+                bool isEdge = false;
+                if (x == startIndex || z == startIndex) {
+                    isEdge = true;
+                }
+
+                // Add the extra row/column info (these are not actual extra row/column but they are in the edges so they will be hidden in some situations), the first cell is considered both horizontal and vertical
+                addCustom0CellData(custom0, isEdge, z == startIndex, x == startIndex, Vector2i(-1, -1));
             }
         }
     }
+
+    // Add an extra row/column to smooth the terrain transition
+    for (int z = startIndex; z <= toIndex; z++) {
+        addSquareVertices(vertices, uvs, (toIndex + 1) * width, z * width, width);
+        generateLevelEdges(
+            colors,
+            level,
+            false,
+            z == startIndex || z == startIndex + 1,
+            true,
+            z == toIndex
+        );
+
+        // Add the extra column (vertical), and the first is also considered as horizontal
+        addCustom0CellData(custom0, true, z == startIndex, true, Vector2i(1, -1));
+    }
+
+    // Add one more to fill the join between the X and Z axis
+    for (int x = startIndex; x <= toIndex + 1; x++) {
+        addSquareVertices(vertices, uvs, x * width, (toIndex + 1) * width, width);
+        generateLevelEdges(
+            colors,
+            level,
+            x == startIndex || x == startIndex + 1,
+            false,
+            x == toIndex || x == toIndex + 1,
+            true
+        );
+
+        // Last cell should be aligned with bottom right corner
+        Vector2i edgeDirection = Vector2i(-1, 1);
+        if (x == toIndex + 1) {
+            edgeDirection.x = 1;
+        }
+
+        // Add the extra row (horizontal), and the first and the last cell are also considered as vertical
+        addCustom0CellData(custom0, true, true, x == startIndex || x == toIndex + 1, edgeDirection);
+    }
 }
 
-Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors) {
+Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, TypedArray<Color> &colors, TypedArray<float> &custom0) {
     Array arrays = Array();
     arrays.resize(Mesh::ARRAY_MAX);
     arrays[Mesh::ARRAY_VERTEX] = PackedVector3Array(vertices);
     arrays[Mesh::ARRAY_TEX_UV] = PackedVector2Array(uvs);
     arrays[Mesh::ARRAY_COLOR] = PackedColorArray(colors);
+    arrays[Mesh::ARRAY_CUSTOM0] = PackedFloat32Array(custom0);
 
     TypedArray<Vector3> normals = TypedArray<Vector3>();
     normals.resize(vertices.size());
@@ -314,40 +410,55 @@ Ref<ArrayMesh> Clipmap::generateArrayMesh(TypedArray<Vector3> &vertices, TypedAr
     arrays[Mesh::ARRAY_TANGENT] = PackedFloat32Array(calculateTangents(vertices, uvs));
 
     Ref<ArrayMesh> arrayMesh = memnew(ArrayMesh);
-    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays, Array());
+    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays, Array(), Dictionary(),  Mesh::ARRAY_FORMAT_CUSTOM0 | (Mesh::ARRAY_CUSTOM_RGBA_FLOAT << Mesh::ARRAY_FORMAT_CUSTOM0_SHIFT));
 
     return arrayMesh;
 }
 
-void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, int startIndex, int toIndex, int x, int z) {
-    auto vertex0MidZone = (x == startIndex && z % 2 != 0) || (z == startIndex && x % 2 != 0);
-    auto vertex1MidZone = (x == toIndex && z % 2 != 0) || (z == startIndex && x % 2 == 0);
-    auto vertex2MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
+void Clipmap::generateLevelEdges(TypedArray<Color> &colors, int level, bool left, bool top, bool right, bool bottom) {
+    float colorLevel = level / 100.0f;
 
-    auto vertex3MidZone = (x == toIndex && z % 2 != 0) || (z == startIndex && x % 2 == 0);
-    auto vertex4MidZone = (x == toIndex && z % 2 == 0) || (z == toIndex && x % 2 == 0);
-    auto vertex5MidZone = (x == startIndex && z % 2 == 0) || (z == toIndex && x % 2 != 0);
+    // Just a reminder here to make it easier to investigate
+    /* Square made of 2 triangles
+        0  -  -  1
+        |     /  |
+        |  /     |
+        2  -  -  -
 
-    colors.append(Color(vertex0MidZone ? 1 : 0, vertex0MidZone && z == startIndex ? 1 : 0, vertex0MidZone && x == startIndex ? 1 : 0, level / 100.0f));
-    colors.append(Color(vertex1MidZone ? 1 : 0, vertex1MidZone && z == startIndex ? 1 : 0, vertex1MidZone && x == toIndex ? 1 : 0, level / 100.0f));
-    colors.append(Color(vertex2MidZone ? 1 : 0, vertex2MidZone && z == toIndex ? 1 : 0, vertex2MidZone && x == startIndex ? 1 : 0, level / 100.0f));
+        -  -  -  3
+        |     /  |
+        |  /     |
+        5  -  -  4
+    */
 
-    colors.append(Color(vertex3MidZone ? 1 : 0, vertex3MidZone && z == startIndex ? 1 : 0, vertex3MidZone && x == toIndex ? 1 : 0, level / 100.0f));
-    colors.append(Color(vertex4MidZone ? 1 : 0, vertex4MidZone && z == toIndex ? 1 : 0, vertex4MidZone && x == toIndex ? 1 : 0, level / 100.0f));
-    colors.append(Color(vertex5MidZone ? 1 : 0, vertex5MidZone && z == toIndex ? 1 : 0, vertex5MidZone && x == startIndex ? 1 : 0, level / 100.0f));
+    auto vertex0MidZone = left || top;
+    auto vertex1MidZone = top || right;
+    auto vertex2MidZone = left || bottom;
+
+    auto vertex3MidZone = top || right;
+    auto vertex4MidZone = right || bottom;
+    auto vertex5MidZone = left || bottom;
+
+    colors.append(Color(0, vertex0MidZone && top ? 1.0 : 0.0, vertex0MidZone && left ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex1MidZone && top ? 1.0 : 0.0, vertex1MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex2MidZone && bottom ? 1.0 : 0.0, vertex2MidZone && left ? 1.0 : 0.0, colorLevel));
+
+    colors.append(Color(0, vertex3MidZone && top ? 1.0 : 0.0, vertex3MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex4MidZone && bottom ? 1.0 : 0.0, vertex4MidZone && right ? 1.0 : 0.0, colorLevel));
+    colors.append(Color(0, vertex5MidZone && bottom ? 1.0 : 0.0, vertex5MidZone && left ? 1.0 : 0.0, colorLevel));
 }
 
 void Clipmap::addSquareVertices(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs, float xPosition, float zPosition, float width) {
     /* Square made of 2 triangles
-        2  #  #  #
-        |  \  #  #
-        |  #  \  #
         0  -  -  1
+        |     /  |
+        |  /     |
+        2  -  -  -
 
+        -  -  -  3
+        |     /  |
+        |  /     |
         5  -  -  4
-        #  \  #  |
-        #  #  \  |
-        #  #  #  3
     */
 
     // Vertices
@@ -452,5 +563,84 @@ void Clipmap::updateAABB() {
 void Clipmap::updateShaderOffsetPosition() {
     if (!_clipmapShader.is_null()) {
         _clipmapShader->set_shader_parameter(StringNames::OffsetPosition(), get_global_position());
+    }
+}
+
+// This function is to "anchor" vertices at corners so its easier to find if a vertice belongs to a cell
+// This is then used in the shader to check if we are in an extra row/column AND if we need to hide it or not, according to the cell corner position
+// We use the 4 Channels available in the Custom0 this way :
+// - R : Are we in a horizontal extra row/column situation, if so, 1
+// - G : Are we in a vertical extra row/column situation, if so, 1
+// - B : The direction we need to move the vertice in the X axis to reach the target corner (in the shader, this is multiplied by the cell size)
+// - A : The direction we need to move the vertice in the Z axis to reach the target corner (in the shader, this is multiplied by the cell size)
+// G and R can be both 1 at the same time if we are in a situation where we are in a corner cell and the cell if both at the same time
+void Clipmap::addCustom0CellData(TypedArray<float> &custom0, bool isEdge, bool isHorizontal, bool isVertical, Vector2i edgeCellDirection) {
+    if (isEdge) {
+        // Edge is based on the 2 triangles that we make in the addSquareVertices function :
+        // Just a reminder here to make it easier to investigate
+        /* Square made of 2 triangles
+            0  -  -  1
+            |     /  |
+            |  /     |
+            2  -  -  -
+
+            -  -  -  3
+            |     /  |
+            |  /     |
+            5  -  -  4
+        */
+        // The number correspond to the line index
+
+        // Align to top left
+        if (edgeCellDirection.x == -1 && edgeCellDirection.y == -1) {
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, -1));
+
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, -1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, -1));
+        }
+
+        // Align to top right
+        if (edgeCellDirection.x == 1 && edgeCellDirection.y == -1) {
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, -1));
+
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, -1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, -1));
+        }
+
+        // Align to bottom left
+        if (edgeCellDirection.x == -1 && edgeCellDirection.y == 1) {
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, -1, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+        }
+
+        // Align to bottom right
+        if (edgeCellDirection.x == 1 && edgeCellDirection.y == 1) {
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, 0));
+
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 1));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 0, 0));
+            custom0.append_array(Array::make(isHorizontal ? 1 : 0, isVertical ? 1 : 0, 1, 0));
+        }
+    } else {
+        custom0.append_array(Array::make(0, 0, 0, 0));
+        custom0.append_array(Array::make(0, 0, 0, 0));
+        custom0.append_array(Array::make(0, 0, 0, 0));
+
+        custom0.append_array(Array::make(0, 0, 0, 0));
+        custom0.append_array(Array::make(0, 0, 0, 0));
+        custom0.append_array(Array::make(0, 0, 0, 0));
     }
 }
