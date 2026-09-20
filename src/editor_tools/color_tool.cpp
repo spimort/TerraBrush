@@ -1,6 +1,8 @@
 #include "color_tool.h"
 #include "../misc/zone_utils.h"
 
+#include <godot_cpp/classes/input.hpp>
+
 using namespace godot;
 
 void ColorTool::_bind_methods() {}
@@ -8,6 +10,10 @@ void ColorTool::_bind_methods() {}
 ColorTool::ColorTool() {}
 
 ColorTool::~ColorTool() {}
+
+String ColorTool::getToolInfo(TerrainToolType toolType) {
+    return "Select previously painted color with CTRL + click";
+}
 
 Ref<Image> ColorTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     if (zone->get_colorImage().is_null()) {
@@ -18,6 +24,20 @@ Ref<Image> ColorTool::getToolCurrentImage(Ref<ZoneResource> zone) {
 }
 
 void ColorTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
+        ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), 1);
+        ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0, true);
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
+
+        if (_onColorChangedCallback != nullptr) {
+            _onColorChangedCallback(currentPixel);
+        } else {
+            updateSelectedColor(currentPixel);
+        }
+
+        return;
+    }
+
     forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
         if (pixelBrushStrength > 0.0) {
             Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
@@ -39,4 +59,8 @@ void ColorTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brush
 
 void ColorTool::updateSelectedColor(Color value) {
     _selectedColor = value;
+}
+
+void ColorTool::setColorChangedCallback(std::function<void(Color)> callback) {
+    _onColorChangedCallback = callback;
 }
