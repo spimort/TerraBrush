@@ -111,6 +111,7 @@ private:
     Ref<Thread> _objectsThread = nullptr;
     bool _initialized = false;
     int64_t _lastId = 0;
+    Node3D *_lodCustomTarget = nullptr;
 
     void initialize();
     void initializeSortedLODs();
@@ -145,5 +146,7 @@ public:
     Vector2 getHeightPositionForResolution(Vector2 position, int resolutionZoneSize);
     void hideObject(int64_t objectId);
     void showObject(int64_t objectId);
+
+    void set_lodCustomTarget(const Node3D *value);
 };
 #endif

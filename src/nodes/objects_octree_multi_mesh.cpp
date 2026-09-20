@@ -61,20 +61,20 @@ void ObjectsOctreeMultiMesh::_physics_process(double delta) {
 
     _updateTime += (float) delta;
     if (_updateTime >= _definition->get_updateTimeFrequency()) {
-        Camera3D *camera = nullptr;
-        if (Engine::get_singleton()->is_editor_hint()) {
-            camera = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
+        Node3D *targetNode = _lodCustomTarget;
+        if (targetNode == nullptr && Engine::get_singleton()->is_editor_hint()) {
+            targetNode = EditorInterface::get_singleton()->get_editor_viewport_3d()->get_camera_3d();
         }
 
-        if (camera == nullptr && get_viewport() != nullptr) {
-            camera = get_viewport()->get_camera_3d();
+        if (targetNode == nullptr && get_viewport() != nullptr) {
+            targetNode = get_viewport()->get_camera_3d();
         }
 
-        if (camera == nullptr) {
+        if (targetNode == nullptr) {
             return;
         }
 
-        Vector3 currentPosition = to_local(camera->get_global_position());
+        Vector3 currentPosition = to_local(targetNode->get_global_position());
         if (currentPosition.distance_to(_lastUpdatedPosition) > _definition->get_updateDistanceThreshold()) {
             _lastUpdatedPosition = currentPosition;
 
@@ -693,6 +693,10 @@ void ObjectsOctreeMultiMesh::showObject(int64_t objectId) {
             updateMeshes();
         }
     }
+}
+
+void ObjectsOctreeMultiMesh::set_lodCustomTarget(const Node3D *value) {
+    _lodCustomTarget = const_cast<Node3D*>(value);
 }
 
 // ObjectsOctreeNodeInfo (Octree class)
