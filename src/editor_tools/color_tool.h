@@ -12,10 +12,12 @@ class ColorTool : public ToolBase{
 
 private:
     Color _selectedColor = Color(0, 0, 0, 1.0);
+    std::function<void(Color)> _onColorChangedCallback = nullptr;
 
 protected:
     static void _bind_methods();
 
+    String getToolInfo(TerrainToolType toolType) override;
     Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
 
 public:
@@ -25,5 +27,7 @@ public:
     void paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) override;
 
     void updateSelectedColor(Color value);
+
+    void setColorChangedCallback(std::function<void(Color)> callback);
 };
 #endif

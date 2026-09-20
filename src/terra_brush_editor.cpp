@@ -570,7 +570,7 @@ void TerraBrushEditor::showColorPickerSelector(Viewport *viewport) {
     colorPicker->set_deferred_mode(true);
     colorPicker->set_sampler_visible(false);
     colorPicker->set_modes_visible(false);
-    colorPicker->set_sliders_visible(false);
+    colorPicker->set_sliders_visible(true);
     colorPicker->set_presets_visible(false);
     colorPicker->connect("color_changed", Callable(this, "onColorSelected"));
 
@@ -759,6 +759,9 @@ Ref<ToolBase> TerraBrushEditor::getToolForType(TerrainToolType toolType) {
         case TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE: {
             Ref<ColorTool> colorTool = memnew(ColorTool);
             colorTool->updateSelectedColor(_selectedColor);
+            colorTool->setColorChangedCallback(([&](Color color) {
+                onColorSelected(color);
+            }));
             return colorTool;
         }
         case TerrainToolType::TERRAINTOOLTYPE_NONE: {
