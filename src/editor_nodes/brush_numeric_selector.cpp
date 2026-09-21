@@ -1,11 +1,16 @@
 #include "brush_numeric_selector.h"
 #include "../misc/setting_contants.h"
+#include "../misc/keybind_manager.h"
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
+#include <godot_cpp/classes/input_event_key.hpp>
+#include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/time.hpp>
+#include <godot_cpp/classes/viewport.hpp>
 
 using namespace godot;
 
@@ -59,7 +64,9 @@ void BrushNumericSelector::_ready() {
 }
 
 void BrushNumericSelector::_process(double delta) {
-    updateValue(getMouseDistance());
+    if (_lastKeyboardInputTime == 0) {
+        updateValue(getMouseDistance());
+    }
 }
 
 void BrushNumericSelector::_gui_input(const Ref<InputEvent> &event) {
@@ -67,12 +74,54 @@ void BrushNumericSelector::_gui_input(const Ref<InputEvent> &event) {
 
     if (!inputButton.is_null()) {
         if (inputButton->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT) {
-            auto distance = getMouseDistance();
+            int value = getSelectedValue();
             if (!_onValueSelected.is_null()) {
-                _onValueSelected.call(distance);
+                _onValueSelected.call(value);
             }
         } else if (!_onCancel.is_null()) {
             _onCancel.call();
+        }
+    }
+}
+
+void BrushNumericSelector::_input(const Ref<InputEvent> &event) {
+    Ref<InputEventKey> keyboardInput = Object::cast_to<InputEventKey>(*event);
+    if (!keyboardInput.is_null()) {
+       get_viewport()->set_input_as_handled();
+
+       if (keyboardInput->get_keycode() == Key::KEY_ENTER  || keyboardInput->get_keycode() == Key::KEY_KP_ENTER) {
+           int value = getSelectedValue();
+           if (!_onValueSelected.is_null()) {
+               _onValueSelected.call(value);
+           }
+           return;
+       }
+
+       if (keyboardInput->is_action(KeybindManager::StringNames::EscapeSelector())) {
+           if (!_onCancel.is_null()) {
+               _onCancel.call();
+           }
+           return;
+       }
+
+       if (!keyboardInput->is_echo() && !Input::get_singleton()->is_key_pressed(keyboardInput->get_keycode())) {
+            String key = keyboardInput->as_text_keycode();
+            if (key.is_valid_int()) {
+                int keyValue = key.to_int();
+
+                long currentTime = Time::get_singleton()->get_ticks_msec();
+                // If its been more than the max msec for the keyboard input
+                if (currentTime - _lastKeyboardInputTime > KeyboardInputMaxMSec) {
+                    _keyboardCurrentValue = keyValue;
+                } else {
+                    _keyboardCurrentValue = (String::num_int64(_keyboardCurrentValue) + String::num_int64(keyValue)).to_int();
+                }
+
+                _keyboardCurrentValue = clampValue(_keyboardCurrentValue);
+
+                updateValue(_keyboardCurrentValue);
+                _lastKeyboardInputTime = currentTime;
+            }
         }
     }
 }
@@ -100,13 +149,7 @@ void BrushNumericSelector::set_onCancel(const Callable value) {
 int BrushNumericSelector::getMouseDistance() {
     float distance = get_position().distance_to(get_global_mouse_position());
 
-    if (_minValue >= 0) {
-        distance = Math::max(distance, (float)_minValue);
-    }
-
-    if (_maxValue >= 0) {
-        distance = Math::min(distance, (float)_maxValue);
-    }
+    distance = clampValue(distance);
 
     return (int) distance;
 }
@@ -128,8 +171,28 @@ void BrushNumericSelector::updateValue(float value) {
 }
 
 void BrushNumericSelector::requestSelectValue() {
-    auto distance = getMouseDistance();
+    auto value = getSelectedValue();
     if (!_onValueSelected.is_null()) {
-        _onValueSelected.call(distance);
+        _onValueSelected.call(value);
+    }
+}
+
+int BrushNumericSelector::clampValue(int value) {
+    if (_minValue >= 0) {
+        value = Math::max((float) value, (float)_minValue);
+    }
+
+    if (_maxValue >= 0) {
+        value = Math::min((float) value, (float)_maxValue);
+    }
+
+    return value;
+}
+
+int BrushNumericSelector::getSelectedValue() {
+    if (_lastKeyboardInputTime == 0) {
+        return getMouseDistance();
+    } else {
+        return _keyboardCurrentValue;
     }
 }
