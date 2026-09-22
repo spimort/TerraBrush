@@ -13,6 +13,7 @@ class BrushNumericSelector : public Control {
 
 private:
     const int BackgroundMargin = 10;
+    const int KeyboardInputMaxMSec = 1000;
 
     TextureRect *_background = nullptr;
     TextureRect *_brushPreview = nullptr;
@@ -22,11 +23,15 @@ private:
     Color _widgetColor = Color();
     int _minValue = 0;
     int _maxValue = 0;
+    int _keyboardCurrentValue = 0;
+    long _lastKeyboardInputTime = 0;
 
     Callable _onValueSelected = Callable();
     Callable _onCancel = Callable();
 
     int getMouseDistance();
+    int clampValue(int value);
+    int getSelectedValue();
 
 protected:
     static void _bind_methods();
@@ -38,6 +43,7 @@ public:
     void _ready() override;
     void _process(double delta) override;
     void _gui_input(const Ref<InputEvent> &event) override;
+    void _input(const Ref<InputEvent> &event) override;
 
     void set_brushSizeFactor(const int value);
     void set_widgetColor(const Color value);
