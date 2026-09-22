@@ -312,6 +312,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |SnowResource.CustomShader|A custom shader for the snow.|
 |SnowResource.DecompressSpeed|Determine how fast the snow will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
 |SnowResource.DecompressOffsetSpeed|Determine how fast the snow vertices will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
+|SnowResource.Hide|Allow to hide the painted snow from the current terrain.|
 |**Meta**||
 |ShowMetaInfo|Show the meta layers while in the editor. This has no effect in runtime (outside of the editor).|
 |MetaInfoLayer[x].Name|The name of a meta layer. Useful to get the information about a location using the `GetPositionInformation` function.|

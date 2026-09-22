@@ -122,6 +122,15 @@ public partial class SnowResource : Resource {
         }
     }
 
+    public bool Hide {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_hide").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_hide", value);
+        }
+    }
+
     public static implicit operator SnowResource(Variant handle) => new(handle);
 
     public SnowResource(Variant handle) {

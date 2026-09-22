@@ -801,7 +801,7 @@ void TerraBrush::createWater() {
 }
 
 void TerraBrush::createSnow() {
-    if (_snowDefinition.is_null()) {
+    if (_snowDefinition.is_null() || _snowDefinition->get_hide()) {
         return;
     }
 
