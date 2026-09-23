@@ -100,6 +100,10 @@ void WaterResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_rippleResetSpeed"), &WaterResource::get_rippleResetSpeed);
     ClassDB::bind_method(D_METHOD("set_rippleResetSpeed", "value"), &WaterResource::set_rippleResetSpeed);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rippleResetSpeed"), "set_rippleResetSpeed", "get_rippleResetSpeed");
+
+    ClassDB::bind_method(D_METHOD("get_hide"), &WaterResource::get_hide);
+    ClassDB::bind_method(D_METHOD("set_hide", "value"), &WaterResource::set_hide);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hide"), "set_hide", "get_hide");
 }
 
 WaterResource::WaterResource() {
@@ -306,4 +310,11 @@ float WaterResource::get_rippleResetSpeed() const {
 }
 void WaterResource::set_rippleResetSpeed(const float value) {
     _rippleResetSpeed = value;
+}
+
+bool WaterResource::get_hide() const {
+    return _hide;
+}
+void WaterResource::set_hide(const bool value) {
+    _hide = value;
 }

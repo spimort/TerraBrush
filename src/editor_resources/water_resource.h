@@ -35,6 +35,7 @@ private:
     int _visualInstanceLayers = 0;
     Ref<ShaderMaterial> _customShader = nullptr;
     float _rippleResetSpeed = 0.9f;
+    bool _hide = false;
 
 protected:
     static void _bind_methods();
@@ -114,5 +115,8 @@ public:
 
     float get_rippleResetSpeed() const;
     void set_rippleResetSpeed(const float value);
+
+    bool get_hide() const;
+    void set_hide(const bool value);
 };
 #endif
