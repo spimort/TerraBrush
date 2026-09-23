@@ -24,6 +24,7 @@ private:
     Ref<ShaderMaterial> _customShader = nullptr;
     float _decompressSpeed = 0.5f;
     float _decompressOffsetSpeed = 2.0f;
+    float _compressionFactor = 1.0f;
     bool _hide = false;
 
 protected:
@@ -71,6 +72,9 @@ public:
 
     float get_decompressOffsetSpeed() const;
     void set_decompressOffsetSpeed(const float value);
+
+    float get_compressionFactor() const;
+    void set_compressionFactor(const float value);
 
     bool get_hide() const;
     void set_hide(const bool value);

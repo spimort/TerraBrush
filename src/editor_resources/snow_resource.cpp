@@ -57,6 +57,10 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_decompressOffsetSpeed", "value"), &SnowResource::set_decompressOffsetSpeed);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "decompressOffsetSpeed"), "set_decompressOffsetSpeed", "get_decompressOffsetSpeed");
 
+    ClassDB::bind_method(D_METHOD("get_compressionFactor"), &SnowResource::get_compressionFactor);
+    ClassDB::bind_method(D_METHOD("set_compressionFactor", "value"), &SnowResource::set_compressionFactor);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "compressionFactor", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_compressionFactor", "get_compressionFactor");
+
     ClassDB::bind_method(D_METHOD("get_hide"), &SnowResource::get_hide);
     ClassDB::bind_method(D_METHOD("set_hide", "value"), &SnowResource::set_hide);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hide"), "set_hide", "get_hide");
@@ -180,6 +184,13 @@ float SnowResource::get_decompressOffsetSpeed() const {
 }
 void SnowResource::set_decompressOffsetSpeed(const float value) {
     _decompressOffsetSpeed = value;
+}
+
+float SnowResource::get_compressionFactor() const {
+    return _compressionFactor;
+}
+void SnowResource::set_compressionFactor(const float value) {
+    _compressionFactor = value;
 }
 
 bool SnowResource::get_hide() const {
