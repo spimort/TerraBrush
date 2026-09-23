@@ -740,7 +740,7 @@ void TerraBrush::createFoliages() {
 }
 
 void TerraBrush::createWater() {
-    if (_waterDefinition.is_null()) {
+    if (_waterDefinition.is_null() || _waterDefinition->get_hide()) {
         return;
     }
 

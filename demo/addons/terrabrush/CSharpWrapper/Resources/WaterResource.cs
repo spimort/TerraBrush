@@ -222,6 +222,15 @@ public partial class WaterResource : Resource {
         }
     }
 
+    public bool Hide {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_hide").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_hide", value);
+        }
+    }
+
     public static implicit operator WaterResource(Variant handle) => new(handle);
 
     public WaterResource(Variant handle) {
