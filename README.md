@@ -297,6 +297,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |WaterResource.VisualInstanceLayers|The godot layer on which the water will be displayed.|
 |WaterResource.CustomShader|A custom shader for ther water.|
 |WaterResource.RippleResetSpeed|Determine of fast the "ripple" in the water will go away when using the function `AddInteractionPoint` (Higher number is faster).|
+|WaterResource.Hide|Allow to hide the painted water from the current terrain.|
 |**Snow**||
 |Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
