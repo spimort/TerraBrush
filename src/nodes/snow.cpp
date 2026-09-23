@@ -198,7 +198,9 @@ void Snow::addCompressedSnow(float x, float y) {
             float offsetX = x - pixelPosition.x;
             float offsetY = y - pixelPosition.y;
 
-            image->set_pixel(pixelPosition.x, pixelPosition.y, Color(currentPixel.r, offsetX, offsetY, 0));
+            float compressionValue = 1.0 - _snowDefinition->get_compressionFactor();
+
+            image->set_pixel(pixelPosition.x, pixelPosition.y, Color(currentPixel.r, offsetX, offsetY, compressionValue));
 
             _terrainZones->updateZoneSnowTexture(zone);
 
@@ -211,7 +213,7 @@ void Snow::addCompressedSnow(float x, float y) {
             }
 
             if (!listOfPoints.has(pixelPosition)) {
-                listOfPoints[pixelPosition] = 0;
+                listOfPoints[pixelPosition] = compressionValue;
             }
         }
     }
