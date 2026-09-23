@@ -3,6 +3,7 @@
 
 #include "../editor_resources/zone_resource.h"
 #include "../editor_resources/snow_resource.h"
+#include "../editor_resources/texture_sets_resource.h"
 #include "../nodes/clipmap.h"
 
 #include <godot_cpp/classes/node3d.hpp>
@@ -23,6 +24,7 @@ private:
     int _resolution = 0;
     Ref<ZonesResource> _terrainZones = nullptr;
     Ref<SnowResource> _snowDefinition = nullptr;
+    Ref<TextureSetsResource> _textureSets = nullptr;
     bool _chunkMesh = true;
     int _chunkAABBHeight = -1;
     int _lodLevels = 0;
@@ -50,6 +52,9 @@ public:
 
     Ref<SnowResource> get_snowDefinition() const;
     void set_snowDefinition(const Ref<SnowResource> &value);
+
+    Ref<TextureSetsResource> get_textureSets() const;
+    void set_textureSets(const Ref<TextureSetsResource> &value);
 
     int get_lodLevels() const;
     void set_lodLevels(const int value);

@@ -13,6 +13,10 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_snowInnerOffset", "value"), &SnowResource::set_snowInnerOffset);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "snowInnerOffset"), "set_snowInnerOffset", "get_snowInnerOffset");
 
+    ClassDB::bind_method(D_METHOD("get_textureSetIndex"), &SnowResource::get_textureSetIndex);
+    ClassDB::bind_method(D_METHOD("set_textureSetIndex", "value"), &SnowResource::set_textureSetIndex);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "textureSetIndex"), "set_textureSetIndex", "get_textureSetIndex");
+
     ClassDB::bind_method(D_METHOD("get_snowColorTexture"), &SnowResource::get_snowColorTexture);
     ClassDB::bind_method(D_METHOD("set_snowColorTexture", "value"), &SnowResource::set_snowColorTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "snowColorTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_snowColorTexture", "get_snowColorTexture");
@@ -29,6 +33,14 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_snowColorDetail", "value"), &SnowResource::set_snowColorDetail);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "snowColorDetail"), "set_snowColorDetail", "get_snowColorDetail");
 
+    ClassDB::bind_method(D_METHOD("get_metallic"), &SnowResource::get_metallic);
+    ClassDB::bind_method(D_METHOD("set_metallic", "value"), &SnowResource::set_metallic);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "metallic", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_metallic", "get_metallic");
+
+    ClassDB::bind_method(D_METHOD("get_specular"), &SnowResource::get_specular);
+    ClassDB::bind_method(D_METHOD("set_specular", "value"), &SnowResource::set_specular);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "specular", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_specular", "get_specular");
+
     ClassDB::bind_method(D_METHOD("get_noise"), &SnowResource::get_noise);
     ClassDB::bind_method(D_METHOD("set_noise", "value"), &SnowResource::set_noise);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "noise", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_noise", "get_noise");
@@ -36,10 +48,6 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_noiseFactor"), &SnowResource::get_noiseFactor);
     ClassDB::bind_method(D_METHOD("set_noiseFactor", "value"), &SnowResource::set_noiseFactor);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "noiseFactor"), "set_noiseFactor", "get_noiseFactor");
-
-    ClassDB::bind_method(D_METHOD("get_metallic"), &SnowResource::get_metallic);
-    ClassDB::bind_method(D_METHOD("set_metallic", "value"), &SnowResource::set_metallic);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "metallic", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_metallic", "get_metallic");
 
     ClassDB::bind_method(D_METHOD("get_visualInstanceLayers"), &SnowResource::get_visualInstanceLayers);
     ClassDB::bind_method(D_METHOD("set_visualInstanceLayers", "value"), &SnowResource::set_visualInstanceLayers);
@@ -64,6 +72,13 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_hide"), &SnowResource::get_hide);
     ClassDB::bind_method(D_METHOD("set_hide", "value"), &SnowResource::set_hide);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hide"), "set_hide", "get_hide");
+}
+
+void SnowResource::_validate_property(PropertyInfo &property) const {
+    TypedArray<String> textureProperties = {"snowColorTexture", "snowColorNormal", "snowColorRoughness", "snowColorDetail", "metallic", "specular"};
+    if (textureProperties.has(property.name)) {
+        property.usage = _textureSetIndex < 0 ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
+    }
 }
 
 SnowResource::SnowResource() {
@@ -98,6 +113,14 @@ float SnowResource::get_snowInnerOffset() const {
 }
 void SnowResource::set_snowInnerOffset(const float value) {
     _snowInnerOffset = value;
+}
+
+int SnowResource::get_textureSetIndex() const {
+    return _textureSetIndex;
+}
+void SnowResource::set_textureSetIndex(const int value) {
+    _textureSetIndex = value;
+    notify_property_list_changed();
 }
 
 Ref<Texture2D> SnowResource::get_snowColorTexture() const {
@@ -147,6 +170,13 @@ float SnowResource::get_metallic() const {
 }
 void SnowResource::set_metallic(const float value) {
     _metallic = value;
+}
+
+float SnowResource::get_specular() const {
+    return _specular;
+}
+void SnowResource::set_specular(const float value) {
+    _specular = value;
 }
 
 int SnowResource::get_visualInstanceLayers() const {

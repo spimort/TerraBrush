@@ -96,3 +96,4 @@ const StringName StringNames::TextureAlbedoColorMaps() { return "TextureAlbedoCo
 const StringName StringNames::TextureAlbedoHasColorMaps() { return "TextureAlbedoHasColorMaps"; }
 const StringName StringNames::TextureAlbedoCurves() { return "TextureAlbedoCurves"; }
 const StringName StringNames::TextureAlbedoHasCurves() { return "TextureAlbedoHasCurves"; }
+const StringName StringNames::Specular() { return "Specular"; }
