@@ -109,6 +109,13 @@ void Snow::set_snowDefinition(const Ref<SnowResource> &value) {
     _snowDefinition = value;
 }
 
+Ref<TextureSetsResource> Snow::get_textureSets() const {
+    return _textureSets;
+}
+void Snow::set_textureSets(const Ref<TextureSetsResource> &value) {
+    _textureSets = value;
+}
+
 bool Snow::get_chunkMesh() const {
     return _chunkMesh;
 }
@@ -149,7 +156,7 @@ Clipmap *Snow::get_clipmap() const {
 }
 
 void Snow::updateSnow() {
-    if (_clipmap == nullptr || _snowDefinition.is_null()) {
+    if (_clipmap == nullptr || _snowDefinition.is_null() || _snowDefinition->get_textureSetIndex() >= 0 && (_textureSets.is_null() || _textureSets->get_textureSets().size() < _snowDefinition->get_textureSetIndex() + 1)) {
         return;
     }
 
@@ -173,16 +180,22 @@ void Snow::updateSnow() {
 
     _clipmap->createMesh();
 
+    Ref<TextureSetResource> textureSet = nullptr;
+    if (_snowDefinition->get_textureSetIndex() >= 0){
+        textureSet = _textureSets->get_textureSets()[_snowDefinition->get_textureSetIndex()];
+    }
+
     _clipmap->get_shader()->set_shader_parameter(StringNames::SnowTextures(), _terrainZones->get_snowTextures());
     _clipmap->get_shader()->set_shader_parameter(StringNames::SnowFactor(), _snowDefinition->get_snowFactor());
     _clipmap->get_shader()->set_shader_parameter(StringNames::SnowInnerOffset(), _snowDefinition->get_snowInnerOffset());
-    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorTexture(), _snowDefinition->get_snowColorTexture());
-    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorNormal(), _snowDefinition->get_snowColorNormal());
-    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorRoughness(), _snowDefinition->get_snowColorRoughness());
-    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorDetail(), _snowDefinition->get_snowColorDetail());
+    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorTexture(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_snowColorTexture() : textureSet->get_albedoTexture());
+    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorNormal(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_snowColorNormal() : textureSet->get_normalTexture());
+    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorRoughness(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_snowColorRoughness() : textureSet->get_roughnessTexture());
+    _clipmap->get_shader()->set_shader_parameter(StringNames::SnowColorDetail(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_snowColorDetail() : (textureSet->get_textureDetail() < 0 ? _snowDefinition->get_snowColorDetail() : textureSet->get_textureDetail()));
+    _clipmap->get_shader()->set_shader_parameter(StringNames::Metallic(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_metallic() : textureSet->get_metallic());
+    _clipmap->get_shader()->set_shader_parameter(StringNames::Specular(), _snowDefinition->get_textureSetIndex() < 0 ? _snowDefinition->get_specular() : textureSet->get_specular());
     _clipmap->get_shader()->set_shader_parameter(StringNames::Noise(), _snowDefinition->get_noise());
     _clipmap->get_shader()->set_shader_parameter(StringNames::NoiseFactor(), _snowDefinition->get_noiseFactor());
-    _clipmap->get_shader()->set_shader_parameter(StringNames::Metallic(), _snowDefinition->get_metallic());
 }
 
 void Snow::addCompressedSnow(float x, float y) {

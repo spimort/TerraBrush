@@ -827,6 +827,7 @@ void TerraBrush::createSnow() {
     _snowNode->set_zonesSize(_zonesSize);
     _snowNode->set_resolution(_resolution);
     _snowNode->set_snowDefinition(_snowDefinition);
+    _snowNode->set_textureSets(_textureSets);
     _snowNode->set_chunkMesh(_chunkMesh);
     _snowNode->set_chunkAABBHeight(_chunkAABBHeight);
     _snowNode->set_lodLevels(_lodLevels);

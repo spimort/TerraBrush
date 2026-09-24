@@ -302,17 +302,20 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Snow Definition|The definition of the snow. Create a **SnowResource** to use it. You can create a resource of this definition to reuse it in other terrain. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
 |SnowResource.SnowInnerOffset|This option is to decide the offset that the snow will get into the ground. This is to avoid having square edges of the snow.|
+|SnowResource.TextureSetIndex|Reuse a texture from the terrain texture sets. This correspond to the index of the array.|
 |SnowResource.SnowColorTexture|This sets the albedo texture that will be used for the snow.|
 |SnowResource.SnowColorNormal|This sets the normal map texture that will be used for the snow.|
 |SnowResource.SnowColorRoughness|This sets the roughness texture that will be used for the snow.|
 |SnowResource.SnowColorDetail|This is to define how often the texture will be repeated.|
+|SnowResource.Metallic|This is the metallic value of the material.|
+|SnowResource.Specular|This is the specular value of the material.|
 |SnowResource.Noise|The noise option allows the terrain to change shape a little bit to avoid having too straight a texture.|
 |SnowResource.NoiseFactor|This option defines how much the noise will affect the snow.|
-|SnowResource.Metallic|This is the metallic value of the material.|
 |SnowResource.VisualInstanceLayers|The godot layer on which the snow will be displayed.|
 |SnowResource.CustomShader|A custom shader for the snow.|
 |SnowResource.DecompressSpeed|Determine how fast the snow will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
 |SnowResource.DecompressOffsetSpeed|Determine how fast the snow vertices will "decompress" when using the function `AddInteractionPoint` (Higher number is faster).|
+|SnowResource.CompressionFactor|The snow compression factore when using `AddInteractionPoint`. The value of 1.0 correspond to the maximum compression, and 0.0 no compression.|
 |SnowResource.Hide|Allow to hide the painted snow from the current terrain.|
 |**Meta**||
 |ShowMetaInfo|Show the meta layers while in the editor. This has no effect in runtime (outside of the editor).|

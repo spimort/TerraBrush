@@ -10,6 +10,7 @@ uniform float SnowColorDetail = 20;
 uniform sampler2D Noise: hint_default_transparent, repeat_disable;
 uniform float NoiseFactor = 0.1;
 uniform float Metallic: hint_range(0.0, 1.0, 0.001);
+uniform float Specular: hint_range(0.0, 1.0, 0.001);
 
 float remap(float value, float from1, float to1, float from2, float to2) {
     return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
@@ -62,6 +63,7 @@ void calculateSnowFragment(
 	inout vec3 albedo,
 	inout vec3 normalMap,
 	inout float metallic,
+	inout float specular,
 	inout float roughness
 ) {
 	if (color.r > 0.0f) {
@@ -82,6 +84,7 @@ void calculateSnowFragment(
 		albedo = texture(SnowColorTexture, worldVertexUV).rgb;
 		normalMap = texture(SnowColorNormal, worldVertexUV).rgb;
 		metallic = Metallic;
+		specular = Specular;
 		roughness = texture(SnowColorRoughness, worldVertexUV).r;	
 	} else {
 		discard;

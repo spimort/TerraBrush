@@ -13,6 +13,7 @@ class SnowResource : public Resource {
 private:
     float _snowFactor = 0;
     float _snowInnerOffset = 0;
+    int _textureSetIndex = -1;
     Ref<Texture2D> _snowColorTexture = nullptr;
     Ref<Texture2D> _snowColorNormal = nullptr;
     Ref<Texture2D> _snowColorRoughness = nullptr;
@@ -20,6 +21,7 @@ private:
     Ref<Texture2D> _noise = nullptr;
     float _noiseFactor = 0;
     float _metallic = 0;
+    float _specular = 0.5;
     int _visualInstanceLayers = 0;
     Ref<ShaderMaterial> _customShader = nullptr;
     float _decompressSpeed = 0.5f;
@@ -29,6 +31,7 @@ private:
 
 protected:
     static void _bind_methods();
+    void _validate_property(PropertyInfo &property) const;
 
 public:
     SnowResource();
@@ -39,6 +42,9 @@ public:
 
     float get_snowInnerOffset() const;
     void set_snowInnerOffset(const float value);
+
+    int get_textureSetIndex() const;
+    void set_textureSetIndex(const int value);
 
     Ref<Texture2D> get_snowColorTexture() const;
     void set_snowColorTexture(const Ref<Texture2D> &value);
@@ -60,6 +66,9 @@ public:
 
     float get_metallic() const;
     void set_metallic(const float value);
+
+    float get_specular() const;
+    void set_specular(const float value);
 
     int get_visualInstanceLayers() const;
     void set_visualInstanceLayers(const int value);
