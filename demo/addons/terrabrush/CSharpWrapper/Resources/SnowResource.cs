@@ -23,6 +23,15 @@ public partial class SnowResource : Resource {
         }
     }
 
+    public int TextureSetIndex {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_textureSetIndex").AsInt32();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_textureSetIndex", value);
+        }
+    }
+
     public Texture2D SnowColorTexture {
         get {
             return _godotHandle.AsGodotObject().Call("get_snowColorTexture").As<Texture2D>();
@@ -59,6 +68,15 @@ public partial class SnowResource : Resource {
         }
     }
 
+    public float Specular {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_specular").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_specular", value);
+        }
+    }
+
     public Texture2D Noise {
         get {
             return _godotHandle.AsGodotObject().Call("get_noise").As<Texture2D>();
@@ -74,15 +92,6 @@ public partial class SnowResource : Resource {
         }
         set {
             _godotHandle.AsGodotObject().Call("set_noiseFactor", value);
-        }
-    }
-
-    public float Metallic {
-        get {
-            return (float) _godotHandle.AsGodotObject().Call("get_metallic").AsDouble();
-        }
-        set {
-            _godotHandle.AsGodotObject().Call("set_metallic", value);
         }
     }
 
@@ -119,6 +128,15 @@ public partial class SnowResource : Resource {
         }
         set {
             _godotHandle.AsGodotObject().Call("set_decompressOffsetSpeed", value);
+        }
+    }
+
+    public float CompressionFactor {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_compressionFactor").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_compressionFactor", value);
         }
     }
 
