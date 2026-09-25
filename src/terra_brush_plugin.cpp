@@ -8,6 +8,7 @@
 #include "misc/dialog_utils.h"
 #include "misc/importer_engine.h"
 #include "misc/exporter_engine.h"
+#include "misc/occluder_utils.h"
 
 #include "editor_nodes/brush_numeric_selector.h"
 #include "editor_nodes/tools_pie_menu.h"
@@ -46,6 +47,10 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/theme.hpp>
+#include <godot_cpp/classes/occluder_instance3d.hpp>
+#include <godot_cpp/classes/array_occluder3d.hpp>
+#include <godot_cpp/classes/resource_saver.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -279,6 +284,8 @@ void TerraBrushPlugin::addDock() {
     _terrainMenuButton->get_popup()->add_separator();
     _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Lock", "EditorIcons"), "Lock all terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_LOCKALLTERRAIN);
     _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Unlock", "EditorIcons"), "Unlock all terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN);
+    _terrainMenuButton->get_popup()->add_separator();
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("OccluderInstance3D", "EditorIcons"), "Create objects occluder", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER);
     _terrainMenuButton->get_popup()->connect("id_pressed", Callable(this, "onTerrainMenuItemPressed"));
     add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _terrainMenuButton);
 
@@ -457,9 +464,31 @@ void TerraBrushPlugin::onTerrainMenuItemPressed(const int id) {
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN:
             _currentTerraBrushNode->onUnlockTerrain();
             break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER:
+            createObjectsOccluder();
+            break;
     }
 }
 
 void TerraBrushPlugin::updateAutoAddZonesSetting() {
     _terraBrushEditor->set_autoAddZones(_autoAddZonesCheckbox->is_pressed());
+}
+
+void TerraBrushPlugin::createObjectsOccluder() {
+    Node3D *objectsContainer = _currentTerraBrushNode->get_objectsContainer();
+
+    Ref<ArrayOccluder3D> arrayOccluder = OccluderUtils::createOccluderFromNode(objectsContainer);
+    String arrayOccluderPath = Utils::pathCombineForwardSlash(_currentTerraBrushNode->get_dataPath(), "TerraBrushOccluder.occ");
+    ResourceSaver::get_singleton()->save(arrayOccluder, arrayOccluderPath);
+    arrayOccluder = ResourceLoader::get_singleton()->load(arrayOccluderPath, "", ResourceLoader::CACHE_MODE_REPLACE_DEEP);
+
+    OccluderInstance3D *occluderInstance = Object::cast_to<OccluderInstance3D>(_currentTerraBrushNode->get_node_or_null("TerraBrush Occluder"));
+    if (occluderInstance == nullptr) {
+        occluderInstance = memnew(OccluderInstance3D);
+        occluderInstance->set_name("TerraBrush Occluder");
+        _currentTerraBrushNode->add_child(occluderInstance);
+        occluderInstance->set_owner(_currentTerraBrushNode->get_owner());
+    }
+
+    occluderInstance->set_occluder(arrayOccluder);
 }
