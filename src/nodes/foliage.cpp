@@ -373,8 +373,7 @@ void Foliage::createMultiMeshChunk(int level, Vector2 position) {
     _multiMeshInstancesContainer->add_child(chunkMultiMeshInstance);
 
     AABB customAABB = chunkMultiMeshInstance->get_aabb();
-    customAABB.set_size(Vector3(customAABB.get_size().x, _definition->get_chunkAABBHeight() == -1 ? _zonesSize : _definition->get_chunkAABBHeight(), customAABB.get_size().z));
-    chunkMultiMeshInstance->set_custom_aabb(customAABB);
+    chunkMultiMeshInstance->set_custom_aabb(customAABB.grow(_definition->get_randomPlacementRange() * 2.0));
 }
 
 void Foliage::generateFullMultiMeshes() {
