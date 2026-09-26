@@ -51,6 +51,7 @@
 #include <godot_cpp/classes/array_occluder3d.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -478,6 +479,11 @@ void TerraBrushPlugin::createObjectsOccluder() {
     Node3D *objectsContainer = _currentTerraBrushNode->get_objectsContainer();
 
     Ref<ArrayOccluder3D> arrayOccluder = OccluderUtils::createOccluderFromNode(objectsContainer);
+    if (arrayOccluder.is_null()) {
+        OS::get_singleton()->alert("Nothing to occlude");
+        return;
+    }
+
     String arrayOccluderPath = Utils::pathCombineForwardSlash(_currentTerraBrushNode->get_dataPath(), "TerraBrushOccluder.occ");
     ResourceSaver::get_singleton()->save(arrayOccluder, arrayOccluderPath);
     arrayOccluder = ResourceLoader::get_singleton()->load(arrayOccluderPath, "", ResourceLoader::CACHE_MODE_REPLACE_DEEP);

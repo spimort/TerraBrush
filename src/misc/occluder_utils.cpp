@@ -62,6 +62,10 @@ Ref<ArrayOccluder3D> OccluderUtils::createOccluderFromNode(Node3D *node) {
     PackedVector3Array vertices = arrays[Mesh::ARRAY_VERTEX];
     PackedInt32Array indices = arrays[Mesh::ARRAY_INDEX];
 
+    if (vertices.size() == 0) {
+        return nullptr;
+    }
+
     Ref<ArrayOccluder3D> arrayOccluder = memnew(ArrayOccluder3D);
     arrayOccluder->set_arrays(vertices, indices);
 
