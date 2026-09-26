@@ -25,6 +25,7 @@ class TerraBrushPlugin : public EditorPlugin {
         TERRAINMENUBUTTONACTION_EXPORTTERRAIN = 5,
         TERRAINMENUBUTTONACTION_LOCKALLTERRAIN = 6,
         TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN = 7,
+        TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER = 8
     };
 
 private:
@@ -71,6 +72,7 @@ private:
     void importTerrain();
     void exportTerrain();
     void onTerrainMenuItemPressed(const int id);
+    void createObjectsOccluder();
 
 protected:
     static void _bind_methods();

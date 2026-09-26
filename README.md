@@ -169,6 +169,18 @@ For example, if you add a new texture, add foliage, add an object, add a water d
 
 This was designed this way to avoid spamming the properties of the terrain to update too often. This let you play with the settings before to force the terrain to recreate itself.
 
+**Terrain button**
+|Button|Action|
+|-------------|-------------|
+|Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
+|Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
+|Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
+|Lock all terrain|Lock all parts of the current Terrain.|
+|Unlock all terrain|Unlock all parts of the current Terrain.|
+|Import Terrain|Import terrain components from various images.|
+|Export Terrain|Export all components of the terrain to images.|
+|Create objects occluder|Create the occluder for all the objects that has been painted (as packed scene).|
+
 **Node properties**
 
 |Property|Description|
@@ -180,13 +192,6 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Collision Only|This option is useful for running for example a Game Server. This will only create the collisions of the terrain (the packed scenes will also be created since they could have a collision shape)|
 |Visual Instance Layers|The godot layer on which the terrain will be displayed.|
 |Custom Shader|Allow you to use a custom shader for the terrain.|
-|Create Terrain|Create the terrain with the current settings (everything that has been done will be cleared).|
-|Update Terrain|Update the terrain with the current settings (it will keep everything that has been painted). This option is useful if you modify something that has a direct impact on the map (ex. Add a new texture, foliage, packed scenes, etc.).|
-|Remove Terrain|Remove the current terrain (everything that has been done will be cleared).|
-|Lock all terrain|Lock all parts of the current Terrain.|
-|Unlock all terrain|Unlock all parts of the current Terrain.|
-|Import Terrain|Import terrain components from various images.|
-|Export Terrain|Export all components of the terrain to images.|
 |**LOD**||
 |Chunk Mesh|Whether or not the clipmap is chunked (chunked means more draw calls but better frustum culling so might get you better perfs).|
 |Chunk AABB Height|Control the AABB height of each chunk. If left to -1 (default value), the zone size will be used as the height (ex. 256).|
