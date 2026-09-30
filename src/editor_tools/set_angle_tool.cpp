@@ -97,6 +97,8 @@ void SetAngleTool::endPaint() {
     _terraBrush->updateObjectsHeight(sculptedZonesList);
 
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
+
+    _buildingRamp = false;
 }
 
 Ref<Image> SetAngleTool::getToolCurrentImage(Ref<ZoneResource> zone) {
@@ -108,7 +110,73 @@ void SetAngleTool::beforeDeselect() {
 }
 
 void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
-    if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
+    if (_buildingRamp) {
+        return;
+    }
+
+    if (_setAngleInitialPoint != Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue) && Input::get_singleton()->is_key_pressed(Key::KEY_CTRL) && Input::get_singleton()->is_key_pressed(Key::KEY_SHIFT)) {
+        _buildingRamp = true;
+
+        ZoneInfo targetPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
+        ImageZoneInfo targetImageZoneInfo = getImageZoneInfoForPosition(targetPoint, 0, 0);
+        Color targetPixel = targetImageZoneInfo.image->get_pixel(targetImageZoneInfo.zoneInfo.imagePosition.x, targetImageZoneInfo.zoneInfo.imagePosition.y);
+
+        Vector2 fromPosition = Vector2(_setAngleInitialPoint.x, _setAngleInitialPoint.z);
+        Vector2 toPosition = Vector2(imagePosition.x, imagePosition.y);
+
+        float distance = (toPosition - fromPosition).length();
+        Vector2 direction = (toPosition - fromPosition).normalized();
+
+        // Ref<GradientTexture2D> gradient
+
+        // // print_line("from position ", fromPosition);
+        // // print_line("direction ",  direction);
+        // // print_line("to position ", toPosition);
+        // // print_line("toHeight ", currentPixel.r);
+
+        Vector2 currentPosition = fromPosition;
+        Vector2 currentDirection = direction;
+
+        while (currentDirection.round() == direction.round()) {
+            currentPosition += (direction * 0.1);
+
+            float currentDistance = (toPosition - currentPosition).length();
+            float progress = (1.0 - (currentDistance / distance));
+            float currentHeight = ((targetPixel.r - _setAngleInitialPoint.y) * progress) + _setAngleInitialPoint.y;
+
+            for (int i = 0; i < brushSize; i++) {
+                Color brushPixel = brushImage->get_pixel(i, brushSize / 2.0);
+
+                Vector2 brushDirection = direction.rotated(Math::deg_to_rad(90.0)).normalized();
+                Vector2 brushPosition = currentPosition + (i - (brushSize / 2.0)) * brushDirection;
+
+                ZoneInfo currentPoint = ZoneUtils::getPixelToZoneInfo(brushPosition.x, brushPosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
+                ImageZoneInfo currentImageZoneInfo = getImageZoneInfoForPosition(currentPoint, 0, 0);
+                Color currentPixel = currentImageZoneInfo.image->get_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y);
+
+                Color newPixel = Color(
+                    // currentHeight,
+                    Math::lerp(currentPixel.r, currentHeight, brushPixel.a),
+                    currentPixel.g,
+                    currentPixel.b,
+                    currentPixel.a
+                );
+
+                currentImageZoneInfo.image->set_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y, newPixel);
+                _sculptedZones.insert(currentImageZoneInfo.zone);
+            }
+
+
+            // print_line("Current distnace ", currentDistance, " original distance ", distance, " progress ", progress, " currentheight ", currentHeight);
+
+            currentDirection = (toPosition - currentPosition).normalized();
+
+            // float currentHeight = _
+
+            // print_line("Current position ", currentPosition);
+            // print_line("Current direction ", currentDirection.round(), " direction  ", direction.round());
+        }
+    } else if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
         ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
         ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0);
         Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);

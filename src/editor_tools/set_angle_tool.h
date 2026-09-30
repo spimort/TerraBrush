@@ -19,6 +19,9 @@ private:
     Vector3 _setAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
     Node3D *_initialPointMesh = nullptr;
     std::unordered_set<Ref<ZoneResource>> _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
+    bool _buildingRamp = false;
+    void updateInitialPointMesh();
+    void clearInitialPointMesh();
 
 protected:
     static void _bind_methods();
@@ -30,8 +33,6 @@ protected:
     void endPaint() override;
     Ref<Image> getToolCurrentImage(Ref<ZoneResource> zone) override;
     void beforeDeselect() override;
-    void updateInitialPointMesh();
-    void clearInitialPointMesh();
 
 public:
     SetAngleTool();
