@@ -22,6 +22,7 @@ private:
     bool _buildingRamp = false;
     void updateInitialPointMesh();
     void clearInitialPointMesh();
+    void forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color targetPixel, Vector2 fromPosition, Vector2 toPosition, std::function<void(Vector2, Color, float, ImageZoneInfo)> callback);
 
 protected:
     static void _bind_methods();

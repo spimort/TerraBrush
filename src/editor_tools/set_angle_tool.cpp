@@ -3,6 +3,7 @@
 #include "../misc/zone_info.h"
 #include "../misc/string_names.h"
 #include "../misc/utils.h"
+#include "../misc/setting_contants.h"
 
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
@@ -11,6 +12,7 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/sphere_mesh.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 using namespace godot;
 
@@ -124,57 +126,63 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
         Vector2 fromPosition = Vector2(_setAngleInitialPoint.x, _setAngleInitialPoint.z);
         Vector2 toPosition = Vector2(imagePosition.x, imagePosition.y);
 
-        float distance = (toPosition - fromPosition).length();
-        Vector2 direction = (toPosition - fromPosition).normalized();
+        // Draw the ramp
+        forEachRampPixel(brushSize, brushImage, targetPixel, fromPosition, toPosition, ([&](Vector2 brushPosition, Color brushPixel, float currentHeight, ImageZoneInfo currentImageZoneInfo) {
+            Color currentPixel = currentImageZoneInfo.image->get_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y);
 
-        // Ref<GradientTexture2D> gradient
+            Color newPixel = Color(
+                Math::lerp(currentPixel.r, currentHeight, brushPixel.a),
+                currentPixel.g,
+                currentPixel.b,
+                currentPixel.a
+            );
 
-        // // print_line("from position ", fromPosition);
-        // // print_line("direction ",  direction);
-        // // print_line("to position ", toPosition);
-        // // print_line("toHeight ", currentPixel.r);
+            currentImageZoneInfo.image->set_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y, newPixel);
+            _sculptedZones.insert(currentImageZoneInfo.zone);
+        }));
 
-        Vector2 currentPosition = fromPosition;
-        Vector2 currentDirection = direction;
+        // Smooth the ramp
+        for (int i = 0; i < 5; i++) {
+            float smoothingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SmoothingMultiplier(), SettingContants::SmoothingMultiplierDefaultValue());
+            forEachRampPixel(brushSize, brushImage, targetPixel, fromPosition, toPosition, ([&](Vector2 brushPosition, Color brushPixel, float currentHeight, ImageZoneInfo currentImageZoneInfo) {
+                std::vector<float> directions = std::vector<float>();
 
-        while (currentDirection.round() == direction.round()) {
-            currentPosition += (direction * 0.1);
-
-            float currentDistance = (toPosition - currentPosition).length();
-            float progress = (1.0 - (currentDistance / distance));
-            float currentHeight = ((targetPixel.r - _setAngleInitialPoint.y) * progress) + _setAngleInitialPoint.y;
-
-            for (int i = 0; i < brushSize; i++) {
-                Color brushPixel = brushImage->get_pixel(i, brushSize / 2.0);
-
-                Vector2 brushDirection = direction.rotated(Math::deg_to_rad(90.0)).normalized();
-                Vector2 brushPosition = currentPosition + (i - (brushSize / 2.0)) * brushDirection;
-
-                ZoneInfo currentPoint = ZoneUtils::getPixelToZoneInfo(brushPosition.x, brushPosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
-                ImageZoneInfo currentImageZoneInfo = getImageZoneInfoForPosition(currentPoint, 0, 0);
                 Color currentPixel = currentImageZoneInfo.image->get_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y);
+                if (Math::abs(currentHeight - currentPixel.r) > 0.005) {
+                    directions.push_back(currentPixel.r);
 
-                Color newPixel = Color(
-                    // currentHeight,
-                    Math::lerp(currentPixel.r, currentHeight, brushPixel.a),
-                    currentPixel.g,
-                    currentPixel.b,
-                    currentPixel.a
-                );
+                    ImageZoneInfo neighbourImageZoneInfo = getImageZoneInfoForPosition(currentImageZoneInfo.zoneInfo, -1, 0, true);
+                    if (!neighbourImageZoneInfo.zone.is_null()) {
+                        directions.push_back(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
+                    }
 
-                currentImageZoneInfo.image->set_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y, newPixel);
-                _sculptedZones.insert(currentImageZoneInfo.zone);
-            }
+                    neighbourImageZoneInfo = getImageZoneInfoForPosition(currentImageZoneInfo.zoneInfo, 1, 0, true);
+                    if (!neighbourImageZoneInfo.zone.is_null()) {
+                        directions.push_back(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
+                    }
 
+                    neighbourImageZoneInfo = getImageZoneInfoForPosition(currentImageZoneInfo.zoneInfo, 0, -1, true);
+                    if (!neighbourImageZoneInfo.zone.is_null()) {
+                        directions.push_back(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
+                    }
 
-            // print_line("Current distnace ", currentDistance, " original distance ", distance, " progress ", progress, " currentheight ", currentHeight);
+                    neighbourImageZoneInfo = getImageZoneInfoForPosition(currentImageZoneInfo.zoneInfo, 0, 1, true);
+                    if (!neighbourImageZoneInfo.zone.is_null()) {
+                        directions.push_back(neighbourImageZoneInfo.image->get_pixel(neighbourImageZoneInfo.zoneInfo.imagePosition.x, neighbourImageZoneInfo.zoneInfo.imagePosition.y).r);
+                    }
 
-            currentDirection = (toPosition - currentPosition).normalized();
+                    float average = 0;
+                    for (float directionValue : directions) {
+                        average += directionValue;
+                    }
+                    average /= directions.size();
 
-            // float currentHeight = _
+                    float resultValue = Math::lerp(currentPixel.r, average, smoothingMultiplier);
 
-            // print_line("Current position ", currentPosition);
-            // print_line("Current direction ", currentDirection.round(), " direction  ", direction.round());
+                    Color newPixel = Color(resultValue, currentPixel.g, currentPixel.b, currentPixel.a);
+                    currentImageZoneInfo.image->set_pixel(currentImageZoneInfo.zoneInfo.imagePosition.x, currentImageZoneInfo.zoneInfo.imagePosition.y, newPixel);
+                }
+            }));
         }
     } else if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
         ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
@@ -192,23 +200,6 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
     if (_setAngleInitialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
         return;
     }
-
-    forEachBrushPixel(brushImage, brushSize, slopeValue, imagePosition, ([&](ImageZoneInfo &imageZoneInfo, float pixelBrushStrength) {
-        Vector2i absolutePosition = (imageZoneInfo.zoneInfo.imagePosition * _terraBrush->get_resolution()) + (imageZoneInfo.zoneInfo.zonePosition * (_terraBrush->get_zonesSize() - 1));
-        float distanceToStartingPoint = Vector2(_setAngleInitialPoint.x, _setAngleInitialPoint.z).distance_to(absolutePosition);
-        float angleHeight = (float) (distanceToStartingPoint * Math::tan(Math::deg_to_rad(_setAngleValue))) + _setAngleInitialPoint.y;
-
-        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
-        Color newValue = Color(
-            Math::lerp(currentPixel.r, angleHeight, pixelBrushStrength * brushStrength),
-            currentPixel.g,
-            currentPixel.b,
-            currentPixel.a
-        );
-
-        imageZoneInfo.image->set_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y, newValue);
-        _sculptedZones.insert(imageZoneInfo.zone);
-    }));
 
     _terraBrush->get_terrainZones()->updateHeightmaps();
 }
@@ -253,6 +244,43 @@ void SetAngleTool::clearInitialPointMesh() {
     if (existingPointContainer != nullptr) {
         existingPointContainer->set_name(StringName(StringNames::SetAnglePointContainer()) + StringName("_temp"));
         existingPointContainer->queue_free();
+    }
+}
+
+void SetAngleTool::forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color targetPixel, Vector2 fromPosition, Vector2 toPosition, std::function<void(Vector2, Color, float, ImageZoneInfo)> callback) {
+    float distance = (toPosition - fromPosition).length();
+    Vector2 direction = (toPosition - fromPosition).normalized();
+
+    Vector2 currentPosition = fromPosition;
+    Vector2 currentDirection = direction;
+
+    HashSet<Vector2> processedPoints = HashSet<Vector2>();
+    while (currentDirection.round() == direction.round()) {
+        currentPosition += (direction * 0.1);
+
+        float currentDistance = (toPosition - currentPosition).length();
+        float progress = (1.0 - (currentDistance / distance));
+        float currentHeight = ((targetPixel.r - _setAngleInitialPoint.y) * progress) + _setAngleInitialPoint.y;
+
+        for (int i = 0; i < brushSize; i++) {
+            Vector2 brushDirection = direction.rotated(Math::deg_to_rad(90.0)).normalized();
+            Vector2 brushPosition = currentPosition + (i - (brushSize / 2.0)) * brushDirection;
+
+            if (processedPoints.has(brushPosition) == 0) {
+                Color brushPixel = brushImage->get_pixel(i, i);
+
+                ZoneInfo currentPoint = ZoneUtils::getPixelToZoneInfo(brushPosition.x, brushPosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
+                ImageZoneInfo currentImageZoneInfo = getImageZoneInfoForPosition(currentPoint, 0, 0);
+
+                if (!currentImageZoneInfo.zone.is_null()) {
+                    callback(brushPosition, brushPixel, currentHeight, currentImageZoneInfo);
+                }
+
+                processedPoints.insert(brushPosition);
+            }
+        }
+
+        currentDirection = (toPosition - currentPosition).normalized();
     }
 }
 
