@@ -350,9 +350,9 @@ void TerrainControlDock::buildLayout() {
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);
-                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE);
-                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_set_angle.png"));
-                                    toolPreview->set_tooltip_text("Set terrain angle");
+                                    toolPreview->set_toolType(TerrainToolType::TERRAINTOOLTYPE_TERRAINRAMP);
+                                    toolPreview->set_buttonImage(ResourceLoader::get_singleton()->load("res://addons/terrabrush/Assets/Icons/map_ramp.png"));
+                                    toolPreview->set_tooltip_text("Ramp");
                                     _toolTypesContainer->add_child(toolPreview);
 
                                     toolPreview = memnew(ToolPreview);

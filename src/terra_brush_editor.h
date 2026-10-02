@@ -52,10 +52,9 @@ private:
     int _objectIndex = 0;
     int _metaInfoLayerIndex = 0;
     float _selectedSetHeight = 0;
-    float _selectedSetAngle = 0;
     Color _selectedColor = Color(0, 0, 0, 1.0);
     bool _autoAddZones = false;
-    Vector3 _selectedSetAngleInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
+    Vector3 _selectedRampInitialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
 
     bool _isMousePressed = false;
     Vector3 _mouseHitPosition = Vector3();

@@ -14,6 +14,7 @@ class SettingContants {
         const static StringName SmoothingMultiplier();
         const static StringName IconsColor();
         const static StringName AutoDetectTextures();
+        const static StringName RampToolSmoothPasses();
 
         const static bool ShowDecalBubbleDefaultValue();
         const static Color DecalColorDefaultValue();
@@ -22,5 +23,6 @@ class SettingContants {
         const static int SmoothingMultiplierDefaultValue();
         const static Color IconsColorDefaultValue();
         const static bool AutoDetectTexturesDefaultValue();
+        const static int RampToolSmoothPassesDefaultValue();
 };
 #endif

@@ -56,7 +56,7 @@ It runs in the browser, hosted on itch.io :
   - Smooth the terrain
   - Flatten the terrain
   - Set height (paint to a specific height)
-  - Set angle (paint from a starting point with a specific angle)
+  - Ramp (paint from a starting point to another, making a ramp)
 * **Paint color** - Add colors to your terrain
 * **Paint textures** - Add textures to your terrain with the painting tool
   - Normal map and roughness texture are supported

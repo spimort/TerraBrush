@@ -5,7 +5,7 @@
 
 #include "editor_tools/sculpt_tool.h"
 #include "editor_tools/set_height_tool.h"
-#include "editor_tools/set_angle_tool.h"
+#include "editor_tools/ramp_tool.h"
 #include "editor_tools/texture_tool.h"
 #include "editor_tools/foliage_tool.h"
 #include "editor_tools/object_tool.h"
@@ -129,7 +129,7 @@ void TerraBrushEditor::_bind_methods() {
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSMOOTH);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINFLATTEN);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSETHEIGHT);
-    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINSETANGLE);
+    BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_TERRAINRAMP);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_PAINT);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_FOLIAGEADD);
     BIND_ENUM_CONSTANT(TERRAINTOOLTYPE_FOLIAGEREMOVE);
@@ -471,17 +471,6 @@ void TerraBrushEditor::showCurrentToolMenu(Viewport *viewport) {
                 _selectedSetHeight
             );
             break;
-        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE:
-            DialogUtils::showNumericSelector(
-                this,
-                ([&](float value) {
-                    _selectedSetAngle = value;
-                    Ref<SetAngleTool> setAngleTool = Object::cast_to<SetAngleTool>(_currentTool.ptr());
-                    setAngleTool->updateSetAngleValue(_selectedSetAngle);
-                }),
-                _selectedSetAngle
-            );
-            break;
         case TerrainToolType::TERRAINTOOLTYPE_COLORADD:
         case TerrainToolType::TERRAINTOOLTYPE_COLORREMOVE:
             showColorPickerSelector(viewport);
@@ -690,10 +679,9 @@ void TerraBrushEditor::beforeDeselectTool() {
     if (Object::cast_to<SetHeightTool>(_currentTool.ptr()) != nullptr) {
         Ref<SetHeightTool> setHeightTool = Object::cast_to<SetHeightTool>(_currentTool.ptr());
         _selectedSetHeight = setHeightTool->getSetHeightValue();
-    } else if (Object::cast_to<SetAngleTool>(_currentTool.ptr()) != nullptr) {
-        Ref<SetAngleTool> setAngleTool = Object::cast_to<SetAngleTool>(_currentTool.ptr());
-        _selectedSetAngle = setAngleTool->getSetAngleValue();
-        _selectedSetAngleInitialPoint = setAngleTool->getSetAngleInitialPoint();
+    } else if (Object::cast_to<RampTool>(_currentTool.ptr()) != nullptr) {
+        Ref<RampTool> rampTool = Object::cast_to<RampTool>(_currentTool.ptr());
+        _selectedRampInitialPoint = rampTool->getInitialPoint();
     }
 
     _currentTool->beforeDeselect();
@@ -711,11 +699,10 @@ Ref<ToolBase> TerraBrushEditor::getToolForType(TerrainToolType toolType) {
             setHeightTool->updateSetHeightValue(_selectedSetHeight);
             return setHeightTool;
         }
-        case TerrainToolType::TERRAINTOOLTYPE_TERRAINSETANGLE: {
-            Ref<SetAngleTool> setAngleTool = memnew(SetAngleTool);
-            setAngleTool->updateSetAngleValue(_selectedSetAngle);
-            setAngleTool->updateSetAngleInitialPoint(_selectedSetAngleInitialPoint);
-            return setAngleTool;
+        case TerrainToolType::TERRAINTOOLTYPE_TERRAINRAMP: {
+            Ref<RampTool> rampTool = memnew(RampTool);
+            rampTool->updateInitialPoint(_selectedRampInitialPoint);
+            return rampTool;
         }
         case TerrainToolType::TERRAINTOOLTYPE_PAINT: {
             Ref<TextureTool> textureTool = memnew(TextureTool);

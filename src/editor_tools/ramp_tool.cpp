@@ -1,4 +1,4 @@
-#include "set_angle_tool.h"
+#include "ramp_tool.h"
 #include "../misc/zone_utils.h"
 #include "../misc/zone_info.h"
 #include "../misc/string_names.h"
@@ -16,80 +16,33 @@
 
 using namespace godot;
 
-void SetAngleTool::_bind_methods() {}
+void RampTool::_bind_methods() {}
 
-SetAngleTool::SetAngleTool() {}
+RampTool::RampTool() {}
 
-SetAngleTool::~SetAngleTool() {}
+RampTool::~RampTool() {}
 
-void SetAngleTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
+void RampTool::init(TerraBrush *terraBrush, Ref<ToolUndoRedo> undoRedo, bool autoAddZones) {
     ToolBase::init(terraBrush, undoRedo, autoAddZones);
 
     updateInitialPointMesh();
 }
 
-bool SetAngleTool::getApplyResolution() const {
+bool RampTool::getApplyResolution() const {
     return true;
 }
 
-String SetAngleTool::getToolInfo(TerrainToolType toolType) {
-    String initialValue = "";
-
-    if (_setAngleInitialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
-        initialValue = "Select the initial point with CTRL + click";
-    }
-
-    if (_setAngleValue == 0) {
-        initialValue = initialValue + "\nSelect angle with CTRL + (mouse wheel or +/-)";
-    }
-
-    return (initialValue + "\nAngle : " + String::num_real(_setAngleValue) + "\n").strip_edges();
+String RampTool::getToolInfo(TerrainToolType toolType) {
+    return "Select the initial point with click and select another point to paint ramp";
 }
 
-bool SetAngleTool::handleInput(TerrainToolType toolType, Ref<InputEvent> event) {
-    if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
-        float increment = 1;
-        int roundFactor = 0;
-
-        float incrementValue = 0;
-        if (Object::cast_to<InputEventMouseButton>(event.ptr()) != nullptr) {
-            Ref<InputEventMouseButton> inputMouseButton = Object::cast_to<InputEventMouseButton>(event.ptr());
-
-            if (inputMouseButton->get_button_index() == MouseButton::MOUSE_BUTTON_WHEEL_UP) {
-                incrementValue = increment;
-            } else if (inputMouseButton->get_button_index() == MouseButton::MOUSE_BUTTON_WHEEL_DOWN) {
-                incrementValue = -increment;
-            }
-        }
-
-        if (Object::cast_to<InputEventKey>(event.ptr()) != nullptr) {
-            Ref<InputEventKey> inputEvent = Object::cast_to<InputEventKey>(event.ptr());
-
-            if (inputEvent->get_keycode() == Key::KEY_EQUAL) {
-                incrementValue = increment;
-            } else if (inputEvent->get_keycode() == Key::KEY_MINUS) {
-                incrementValue = -increment;
-            }
-        }
-
-        if (incrementValue != 0) {
-            _setAngleValue += incrementValue;
-            double factor = Math::pow(10.0, roundFactor);
-            updateSetAngleValue((float) Math::round(_setAngleValue * factor) / factor);
-            return true;
-        }
-    }
-
-    return ToolBase::handleInput(toolType, event);
-}
-
-void SetAngleTool::beginPaint() {
+void RampTool::beginPaint() {
     ToolBase::beginPaint();
 
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 }
 
-void SetAngleTool::endPaint() {
+void RampTool::endPaint() {
     ToolBase::endPaint();
 
     TypedArray<Ref<ZoneResource>> sculptedZonesList = TypedArray<Ref<ZoneResource>>();
@@ -100,30 +53,38 @@ void SetAngleTool::endPaint() {
 
     _sculptedZones = std::unordered_set<Ref<ZoneResource>>();
 
-    _buildingRamp = false;
+    _preventPaint = false;
 }
 
-Ref<Image> SetAngleTool::getToolCurrentImage(Ref<ZoneResource> zone) {
+Ref<Image> RampTool::getToolCurrentImage(Ref<ZoneResource> zone) {
     return zone->get_heightMapImage();
 }
 
-void SetAngleTool::beforeDeselect() {
+void RampTool::beforeDeselect() {
     clearInitialPointMesh();
 }
 
-void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
-    if (_buildingRamp) {
+void RampTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int brushSize, float brushStrength, Vector2 slopeValue, Vector2 imagePosition) {
+    if (_preventPaint) {
         return;
     }
 
-    if (_setAngleInitialPoint != Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue) && Input::get_singleton()->is_key_pressed(Key::KEY_CTRL) && Input::get_singleton()->is_key_pressed(Key::KEY_SHIFT)) {
-        _buildingRamp = true;
+    _preventPaint = true;
 
+    if (_initialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
+        ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
+        ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0);
+        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
+
+        _initialPoint = Vector3(imagePosition.x, currentPixel.r, imagePosition.y);
+
+        updateInitialPointMesh();
+    } else {
         ZoneInfo targetPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
         ImageZoneInfo targetImageZoneInfo = getImageZoneInfoForPosition(targetPoint, 0, 0);
         Color targetPixel = targetImageZoneInfo.image->get_pixel(targetImageZoneInfo.zoneInfo.imagePosition.x, targetImageZoneInfo.zoneInfo.imagePosition.y);
 
-        Vector2 fromPosition = Vector2(_setAngleInitialPoint.x, _setAngleInitialPoint.z);
+        Vector2 fromPosition = Vector2(_initialPoint.x, _initialPoint.z);
         Vector2 toPosition = Vector2(imagePosition.x, imagePosition.y);
 
         // Draw the ramp
@@ -142,7 +103,8 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
         }));
 
         // Smooth the ramp
-        for (int i = 0; i < 5; i++) {
+        float smoothPasses = ProjectSettings::get_singleton()->get_setting(SettingContants::RampToolSmoothPasses(), SettingContants::RampToolSmoothPassesDefaultValue());
+        for (int i = 0; i < smoothPasses; i++) {
             float smoothingMultiplier = ProjectSettings::get_singleton()->get_setting(SettingContants::SmoothingMultiplier(), SettingContants::SmoothingMultiplierDefaultValue());
             forEachRampPixel(brushSize, brushImage, targetPixel, fromPosition, toPosition, ([&](Vector2 brushPosition, Color brushPixel, float currentHeight, ImageZoneInfo currentImageZoneInfo) {
                 std::vector<float> directions = std::vector<float>();
@@ -184,30 +146,19 @@ void SetAngleTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int br
                 }
             }));
         }
-    } else if (Input::get_singleton()->is_key_pressed(Key::KEY_CTRL)) {
-        ZoneInfo initialPoint = ZoneUtils::getPixelToZoneInfo(imagePosition.x, imagePosition.y, _terraBrush->get_zonesSize(), _terraBrush->get_resolution());
-        ImageZoneInfo imageZoneInfo = getImageZoneInfoForPosition(initialPoint, 0, 0);
-        Color currentPixel = imageZoneInfo.image->get_pixel(imageZoneInfo.zoneInfo.imagePosition.x, imageZoneInfo.zoneInfo.imagePosition.y);
 
-        _setAngleInitialPoint = Vector3(imagePosition.x, currentPixel.r, imagePosition.y);
-
-        updateSetAngleValue(_setAngleValue);
+        _initialPoint = Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue);
         updateInitialPointMesh();
 
-        return;
+        _terraBrush->get_terrainZones()->updateHeightmaps();
     }
-
-    if (_setAngleInitialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
-        return;
-    }
-
-    _terraBrush->get_terrainZones()->updateHeightmaps();
 }
 
-void SetAngleTool::updateInitialPointMesh() {
-    if (_setAngleInitialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
+void RampTool::updateInitialPointMesh() {
+    if (_initialPoint == Vector3(Utils::InfinityValue, Utils::InfinityValue, Utils::InfinityValue)) {
         if (_initialPointMesh != nullptr) {
             _initialPointMesh->queue_free();
+            _initialPointMesh = nullptr;
         }
     } else {
         if (_initialPointMesh == nullptr) {
@@ -225,29 +176,29 @@ void SetAngleTool::updateInitialPointMesh() {
 
             _initialPointMesh = pointMesh;
 
-            Node *container = _terraBrush->get_node_or_null((NodePath) StringNames::SetAnglePointContainer());
+            Node *container = _terraBrush->get_node_or_null((NodePath) StringNames::RampPointContainer());
             if (container == nullptr) {
                 container = memnew(Node3D);
-                container->set_name(StringNames::SetAnglePointContainer());
+                container->set_name(StringNames::RampPointContainer());
                 _terraBrush->add_child(container);
             }
 
             container->add_child(_initialPointMesh);
         }
 
-        _initialPointMesh->set_global_position(_setAngleInitialPoint - Vector3(_terraBrush->get_zonesSize() / 2.0f, 0, _terraBrush->get_zonesSize() / 2.0f));
+        _initialPointMesh->set_global_position(_initialPoint - Vector3(_terraBrush->get_zonesSize() / 2.0f, 0, _terraBrush->get_zonesSize() / 2.0f));
     }
 }
 
-void SetAngleTool::clearInitialPointMesh() {
-    Node *existingPointContainer = _terraBrush->get_node_or_null((NodePath) StringNames::SetAnglePointContainer());
+void RampTool::clearInitialPointMesh() {
+    Node *existingPointContainer = _terraBrush->get_node_or_null((NodePath) StringNames::RampPointContainer());
     if (existingPointContainer != nullptr) {
-        existingPointContainer->set_name(StringName(StringNames::SetAnglePointContainer()) + StringName("_temp"));
+        existingPointContainer->set_name(StringName(StringNames::RampPointContainer()) + StringName("_temp"));
         existingPointContainer->queue_free();
     }
 }
 
-void SetAngleTool::forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color targetPixel, Vector2 fromPosition, Vector2 toPosition, std::function<void(Vector2, Color, float, ImageZoneInfo)> callback) {
+void RampTool::forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color targetPixel, Vector2 fromPosition, Vector2 toPosition, std::function<void(Vector2, Color, float, ImageZoneInfo)> callback) {
     float distance = (toPosition - fromPosition).length();
     Vector2 direction = (toPosition - fromPosition).normalized();
 
@@ -260,7 +211,7 @@ void SetAngleTool::forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color
 
         float currentDistance = (toPosition - currentPosition).length();
         float progress = (1.0 - (currentDistance / distance));
-        float currentHeight = ((targetPixel.r - _setAngleInitialPoint.y) * progress) + _setAngleInitialPoint.y;
+        float currentHeight = ((targetPixel.r - _initialPoint.y) * progress) + _initialPoint.y;
 
         for (int i = 0; i < brushSize; i++) {
             Vector2 brushDirection = direction.rotated(Math::deg_to_rad(90.0)).normalized();
@@ -284,20 +235,10 @@ void SetAngleTool::forEachRampPixel(int brushSize, Ref<Image> &brushImage, Color
     }
 }
 
-float SetAngleTool::getSetAngleValue() {
-    return _setAngleValue;
+Vector3 RampTool::getInitialPoint() {
+    return _initialPoint;
 }
 
-Vector3 SetAngleTool::getSetAngleInitialPoint() {
-    return _setAngleInitialPoint;
-}
-
-void SetAngleTool::updateSetAngleValue(float value) {
-    value = Math::clamp(value, -MaxAngle, MaxAngle);
-
-    _setAngleValue = value;
-}
-
-void SetAngleTool::updateSetAngleInitialPoint(Vector3 value) {
-    _setAngleInitialPoint = value;
+void RampTool::updateInitialPoint(Vector3 value) {
+    _initialPoint = value;
 }

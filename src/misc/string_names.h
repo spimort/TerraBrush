@@ -59,7 +59,7 @@ class StringNames {
         const static StringName Near();
         const static StringName Far();
         const static StringName EdgeColor();
-        const static StringName SetAnglePointContainer();
+        const static StringName RampPointContainer();
         const static StringName InitialCellWidth();
         const static StringName LODRowsPerLevel();
         const static StringName LODLevels();
