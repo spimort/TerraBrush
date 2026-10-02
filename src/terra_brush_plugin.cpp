@@ -19,7 +19,7 @@
 
 #include "editor_tools/sculpt_tool.h"
 #include "editor_tools/set_height_tool.h"
-#include "editor_tools/set_angle_tool.h"
+#include "editor_tools/ramp_tool.h"
 #include "editor_tools/texture_tool.h"
 #include "editor_tools/foliage_tool.h"
 #include "editor_tools/object_tool.h"
@@ -104,6 +104,7 @@ void TerraBrushPlugin::_enter_tree() {
     createCustomSetting(SettingContants::SmoothingMultiplier(), SettingContants::SmoothingMultiplierDefaultValue(), Variant::Type::INT);
     createCustomSetting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue(), Variant::Type::COLOR);
     createCustomSetting(SettingContants::AutoDetectTextures(), SettingContants::AutoDetectTexturesDefaultValue(), Variant::Type::BOOL);
+    createCustomSetting(SettingContants::RampToolSmoothPasses(), SettingContants::RampToolSmoothPassesDefaultValue(), Variant::Type::INT);
 
     _terrainDockContainer = memnew(Control);
     _terrainDockContainer->set_name("Terrain Editor");
@@ -477,6 +478,9 @@ void TerraBrushPlugin::updateAutoAddZonesSetting() {
 
 void TerraBrushPlugin::createObjectsOccluder() {
     Node3D *objectsContainer = _currentTerraBrushNode->get_objectsContainer();
+    if (objectsContainer == nullptr) {
+        return;
+    }
 
     Ref<ArrayOccluder3D> arrayOccluder = OccluderUtils::createOccluderFromNode(objectsContainer);
     if (arrayOccluder.is_null()) {

@@ -54,7 +54,7 @@ const StringName StringNames::EdgeScale() { return "EdgeScale"; }
 const StringName StringNames::Near() { return "Near"; }
 const StringName StringNames::Far() { return "Far"; }
 const StringName StringNames::EdgeColor() { return "EdgeColor"; }
-const StringName StringNames::SetAnglePointContainer() { return "SetAnglePointContainer"; }
+const StringName StringNames::RampPointContainer() { return "RampPointContainer"; }
 const StringName StringNames::InitialCellWidth() { return "InitialCellWidth"; }
 const StringName StringNames::LODRowsPerLevel() { return "LODRowsPerLevel"; }
 const StringName StringNames::LODLevels() { return "LODLevels"; }

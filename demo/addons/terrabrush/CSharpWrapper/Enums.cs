@@ -29,7 +29,7 @@ public enum TerrainToolType {
     TerrainSmooth = 3,
     TerrainFlatten = 4,
     TerrainSetHeight = 5,
-    TerrainSetAngle = 19,
+    TerrainRamp = 19,
     Paint = 6,
     FoliageAdd = 7,
     FoliageRemove = 8,

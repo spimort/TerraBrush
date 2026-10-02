@@ -39,7 +39,7 @@
 #include "editor_tools/tool_base.h"
 #include "editor_tools/sculpt_tool.h"
 #include "editor_tools/set_height_tool.h"
-#include "editor_tools/set_angle_tool.h"
+#include "editor_tools/ramp_tool.h"
 #include "editor_tools/texture_tool.h"
 #include "editor_tools/foliage_tool.h"
 #include "editor_tools/object_tool.h"
@@ -139,7 +139,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(ToolBase);
         GDREGISTER_INTERNAL_CLASS(SculptTool);
         GDREGISTER_INTERNAL_CLASS(SetHeightTool);
-        GDREGISTER_INTERNAL_CLASS(SetAngleTool);
+        GDREGISTER_INTERNAL_CLASS(RampTool);
         GDREGISTER_INTERNAL_CLASS(TextureTool);
         GDREGISTER_INTERNAL_CLASS(FoliageTool);
         GDREGISTER_INTERNAL_CLASS(ObjectTool);
