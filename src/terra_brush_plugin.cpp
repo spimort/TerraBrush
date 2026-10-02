@@ -478,6 +478,9 @@ void TerraBrushPlugin::updateAutoAddZonesSetting() {
 
 void TerraBrushPlugin::createObjectsOccluder() {
     Node3D *objectsContainer = _currentTerraBrushNode->get_objectsContainer();
+    if (objectsContainer == nullptr) {
+        return;
+    }
 
     Ref<ArrayOccluder3D> arrayOccluder = OccluderUtils::createOccluderFromNode(objectsContainer);
     if (arrayOccluder.is_null()) {
