@@ -374,6 +374,7 @@ void Foliage::createMultiMeshChunk(int level, Vector2 position) {
 
     AABB customAABB = chunkMultiMeshInstance->get_aabb().grow(_definition->get_randomPlacementRange() * 2.0);
     customAABB.set_size(Vector3(customAABB.get_size().x, _definition->get_chunkAABBHeight() == -1 ? _zonesSize : _definition->get_chunkAABBHeight(), customAABB.get_size().z));
+    customAABB.set_position(Vector3(customAABB.get_position().x, -(customAABB.get_size().y / 2.0), customAABB.get_position().z));
     chunkMultiMeshInstance->set_custom_aabb(customAABB);
 }
 
