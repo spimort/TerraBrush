@@ -213,6 +213,7 @@ void Clipmap::createMeshChunk(int level, Vector2 position) {
 
     AABB customAABB = chunkMesh->get_aabb();
     customAABB.set_size(Vector3(customAABB.get_size().x + (level * _initialCellWidth), _chunkAABBHeight == -1 ? _zonesSize : _chunkAABBHeight, customAABB.get_size().z + (level * _initialCellWidth)));
+    customAABB.set_position(Vector3(customAABB.get_position().x, -(customAABB.get_size().y / 2.0), customAABB.get_position().z));
     chunkMesh->set_custom_aabb(customAABB);
 }
 
