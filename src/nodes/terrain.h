@@ -15,6 +15,13 @@
 
 using namespace godot;
 
+// HeightMapShape3D::map_data / set_map_data switches packed array width with engine precision.
+#ifdef REAL_T_IS_DOUBLE
+using HeightMapPackedArray = PackedFloat64Array;
+#else
+using HeightMapPackedArray = PackedFloat32Array;
+#endif
+
 class Terrain : public Node3D {
     GDCLASS(Terrain, Node3D);
 
@@ -69,7 +76,7 @@ private:
     void terrainTextureUpdated();
     void terrainSplatmapsUpdated();
     void updateCollisionShape();
-    void assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data);
+    void assignCollisionData(const Ref<HeightMapShape3D> &shape, const HeightMapPackedArray data);
     void updateTextures();
     float getHeightForZone(int x, int y, int imageWidth, PackedByteArray heightmapImage, PackedByteArray waterImage);
     Color getPixelFromImageArray(int x, int y, PackedByteArray data, int imageWidth, int channels, bool floatValue);
