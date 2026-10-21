@@ -108,25 +108,25 @@ void WaterResource::_bind_methods() {
 
 WaterResource::WaterResource() {
     _waterFactor = 1;
-    _waterInnerOffset = 0.2;
-    _waterColor = Color::named("WHITE");
-    _waterFresnelColor = Color::named("WHITE");
-    _waterMetallic = 0;
-    _waterRoughness = 0;
+    _waterInnerOffset = 0.3;
+    _waterColor = Color::from_string("#00619d", Color());
+    _waterFresnelColor = Color::from_string("#00bea2", Color());
+    _waterMetallic = 1.0;
+    _waterRoughness = 1.0;
     _waterNormalMap = Ref<Texture2D>(nullptr);
     _waterNormalMap2 = Ref<Texture2D>(nullptr);
     _waterTimeScale = 0.1;
-    _waterStrength = 0.4;
+    _waterStrength = 15.0;
     _waterWave = Ref<Texture2D>(nullptr);
     _waterNoiseScale = 10;
-    _waterHeightScale = 0.15;
+    _waterHeightScale = 0.05;
     _waterColorDeep = Color::named("WHITE");
     _waterColorShallow = Color::named("WHITE");
     _waterBeersLaw = 2;
     _waterDepthOffset = -0.75;
     _waterEdgeScale = 0.1;
     _waterNear = 0.5;
-    _waterFar = 100;
+    _waterFar = 1000;
     _waterEdgeColor = Color::named("WHITE");
     _visualInstanceLayers = 1;
     _customShader = Ref<ShaderMaterial>(nullptr);

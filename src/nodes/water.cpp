@@ -6,6 +6,8 @@
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/noise_texture2d.hpp>
+#include <godot_cpp/classes/fast_noise_lite.hpp>
 
 using namespace godot;
 
@@ -240,11 +242,58 @@ void Water::updateWater() {
     _clipmap->get_shader()->set_shader_parameter(StringNames::FresnelColor(), _fresnelColor);
     _clipmap->get_shader()->set_shader_parameter(StringNames::Metallic(), _metallic);
     _clipmap->get_shader()->set_shader_parameter(StringNames::Roughness(), _roughness);
-    _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap(), _normalMap);
-    _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap2(), _normalMap2);
+
+    if (_normalMap.is_null()) {
+        Ref<NoiseTexture2D> normalMapTexture = memnew(NoiseTexture2D);
+        normalMapTexture->set_seamless(true);
+        normalMapTexture->set_seamless_blend_skirt(1.0);
+        normalMapTexture->set_as_normal_map(true);
+
+        Ref<FastNoiseLite> fastNoiseLite = memnew(FastNoiseLite);
+        fastNoiseLite->set_noise_type(FastNoiseLite::NoiseType::TYPE_PERLIN);
+        fastNoiseLite->set_fractal_type(godot::FastNoiseLite::FRACTAL_NONE);
+        normalMapTexture->set_noise(fastNoiseLite);
+
+        _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap(), normalMapTexture);
+    } else {
+        _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap(), _normalMap);
+    }
+
+    if (_normalMap2.is_null()) {
+        Ref<NoiseTexture2D> normalMapTexture = memnew(NoiseTexture2D);
+        normalMapTexture->set_seamless(true);
+        normalMapTexture->set_seamless_blend_skirt(1.0);
+        normalMapTexture->set_as_normal_map(true);
+
+        Ref<FastNoiseLite> fastNoiseLite = memnew(FastNoiseLite);
+        fastNoiseLite->set_noise_type(FastNoiseLite::NoiseType::TYPE_PERLIN);
+        fastNoiseLite->set_fractal_type(godot::FastNoiseLite::FRACTAL_NONE);
+        fastNoiseLite->set_seed(10);
+        normalMapTexture->set_noise(fastNoiseLite);
+
+        _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap2(), normalMapTexture);
+    } else {
+        _clipmap->get_shader()->set_shader_parameter(StringNames::NormalMap2(), _normalMap2);
+    }
+
     _clipmap->get_shader()->set_shader_parameter(StringNames::TimeScale(), _timeScale);
     _clipmap->get_shader()->set_shader_parameter(StringNames::Strength(), _strength);
-    _clipmap->get_shader()->set_shader_parameter(StringNames::Wave(), _wave);
+
+    if (_wave.is_null()) {
+        Ref<NoiseTexture2D> noiseTexture = memnew(NoiseTexture2D);
+        noiseTexture->set_seamless(true);
+
+        Ref<FastNoiseLite> fastNoiseLite = memnew(FastNoiseLite);
+        fastNoiseLite->set_noise_type(FastNoiseLite::NoiseType::TYPE_SIMPLEX);
+        fastNoiseLite->set_fractal_type(godot::FastNoiseLite::FRACTAL_NONE);
+        fastNoiseLite->set_seed(10);
+        noiseTexture->set_noise(fastNoiseLite);
+
+        _clipmap->get_shader()->set_shader_parameter(StringNames::Wave(), noiseTexture);
+    } else {
+        _clipmap->get_shader()->set_shader_parameter(StringNames::Wave(), _wave);
+    }
+
     _clipmap->get_shader()->set_shader_parameter(StringNames::NoiseScale(), _noiseScale);
     _clipmap->get_shader()->set_shader_parameter(StringNames::HeightScale(), _heightScale);
     _clipmap->get_shader()->set_shader_parameter(StringNames::ColorDeep(), _colorDeep);
@@ -293,4 +342,3 @@ void Water::addRippleEffect(float x, float y) {
         }
     }
 }
-
