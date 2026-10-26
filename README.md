@@ -142,8 +142,8 @@ The web export works just fine with TerraBrush (and with the TerraBrushEditor no
 
 ## How To Use
 
-Watch the tutorial video (it was made for the C# version but most of the stuff are about the same, until a new video is created for the new version) !
-https://youtu.be/n5WeAqeea1c
+Watch the tutorial video
+https://www.youtube.com/watch?v=R9A4rg6QmVc
 
 **Download** one of the release from https://github.com/spimort/TerraBrush/releases.
 
