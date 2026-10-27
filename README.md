@@ -29,6 +29,16 @@
 
 </div>
 
+## Games made with TerraBrush
+
+* [Volunteers](https://store.steampowered.com/app/2109070/Volunteers/) (spimort)
+* [Burg Tag](https://store.steampowered.com/app/4297360/Burg_Tag/) (Barji)
+* [Abyss Chamber](https://store.steampowered.com/app/4377360/Abyss_Chamber/) (DuskPond)
+* [Red Tears: Angola](https://store.steampowered.com/app/3389460/Red_Tears_Angola/) (Arun Haines)
+* [B-Dog: Bark n' Butter](https://penguinmilkstudios.com/) (Penguinmilk Games)
+
+**You made a game with TerraBrush and want it listed here? Let me know!**
+
 ## Disclaimer
 
 This project has been made mainly for my own project.
