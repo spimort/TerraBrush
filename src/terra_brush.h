@@ -25,7 +25,7 @@ class TerraBrush : public Node3D {
 private:
     const int HeightMapFactor = 1;
 
-    String _version = "0.15.0-beta";
+    String _version = "0.15.1-beta";
 
     bool _initialized = false;
     std::unordered_map<int, bool> _objectsInitialized = std::unordered_map<int, bool>();
