@@ -104,7 +104,6 @@ vec4 texture_array_antitile(sampler2DArray texLinear, sampler2DArray texNearest,
 
 	if (isNormal) {
 		vec3 n = unpack_normal(col1);
-		n.xz = rotate(n.xz, cosa, -sina);
 		col1 = pack_normal(n, col1.a);
 	}
 
