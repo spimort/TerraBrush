@@ -549,6 +549,17 @@ func _on_redo_button_pressed() -> void:
 > xattr -dr com.apple.quarantine ./addons/terrabrush
 > ```
 
+## Socials
+
+|Links|
+|-------------|
+|[Youtube](https://www.youtube.com/@spimortdev)|
+|[Discord](https://discord.gg/km99TVXEGr)|
+|[Github](https://github.com/spimort/TerraBrush)|
+|[Twitter](https://twitter.com/spimortdev)|
+|[Mastodon](https://elk.zone/mastodon.gamedev.place/@spimort)|
+|[Bluesky](https://bsky.app/profile/spimort.bsky.social)|
+
 ## Support
 
 You want to support my work?
