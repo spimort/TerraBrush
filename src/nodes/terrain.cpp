@@ -291,7 +291,7 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
             return;
         }
 
-        PackedFloat32Array terrainData = PackedFloat32Array();
+        HeightMapPackedArray terrainData = HeightMapPackedArray();
         for (int y = 0; y < imageHeight; y++) {
             for (int x = 0; x < imageWidth; x++) {
                 if (!token.is_null() && token->isCancellationRequested()) {
@@ -361,7 +361,7 @@ Ref<ZoneResource> Terrain::getZoneForPosition(int x, int y) {
     return nullptr;
 }
 
-void Terrain::assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data) {
+void Terrain::assignCollisionData(const Ref<HeightMapShape3D> &shape, const HeightMapPackedArray data) {
     shape->set_map_data(data);
 
     emit_signal(StringNames::TerrainCollisionUpdated());
