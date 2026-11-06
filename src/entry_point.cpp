@@ -55,6 +55,7 @@
 #include "misc/dialog_utils.h"
 #include "misc/tool_undo_redo.h"
 #include "misc/thread_utils.h"
+#include "misc/utils.h"
 
 #include "octree/point_octree.h"
 #include "octree/point_octree_bounding_box.h"
@@ -114,6 +115,7 @@ void initialize_terrabrush_module(ModuleInitializationLevel level) {
         GDREGISTER_INTERNAL_CLASS(ImportImageRow);
         GDREGISTER_INTERNAL_CLASS(ToolInfo);
         GDREGISTER_INTERNAL_CLASS(KeybindManager);
+        GDREGISTER_INTERNAL_CLASS(UtilsAsyncTextureLoader);
 
         // Resources
         GDREGISTER_CLASS(FoliageResource);
