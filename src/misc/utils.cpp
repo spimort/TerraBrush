@@ -12,6 +12,7 @@
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/placeholder_texture2d_array.hpp>
+#include <godot_cpp/classes/noise_texture2d.hpp>
 
 using namespace godot;
 
@@ -51,32 +52,58 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
     int width = 0;
     int height = 0;
 
+    Ref<Texture2DArray> textureArray = memnew(Texture2DArray);
+
     if (!textures.is_empty()) {
         Ref<Texture2D> firstTexture = Ref<Texture2D>(textures[0]);
         if (firstTexture.is_null()) {
             return nullptr;
         }
 
+        Image::Format expectedFormat = Image::Format::FORMAT_RGBA8;
+        bool expectedMipmaps = true;
+        int expectedWidth = 512;
+        int expectedHeight = 512;
+
         Ref<Image> firstImage = firstTexture->get_image();
         if (firstImage.is_null()) {
-            return nullptr;
+            Ref<NoiseTexture2D> firstNoiseTexture = Object::cast_to<NoiseTexture2D>(*firstTexture);
+            // If the first texture is a noise, we're gonna let it slip because the image might not be ready yet
+            if (firstNoiseTexture.is_null()) {
+                return nullptr;
+            }
+
+            expectedFormat = firstNoiseTexture->is_normal_map() || !firstNoiseTexture->get_color_ramp().is_null() ? Image::Format::FORMAT_RGBA8 :  Image::Format::FORMAT_L8;
+            expectedMipmaps = firstNoiseTexture->is_generating_mipmaps();
+            expectedWidth = firstNoiseTexture->get_width();
+            expectedHeight = firstNoiseTexture->get_height();
         }
 
-        Image::Format expectedFormat = firstImage->get_format();
-        bool expectedMipmaps = firstImage->has_mipmaps();
-        int expectedWidth = firstImage->get_width();
-        int expectedHeight = firstImage->get_height();
+        if (!firstImage.is_null()) {
+            expectedFormat = firstImage->get_format();
+            expectedMipmaps = firstImage->has_mipmaps();
+            expectedWidth = firstImage->get_width();
+            expectedHeight = firstImage->get_height();
+        }
 
         for (Ref<Texture2D> texture : textures) {
             if (!texture.is_null()) {
                 Ref<Image> textureImage = texture->get_image();
+                if (textureImage.is_null()) {
+                    Ref<NoiseTexture2D> noiseTexture = Object::cast_to<NoiseTexture2D>(*texture);
+                    if (!noiseTexture.is_null()) {
+                        UtilsAsyncTextureLoader *asyncTextureLoader = memnew(UtilsAsyncTextureLoader);
+                        asyncTextureLoader->setData(textureArray, textureImageArray.size(), texture);
+                        textureImageArray.append(Image::create_empty(expectedWidth, expectedHeight, expectedMipmaps, expectedFormat));
 
-                ERR_FAIL_COND_V_MSG(textureImage->get_format() != expectedFormat, nullptr, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedFormat) + "'. Actual format : '" + String::num_int64(textureImage->get_format()) + "'");
-                ERR_FAIL_COND_V_MSG(textureImage->has_mipmaps() != expectedMipmaps, nullptr, "The image '" + texture->get_path() + "' does not have the expected mipmaps : '" + expectedMipmaps + "'. Actual mipmaps : '" + textureImage->has_mipmaps() + "'");
-                ERR_FAIL_COND_V_MSG(textureImage->get_width() != expectedWidth, nullptr, "The image '" + texture->get_path() + "' does not have the expected width : '" + String::num_int64(expectedWidth) + "'. Actual width : '" + String::num_int64(textureImage->get_width()) + "'");
-                ERR_FAIL_COND_V_MSG(textureImage->get_height() != expectedHeight, nullptr, "The image '" + texture->get_path() + "' does not have the expected height : '" + String::num_int64(expectedHeight) + "'. Actual height : '" + String::num_int64(textureImage->get_height()) + "'");
+                        noiseTexture->connect("changed", Callable(asyncTextureLoader, "onTextureUpdated"));
+                    }
+                } else {
+                    ERR_FAIL_COND_V_MSG(textureImage->get_format() != expectedFormat, nullptr, "The image '" + texture->get_path() + "' does not have the expected format : '" + String::num_int64(expectedFormat) + "'. Actual format : '" + String::num_int64(textureImage->get_format()) + "'");
+                    ERR_FAIL_COND_V_MSG(textureImage->has_mipmaps() != expectedMipmaps, nullptr, "The image '" + texture->get_path() + "' does not have the expected mipmaps : '" + expectedMipmaps + "'. Actual mipmaps : '" + textureImage->has_mipmaps() + "'");
+                    ERR_FAIL_COND_V_MSG(textureImage->get_width() != expectedWidth, nullptr, "The image '" + texture->get_path() + "' does not have the expected width : '" + String::num_int64(expectedWidth) + "'. Actual width : '" + String::num_int64(textureImage->get_width()) + "'");
+                    ERR_FAIL_COND_V_MSG(textureImage->get_height() != expectedHeight, nullptr, "The image '" + texture->get_path() + "' does not have the expected height : '" + String::num_int64(expectedHeight) + "'. Actual height : '" + String::num_int64(textureImage->get_height()) + "'");
 
-                if (!textureImage.is_null()) {
                     if (width == 0) {
                         width = textureImage->get_width();
                         height = textureImage->get_height();
@@ -94,7 +121,6 @@ Ref<Texture2DArray> Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>> tex
         return nullptr;
     }
 
-    Ref<Texture2DArray> textureArray = memnew(Texture2DArray);
     textureArray->create_from_images(textureImageArray);
 
     return textureArray;
@@ -204,4 +230,28 @@ float Utils::degreeAngleToSlopeFactor(const float value) {
 
 float Utils::slopeFactorToDegreeAngle(const float value) {
     return Math::rad_to_deg(Math::acos(1.0 - value));
+}
+
+
+///////////////
+/// Utils object to handle static events
+///////////////
+
+void UtilsAsyncTextureLoader::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("onTextureUpdated"), &UtilsAsyncTextureLoader::onTextureUpdated);
+}
+
+UtilsAsyncTextureLoader::UtilsAsyncTextureLoader() {}
+
+UtilsAsyncTextureLoader::~UtilsAsyncTextureLoader() {}
+
+void UtilsAsyncTextureLoader::setData(Ref<Texture2DArray> &texture2DArray, int textureIndex, Ref<Texture2D> &texture) {
+    _texture2DArray = texture2DArray;
+    _textureIndex = textureIndex;
+    _texture = texture;
+}
+
+void UtilsAsyncTextureLoader::onTextureUpdated() {
+    _texture2DArray->update_layer(_texture->get_image(), _textureIndex);
+    memdelete(this);
 }

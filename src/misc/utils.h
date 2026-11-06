@@ -24,4 +24,23 @@ class Utils {
         static float degreeAngleToSlopeFactor(const float value);
         static float slopeFactorToDegreeAngle(const float value);
 };
+
+class UtilsAsyncTextureLoader : public Object {
+    GDCLASS(UtilsAsyncTextureLoader, Object);
+
+private:
+    Ref<Texture2DArray> _texture2DArray = nullptr;
+    int _textureIndex = -1;
+    Ref<Texture2D> _texture = nullptr;
+
+protected:
+    static void _bind_methods();
+
+public:
+    UtilsAsyncTextureLoader();
+    ~UtilsAsyncTextureLoader();
+
+    void setData(Ref<Texture2DArray> &texture2DArray, int textureIndex, Ref<Texture2D> &texture);
+    void onTextureUpdated();
+};
 #endif
