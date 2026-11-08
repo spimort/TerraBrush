@@ -312,6 +312,13 @@ bool TerraBrushEditor::onGuiInput(Camera3D *camera, const Ref<InputEvent> &event
                 BrushNumericSelector *brushNumericSelector = Object::cast_to<BrushNumericSelector>(_overlaySelector);
                 brushNumericSelector->requestSelectValue();
             }
+            if (Object::cast_to<ColorTool>(*_currentTool) != nullptr && Object::cast_to<PanelContainer>(_overlaySelector) != nullptr) {
+                String overlayName = _overlaySelector->get_name();
+                if (overlayName == "ColorPicker") {
+                    ColorPicker *colorPicker = Object::cast_to<ColorPicker>(_overlaySelector->get_child(0));
+                    onColorSelected(colorPicker->get_pick_color());
+                }
+            }
 
             hideOverlaySelector();
             return true;
@@ -561,9 +568,9 @@ void TerraBrushEditor::showColorPickerSelector(Viewport *viewport) {
     colorPicker->set_modes_visible(false);
     colorPicker->set_sliders_visible(true);
     colorPicker->set_presets_visible(false);
-    colorPicker->connect("color_changed", Callable(this, "onColorSelected"));
 
     PanelContainer *panelContainer = memnew(PanelContainer);
+    panelContainer->set_name("ColorPicker");
 
     Ref<StyleBoxFlat> panelContainerStyle = memnew(StyleBoxFlat);
     Color iconsColor = ProjectSettings::get_singleton()->get_setting(SettingContants::IconsColor(), SettingContants::IconsColorDefaultValue());
