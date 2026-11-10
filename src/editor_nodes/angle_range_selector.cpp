@@ -87,7 +87,7 @@ Vector2 AngleRangeSelector::get_rangeValue() const {
     return _rangeValue;
 }
 void AngleRangeSelector::set_rangeValue(const Vector2 value) {
-    _rangeValue = Vector2(Math::min(Math::max(value.x, (float) get_min()), (float) get_max()), Math::max(Math::min(value.y, (float) get_max()), (float) get_min()));
+    _rangeValue = Vector2(Math::min(Math::max(value.x, (real_t) get_min()), (real_t) get_max()), Math::max(Math::min(value.y, (real_t) get_max()), (real_t) get_min()));
 
     if (_rangeValue.x > _rangeValue.y) {
         _rangeValue = Vector2(_rangeValue.y, _rangeValue.x);

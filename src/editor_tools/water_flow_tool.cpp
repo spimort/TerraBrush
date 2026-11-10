@@ -32,8 +32,8 @@ void WaterFlowTool::paint(TerrainToolType toolType, Ref<Image> brushImage, int b
                 direction = _previousWaterMouseDirection;
             } else {
                 direction = Vector2(
-                    Math::lerp(_previousWaterMouseDirection.x, direction.x, 0.1f),
-                    Math::lerp(_previousWaterMouseDirection.y, direction.y, 0.1f)
+                    Math::lerp(_previousWaterMouseDirection.x, direction.x, (real_t)0.1),
+                    Math::lerp(_previousWaterMouseDirection.y, direction.y, (real_t)0.1)
                 );
                 _previousWaterMouseDirection = direction;
             }
