@@ -74,6 +74,7 @@ private:
     int _slopeTextureIndex = 1;
     float _slopeTextureThreshold = 0.2;
     Ref<Texture2D> _macroDetailsNoise = nullptr;
+    float _macroDetailsNoiseScale = 1.0;
 
     // Foliage settings
     TypedArray<Ref<FoliageResource>> _foliages = TypedArray<Ref<FoliageResource>>();
@@ -198,6 +199,9 @@ public:
 
     Ref<Texture2D> get_macroDetailsNoise() const;
     void set_macroDetailsNoise(const Ref<Texture2D> &value);
+
+    float get_macroDetailsNoiseScale() const;
+    void set_macroDetailsNoiseScale(const float value);
 
     TypedArray<Ref<FoliageResource>> get_foliages() const;
     void set_foliages(const TypedArray<Ref<FoliageResource>> value);

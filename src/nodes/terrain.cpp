@@ -139,6 +139,10 @@ void Terrain::set_macroDetailsNoise(const Ref<Texture2D> &value) {
     _macroDetailsNoise = value;
 }
 
+void Terrain::set_macroDetailsNoiseScale(const float value) {
+    _macroDetailsNoiseScale = value;
+}
+
 void Terrain::set_waterFactor(const float value) {
     _waterFactor = value;
 }
@@ -502,6 +506,7 @@ void Terrain::updateTextures() {
 
         if (!_macroDetailsNoise.is_null()) {
             _clipmap->get_shader()->set_shader_parameter(StringNames::MacroDetailsNoise(), _macroDetailsNoise);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::MacroDetailsNoiseScale(), _macroDetailsNoiseScale);
         }
 
         if (normalTextures.size() > 0) {

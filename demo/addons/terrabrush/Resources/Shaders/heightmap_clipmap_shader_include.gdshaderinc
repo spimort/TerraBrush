@@ -42,6 +42,7 @@ uniform int SlopeTextureIndex = 1;
 uniform float SlopeTextureThreshold = 0.2;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2D MacroDetailsNoise: hint_default_white;
+uniform float MacroDetailsNoiseScale = 1.0;
 #endif
 uniform bool ApplyMetaInfoTextures = false;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
@@ -320,7 +321,7 @@ void calculateHeightmapFragment(
 
         albedo = dominantTexture.rgb;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY		
-		albedo *= texture(MacroDetailsNoise, zoneUV.xy).rgb;
+		albedo *= texture(MacroDetailsNoise, zoneUV.xy * MacroDetailsNoiseScale).rgb;
 #endif
 
         if (HasRoughnessTextures) {
@@ -479,7 +480,7 @@ void calculateHeightmapFragment(
 	vec4 color = texture(ColorTextures, zoneUV);
 	albedo = mix(albedo, color.rgb, color.a);	
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY	
-	albedo *= texture(MacroDetailsNoise, zoneUV.xy).rgb;
+	albedo *= texture(MacroDetailsNoise, zoneUV.xy * MacroDetailsNoiseScale).rgb;
 #endif
 
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
