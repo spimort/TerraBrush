@@ -102,5 +102,6 @@ class StringNames {
         const static StringName TextureAlbedoCurves();
         const static StringName TextureAlbedoHasCurves();
         const static StringName Specular();
+        const static StringName MacroDetailsNoise();
 };
 #endif
