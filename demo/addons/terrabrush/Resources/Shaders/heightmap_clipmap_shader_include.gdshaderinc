@@ -40,7 +40,9 @@ uniform bool UseSharpTransitions = false;
 uniform bool SlopeTexturing = false;
 uniform int SlopeTextureIndex = 1;
 uniform float SlopeTextureThreshold = 0.2;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2D MacroDetailsNoise: hint_default_white;
+#endif
 uniform bool ApplyMetaInfoTextures = false;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2DArray MetaInfoTextures: filter_nearest;
@@ -317,7 +319,9 @@ void calculateHeightmapFragment(
 #endif		
 
         albedo = dominantTexture.rgb;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY		
 		albedo *= texture(MacroDetailsNoise, zoneUV.xy).rgb;
+#endif
 
         if (HasRoughnessTextures) {
             vec4 roughnessTexture = getVec4Texture(textureUV, triplanarPos, triplanarPowerNormal,
@@ -474,7 +478,9 @@ void calculateHeightmapFragment(
 
 	vec4 color = texture(ColorTextures, zoneUV);
 	albedo = mix(albedo, color.rgb, color.a);	
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY	
 	albedo *= texture(MacroDetailsNoise, zoneUV.xy).rgb;
+#endif
 
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
     if (ApplyLockTextures) {
