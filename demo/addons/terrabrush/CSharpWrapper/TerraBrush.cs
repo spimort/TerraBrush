@@ -251,6 +251,15 @@ public partial class TerraBrush : Node {
         }
     }
 
+    public float MacroDetailsNoiseScale {
+        get {
+            return (float) _godotHandle.AsGodotObject().Call("get_macroDetailsNoiseScale").AsDouble();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_macroDetailsNoiseScale", value);
+        }
+    }
+
     public FoliageResource[] Foliages {
         get {
             return _godotHandle.AsGodotObject().Call("get_foliages").AsGodotArray<Variant>()?.Select(x => new FoliageResource(x)).ToArray();
