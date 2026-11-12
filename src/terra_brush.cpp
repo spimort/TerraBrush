@@ -281,6 +281,11 @@ void TerraBrush::_validate_property(PropertyInfo &property) const {
     if (slopeTexturingProperties.has(property.name)) {
         property.usage = _slopeTexturing ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
     }
+
+    TypedArray<String> macroDetailsNoiseProperties = {"macroDetailsNoiseScale"};
+    if (macroDetailsNoiseProperties.has(property.name)) {
+        property.usage = _macroDetailsNoise.is_null() ?  PROPERTY_USAGE_NO_EDITOR : PROPERTY_USAGE_DEFAULT;
+    }
 }
 
 void TerraBrush::_ready() {
@@ -557,6 +562,8 @@ Ref<Texture2D> TerraBrush::get_macroDetailsNoise() const {
 }
 void TerraBrush::set_macroDetailsNoise(const Ref<Texture2D> &value) {
     _macroDetailsNoise = value;
+
+    notify_property_list_changed();
 }
 
 float TerraBrush::get_macroDetailsNoiseScale() const {

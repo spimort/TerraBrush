@@ -236,6 +236,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |Slope Texture Index|The index of the texture that will be painted when slope is detected. The default value is 1, as the second texture.|
 |Slope Texture Threshold|The Threshold to check if the ground is considered a slope (the dot product of the normal >= Threshold). The default value is 0.2.|
 |Macro Details Noise|Multiply the albedo of the terrain with a noise texture to create some darken patches.|
+|Macro Details Noise Scale|The scale of the macro details noise.|
 |**Foliage**||
 |Foliages|An array of FoliageResource. **Make sure to hit the update terrain button when you modify this and the terrain has already been created**.|
 |FoliageResource[x].Definition|The definition of the foliage. Create a **FoliageDefinitionResource** to use it. You can create a resource of this definition to reuse it in other terrain.|
