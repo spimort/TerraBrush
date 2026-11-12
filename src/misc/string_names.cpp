@@ -97,3 +97,5 @@ const StringName StringNames::TextureAlbedoHasColorMaps() { return "TextureAlbed
 const StringName StringNames::TextureAlbedoCurves() { return "TextureAlbedoCurves"; }
 const StringName StringNames::TextureAlbedoHasCurves() { return "TextureAlbedoHasCurves"; }
 const StringName StringNames::Specular() { return "Specular"; }
+const StringName StringNames::MacroDetailsNoise() { return "MacroDetailsNoise"; }
+const StringName StringNames::MacroDetailsNoiseScale() { return "MacroDetailsNoiseScale"; }

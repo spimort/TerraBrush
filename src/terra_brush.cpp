@@ -150,6 +150,14 @@ void TerraBrush::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_slopeTextureThreshold", "value"), &TerraBrush::set_slopeTextureThreshold);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "slopeTextureThreshold", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_slopeTextureThreshold", "get_slopeTextureThreshold");
 
+    ClassDB::bind_method(D_METHOD("get_macroDetailsNoise"), &TerraBrush::get_macroDetailsNoise);
+    ClassDB::bind_method(D_METHOD("set_macroDetailsNoise", "value"), &TerraBrush::set_macroDetailsNoise);
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "macroDetailsNoise", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_macroDetailsNoise", "get_macroDetailsNoise");
+
+    ClassDB::bind_method(D_METHOD("get_macroDetailsNoiseScale"), &TerraBrush::get_macroDetailsNoiseScale);
+    ClassDB::bind_method(D_METHOD("set_macroDetailsNoiseScale", "value"), &TerraBrush::set_macroDetailsNoiseScale);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "macroDetailsNoiseScale"), "set_macroDetailsNoiseScale", "get_macroDetailsNoiseScale");
+
     ADD_GROUP("Foliages", "");
 
     ClassDB::bind_method(D_METHOD("get_foliages"), &TerraBrush::get_foliages);
@@ -240,6 +248,8 @@ TerraBrush::TerraBrush() {
     _slopeTexturing = false;
     _slopeTextureIndex = 1;
     _slopeTextureThreshold = 0.2;
+    _macroDetailsNoise = nullptr;
+    _macroDetailsNoiseScale = 1.0;
 
     // Foliages settings
     _foliages = TypedArray<Ref<FoliageResource>>();
@@ -270,6 +280,11 @@ void TerraBrush::_validate_property(PropertyInfo &property) const {
     TypedArray<String> slopeTexturingProperties = {"slopeTextureIndex", "slopeTextureThreshold"};
     if (slopeTexturingProperties.has(property.name)) {
         property.usage = _slopeTexturing ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
+    }
+
+    TypedArray<String> macroDetailsNoiseProperties = {"macroDetailsNoiseScale"};
+    if (macroDetailsNoiseProperties.has(property.name)) {
+        property.usage = _macroDetailsNoise.is_null() ?  PROPERTY_USAGE_NO_EDITOR : PROPERTY_USAGE_DEFAULT;
     }
 }
 
@@ -542,6 +557,22 @@ void TerraBrush::set_slopeTextureThreshold(const float value) {
     _slopeTextureThreshold = value;
 }
 
+Ref<Texture2D> TerraBrush::get_macroDetailsNoise() const {
+    return _macroDetailsNoise;
+}
+void TerraBrush::set_macroDetailsNoise(const Ref<Texture2D> &value) {
+    _macroDetailsNoise = value;
+
+    notify_property_list_changed();
+}
+
+float TerraBrush::get_macroDetailsNoiseScale() const {
+    return _macroDetailsNoiseScale;
+}
+void TerraBrush::set_macroDetailsNoiseScale(const float value) {
+    _macroDetailsNoiseScale = value;
+}
+
 TypedArray<Ref<FoliageResource>> TerraBrush::get_foliages() const {
     return _foliages;
 }
@@ -656,6 +687,8 @@ void TerraBrush::loadTerrain() {
     _terrain->set_slopeTexturing(_slopeTexturing);
     _terrain->set_slopeTextureIndex(_slopeTextureIndex);
     _terrain->set_slopeTextureThreshold(_slopeTextureThreshold);
+    _terrain->set_macroDetailsNoise(_macroDetailsNoise);
+    _terrain->set_macroDetailsNoiseScale(_macroDetailsNoiseScale);
     _terrain->set_waterFactor(_waterDefinition.is_null() ? 0 : _waterDefinition->get_waterFactor());
     _terrain->set_chunkMesh(_chunkMesh);
     _terrain->set_chunkAABBHeight(_chunkAABBHeight);

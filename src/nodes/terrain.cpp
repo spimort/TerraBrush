@@ -135,6 +135,14 @@ void Terrain::set_slopeTextureThreshold(const float value) {
     _slopeTextureThreshold = value;
 }
 
+void Terrain::set_macroDetailsNoise(const Ref<Texture2D> &value) {
+    _macroDetailsNoise = value;
+}
+
+void Terrain::set_macroDetailsNoiseScale(const float value) {
+    _macroDetailsNoiseScale = value;
+}
+
 void Terrain::set_waterFactor(const float value) {
     _waterFactor = value;
 }
@@ -495,6 +503,11 @@ void Terrain::updateTextures() {
         _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTexturing(), _slopeTexturing);
         _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTextureIndex(), _slopeTextureIndex);
         _clipmap->get_shader()->set_shader_parameter(StringNames::SlopeTextureThreshold(), _slopeTextureThreshold);
+
+        if (!_macroDetailsNoise.is_null()) {
+            _clipmap->get_shader()->set_shader_parameter(StringNames::MacroDetailsNoise(), _macroDetailsNoise);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::MacroDetailsNoiseScale(), _macroDetailsNoiseScale);
+        }
 
         if (normalTextures.size() > 0) {
             Ref<Texture2DArray> normalArray = Utils::texturesToTextureArray(normalTextures);
