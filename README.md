@@ -566,6 +566,8 @@ func _on_redo_button_pressed() -> void:
 
 You want to support my work?
 
+[![Github](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/spimort)
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N4N1SC96Z)
 
 ## Demo credits
