@@ -199,6 +199,10 @@ void Terrain::set_metaInfoLayers(const TypedArray<Ref<MetaInfoLayerResource>> va
     _metaInfoLayers = value;
 }
 
+void Terrain::set_snowTextureIndex(const int value) {
+    _snowTextureIndex = value;
+}
+
 Clipmap *Terrain::get_clipmap() const {
     return _clipmap;
 }
@@ -531,6 +535,11 @@ void Terrain::updateTextures() {
         _clipmap->get_shader()->set_shader_parameter(StringNames::BlendFactor(), _heightBlendFactor);
         _clipmap->get_shader()->set_shader_parameter(StringNames::AlbedoAlphaChannelUsage(), (int) _albedoAlphaChannelUsage);
         _clipmap->get_shader()->set_shader_parameter(StringNames::NormalAlphaChannelUsage(), (int) _normalAlphaChannelUsage);
+
+        if (_snowTextureIndex >= 0) {
+            _clipmap->get_shader()->set_shader_parameter(StringNames::SnowTextureIndex(), _snowTextureIndex);
+            _clipmap->get_shader()->set_shader_parameter(StringNames::SnowTextures(), _terrainZones->get_snowTextures());
+        }
     } else if (!_defaultTexture.is_null()) {
         Ref<Texture2DArray> textureArray = Utils::texturesToTextureArray(TypedArray<Ref<Texture2D>>({_defaultTexture}));
         _clipmap->get_shader()->set_shader_parameter(StringNames::TexturesDetail(), TypedArray<int>({_textureDetail}));

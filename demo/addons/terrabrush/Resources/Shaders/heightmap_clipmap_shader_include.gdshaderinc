@@ -48,6 +48,8 @@ uniform bool ApplyMetaInfoTextures = false;
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 uniform sampler2DArray MetaInfoTextures: filter_nearest;
 uniform vec4[100] MetaInfoColors;
+uniform int SnowTextureIndex = -1;
+uniform sampler2DArray SnowTextures: hint_default_black, repeat_disable;
 #endif
 
 const int ALPHA_CHANNEL_USAGE_NONE = 0;
@@ -391,6 +393,19 @@ void calculateHeightmapFragment(
 					channelValue = clamp(channelValue, 0, 1);
 				}
 			}
+			
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+			if (SnowTextureIndex >= 0) {
+				vec4 snowTexture = texture(SnowTextures, zoneUV);
+				if (i == 0) {
+					channelValue -= snowTexture.r;
+				} else if (i == SnowTextureIndex) {
+					channelValue += snowTexture.r;
+				}
+				
+				channelValue = clamp(channelValue, 0, 1);
+			}
+#endif
 
             if (channelValue <= 0.0001) {
                 continue;

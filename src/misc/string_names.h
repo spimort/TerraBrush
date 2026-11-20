@@ -104,5 +104,6 @@ class StringNames {
         const static StringName Specular();
         const static StringName MacroDetailsNoise();
         const static StringName MacroDetailsNoiseScale();
+        const static StringName SnowTextureIndex();
 };
 #endif
