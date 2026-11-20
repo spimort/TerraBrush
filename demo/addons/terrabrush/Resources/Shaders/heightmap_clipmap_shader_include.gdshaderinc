@@ -298,6 +298,15 @@ void calculateHeightmapFragment(
 				dominantTextureIndex = SlopeTextureIndex;
 			}
 		}
+		
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+		if (SnowTextureIndex >= 0) {
+			vec4 snowTexture = texture(SnowTextures, zoneUV);
+			if (snowTexture.r > 0.1) {
+				dominantTextureIndex = SnowTextureIndex;
+			}
+		}
+#endif		
 
         int textureDetail = TexturesDetail[dominantTextureIndex];
         vec2 worldVertexUV = worldVertex.xz * (float(textureDetail) * (1.0 / ZonesSize));
@@ -396,7 +405,7 @@ void calculateHeightmapFragment(
 			
 #if CURRENT_RENDERER != RENDERER_COMPATIBILITY
 			if (SnowTextureIndex >= 0) {
-				vec4 snowTexture = texture(SnowTextures, zoneUV);
+				vec4 snowTexture = texture(SnowTextures, zoneUV) * 2.0;
 				if (i == 0) {
 					channelValue -= snowTexture.r;
 				} else if (i == SnowTextureIndex) {
