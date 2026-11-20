@@ -17,6 +17,10 @@ void SnowResource::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_textureSetIndex", "value"), &SnowResource::set_textureSetIndex);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "textureSetIndex"), "set_textureSetIndex", "get_textureSetIndex");
 
+    ClassDB::bind_method(D_METHOD("get_blendTextureSetWithTerrain"), &SnowResource::get_blendTextureSetWithTerrain);
+    ClassDB::bind_method(D_METHOD("set_blendTextureSetWithTerrain", "value"), &SnowResource::set_blendTextureSetWithTerrain);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "blendTextureSetWithTerrain"), "set_blendTextureSetWithTerrain", "get_blendTextureSetWithTerrain");
+
     ClassDB::bind_method(D_METHOD("get_snowColorTexture"), &SnowResource::get_snowColorTexture);
     ClassDB::bind_method(D_METHOD("set_snowColorTexture", "value"), &SnowResource::set_snowColorTexture);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "snowColorTexture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_snowColorTexture", "get_snowColorTexture");
@@ -79,6 +83,11 @@ void SnowResource::_validate_property(PropertyInfo &property) const {
     if (textureProperties.has(property.name)) {
         property.usage = _textureSetIndex < 0 ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
     }
+
+    TypedArray<String> textureSetProperties = {"blendTextureSetWithTerrain"};
+    if (textureSetProperties.has(property.name)) {
+        property.usage = _textureSetIndex >= 0 ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR;
+    }
 }
 
 SnowResource::SnowResource() {
@@ -121,6 +130,13 @@ int SnowResource::get_textureSetIndex() const {
 void SnowResource::set_textureSetIndex(const int value) {
     _textureSetIndex = value;
     notify_property_list_changed();
+}
+
+bool SnowResource::get_blendTextureSetWithTerrain() const {
+    return _blendTextureSetWithTerrain;
+}
+void SnowResource::set_blendTextureSetWithTerrain(const bool value) {
+    _blendTextureSetWithTerrain = value;
 }
 
 Ref<Texture2D> SnowResource::get_snowColorTexture() const {

@@ -700,6 +700,10 @@ void TerraBrush::loadTerrain() {
     _terrain->set_showMetaInfo(_showMetaInfo);
     _terrain->set_metaInfoLayers(_metaInfoLayers);
 
+    if (!_snowDefinition.is_null() && _snowDefinition->get_textureSetIndex() >= 0 && _snowDefinition->get_blendTextureSetWithTerrain()) {
+        _terrain->set_snowTextureIndex(_snowDefinition->get_textureSetIndex());
+    }
+
     // This is attached to emit the initialized event
     _terrain->connect(StringNames::TerrainCollisionUpdated(), Callable(this, "onTerrainCollisionUpdated"));
 

@@ -320,6 +320,7 @@ This was designed this way to avoid spamming the properties of the terrain to up
 |SnowResource.SnowFactor|Sets how thick the snow will be.|
 |SnowResource.SnowInnerOffset|This option is to decide the offset that the snow will get into the ground. This is to avoid having square edges of the snow.|
 |SnowResource.TextureSetIndex|Reuse a texture from the terrain texture sets. This correspond to the index of the array.|
+|SnowResource.BlendTextureSetWithTerrain|Paint the snow texture on the terrain where the snow is.|
 |SnowResource.SnowColorTexture|This sets the albedo texture that will be used for the snow.|
 |SnowResource.SnowColorNormal|This sets the normal map texture that will be used for the snow.|
 |SnowResource.SnowColorRoughness|This sets the roughness texture that will be used for the snow.|
