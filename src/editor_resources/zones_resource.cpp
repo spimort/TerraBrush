@@ -302,3 +302,14 @@ Ref<ZoneResource> ZonesResource::getZoneForZoneInfo(const ZoneInfo &zoneInfo) {
     }
     return nullptr;
 }
+
+Ref<ZoneResource> ZonesResource::getZoneForPosition(int x, int y) {
+    for (Ref<ZoneResource> zone : _zones) {
+        Vector2i zonePosition = zone->get_zonePosition();
+        if (zonePosition.x == x && zonePosition.y == y) {
+            return zone;
+        }
+    }
+
+    return nullptr;
+}

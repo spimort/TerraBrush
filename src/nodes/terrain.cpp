@@ -280,11 +280,11 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
             return;
         }
 
-        Ref<ZoneResource> leftNeighbourZone = getZoneForPosition(zone->get_zonePosition().x - 1, zone->get_zonePosition().y);
-        Ref<ZoneResource> topNeighbourZone = getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y - 1);
-        Ref<ZoneResource> rightNeighbourZone = getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y);
-        Ref<ZoneResource> bottomNeighbourZone = getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y + 1);
-        Ref<ZoneResource> bottomRightNeighbourZone = getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y + 1);
+        Ref<ZoneResource> leftNeighbourZone = _terrainZones->getZoneForPosition(zone->get_zonePosition().x - 1, zone->get_zonePosition().y);
+        Ref<ZoneResource> topNeighbourZone = _terrainZones->getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y - 1);
+        Ref<ZoneResource> rightNeighbourZone = _terrainZones->getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y);
+        Ref<ZoneResource> bottomNeighbourZone = _terrainZones->getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y + 1);
+        Ref<ZoneResource> bottomRightNeighbourZone = _terrainZones->getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y + 1);
 
         int imageWidth = collisionData[CollisionDataImageWidthKey];
         int imageHeight = collisionData[CollisionDataImageHeightKey];
@@ -356,17 +356,6 @@ void Terrain::onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, 
 
         call_deferred("assignCollisionData", heightMapShape3D, terrainData);
     }
-}
-
-Ref<ZoneResource> Terrain::getZoneForPosition(int x, int y) {
-    for (Ref<ZoneResource> zone : _terrainZones->get_zones()) {
-        Vector2i zonePosition = zone->get_zonePosition();
-        if (zonePosition.x == x && zonePosition.y == y) {
-            return zone;
-        }
-    }
-
-    return nullptr;
 }
 
 void Terrain::assignCollisionData(const Ref<HeightMapShape3D> &shape, const PackedFloat32Array data) {
