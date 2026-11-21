@@ -32,6 +32,15 @@ public partial class SnowResource : Resource {
         }
     }
 
+    public bool BlendTextureSetWithTerrain {
+        get {
+            return _godotHandle.AsGodotObject().Call("get_blendTextureSetWithTerrain").AsBool();
+        }
+        set {
+            _godotHandle.AsGodotObject().Call("set_blendTextureSetWithTerrain", value);
+        }
+    }
+
     public Texture2D SnowColorTexture {
         get {
             return _godotHandle.AsGodotObject().Call("get_snowColorTexture").As<Texture2D>();

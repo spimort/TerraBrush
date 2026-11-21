@@ -64,6 +64,7 @@ private:
     bool _createCollisionInThread = false;
     bool _showMetaInfo = false;
     TypedArray<Ref<MetaInfoLayerResource>> _metaInfoLayers = TypedArray<Ref<MetaInfoLayerResource>>();
+    int _snowTextureIndex = -1;
 
     Ref<Thread> _collisionThread = nullptr;
     Ref<CancellationSource> _collisionCancellationSource = nullptr;
@@ -119,6 +120,7 @@ public:
     void set_createCollisionInThread(const bool value);
     void set_showMetaInfo(const bool value);
     void set_metaInfoLayers(const TypedArray<Ref<MetaInfoLayerResource>> value);
+    void set_snowTextureIndex(const int value);
 
     Clipmap *get_clipmap() const;
     StaticBody3D *get_terrainCollider() const;

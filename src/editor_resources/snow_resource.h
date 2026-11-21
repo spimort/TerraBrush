@@ -14,6 +14,7 @@ private:
     float _snowFactor = 0;
     float _snowInnerOffset = 0;
     int _textureSetIndex = -1;
+    bool _blendTextureSetWithTerrain = false;
     Ref<Texture2D> _snowColorTexture = nullptr;
     Ref<Texture2D> _snowColorNormal = nullptr;
     Ref<Texture2D> _snowColorRoughness = nullptr;
@@ -45,6 +46,9 @@ public:
 
     int get_textureSetIndex() const;
     void set_textureSetIndex(const int value);
+
+    bool get_blendTextureSetWithTerrain() const;
+    void set_blendTextureSetWithTerrain(const bool value);
 
     Ref<Texture2D> get_snowColorTexture() const;
     void set_snowColorTexture(const Ref<Texture2D> &value);

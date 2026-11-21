@@ -99,3 +99,4 @@ const StringName StringNames::TextureAlbedoHasCurves() { return "TextureAlbedoHa
 const StringName StringNames::Specular() { return "Specular"; }
 const StringName StringNames::MacroDetailsNoise() { return "MacroDetailsNoise"; }
 const StringName StringNames::MacroDetailsNoiseScale() { return "MacroDetailsNoiseScale"; }
+const StringName StringNames::SnowTextureIndex() { return "SnowTextureIndex"; }
