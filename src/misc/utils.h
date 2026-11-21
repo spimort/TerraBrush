@@ -23,6 +23,7 @@ class Utils {
         static Ref<Image> getBrushImageForIndex(const int targetIndex);
         static float degreeAngleToSlopeFactor(const float value);
         static float slopeFactorToDegreeAngle(const float value);
+        static TypedArray<float> calculateTangents(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs);
 };
 
 class UtilsAsyncTextureLoader : public Object {

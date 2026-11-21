@@ -1,34 +1,15 @@
 #include "terra_brush_plugin.h"
 #include "misc/keybind_manager.h"
 #include "misc/setting_contants.h"
-#include "misc/zone_info.h"
-#include "misc/zone_utils.h"
-#include "misc/custom_content_loader.h"
 #include "misc/utils.h"
 #include "misc/dialog_utils.h"
 #include "misc/importer_engine.h"
 #include "misc/exporter_engine.h"
 #include "misc/occluder_utils.h"
 
-#include "editor_nodes/brush_numeric_selector.h"
-#include "editor_nodes/tools_pie_menu.h"
-#include "editor_nodes/custom_content_pie_menu.h"
 #include "editor_nodes/keybind_settings.h"
 
 #include "editor_resources/zone_resource.h"
-
-#include "editor_tools/sculpt_tool.h"
-#include "editor_tools/set_height_tool.h"
-#include "editor_tools/ramp_tool.h"
-#include "editor_tools/texture_tool.h"
-#include "editor_tools/foliage_tool.h"
-#include "editor_tools/object_tool.h"
-#include "editor_tools/water_tool.h"
-#include "editor_tools/water_flow_tool.h"
-#include "editor_tools/snow_tool.h"
-#include "editor_tools/hole_tool.h"
-#include "editor_tools/lock_tool.h"
-#include "editor_tools/meta_info_tool.h"
 
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -52,6 +33,9 @@
 #include <godot_cpp/classes/resource_saver.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/array_mesh.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/surface_tool.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -288,6 +272,7 @@ void TerraBrushPlugin::addDock() {
     _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("Unlock", "EditorIcons"), "Unlock all terrain", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN);
     _terrainMenuButton->get_popup()->add_separator();
     _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("OccluderInstance3D", "EditorIcons"), "Create objects occluder", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER);
+    _terrainMenuButton->get_popup()->add_icon_item(iconTheme->get_icon("MeshInstance3D", "EditorIcons"), "Bake terrain mesh (terrain only, no material)", TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_BAKETERRAINMESH);
     _terrainMenuButton->get_popup()->connect("id_pressed", Callable(this, "onTerrainMenuItemPressed"));
     add_control_to_container(CustomControlContainer::CONTAINER_SPATIAL_EDITOR_MENU, _terrainMenuButton);
 
@@ -469,6 +454,9 @@ void TerraBrushPlugin::onTerrainMenuItemPressed(const int id) {
         case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER:
             createObjectsOccluder();
             break;
+        case TerrainMenuButtonAction::TERRAINMENUBUTTONACTION_BAKETERRAINMESH:
+            bakeTerrainMesh();
+            break;
     }
 }
 
@@ -501,4 +489,161 @@ void TerraBrushPlugin::createObjectsOccluder() {
     }
 
     occluderInstance->set_occluder(arrayOccluder);
+}
+
+void TerraBrushPlugin::bakeTerrainMesh(bool lightmapUnwrap, float texelSize) {
+    TypedArray<Vector3> vertices = TypedArray<Vector3>();
+    TypedArray<Vector2> uvs = TypedArray<Vector2>();
+
+    int zoneSize = _currentTerraBrushNode->get_zonesSize();
+
+    int cellWidth = _currentTerraBrushNode->get_resolution();
+
+    for (int i = 0; i < _currentTerraBrushNode->get_terrainZones()->get_zones().size(); i++) {
+        Ref<ZoneResource> zone = _currentTerraBrushNode->get_terrainZones()->get_zones()[i];
+
+        Ref<ZoneResource> leftNeighbourZone = _currentTerraBrushNode->get_terrainZones()->getZoneForPosition(zone->get_zonePosition().x - 1, zone->get_zonePosition().y);
+        Ref<ZoneResource> topNeighbourZone = _currentTerraBrushNode->get_terrainZones()->getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y - 1);
+        Ref<ZoneResource> rightNeighbourZone = _currentTerraBrushNode->get_terrainZones()->getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y);
+        Ref<ZoneResource> bottomNeighbourZone = _currentTerraBrushNode->get_terrainZones()->getZoneForPosition(zone->get_zonePosition().x, zone->get_zonePosition().y + 1);
+        Ref<ZoneResource> bottomRightNeighbourZone = _currentTerraBrushNode->get_terrainZones()->getZoneForPosition(zone->get_zonePosition().x + 1, zone->get_zonePosition().y + 1);
+
+        Ref<Image> heightmapImage = zone->get_heightMapImage();
+        Ref<Image> waterImage = nullptr;
+       if (!_currentTerraBrushNode->get_waterDefinition().is_null()) {
+           waterImage = zone->get_waterImage();
+       }
+
+        PackedFloat32Array terrainData = PackedFloat32Array();
+
+        int imageWidth = heightmapImage->get_width();
+        int imageHeight = heightmapImage->get_height();
+
+        for (int y = 0; y < imageHeight - 1; y++) {
+            for (int x = 0; x < imageWidth - 1; x++) {
+                float xPosition = (x * cellWidth) - (zoneSize / 2.0) + (zone->get_zonePosition().x * (zoneSize - 1.0)) + 0.5f;
+                float zPosition = (y * cellWidth) - (zoneSize / 2.0) + (zone->get_zonePosition().y * (zoneSize - 1.0)) + 0.5f;
+
+                /* Square made of 2 triangles
+                    0  -  -  1
+                    |     /  |
+                    |  /     |
+                    2  -  -  -
+
+                    -  -  -  3
+                    |     /  |
+                    |  /     |
+                    5  -  -  4
+                */
+
+                Color heightmapPixel = zone->get_heightMapImage()->get_pixel(x, y);
+                if (heightmapPixel.g <= 0.0) {
+                    // Vertices
+                    vertices.append(Vector3(xPosition, getTerrainHeightForPosition(zoneSize, x, y, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition));
+                    vertices.append(Vector3(xPosition + cellWidth, getTerrainHeightForPosition(zoneSize, x + 1, y, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition));
+                    vertices.append(Vector3(xPosition, getTerrainHeightForPosition(zoneSize, x, y + 1, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition + cellWidth));
+
+                    vertices.append(Vector3(xPosition + cellWidth, getTerrainHeightForPosition(zoneSize, x + 1, y, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition));
+                    vertices.append(Vector3(xPosition + cellWidth, getTerrainHeightForPosition(zoneSize, x + 1, y + 1, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition + cellWidth));
+                    vertices.append(Vector3(xPosition, getTerrainHeightForPosition(zoneSize, x, y + 1, zone, leftNeighbourZone, topNeighbourZone, rightNeighbourZone, bottomNeighbourZone, bottomRightNeighbourZone), zPosition + cellWidth));
+
+                    // UVS
+                    uvs.append(Vector2(0, 1));
+                    uvs.append(Vector2(1, 1));
+                    uvs.append(Vector2(0, 0));
+
+                    uvs.append(Vector2(1, 1));
+                    uvs.append(Vector2(1, 0));
+                    uvs.append(Vector2(0, 0));
+                }
+            }
+        }
+    }
+
+    Array arrays = Array();
+    arrays.resize(Mesh::ARRAY_MAX);
+    arrays[Mesh::ARRAY_VERTEX] = PackedVector3Array(vertices);
+    arrays[Mesh::ARRAY_TEX_UV] = PackedVector2Array(uvs);
+
+    TypedArray<Vector3> normals = TypedArray<Vector3>();
+    normals.resize(vertices.size());
+    normals.fill(Vector3(0, 1, 0));
+    arrays[Mesh::ARRAY_NORMAL] = PackedVector3Array(normals);
+
+    arrays[Mesh::ARRAY_TANGENT] = PackedFloat32Array(Utils::calculateTangents(vertices, uvs));
+
+    Ref<ArrayMesh> arrayMesh = memnew(ArrayMesh);
+    arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays);
+
+    Ref<SurfaceTool> surfaceTool = memnew(SurfaceTool);
+    surfaceTool->create_from(arrayMesh, 0);
+    surfaceTool->generate_normals();
+    arrayMesh = surfaceTool->commit();
+
+    if (lightmapUnwrap) {
+        arrayMesh->lightmap_unwrap(_currentTerraBrushNode->get_global_transform(), texelSize);
+    }
+
+    MeshInstance3D *meshInstance3D = memnew(MeshInstance3D);
+    meshInstance3D->set_mesh(arrayMesh);
+    _currentTerraBrushNode->add_child(meshInstance3D);
+    meshInstance3D->set_owner(_currentTerraBrushNode->get_owner());
+}
+
+float TerraBrushPlugin::getTerrainHeightForPosition(int zoneSize, int x, int y, Ref<ZoneResource> &zone, Ref<ZoneResource> &leftNeighbourZone, Ref<ZoneResource> &topNeighbourZone, Ref<ZoneResource> &rightNeighbourZone, Ref<ZoneResource> &bottomNeighbourZone, Ref<ZoneResource> &bottomRightNeighbourZone) {
+    Ref<Image> heightmapImage = zone->get_heightMapImage();
+    Ref<Image> waterImage = nullptr;
+   if (!_currentTerraBrushNode->get_waterDefinition().is_null()) {
+       waterImage = zone->get_waterImage();
+   }
+
+   int imageWidth = heightmapImage->get_width();
+   int imageHeight = heightmapImage->get_height();
+
+    Ref<ZoneResource> neighbourZone = nullptr;
+    int lookupX = x;
+    int lookupY = y;
+
+    if (zoneSize % 2 == 0) {
+        if (x == 0 && !leftNeighbourZone.is_null()) {
+            neighbourZone = leftNeighbourZone;
+            lookupX = imageWidth - 1;
+        } else if (y == 0 && !topNeighbourZone.is_null()) {
+            neighbourZone = topNeighbourZone;
+            lookupY = imageHeight - 1;
+        }
+    } else {
+        if (x == imageWidth - 1 && y == imageHeight - 1 && !bottomRightNeighbourZone.is_null()) {
+            neighbourZone = bottomRightNeighbourZone;
+            lookupX = 0;
+            lookupY = 0;
+        } else if (x == imageWidth - 1 && !rightNeighbourZone.is_null()) {
+            neighbourZone = rightNeighbourZone;
+            lookupX = 0;
+        } else if (y == imageHeight - 1 && !bottomNeighbourZone.is_null()) {
+            neighbourZone = bottomNeighbourZone;
+            lookupY = 0;
+        }
+    }
+
+    Ref<Image> currentHeightMapImage = heightmapImage;
+    Ref<Image> currentWaterImage = waterImage;
+
+    if (!neighbourZone.is_null()) {
+        currentHeightMapImage = neighbourZone->get_heightMapImage();
+
+        if (!_currentTerraBrushNode->get_waterDefinition().is_null()) {
+            currentWaterImage = neighbourZone->get_waterImage();
+        }
+    }
+
+    Color heightmapPixel = currentHeightMapImage->get_pixel(lookupX, lookupY);
+    float height = heightmapPixel.r;
+
+    if (!waterImage.is_null()) {
+        Color waterPixel = currentWaterImage->get_pixel(lookupX, lookupY);
+        height -= waterPixel.r * _currentTerraBrushNode->get_waterDefinition()->get_waterFactor();
+    }
+
+    return height;
 }

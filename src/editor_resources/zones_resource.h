@@ -78,5 +78,6 @@ public:
     void addDirtyImage(Ref<Image> imageTexture);
     void updateImageImages(int zoneSize);
     Ref<ZoneResource> getZoneForZoneInfo(const ZoneInfo &zoneInfo);
+    Ref<ZoneResource> getZoneForPosition(int x, int y);
 };
 #endif
