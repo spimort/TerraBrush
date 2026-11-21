@@ -25,7 +25,8 @@ class TerraBrushPlugin : public EditorPlugin {
         TERRAINMENUBUTTONACTION_EXPORTTERRAIN = 5,
         TERRAINMENUBUTTONACTION_LOCKALLTERRAIN = 6,
         TERRAINMENUBUTTONACTION_UNLOCKALLTERRAIN = 7,
-        TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER = 8
+        TERRAINMENUBUTTONACTION_CREATEOBJECTSOCCLUDER = 8,
+        TERRAINMENUBUTTONACTION_BAKETERRAINMESH = 9
     };
 
 private:
@@ -73,6 +74,8 @@ private:
     void exportTerrain();
     void onTerrainMenuItemPressed(const int id);
     void createObjectsOccluder();
+    void bakeTerrainMesh(bool lightmapUnwrap = false, float texelSize = 0.05f);
+    float getTerrainHeightForPosition(int zoneSize, int x, int y, Ref<ZoneResource> &zone, Ref<ZoneResource> &leftNeighbourZone, Ref<ZoneResource> &topNeighbourZone, Ref<ZoneResource> &rightNeighbourZone, Ref<ZoneResource> &bottomNeighbourZone, Ref<ZoneResource> &bottomRightNeighbourZone);
 
 protected:
     static void _bind_methods();

@@ -112,6 +112,7 @@ It runs in the browser, hosted on itch.io :
 * **Import and Export** - Import and export terrain from/to various images.
 * **In game editor** - TerraBrush supports In game editing from the node **TerraBrushEditor**, perfect to make custom maps from your game (experimental)
 * **Web Export** - The TerraBrush node and the TerraBrushEditor node both works with Web Exports (experimental)
+* **Bake terrain mesh** - Bake the terrain mesh into an ArrayMesh (without any material)
 
 ## GDExtension
 

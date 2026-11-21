@@ -76,7 +76,6 @@ private:
     float getHeightForZone(int x, int y, int imageWidth, PackedByteArray heightmapImage, PackedByteArray waterImage);
     Color getPixelFromImageArray(int x, int y, PackedByteArray data, int imageWidth, int channels, bool floatValue);
     void onUpdateTerrainCollision(const TypedDictionary<Ref<ZoneResource>, Dictionary> zonesData);
-    Ref<ZoneResource> getZoneForPosition(int x, int y);
 
 protected:
     static void _bind_methods();

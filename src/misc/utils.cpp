@@ -232,6 +232,51 @@ float Utils::slopeFactorToDegreeAngle(const float value) {
     return Math::rad_to_deg(Math::acos(1.0 - value));
 }
 
+TypedArray<float> Utils::calculateTangents(TypedArray<Vector3> &vertices, TypedArray<Vector2> &uvs) {
+    TypedArray<float> tangents = TypedArray<float>();
+    int triangleCount = vertices.size() / 3;
+
+    for (int i = 0; i < triangleCount; i++) {
+        Vector3 v0 = vertices[i * 3];
+        Vector3 v1 = vertices[i * 3 + 1];
+        Vector3 v2 = vertices[i * 3 + 2];
+
+        Vector2 uv0 = uvs[i * 3];
+        Vector2 uv1 = uvs[i * 3 + 1];
+        Vector2 uv2 = uvs[i * 3 + 2];
+
+        // Calculate the edges
+        auto edge1 = v1 - v0;
+        auto edge2 = v2 - v0;
+
+        // Calculate the UV space edges
+        auto deltaUV1 = uv1 - uv0;
+        auto deltaUV2 = uv2 - uv0;
+
+        // Calculate tangent
+        auto inversedDeterminant = 1.0f / ((deltaUV1.x * deltaUV2.y) - (deltaUV1.y * deltaUV2.x));
+        auto tangent = ((edge1 * deltaUV2.y) - (edge2 * deltaUV1.y)) * inversedDeterminant;
+        tangent = tangent.normalized();
+
+        // Create tangent for each vertex of the triangle
+        tangents.append(tangent.x);
+        tangents.append(tangent.y);
+        tangents.append(tangent.z);
+        tangents.append(1.0f); // W is for a positive sign (1.0)
+
+        tangents.append(tangent.x);
+        tangents.append(tangent.y);
+        tangents.append(tangent.z);
+        tangents.append(1.0f);
+
+        tangents.append(tangent.x);
+        tangents.append(tangent.y);
+        tangents.append(tangent.z);
+        tangents.append(1.0f);
+    }
+
+    return tangents;
+}
 
 ///////////////
 /// Utils object to handle static events
